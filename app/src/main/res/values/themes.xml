@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Platform theme only sets the pre-Compose window. All UI styling lives in ui/theme. -->
+    <style name="Theme.Aidriy" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/aidriy_background</item>
+    </style>
+</resources>

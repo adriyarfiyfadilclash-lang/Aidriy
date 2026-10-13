@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AIDRIY</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_notes">Catatan</string>
+    <string name="nav_ideas">Ide</string>
+    <string name="nav_journal">Journal</string>
+    <string name="nav_insight">Insight</string>
+
+    <!-- Greetings -->
+    <string name="greeting_pagi">Selamat pagi</string>
+    <string name="greeting_siang">Selamat siang</string>
+    <string name="greeting_sore">Selamat sore</string>
+    <string name="greeting_malam">Selamat malam</string>
+
+    <!-- Home -->
+    <string name="home_quick_access">Akses cepat</string>
+    <string name="home_quick_notes">Catatan</string>
+    <string name="home_quick_ideas">Ide</string>
+    <string name="home_quick_journal">Journal</string>
+    <string name="home_insight_title">Tanya Insight</string>
+    <string name="home_insight_body">Bantuan AI opsional untuk memahami pengetahuanmu</string>
+    <string name="home_empty_title">Ruang pengetahuanmu masih kosong</string>
+    <string name="home_empty_body">Catatan, ide, dan journal yang kamu simpan akan muncul di sini, tersimpan di perangkat ini.</string>
+
+    <!-- Notes -->
+    <string name="notes_subtitle">Pengetahuan terstruktur milikmu</string>
+    <string name="notes_empty_title">Belum ada catatan</string>
+    <string name="notes_empty_body">Catatan tersimpan di perangkat ini dan tetap bisa dibuka tanpa internet.</string>
+
+    <!-- Ideas -->
+    <string name="ideas_subtitle">Tangkap ide secepat munculnya</string>
+    <string name="ideas_empty_title">Belum ada ide</string>
+    <string name="ideas_empty_body">Ide baru masuk ke Inbox, lalu bisa kamu kembangkan sampai Selesai.</string>
+
+    <!-- Journal -->
+    <string name="journal_subtitle">Catatan harian pribadimu</string>
+    <string name="journal_today_label">Hari ini</string>
+    <string name="journal_empty_title">Belum ada entri journal</string>
+    <string name="journal_empty_body">Satu entri untuk setiap hari, tersusun menurut tanggal.</string>
+
+    <!-- Insight -->
+    <string name="insight_subtitle">Pahami dan hubungkan pengetahuanmu</string>
+    <string name="insight_setup_title">AI belum diatur</string>
+    <string name="insight_setup_body">Insight bersifat opsional. Semua fitur lain tetap berjalan tanpa AI dan tanpa internet.</string>
+    <string name="insight_point_key">AI memakai API key milikmu sendiri, disimpan terenkripsi di perangkat.</string>
+    <string name="insight_point_consent">Isi catatan tidak pernah dikirim ke penyedia AI tanpa persetujuanmu.</string>
+    <string name="insight_point_sources">Setiap jawaban menunjukkan catatan yang dijadikan sumber.</string>
+    <string name="insight_unavailable">Pengaturan penyedia AI belum tersedia di versi ini.</string>
+</resources>

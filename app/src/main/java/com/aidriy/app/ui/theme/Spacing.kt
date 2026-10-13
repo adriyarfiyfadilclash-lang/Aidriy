@@ -15,6 +15,9 @@ object Spacing {
     /** Horizontal padding for every top-level screen. */
     val screenHorizontal: Dp = 20.dp
 
+    /** Bottom list padding so the last item is not hidden behind a floating action button. */
+    val fabClearance: Dp = 96.dp
+
     /** Minimum touch target recommended by Material and Android accessibility guidance. */
     val minTouchTarget: Dp = 48.dp
 }

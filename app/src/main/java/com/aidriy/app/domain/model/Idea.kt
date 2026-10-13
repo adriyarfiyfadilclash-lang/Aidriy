@@ -16,12 +16,16 @@ data class Idea(
  * display label never corrupts stored data.
  */
 enum class IdeaStatus(val storageKey: String, val label: String) {
-    INBOX("inbox", "Inbox"),
-    DEVELOPING("developing", "Dikembangkan"),
-    DONE("done", "Selesai");
+    INBOX("INBOX", "Inbox"),
+    IN_PROGRESS("IN_PROGRESS", "Dikembangkan"),
+    COMPLETED("COMPLETED", "Selesai");
 
     companion object {
-        fun fromStorageKey(key: String): IdeaStatus =
-            entries.firstOrNull { it.storageKey == key } ?: INBOX
+        /** Strict lookup used for validation: unknown keys return null. */
+        fun fromStorageKeyOrNull(key: String): IdeaStatus? =
+            entries.firstOrNull { it.storageKey == key }
+
+        /** Lenient lookup used when reading stored rows: unknown keys fall back to [INBOX]. */
+        fun fromStorageKey(key: String): IdeaStatus = fromStorageKeyOrNull(key) ?: INBOX
     }
 }

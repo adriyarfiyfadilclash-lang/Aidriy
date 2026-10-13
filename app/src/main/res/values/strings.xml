@@ -9,6 +9,46 @@
     <string name="nav_journal">Journal</string>
     <string name="nav_insight">Insight</string>
 
+    <!-- Common actions and labels -->
+    <string name="action_save">Simpan</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_discard">Buang</string>
+    <string name="action_back">Kembali</string>
+    <string name="action_retry">Coba lagi</string>
+    <string name="action_open">Buka</string>
+    <string name="action_more">Opsi lainnya</string>
+    <string name="action_clear_search">Hapus pencarian</string>
+    <string name="untitled">Tanpa judul</string>
+    <string name="loading">Memuat</string>
+    <string name="saved">Tersimpan</string>
+    <string name="meta_updated">Diubah %1$s</string>
+    <string name="meta_created">Dibuat %1$s</string>
+    <string name="no_results_title">Tidak ada yang cocok</string>
+    <string name="no_results_body">Coba kata lain atau ubah filter.</string>
+    <string name="sort_updated">Terakhir diubah</string>
+    <string name="sort_created">Tanggal dibuat</string>
+    <string name="sort_updated_short">Diubah</string>
+    <string name="sort_created_short">Dibuat</string>
+    <string name="unsaved_title">Simpan perubahan?</string>
+    <string name="unsaved_body">Ada perubahan yang belum disimpan.</string>
+
+    <!-- Errors (shown to the user) -->
+    <string name="error_empty_note">Catatan kosong tidak bisa disimpan. Isi judul atau isi catatan.</string>
+    <string name="error_empty_idea">Judul ide wajib diisi.</string>
+    <string name="error_empty_journal">Journal kosong tidak bisa disimpan.</string>
+    <string name="error_title_too_long">Judul terlalu panjang (maksimal %1$d karakter).</string>
+    <string name="error_content_too_long">Isi terlalu panjang (maksimal %1$d karakter).</string>
+    <string name="error_future_date">Journal tidak bisa ditulis untuk tanggal yang belum tiba.</string>
+    <string name="error_duplicate_journal">Sudah ada entri journal untuk tanggal ini.</string>
+    <string name="error_tag_empty">Nama tag tidak boleh kosong.</string>
+    <string name="error_tag_too_long">Nama tag maksimal %1$d karakter.</string>
+    <string name="error_tag_too_many">Maksimal %1$d tag per item.</string>
+    <string name="error_invalid_status">Status ide tidak valid.</string>
+    <string name="error_not_found">Data tidak ditemukan. Mungkin sudah dihapus.</string>
+    <string name="error_storage">Gagal menyimpan ke penyimpanan perangkat. Datamu belum tersimpan, coba lagi.</string>
+    <string name="error_load">Gagal memuat data dari perangkat.</string>
+
     <!-- Greetings -->
     <string name="greeting_pagi">Selamat pagi</string>
     <string name="greeting_siang">Selamat siang</string>
@@ -16,30 +56,103 @@
     <string name="greeting_malam">Selamat malam</string>
 
     <!-- Home -->
+    <string name="home_search_hint">Cari catatan, ide, dan journal</string>
     <string name="home_quick_access">Akses cepat</string>
-    <string name="home_quick_notes">Catatan</string>
-    <string name="home_quick_ideas">Ide</string>
-    <string name="home_quick_journal">Journal</string>
+    <string name="home_quick_notes">Catatan baru</string>
+    <string name="home_quick_ideas">Ide baru</string>
+    <string name="home_quick_journal">Journal hari ini</string>
     <string name="home_insight_title">Tanya Insight</string>
     <string name="home_insight_body">Bantuan AI opsional untuk memahami pengetahuanmu</string>
+    <string name="home_recent_notes">Catatan terbaru</string>
+    <string name="home_recent_ideas">Ide terbaru</string>
+    <string name="home_recent_journal">Journal terakhir</string>
+    <string name="home_see_all">Lihat semua</string>
     <string name="home_empty_title">Ruang pengetahuanmu masih kosong</string>
     <string name="home_empty_body">Catatan, ide, dan journal yang kamu simpan akan muncul di sini, tersimpan di perangkat ini.</string>
 
+    <!-- Search -->
+    <string name="search_title">Cari</string>
+    <string name="search_idle_title">Cari di perangkat ini</string>
+    <string name="search_idle_body">Hasil diambil dari catatan, ide, dan journal yang tersimpan di perangkat, tanpa internet.</string>
+    <string name="search_no_results">Tidak ada hasil untuk “%1$s”</string>
+    <string name="search_section_notes">Catatan</string>
+    <string name="search_section_ideas">Ide</string>
+    <string name="search_section_journal">Journal</string>
+
+    <!-- Tags -->
+    <string name="tags_label">Tag</string>
+    <string name="tag_add_hint">Tambah tag, lalu tekan Enter</string>
+    <string name="tag_add">Tambah tag</string>
+    <string name="tag_remove">Hapus tag %1$s</string>
+    <string name="tags_filter_all">Semua tag</string>
+
     <!-- Notes -->
     <string name="notes_subtitle">Pengetahuan terstruktur milikmu</string>
+    <string name="notes_search_hint">Cari catatan</string>
+    <string name="notes_scope_active">Aktif</string>
+    <string name="notes_scope_favorites">Favorit</string>
+    <string name="notes_scope_archived">Arsip</string>
+    <string name="notes_new">Catatan baru</string>
     <string name="notes_empty_title">Belum ada catatan</string>
     <string name="notes_empty_body">Catatan tersimpan di perangkat ini dan tetap bisa dibuka tanpa internet.</string>
+    <string name="notes_archive_empty_title">Arsip kosong</string>
+    <string name="notes_archive_empty_body">Catatan yang kamu arsipkan akan muncul di sini.</string>
+    <string name="notes_favorites_empty_title">Belum ada favorit</string>
+    <string name="notes_favorites_empty_body">Tandai catatan dengan bintang untuk menemukannya lebih cepat.</string>
+    <string name="note_editor_new">Catatan baru</string>
+    <string name="note_editor_edit">Edit catatan</string>
+    <string name="note_title_hint">Judul</string>
+    <string name="note_content_hint">Tulis catatanmu</string>
+    <string name="note_favorite_add">Tandai favorit</string>
+    <string name="note_favorite_remove">Hapus dari favorit</string>
+    <string name="note_archive">Arsipkan</string>
+    <string name="note_unarchive">Pulihkan dari arsip</string>
+    <string name="note_archived_banner">Diarsipkan</string>
+    <string name="note_archived_msg">Catatan diarsipkan</string>
+    <string name="note_restored_msg">Catatan dipulihkan</string>
+    <string name="note_delete_title">Hapus catatan?</string>
+    <string name="note_delete_body">Catatan ini akan dihapus permanen dari perangkat.</string>
 
     <!-- Ideas -->
     <string name="ideas_subtitle">Tangkap ide secepat munculnya</string>
+    <string name="ideas_capture_hint">Tulis ide, lalu tekan Enter</string>
+    <string name="ideas_capture_action">Simpan ide</string>
+    <string name="ideas_captured">Ide masuk ke Inbox</string>
+    <string name="ideas_search_hint">Cari ide</string>
+    <string name="ideas_status_all">Semua</string>
     <string name="ideas_empty_title">Belum ada ide</string>
     <string name="ideas_empty_body">Ide baru masuk ke Inbox, lalu bisa kamu kembangkan sampai Selesai.</string>
+    <string name="idea_status_inbox">Inbox</string>
+    <string name="idea_status_in_progress">Dikembangkan</string>
+    <string name="idea_status_completed">Selesai</string>
+    <string name="idea_status_label">Status</string>
+    <string name="idea_editor_new">Ide baru</string>
+    <string name="idea_editor_edit">Edit ide</string>
+    <string name="idea_title_hint">Judul ide</string>
+    <string name="idea_content_hint">Kembangkan idenya</string>
+    <string name="idea_convert">Jadikan catatan</string>
+    <string name="idea_convert_needs_save">Simpan perubahan dulu sebelum menjadikannya catatan.</string>
+    <string name="idea_converted">Catatan dibuat dari ide ini. Ide tetap disimpan.</string>
+    <string name="idea_delete_title">Hapus ide?</string>
+    <string name="idea_delete_body">Ide ini akan dihapus permanen. Catatan yang pernah dibuat darinya tidak ikut terhapus.</string>
 
     <!-- Journal -->
     <string name="journal_subtitle">Catatan harian pribadimu</string>
     <string name="journal_today_label">Hari ini</string>
+    <string name="journal_today_write">Tulis journal hari ini</string>
+    <string name="journal_today_open">Lanjutkan journal hari ini</string>
+    <string name="journal_pick_date">Pilih tanggal</string>
+    <string name="journal_history">Riwayat</string>
+    <string name="journal_search_hint">Cari journal</string>
     <string name="journal_empty_title">Belum ada entri journal</string>
     <string name="journal_empty_body">Satu entri untuk setiap hari, tersusun menurut tanggal.</string>
+    <string name="journal_title_hint">Judul (opsional)</string>
+    <string name="journal_content_hint">Apa yang terjadi hari ini?</string>
+    <string name="journal_delete_title">Hapus entri journal?</string>
+    <string name="journal_delete_body">Entri untuk %1$s akan dihapus permanen.</string>
+    <string name="journal_duplicate_loaded">Sudah ada entri untuk tanggal ini. Teksmu tetap di sini; menyimpan lagi akan mengganti isi entri tersebut.</string>
+    <string name="journal_deleted_elsewhere">Entri ini sudah dihapus. Simpan lagi untuk membuat entri baru.</string>
+    <string name="journal_invalid_date">Tanggal tidak valid.</string>
 
     <!-- Insight -->
     <string name="insight_subtitle">Pahami dan hubungkan pengetahuanmu</string>

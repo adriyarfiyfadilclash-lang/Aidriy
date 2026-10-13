@@ -1,6 +1,8 @@
 package com.aidriy.app.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,14 +32,21 @@ import com.aidriy.app.ui.navigation.selectedIcon
 fun AidriyApp() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+    // Full-screen editors and search hide the bar: more room for writing and the keyboard.
+    val showBottomBar = currentRoute == null || TopLevelDestination.entries.any { it.route == currentRoute }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // Only the status bar is applied here; the bottom bar and editors handle the bottom edge.
+        contentWindowInsets = WindowInsets.statusBars,
         bottomBar = {
-            AidriyBottomBar(
-                currentDestination = backStackEntry?.destination,
-                onSelect = navController::navigateToTopLevel,
-            )
+            if (showBottomBar) {
+                AidriyBottomBar(
+                    currentDestination = backStackEntry?.destination,
+                    onSelect = navController::navigateToTopLevel,
+                )
+            }
         },
     ) { innerPadding ->
         AidriyNavHost(

@@ -34,14 +34,29 @@ class NavigationTest {
     }
 
     @Test
-    fun home_quick_access_opens_matching_tab() {
+    fun home_quick_actions_open_editors_and_hide_the_bottom_bar() {
+        composeRule.onNodeWithTag("quick_notes").performClick()
+        composeRule.onNodeWithTag("screen_note_editor").assertIsDisplayed()
+        composeRule.onNodeWithTag("nav_home").assertDoesNotExist()
+        composeRule.onNodeWithTag("editor_back").performClick()
+        composeRule.onNodeWithTag("screen_home").assertIsDisplayed()
+
         composeRule.onNodeWithTag("quick_ideas").performClick()
-        composeRule.onNodeWithTag("screen_ideas").assertIsDisplayed()
-        composeRule.onNodeWithTag("nav_ideas").assertIsSelected()
+        composeRule.onNodeWithTag("screen_idea_editor").assertIsDisplayed()
+        composeRule.onNodeWithTag("editor_back").performClick()
+
+        composeRule.onNodeWithTag("quick_journal").performClick()
+        composeRule.onNodeWithTag("screen_journal_editor").assertIsDisplayed()
+        composeRule.onNodeWithTag("editor_back").performClick()
+        composeRule.onNodeWithTag("screen_home").assertIsDisplayed()
     }
 
     @Test
-    fun home_insight_entry_opens_insight_tab() {
+    fun home_search_and_insight_entries_navigate() {
+        composeRule.onNodeWithTag("home_search").performClick()
+        composeRule.onNodeWithTag("screen_search").assertIsDisplayed()
+        composeRule.onNodeWithTag("editor_back").performClick()
+
         composeRule.onNodeWithTag("home_insight_entry").performClick()
         composeRule.onNodeWithTag("screen_insight").assertIsDisplayed()
     }

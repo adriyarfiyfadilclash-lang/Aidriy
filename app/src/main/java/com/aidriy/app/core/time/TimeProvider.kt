@@ -1,5 +1,6 @@
 package com.aidriy.app.core.time
 
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -15,3 +16,9 @@ fun interface TimeProvider {
 object SystemTimeProvider : TimeProvider {
     override fun now(): ZonedDateTime = ZonedDateTime.now(ZoneId.systemDefault())
 }
+
+/** Record timestamps are UTC epoch milliseconds. */
+fun TimeProvider.nowMillis(): Long = now().toInstant().toEpochMilli()
+
+/** The user's local calendar date. Used for journals; never derived from UTC. */
+fun TimeProvider.today(): LocalDate = now().toLocalDate()

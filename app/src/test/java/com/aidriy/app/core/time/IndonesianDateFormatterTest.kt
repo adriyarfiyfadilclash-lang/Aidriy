@@ -31,6 +31,12 @@ class IndonesianDateFormatterTest {
     }
 
     @Test
+    fun short_format_uses_abbreviated_month() {
+        assertEquals("14 Okt 2026", IndonesianDateFormatter.formatShort(LocalDate.of(2026, 10, 14)))
+        assertEquals("3 Agu 2025", IndonesianDateFormatter.formatShort(LocalDate.of(2025, 8, 3)))
+    }
+
+    @Test
     fun handles_leap_day() {
         assertEquals(
             "Selasa, 29 Februari 2028",

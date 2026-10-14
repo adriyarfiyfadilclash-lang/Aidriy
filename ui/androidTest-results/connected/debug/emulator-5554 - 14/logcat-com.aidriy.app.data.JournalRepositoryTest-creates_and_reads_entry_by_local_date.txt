@@ -1,0 +1,2 @@
+10-14 13:07:41.111  6379  6399 I TestRunner: started: creates_and_reads_entry_by_local_date(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.132  6379  6399 I TestRunner: finished: creates_and_reads_entry_by_local_date(com.aidriy.app.data.JournalRepositoryTest)

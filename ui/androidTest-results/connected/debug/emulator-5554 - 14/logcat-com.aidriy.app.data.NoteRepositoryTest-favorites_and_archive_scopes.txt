@@ -1,0 +1,2 @@
+10-14 13:07:41.339  6379  6399 I TestRunner: started: favorites_and_archive_scopes(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.390  6379  6399 I TestRunner: finished: favorites_and_archive_scopes(com.aidriy.app.data.NoteRepositoryTest)

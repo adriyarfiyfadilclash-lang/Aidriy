@@ -1,0 +1,2 @@
+10-14 13:07:41.658  6379  6399 I TestRunner: started: empty_note_is_rejected_and_nothing_is_written(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.675  6379  6399 I TestRunner: finished: empty_note_is_rejected_and_nothing_is_written(com.aidriy.app.data.NoteRepositoryTest)

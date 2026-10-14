@@ -1,0 +1,2 @@
+10-14 13:07:40.914  6379  6399 I TestRunner: started: status_transitions_persist_and_filter(com.aidriy.app.data.IdeaRepositoryTest)
+10-14 13:07:40.979  6379  6399 I TestRunner: finished: status_transitions_persist_and_filter(com.aidriy.app.data.IdeaRepositoryTest)

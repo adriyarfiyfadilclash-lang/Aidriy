@@ -1,0 +1,2 @@
+10-14 13:07:41.448  6379  6399 I TestRunner: started: update_of_missing_note_returns_not_found(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.464  6379  6399 I TestRunner: finished: update_of_missing_note_returns_not_found(com.aidriy.app.data.NoteRepositoryTest)

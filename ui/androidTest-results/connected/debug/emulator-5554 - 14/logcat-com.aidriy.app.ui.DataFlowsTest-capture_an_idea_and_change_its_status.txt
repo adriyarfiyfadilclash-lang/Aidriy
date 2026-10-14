@@ -1,0 +1,248 @@
+10-14 13:08:16.673  6379  6399 I TestRunner: started: capture_an_idea_and_change_its_status(com.aidriy.app.ui.DataFlowsTest)
+10-14 13:08:16.684  6379  6399 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@2cf4240]
+10-14 13:08:16.701   839   915 D EGL_emulation: app_time_stats: avg=1342.11ms min=36.28ms max=3944.46ms count=3
+10-14 13:08:16.716  6379  6399 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-14 13:08:16.751   839   897 D SplashScreenView: Build android.window.SplashScreenView{bb3d75a V.E...... ......ID 0,0-0,0}
+10-14 13:08:16.751   839   897 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-14 13:08:16.751   839   897 D SplashScreenView: Branding: view: android.view.View{cc4d8b G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-14 13:08:16.785  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: PRE_ON_CREATE
+10-14 13:08:16.786  6379  6379 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-14 13:08:16.786   526  2134 I ImeTracker: com.google.android.apps.nexuslauncher:f20ebc17: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-14 13:08:16.790  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInputView():2241
+10-14 13:08:16.791  1550  1550 W TooltipLifecycleManager: TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+10-14 13:08:16.795  1550  1550 I InputBundle: InputBundle.consumeEvent():923 Skip consuming an event as keyboard status is 0
+10-14 13:08:16.796  1550  1550 I KeyboardWrapper: KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+10-14 13:08:16.796  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.shutdown():77 shutdown()
+10-14 13:08:16.797  1550  1550 I AndroidIME: AbstractIme.onDeactivate():207 LatinIme.onDeactivate()
+10-14 13:08:16.806  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: CREATED
+10-14 13:08:16.811   526   539 I ImeTracker: com.aidriy.app:fc1e2e4e: onCancelled at PHASE_WM_SHOW_IME_RUNNER
+10-14 13:08:16.811   526   539 I ImeTracker: com.google.android.apps.nexuslauncher:f20ebc17: onFailed at PHASE_WM_HAS_IME_INSETS_CONTROL_TARGET
+10-14 13:08:16.811  6379  6379 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.aidriy.app.MainActivity@2847304
+10-14 13:08:16.813  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: STARTED
+10-14 13:08:16.813  6379  6379 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.aidriy.app.MainActivity@2847304
+10-14 13:08:16.829  1550  1631 W ModuleManager: ModuleManager.loadModule():450 Module jjj is not available
+10-14 13:08:16.854  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: RESUMED
+10-14 13:08:16.854  6379  6379 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.aidriy.app.MainActivity@2847304
+10-14 13:08:16.862  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+10-14 13:08:16.893  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-14 13:08:16.893  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.google.android.apps.nexuslauncher fieldId=0 fieldName=null extras=null}, false)
+10-14 13:08:16.893  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:16.898  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:16.915  6379  6379 D AutofillManager: Fill dialog is enabled:false, hints=[password, passwordAuto, creditCardNumber, creditCardSecurityCode, creditCardExpirationDate]
+10-14 13:08:16.940  1721  2839 I A       : Using proto config with mendel
+10-14 13:08:17.043  1098  1113 I s.nexuslauncher: NativeAlloc concurrent copying GC freed 34134(2365KB) AllocSpace objects, 1(16KB) LOS objects, 49% free, 5800KB/11MB, paused 22us,14us total 462.955ms
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.045  1098  1115 W System  : A resource failed to call release.
+10-14 13:08:17.092  6497  6497 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@88162f
+10-14 13:08:17.142   526   539 W InputManager-JNI: Input channel object '3a446 com.aidriy.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity (client)' was disposed without first being removed with the input manager!
+10-14 13:08:17.152   839   848 I ndroid.systemui: NativeAlloc concurrent copying GC freed 118692(5064KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 18MB/36MB, paused 30us,63us total 568.069ms
+10-14 13:08:17.182   839   839 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-14 13:08:17.565   839   896 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@e6f366d
+10-14 13:08:17.566   526  1094 W InputManager-JNI: Input channel object 'a39b79 Splash Screen com.aidriy.app.test (client)' was disposed without first being removed with the input manager!
+10-14 13:08:17.664   526   545 W ziparchive: Unable to open '/data/app/~~3SPtXVSky81LioSJwJs5Wg==/com.aidriy.app-MjQsNRxV3bLddE6N0PqyaQ==/base.dm': No such file or directory
+10-14 13:08:17.668   526   545 I ActivityTaskManager: Displayed com.aidriy.app/.MainActivity for user 0: +944ms
+10-14 13:08:17.686  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:17.687  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:17.704  6379  6554 I OpenGLRenderer: Davey! duration=800ms; Flags=1, FrameTimelineVsyncId=25258, IntendedVsync=377911938695, Vsync=377978605359, InputEventId=0, HandleInputStart=377981145001, AnimationStart=377981148265, PerformTraversalsStart=377981151160, DrawStart=378536087761, FrameDeadline=377928605361, FrameInterval=377981124129, FrameStartTime=16666666, SyncQueued=378564717851, SyncStart=378596547894, IssueDrawCommandsStart=378596723525, SwapBuffers=378597495805, FrameCompleted=378744351950, DequeueBufferDuration=2914, QueueBufferDuration=95102, GpuCompleted=378744351950, SwapBuffersCompleted=378682458774, DisplayPresentTime=1, CommandSubmissionCompleted=378597495805,
+10-14 13:08:17.750   839   915 D EGL_emulation: app_time_stats: avg=349.42ms min=267.71ms max=420.33ms count=3
+10-14 13:08:17.751   839   915 D EGL_emulation: app_time_stats: avg=4122.49ms min=383.16ms max=7861.82ms count=2
+10-14 13:08:17.765   839   896 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@695f7b2
+10-14 13:08:17.765   526  1977 W InputManager-JNI: Input channel object '22d6c18 Splash Screen com.aidriy.app (client)' was disposed without first being removed with the input manager!
+10-14 13:08:17.767   526  1094 I ImeTracker: com.aidriy.app:91f9fbed: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-14 13:08:17.767   526  1094 I ImeTracker: com.aidriy.app:91f9fbed: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-14 13:08:17.788  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+10-14 13:08:17.792  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-14 13:08:17.792  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=0 fieldName=null extras=null}, false)
+10-14 13:08:17.792  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:17.793  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:17.821  1098  1133 I ImeTracker: com.google.android.apps.nexuslauncher:b413f5ed: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+10-14 13:08:17.821   526   539 I ImeTracker: com.google.android.apps.nexuslauncher:b413f5ed: onCancelled at PHASE_SERVER_CLIENT_FOCUSED
+10-14 13:08:17.822  1098  2190 D OneSearchSuggestProvider: Shut down the binder channel
+10-14 13:08:17.822  1098  3333 I IPCThreadState: oneway function results for code 2 on binder at 0x7efbb226ada0 will be dropped but finished with status UNKNOWN_TRANSACTION
+10-14 13:08:17.827  1721  3207 I PBSessionCacheImpl: Deleted sessionId[7570830028571117] from persistence.
+10-14 13:08:17.832  1721  2839 W SearchServiceCore: Abort, client detached.
+10-14 13:08:18.121   839   839 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+10-14 13:08:18.761  6379  6379 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-14 13:08:18.761  6379  6379 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-14 13:08:19.355  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+10-14 13:08:19.356  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-14 13:08:19.357  6379  6379 I ImeTracker: com.aidriy.app:e2c91af3: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+10-14 13:08:19.357  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[mParcelledData.dataSize=404]}, false)
+10-14 13:08:19.357  6379  6379 D InsetsController: show(ime(), fromIme=false)
+10-14 13:08:19.357  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:19.357  6379  6379 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{d20781e VFED..... .F....ID 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+10-14 13:08:19.358  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:19.360  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[mParcelledData.dataSize=404]}, true)
+10-14 13:08:19.361  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:19.361  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:19.362  1550  1550 W SessionManager: SessionManager.beginSession():53 Try to begin an already begun session [INPUT_SESSION], end it first
+10-14 13:08:19.363  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInputView():1995 onStartInputView(EditorInfo{inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, androidx.core.view.inputmethod.EditorInfoCompat.STYLUS_HANDWRITING_ENABLED=true, android.support.text.emoji.emojiCompat_replaceAll=false}]}, false)
+10-14 13:08:19.364  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:19.365  1550  1550 W ModuleManager: ModuleManager.loadModule():450 Module erj is not available
+10-14 13:08:19.374  1550  1631 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:19.436  6379  6379 I ImeTracker: com.aidriy.app:ef58d24e: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+10-14 13:08:19.436  6379  6379 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{d20781e VFED..... .F....ID 0,0-1080,2400 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-14 13:08:19.444  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.getKeyboardHeightRatio():189 systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-14 13:08:19.445  1550  1550 I AndroidIME: AbstractIme.onActivate():86 LatinIme.onActivate() : EditorInfo = inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, androidx.core.view.inputmethod.EditorInfoCompat.STYLUS_HANDWRITING_ENABLED=true, android.support.text.emoji.emojiCompat_replaceAll=false}], IncognitoMode = false, DeviceLocked = false
+10-14 13:08:19.446  1550  1550 I Delight5Facilitator: Delight5Facilitator.initializeForIme():777 initializeForIme() : Locale = [en_US], layout = qwerty
+10-14 13:08:19.446  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.cancelShutdown():55 cancelShutdown()
+10-14 13:08:19.446  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.syncLanguagePacks():67 syncLanguagePacks()
+10-14 13:08:19.447  1550  1550 I LatinIme: LatinIme.updateEnableInlineSuggestionsOnDecoderSideFlags():1003 inline flag updated to:false
+10-14 13:08:19.449  1550  1550 I KeyboardWrapper: KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+10-14 13:08:19.450  1550  6117 I SpeechFactory: SpeechRecognitionFactory.maybeScheduleAutoPackDownloadForFallback():205 maybeScheduleAutoPackDownloadForFallback()
+10-14 13:08:19.450  1550  6117 I FallbackOnDeviceRecognitionProvider: FallbackOnDeviceRecognitionProvider.maybeScheduleAutoPackDownload():195 maybeScheduleAutoPackDownload() for language tag en-US
+10-14 13:08:19.454  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:2274, header height:116 and isFullscreenMode:false, so the max keyboard body height is:1804
+10-14 13:08:19.454  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:19.454  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_OPTIONAL
+10-14 13:08:19.454  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+10-14 13:08:19.454  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = BODY, shownType = SHOW_MANDATORY
+10-14 13:08:19.454  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+10-14 13:08:19.454  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = FLOATING_CANDIDATES, shownType = HIDE
+10-14 13:08:19.455  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = false
+10-14 13:08:19.455  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:2274, header height:116 and isFullscreenMode:false, so the max keyboard body height is:1804
+10-14 13:08:19.456  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:19.464  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:19.464  1550  1550 I KeyboardModeManager: KeyboardModeManager.setInputView():364 setInputView() : supportsOneHandedMode=true
+10-14 13:08:19.464  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:19.464  1550  1550 I AndroidIME: KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 126
+10-14 13:08:19.464  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:19.465  1550  1550 I AndroidIME: KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 126
+10-14 13:08:19.465  1550  1550 I KeyboardModeManager: KeyboardModeManager.setInputView():356 setInputView() : entry=hwn{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_device=phone_device_size=default_enable_adaptive_text_editing=true_enable_inline_suggestions_on_client_side=false_enable_large_tablet_batch_1=false_enable_large_tablet_batch_2=false_enable_more_candidates_view_for_multilingual=false_enable_nav_redesign=false_enable_number_row=false_enable_preemptive_decode=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_orientation=portrait_physical_keyboard=qwerty_show_secondary_digits=true_show_suggestions=true_split_with_duplicate_keys=true_variant=qwerty, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+10-14 13:08:19.466  1550  1550 I VoiceImeExtension: VoiceImeExtension.shouldStartVoiceInputAutomatically():383 No private IME option set to start voice input.
+10-14 13:08:19.477  5411  5411 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.477  5411  5411 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.479  5411  5411 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.547  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:19.550  1550  2115 I Delight5Decoder: Delight5DecoderWrapper.setKeyboardLayout():457 setKeyboardLayout()
+10-14 13:08:19.560  5411  5411 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.560  5411  5411 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.562  5411  5411 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:19.595  6379  6379 D InsetsController: show(ime(), fromIme=true)
+10-14 13:08:19.602  6379  6379 D InsetsController: show(ime(), fromIme=true)
+10-14 13:08:19.602  6379  6379 I ImeTracker: com.aidriy.app:ef58d24e: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-14 13:08:19.743  6379  6408 D EGL_emulation: app_time_stats: avg=142.65ms min=30.32ms max=1069.58ms count=15
+10-14 13:08:19.754  6379  6379 I ImeTracker: com.aidriy.app:e2c91af3: onShown
+10-14 13:08:19.799  1550  1550 W TooltipLifecycleManager: TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+10-14 13:08:19.863  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+10-14 13:08:19.863  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+10-14 13:08:19.950  6379  6386 I com.aidriy.app: Background young concurrent copying GC freed 203560(7773KB) AllocSpace objects, 4(88KB) LOS objects, 25% free, 21MB/29MB, paused 120us,18us total 458.285ms
+10-14 13:08:19.983   526  1688 I ImeTracker: com.aidriy.app:33aa4e1: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+10-14 13:08:19.988  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[mParcelledData.dataSize=404]}, true)
+10-14 13:08:19.988  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:19.989  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:19.989  1550  1550 W SessionManager: SessionManager.beginSession():53 Try to begin an already begun session [INPUT_SESSION], end it first
+10-14 13:08:19.989  1550  1550 W SessionManager: SessionManager.endSession():96 Child session [INPUT_VIEW_SESSION] is not ended while ending session [{IME_SESSION=1791983299445, TRAINING_CACHE_SESSION=1791983299445, INPUT_VIEW_SESSION=1791983299364, INPUT_SESSION=1791983299362}], ending it now.
+10-14 13:08:19.989  1550  1550 W SessionManager: SessionManager.endSession():96 Child session [IME_SESSION] is not ended while ending session [{IME_SESSION=1791983299445, TRAINING_CACHE_SESSION=1791983299445, INPUT_VIEW_SESSION=1791983299364, INPUT_SESSION=1791983299362}], ending it now.
+10-14 13:08:19.994  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInputView():1995 onStartInputView(EditorInfo{inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, androidx.core.view.inputmethod.EditorInfoCompat.STYLUS_HANDWRITING_ENABLED=true, android.support.text.emoji.emojiCompat_replaceAll=false}]}, true)
+10-14 13:08:20.003  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:20.003  1550  1550 W ModuleManager: ModuleManager.loadModule():450 Module erj is not available
+10-14 13:08:20.030  6379  6388 W System  : A resource failed to call release.
+10-14 13:08:20.031  6379  6388 W System  : A resource failed to call release.
+10-14 13:08:20.031  1550  1631 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:20.086  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.getKeyboardHeightRatio():189 systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-14 13:08:20.091  1550  1550 W TooltipLifecycleManager: TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+10-14 13:08:20.091  1550  1550 I KeyboardWrapper: KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+10-14 13:08:20.091  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.shutdown():77 shutdown()
+10-14 13:08:20.091  1550  1550 I AndroidIME: AbstractIme.onDeactivate():207 LatinIme.onDeactivate()
+10-14 13:08:20.092  1550  1550 W SessionManager: SessionManager.endSession():88 Try to end a not begun session [IME_SESSION].
+10-14 13:08:20.092  1550  1550 I AndroidIME: AbstractIme.onActivate():86 LatinIme.onActivate() : EditorInfo = inputType=0xc001(Normal) imeOptions=0x2000006 privateImeOptions=null actionName=DONE actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=-1 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, androidx.core.view.inputmethod.EditorInfoCompat.STYLUS_HANDWRITING_ENABLED=true, android.support.text.emoji.emojiCompat_replaceAll=false}], IncognitoMode = false, DeviceLocked = false
+10-14 13:08:20.092  1550  1550 I Delight5Facilitator: Delight5Facilitator.initializeForIme():777 initializeForIme() : Locale = [en_US], layout = qwerty
+10-14 13:08:20.093  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.cancelShutdown():55 cancelShutdown()
+10-14 13:08:20.093  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.syncLanguagePacks():67 syncLanguagePacks()
+10-14 13:08:20.093  1550  1550 I LatinIme: LatinIme.updateEnableInlineSuggestionsOnDecoderSideFlags():1003 inline flag updated to:false
+10-14 13:08:20.096  1550  6117 I SpeechFactory: SpeechRecognitionFactory.maybeScheduleAutoPackDownloadForFallback():205 maybeScheduleAutoPackDownloadForFallback()
+10-14 13:08:20.096  1550  6117 I FallbackOnDeviceRecognitionProvider: FallbackOnDeviceRecognitionProvider.maybeScheduleAutoPackDownload():195 maybeScheduleAutoPackDownload() for language tag en-US
+10-14 13:08:20.097  1550  1631 W ModuleManager: ModuleManager.loadModule():450 Module jjj is not available
+10-14 13:08:20.098  1550  1550 I KeyboardWrapper: KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+10-14 13:08:20.101  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:2274, header height:116 and isFullscreenMode:false, so the max keyboard body height is:1804
+10-14 13:08:20.102  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:20.102  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_OPTIONAL
+10-14 13:08:20.102  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+10-14 13:08:20.102  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = BODY, shownType = SHOW_MANDATORY
+10-14 13:08:20.102  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+10-14 13:08:20.102  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = FLOATING_CANDIDATES, shownType = HIDE
+10-14 13:08:20.103  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = false
+10-14 13:08:20.103  1550  1550 I KeyboardViewUtil: KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:2274, header height:116 and isFullscreenMode:false, so the max keyboard body height is:1804
+10-14 13:08:20.104  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:20.138  1550  1550 I DeviceModeUtil: DeviceModeUtil.getDeviceMode():122 Get device mode phone by ui mode:1 and smallestScreenWidthDp:411
+10-14 13:08:20.138  1550  1550 I KeyboardModeManager: KeyboardModeManager.setInputView():364 setInputView() : supportsOneHandedMode=true
+10-14 13:08:20.138  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:20.139  1550  1550 I AndroidIME: KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 126
+10-14 13:08:20.139  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:20.140  1550  1550 I AndroidIME: KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 126
+10-14 13:08:20.143  1550  1550 I KeyboardModeManager: KeyboardModeManager.setInputView():356 setInputView() : entry=hwn{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_device=phone_device_size=default_enable_adaptive_text_editing=true_enable_inline_suggestions_on_client_side=false_enable_large_tablet_batch_1=false_enable_large_tablet_batch_2=false_enable_more_candidates_view_for_multilingual=false_enable_nav_redesign=false_enable_number_row=false_enable_preemptive_decode=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_orientation=portrait_physical_keyboard=qwerty_show_secondary_digits=true_show_suggestions=true_split_with_duplicate_keys=true_variant=qwerty, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+10-14 13:08:20.144  1550  1550 I VoiceImeExtension: VoiceImeExtension.shouldStartVoiceInputAutomatically():383 No private IME option set to start voice input.
+10-14 13:08:20.157  5411  5411 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.157  5411  5411 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.158  5411  5411 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.180  1550  1550 I NormalModeController: NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+10-14 13:08:20.181  1550  2115 I Delight5Decoder: Delight5DecoderWrapper.setKeyboardLayout():457 setKeyboardLayout()
+10-14 13:08:20.191  6379  6379 D InsetsController: show(ime(), fromIme=true)
+10-14 13:08:20.203  6379  6379 I ImeTracker: com.aidriy.app:33aa4e1: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-14 13:08:20.230  5411  5411 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.230  5411  5411 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.232  5411  5411 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+10-14 13:08:20.300  1550  1550 W TooltipLifecycleManager: TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+10-14 13:08:20.466  6379  6379 I ImeTracker: com.aidriy.app:1e4364a1: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-14 13:08:20.466  6379  6379 I ImeTracker: com.aidriy.app:416f98d4: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-14 13:08:20.467  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInputView():2241
+10-14 13:08:20.471  1550  1550 W TooltipLifecycleManager: TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+10-14 13:08:20.473  1550  1550 I InputBundle: InputBundle.consumeEvent():923 Skip consuming an event as keyboard status is 0
+10-14 13:08:20.475  1550  1550 I KeyboardWrapper: KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+10-14 13:08:20.475  1550  1550 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.shutdown():77 shutdown()
+10-14 13:08:20.476  1550  1550 I AndroidIME: AbstractIme.onDeactivate():207 LatinIme.onDeactivate()
+10-14 13:08:20.478  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=0 fieldName=null extras=null}, true)
+10-14 13:08:20.478  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:20.479  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:20.481  6379  6379 I ImeTracker: com.aidriy.app:416f98d4: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-14 13:08:20.483  1550  1550 W SessionManager: SessionManager.beginSession():53 Try to begin an already begun session [INPUT_SESSION], end it first
+10-14 13:08:20.484  6379  6379 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@134586046 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@3514df7
+10-14 13:08:20.484  1550  1631 W ModuleManager: ModuleManager.loadModule():450 Module jjj is not available
+10-14 13:08:20.484  1550  1631 I NebulaeTrainingCacheMetricsProcessor: NebulaeTrainingCacheMetricsProcessor.processEndSession():447 No input action collection in this session, skip logging.
+10-14 13:08:20.577  6379  6379 I ImeTracker: com.aidriy.app:da2d9959: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+10-14 13:08:20.577   526  1001 I ImeTracker: com.aidriy.app:da2d9959: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-14 13:08:20.580  6379  6379 I ImeTracker: com.aidriy.app:1e4364a1: onHidden
+10-14 13:08:20.756  6379  6408 D EGL_emulation: app_time_stats: avg=77.18ms min=27.27ms max=201.17ms count=13
+10-14 13:08:21.603   839   897 D SplashScreenView: Build android.window.SplashScreenView{5dfaa94 V.E...... ......ID 0,0-0,0}
+10-14 13:08:21.603   839   897 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-14 13:08:21.603   839   897 D SplashScreenView: Branding: view: android.view.View{8ace93d G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-14 13:08:21.609  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: PAUSED
+10-14 13:08:21.610  6379  6379 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.aidriy.app.MainActivity@2847304
+10-14 13:08:21.619   403   403 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-14 13:08:21.750  6497  6513 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-14 13:08:22.069   403   403 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-14 13:08:22.078  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: STOPPED
+10-14 13:08:22.083   526  1656 W AppSearchIcing: icing-search-engine.cc:283: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+10-14 13:08:22.084  1098  2190 D OneSearchSuggestProvider: Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=z1{delegate=s1{logId=45, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=X1.T@876d6c1
+10-14 13:08:22.087  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:22.087  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:22.112  1637  1949 I AiAiEcho: Predicting[0]:
+10-14 13:08:22.112  1637  1949 I AiAiEcho: EchoTargets:
+10-14 13:08:22.112  1637  1949 I AiAiEcho: Filtered by AiAi flag check:
+10-14 13:08:22.112  1637  1949 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+10-14 13:08:22.113  1637  1949 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+10-14 13:08:22.114  6379  6379 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.aidriy.app.MainActivity@2847304
+10-14 13:08:22.264  1721  2839 I A       : Using proto config with mendel
+10-14 13:08:22.265  1721  2839 W A       : Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-14 13:08:22.291  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@2847304 in: DESTROYED
+10-14 13:08:22.292  6379  6379 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-14 13:08:22.310  6379  6399 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@2cf4240]
+10-14 13:08:22.317  6379  6379 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@bcabf8c
+10-14 13:08:22.334   526   539 I ImeTracker: com.google.android.apps.nexuslauncher:a86f8669: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-14 13:08:22.334   526   539 I ImeTracker: com.google.android.apps.nexuslauncher:a86f8669: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-14 13:08:22.366  1721  2839 I A       : Using proto config with mendel
+10-14 13:08:22.406   526  1001 W InputManager-JNI: Input channel object 'd61db7e com.aidriy.app/com.aidriy.app.MainActivity (client)' was disposed without first being removed with the input manager!
+10-14 13:08:22.420  6497  6497 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@40dd17
+10-14 13:08:22.429  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+10-14 13:08:22.436  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-14 13:08:22.436  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.google.android.apps.nexuslauncher fieldId=0 fieldName=null extras=null}, false)
+10-14 13:08:22.436  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:22.448  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:22.454  6379  6399 I TestRunner: finished: capture_an_idea_and_change_its_status(com.aidriy.app.ui.DataFlowsTest)

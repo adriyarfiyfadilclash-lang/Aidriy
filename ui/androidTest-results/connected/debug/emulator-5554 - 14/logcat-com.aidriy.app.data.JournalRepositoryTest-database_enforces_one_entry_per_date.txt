@@ -1,0 +1,2 @@
+10-14 13:07:41.167  6379  6399 I TestRunner: started: database_enforces_one_entry_per_date(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.182  6379  6399 I TestRunner: finished: database_enforces_one_entry_per_date(com.aidriy.app.data.JournalRepositoryTest)

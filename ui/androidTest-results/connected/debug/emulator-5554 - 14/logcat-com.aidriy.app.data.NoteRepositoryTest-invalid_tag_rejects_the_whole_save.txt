@@ -1,0 +1,2 @@
+10-14 13:07:41.432  6379  6399 I TestRunner: started: invalid_tag_rejects_the_whole_save(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.447  6379  6399 I TestRunner: finished: invalid_tag_rejects_the_whole_save(com.aidriy.app.data.NoteRepositoryTest)

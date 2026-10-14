@@ -1,0 +1,4 @@
+10-14 13:07:41.044  6379  6399 I TestRunner: started: editing_existing_entry_with_its_id_updates_it(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.053  1721  1762 I earchbox:search: JIT allocated 79KB for compiled code of java.lang.Object com.google.android.apps.gsa.binaries.velvet.app.akj.a()
+10-14 13:07:41.053  1721  1762 I earchbox:search: Compiler allocated 4258KB to compile java.lang.Object com.google.android.apps.gsa.binaries.velvet.app.akj.a()
+10-14 13:07:41.077  6379  6399 I TestRunner: finished: editing_existing_entry_with_its_id_updates_it(com.aidriy.app.data.JournalRepositoryTest)

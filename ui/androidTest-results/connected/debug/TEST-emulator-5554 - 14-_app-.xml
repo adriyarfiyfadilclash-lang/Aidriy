@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.aidriy.app.ScreenshotTour" tests="45" failures="1" errors="0" skipped="0" time="104.797" timestamp="2026-10-14T13:08:42" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 14" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="tour" classname="com.aidriy.app.ScreenshotTour" time="42.755">
+    <failure>java.lang.AssertionError: Failed to inject touch input.
+Reason: Expected exactly '1' node but found '2' nodes that satisfy: (Text + EditableText contains 'Pengaturan Model AI' (ignoreCase: false))
+Nodes found:
+1) Node #1763 at (l=-945.0, t=1975.0, r=0.0, b=2124.0)px, Tag: 'ai_sidebar_settings'
+Focused = 'false'
+Text = '[Pengaturan Model AI, Provider, model, dan API key]'
+Actions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+MergeDescendants = 'true'
+Has 5 siblings
+2) Node #2143 at (l=0.0, t=21.0, r=495.0, b=147.0)px
+Focused = 'false'
+Text = '[Pengaturan Model AI]'
+Actions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]
+MergeDescendants = 'true'
+
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+at androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)
+at androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)
+at androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)
+at com.aidriy.app.ScreenshotTour.aiTour(ScreenshotTour.kt:318)
+at com.aidriy.app.ScreenshotTour.tour(ScreenshotTour.kt:207)
+</failure>
+  </testcase>
+  <testcase name="convert_to_note_copies_content_and_tags_and_keeps_the_idea" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.279" />
+  <testcase name="search_ideas_by_title_and_content" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.362" />
+  <testcase name="quick_capture_lands_in_inbox" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.072" />
+  <testcase name="convert_missing_idea_fails_without_creating_a_note" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.028" />
+  <testcase name="quick_capture_requires_a_title" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.024" />
+  <testcase name="status_transitions_persist_and_filter" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.057" />
+  <testcase name="stored_status_values_are_exactly_the_spec_keys" classname="com.aidriy.app.data.IdeaRepositoryTest" time="0.032" />
+  <testcase name="saving_an_entry_that_was_deleted_meanwhile_reports_not_found" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.031" />
+  <testcase name="editing_existing_entry_with_its_id_updates_it" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.024" />
+  <testcase name="search_and_delete" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.027" />
+  <testcase name="creates_and_reads_entry_by_local_date" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.027" />
+  <testcase name="history_is_newest_first_and_range_is_chronological" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.027" />
+  <testcase name="database_enforces_one_entry_per_date" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.027" />
+  <testcase name="future_dates_are_rejected_using_the_local_calendar" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.002" />
+  <testcase name="date_does_not_shift_when_the_time_zone_changes" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.03" />
+  <testcase name="second_entry_for_same_date_is_reported_as_duplicate_not_overwritten" classname="com.aidriy.app.data.JournalRepositoryTest" time="0.028" />
+  <testcase name="v1_database_upgrades_to_latest_and_keeps_notes" classname="com.aidriy.app.data.MigrationTest" time="0.075" />
+  <testcase name="favorites_and_archive_scopes" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.052" />
+  <testcase name="like_wildcards_in_the_query_are_literal" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.055" />
+  <testcase name="invalid_tag_rejects_the_whole_save" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.0" />
+  <testcase name="update_of_missing_note_returns_not_found" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.023" />
+  <testcase name="tags_are_reused_filterable_and_pruned_after_delete" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.055" />
+  <testcase name="insert_and_retrieve" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.0" />
+  <testcase name="delete_removes_the_note" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.002" />
+  <testcase name="sorting_by_updated_and_created" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.054" />
+  <testcase name="search_matches_title_and_content_case_insensitively" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.022" />
+  <testcase name="update_changes_content_and_updatedAt_only" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.028" />
+  <testcase name="empty_note_is_rejected_and_nothing_is_written" classname="com.aidriy.app.data.NoteRepositoryTest" time="0.028" />
+  <testcase name="global_search_covers_notes_ideas_journal_and_archived_notes" classname="com.aidriy.app.data.SearchAndTransactionTest" time="0.027" />
+  <testcase name="blank_global_search_returns_nothing" classname="com.aidriy.app.data.SearchAndTransactionTest" time="0.025" />
+  <testcase name="failed_transaction_rolls_back_every_write" classname="com.aidriy.app.data.SearchAndTransactionTest" time="0.03" />
+  <testcase name="ai_history_search_open_and_delete" classname="com.aidriy.app.ui.DataFlowsTest" time="6.386" />
+  <testcase name="create_read_edit_and_delete_a_note" classname="com.aidriy.app.ui.DataFlowsTest" time="7.94" />
+  <testcase name="global_search_finds_stored_content" classname="com.aidriy.app.ui.DataFlowsTest" time="4.398" />
+  <testcase name="write_todays_journal_then_reopen_the_same_entry" classname="com.aidriy.app.ui.DataFlowsTest" time="5.273" />
+  <testcase name="drawer_opens_the_catatan_tab" classname="com.aidriy.app.ui.DataFlowsTest" time="3.042" />
+  <testcase name="catatan_tab_lists_notes_and_reader_ticks_tasks" classname="com.aidriy.app.ui.DataFlowsTest" time="3.017" />
+  <testcase name="editor_tools_open_their_sheets" classname="com.aidriy.app.ui.DataFlowsTest" time="4.565" />
+  <testcase name="capture_an_idea_and_change_its_status" classname="com.aidriy.app.ui.DataFlowsTest" time="5.77" />
+  <testcase name="every_bottom_navigation_item_opens_its_screen" classname="com.aidriy.app.ui.NavigationTest" time="3.952" />
+  <testcase name="back_from_a_tab_returns_to_beranda" classname="com.aidriy.app.ui.NavigationTest" time="2.513" />
+  <testcase name="drawer_opens_journal_and_search" classname="com.aidriy.app.ui.NavigationTest" time="4.255" />
+  <testcase name="app_starts_on_beranda" classname="com.aidriy.app.ui.NavigationTest" time="2.35" />
+  <testcase name="quick_actions_open_their_screens_and_hide_the_bottom_bar" classname="com.aidriy.app.ui.NavigationTest" time="4.722" />
+</testsuite>

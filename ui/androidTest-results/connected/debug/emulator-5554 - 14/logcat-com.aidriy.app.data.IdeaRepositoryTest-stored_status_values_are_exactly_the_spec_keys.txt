@@ -1,0 +1,3 @@
+10-14 13:07:40.981  6379  6399 I TestRunner: started: stored_status_values_are_exactly_the_spec_keys(com.aidriy.app.data.IdeaRepositoryTest)
+10-14 13:07:40.995  1721  1762 I earchbox:search: JIT allocated 65KB for compiled code of java.lang.Object com.google.android.apps.gsa.binaries.velvet.app.ala.d()
+10-14 13:07:41.006  6379  6399 I TestRunner: finished: stored_status_values_are_exactly_the_spec_keys(com.aidriy.app.data.IdeaRepositoryTest)

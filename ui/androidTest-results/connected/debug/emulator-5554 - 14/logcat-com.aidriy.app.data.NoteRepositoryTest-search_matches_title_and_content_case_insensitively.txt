@@ -1,0 +1,2 @@
+10-14 13:07:41.600  6379  6399 I TestRunner: started: search_matches_title_and_content_case_insensitively(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.639  6379  6399 I TestRunner: finished: search_matches_title_and_content_case_insensitively(com.aidriy.app.data.NoteRepositoryTest)

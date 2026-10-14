@@ -1,0 +1,2 @@
+10-14 13:07:41.465  6379  6399 I TestRunner: started: tags_are_reused_filterable_and_pruned_after_delete(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.515  6379  6399 I TestRunner: finished: tags_are_reused_filterable_and_pruned_after_delete(com.aidriy.app.data.NoteRepositoryTest)

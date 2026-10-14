@@ -1,0 +1,2 @@
+10-14 13:07:41.078  6379  6399 I TestRunner: started: search_and_delete(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.109  6379  6399 I TestRunner: finished: search_and_delete(com.aidriy.app.data.JournalRepositoryTest)

@@ -1,0 +1,2 @@
+10-14 13:07:41.226  6379  6399 I TestRunner: started: second_entry_for_same_date_is_reported_as_duplicate_not_overwritten(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.249  6379  6399 I TestRunner: finished: second_entry_for_same_date_is_reported_as_duplicate_not_overwritten(com.aidriy.app.data.JournalRepositoryTest)

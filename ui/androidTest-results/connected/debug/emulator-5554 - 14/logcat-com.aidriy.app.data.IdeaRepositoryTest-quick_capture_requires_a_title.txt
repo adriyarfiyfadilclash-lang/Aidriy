@@ -1,0 +1,3 @@
+10-14 13:07:40.899  6379  6399 I TestRunner: started: quick_capture_requires_a_title(com.aidriy.app.data.IdeaRepositoryTest)
+10-14 13:07:40.902  1721  1762 I earchbox:search: JIT allocated 64KB for compiled code of java.lang.Object com.google.android.apps.gsa.binaries.velvet.app.ala.e()
+10-14 13:07:40.911  6379  6399 I TestRunner: finished: quick_capture_requires_a_title(com.aidriy.app.data.IdeaRepositoryTest)

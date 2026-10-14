@@ -1,0 +1,2 @@
+10-14 13:07:41.640  6379  6399 I TestRunner: started: update_changes_content_and_updatedAt_only(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.657  6379  6399 I TestRunner: finished: update_changes_content_and_updatedAt_only(com.aidriy.app.data.NoteRepositoryTest)

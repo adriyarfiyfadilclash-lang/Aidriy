@@ -1,0 +1,61 @@
+10-14 13:08:26.523  6379  6399 I TestRunner: started: back_from_a_tab_returns_to_beranda(com.aidriy.app.ui.NavigationTest)
+10-14 13:08:26.530  6379  6399 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@dde8bb3]
+10-14 13:08:26.535  6379  6399 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-14 13:08:26.571   839   897 D SplashScreenView: Build android.window.SplashScreenView{e540cbd V.E...... ......ID 0,0-0,0}
+10-14 13:08:26.571   839   897 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-14 13:08:26.571   839   897 D SplashScreenView: Branding: view: android.view.View{cd932b2 G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-14 13:08:26.585   403   403 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-14 13:08:26.592   526   545 W ziparchive: Unable to open '/data/app/~~HkR9jFW7PPwI1FZTWTq7Kw==/com.aidriy.app.test-KBFk4ErvHtkjqEHvrch6bA==/base.dm': No such file or directory
+10-14 13:08:26.595   526   545 I ActivityTaskManager: Displayed com.aidriy.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity for user 0: +578ms
+10-14 13:08:26.691  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: PRE_ON_CREATE
+10-14 13:08:26.692  6379  6379 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-14 13:08:26.719  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: CREATED
+10-14 13:08:26.720  6379  6379 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.aidriy.app.MainActivity@8201207
+10-14 13:08:26.722  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: STARTED
+10-14 13:08:26.723  6379  6379 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.aidriy.app.MainActivity@8201207
+10-14 13:08:26.741  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: RESUMED
+10-14 13:08:26.741  6379  6379 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.aidriy.app.MainActivity@8201207
+10-14 13:08:26.771  6379  6379 D AutofillManager: Fill dialog is enabled:false, hints=[password, passwordAuto, creditCardNumber, creditCardSecurityCode, creditCardExpirationDate]
+10-14 13:08:26.855   839   896 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@a5da352
+10-14 13:08:26.856   526  1001 W InputManager-JNI: Input channel object 'c7d0f21 Splash Screen com.aidriy.app.test (client)' was disposed without first being removed with the input manager!
+10-14 13:08:27.030  6379  6399 W SurfaceComposerClient: Sync transaction timed out waiting for commit callback.
+10-14 13:08:27.034  6497  6497 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@8fa62a0
+10-14 13:08:27.035   526   545 W ziparchive: Unable to open '/data/app/~~3SPtXVSky81LioSJwJs5Wg==/com.aidriy.app-MjQsNRxV3bLddE6N0PqyaQ==/base.dm': No such file or directory
+10-14 13:08:27.042   526  2134 W InputManager-JNI: Input channel object 'f8fc4b8 com.aidriy.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity (client)' was disposed without first being removed with the input manager!
+10-14 13:08:27.047   526   545 I ActivityTaskManager: Displayed com.aidriy.app/.MainActivity for user 0: +487ms
+10-14 13:08:27.049   526  2408 I ImeTracker: com.aidriy.app:3dcc2183: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-14 13:08:27.050   526  2408 I ImeTracker: com.aidriy.app:3dcc2183: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-14 13:08:27.057  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+10-14 13:08:27.063  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+10-14 13:08:27.064  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.aidriy.app fieldId=0 fieldName=null extras=null}, false)
+10-14 13:08:27.064  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+10-14 13:08:27.064  1550  1550 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+10-14 13:08:27.073   839   896 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@d990203
+10-14 13:08:27.111   526  1977 W InputManager-JNI: Input channel object 'eee06f5 Splash Screen com.aidriy.app (client)' was disposed without first being removed with the input manager!
+10-14 13:08:27.147   839   915 D EGL_emulation: app_time_stats: avg=1145.55ms min=15.46ms max=3393.79ms count=3
+10-14 13:08:27.221   839   839 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-14 13:08:27.221   839   839 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+10-14 13:08:28.084  6379  6379 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-14 13:08:28.084  6379  6379 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-14 13:08:28.541   839   897 D SplashScreenView: Build android.window.SplashScreenView{a5e553f V.E...... ......ID 0,0-0,0}
+10-14 13:08:28.541   839   897 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-14 13:08:28.541   839   897 D SplashScreenView: Branding: view: android.view.View{5ddae0c G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-14 13:08:28.546  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: PAUSED
+10-14 13:08:28.547  6379  6379 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.aidriy.app.MainActivity@8201207
+10-14 13:08:28.552   403   403 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-14 13:08:28.744  6497  6513 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-14 13:08:28.948   526   545 W ziparchive: Unable to open '/data/app/~~HkR9jFW7PPwI1FZTWTq7Kw==/com.aidriy.app.test-KBFk4ErvHtkjqEHvrch6bA==/base.dm': No such file or directory
+10-14 13:08:28.949   526   545 I ActivityTaskManager: Displayed com.aidriy.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity for user 0: +414ms
+10-14 13:08:28.964   526  1656 W AppSearchIcing: icing-search-engine.cc:283: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+10-14 13:08:28.965  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:28.965  1026  1316 D BtGatt.ScanManager: uid 10131 isForeground true scanMode -1
+10-14 13:08:28.969   403   403 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-14 13:08:28.971  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: STOPPED
+10-14 13:08:28.972  6379  6379 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.aidriy.app.MainActivity@8201207
+10-14 13:08:29.011  6379  6379 D LifecycleMonitor: Lifecycle status change: com.aidriy.app.MainActivity@8201207 in: DESTROYED
+10-14 13:08:29.012  6379  6379 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-14 13:08:29.014  6379  6399 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@dde8bb3]
+10-14 13:08:29.015  6379  6379 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@e6e5589
+10-14 13:08:29.018   526  1001 W InputManager-JNI: Input channel object '88b0c7 com.aidriy.app/com.aidriy.app.MainActivity (client)' was disposed without first being removed with the input manager!
+10-14 13:08:29.019  1098  2190 D OneSearchSuggestProvider: Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=z1{delegate=s1{logId=49, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=X1.T@99cb94d
+10-14 13:08:29.027  6379  6399 I TestRunner: finished: back_from_a_tab_returns_to_beranda(com.aidriy.app.ui.NavigationTest)

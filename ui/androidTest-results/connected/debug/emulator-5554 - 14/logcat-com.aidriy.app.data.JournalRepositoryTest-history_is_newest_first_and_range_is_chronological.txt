@@ -1,0 +1,2 @@
+10-14 13:07:41.134  6379  6399 I TestRunner: started: history_is_newest_first_and_range_is_chronological(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.166  6379  6399 I TestRunner: finished: history_is_newest_first_and_range_is_chronological(com.aidriy.app.data.JournalRepositoryTest)

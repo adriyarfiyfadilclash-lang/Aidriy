@@ -1,0 +1,2 @@
+10-14 13:07:41.183  6379  6399 I TestRunner: started: future_dates_are_rejected_using_the_local_calendar(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.198  6379  6399 I TestRunner: finished: future_dates_are_rejected_using_the_local_calendar(com.aidriy.app.data.JournalRepositoryTest)

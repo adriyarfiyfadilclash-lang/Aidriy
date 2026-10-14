@@ -1,0 +1,2 @@
+10-14 13:07:41.392  6379  6399 I TestRunner: started: like_wildcards_in_the_query_are_literal(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.431  6379  6399 I TestRunner: finished: like_wildcards_in_the_query_are_literal(com.aidriy.app.data.NoteRepositoryTest)

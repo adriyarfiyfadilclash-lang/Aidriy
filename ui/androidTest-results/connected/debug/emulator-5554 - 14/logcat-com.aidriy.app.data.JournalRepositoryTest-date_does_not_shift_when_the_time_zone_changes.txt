@@ -1,0 +1,2 @@
+10-14 13:07:41.200  6379  6399 I TestRunner: started: date_does_not_shift_when_the_time_zone_changes(com.aidriy.app.data.JournalRepositoryTest)
+10-14 13:07:41.225  6379  6399 I TestRunner: finished: date_does_not_shift_when_the_time_zone_changes(com.aidriy.app.data.JournalRepositoryTest)

@@ -1,0 +1,2 @@
+10-14 13:07:41.721  6379  6399 I TestRunner: started: blank_global_search_returns_nothing(com.aidriy.app.data.SearchAndTransactionTest)
+10-14 13:07:41.741  6379  6399 I TestRunner: finished: blank_global_search_returns_nothing(com.aidriy.app.data.SearchAndTransactionTest)

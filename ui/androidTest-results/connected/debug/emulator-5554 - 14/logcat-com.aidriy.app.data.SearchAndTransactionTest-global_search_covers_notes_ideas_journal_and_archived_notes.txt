@@ -1,0 +1,2 @@
+10-14 13:07:41.677  6379  6399 I TestRunner: started: global_search_covers_notes_ideas_journal_and_archived_notes(com.aidriy.app.data.SearchAndTransactionTest)
+10-14 13:07:41.720  6379  6399 I TestRunner: finished: global_search_covers_notes_ideas_journal_and_archived_notes(com.aidriy.app.data.SearchAndTransactionTest)

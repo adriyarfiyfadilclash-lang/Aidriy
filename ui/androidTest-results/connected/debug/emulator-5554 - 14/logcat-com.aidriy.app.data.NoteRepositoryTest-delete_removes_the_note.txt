@@ -1,0 +1,2 @@
+10-14 13:07:41.533  6379  6399 I TestRunner: started: delete_removes_the_note(com.aidriy.app.data.NoteRepositoryTest)
+10-14 13:07:41.551  6379  6399 I TestRunner: finished: delete_removes_the_note(com.aidriy.app.data.NoteRepositoryTest)

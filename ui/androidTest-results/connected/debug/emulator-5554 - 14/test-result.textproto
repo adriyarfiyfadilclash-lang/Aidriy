@@ -1,0 +1,2361 @@
+# 2026-10-14T13:08:42.207272979Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 45
+}
+test_status: FAILED
+test_result {
+  test_case {
+    test_class: "ScreenshotTour"
+    test_package: "com.aidriy.app"
+    test_method: "tour"
+    start_time {
+      seconds: 1791983217
+      nanos: 316000000
+    }
+    end_time {
+      seconds: 1791983260
+      nanos: 65000000
+    }
+  }
+  test_status: FAILED
+  error {
+    error_message: "java.lang.AssertionError: Failed to inject touch input.\nReason: Expected exactly \'1\' node but found \'2\' nodes that satisfy: (Text + EditableText contains \'Pengaturan Model AI\' (ignoreCase: false))\nNodes found:\n1) Node #1763 at (l=-945.0, t=1975.0, r=0.0, b=2124.0)px, Tag: \'ai_sidebar_settings\'\nFocused = \'false\'\nText = \'[Pengaturan Model AI, Provider, model, dan API key]\'\nActions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]\nMergeDescendants = \'true\'\nHas 5 siblings\n2) Node #2143 at (l=0.0, t=21.0, r=495.0, b=147.0)px\nFocused = \'false\'\nText = \'[Pengaturan Model AI]\'\nActions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]\nMergeDescendants = \'true\'\n\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)\nat androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)\nat androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)\nat androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)\nat com.aidriy.app.ScreenshotTour.aiTour(ScreenshotTour.kt:318)\nat com.aidriy.app.ScreenshotTour.tour(ScreenshotTour.kt:207)\n"
+    error_type: "java.lang.AssertionError"
+    stack_trace: "java.lang.AssertionError: Failed to inject touch input.\nReason: Expected exactly \'1\' node but found \'2\' nodes that satisfy: (Text + EditableText contains \'Pengaturan Model AI\' (ignoreCase: false))\nNodes found:\n1) Node #1763 at (l=-945.0, t=1975.0, r=0.0, b=2124.0)px, Tag: \'ai_sidebar_settings\'\nFocused = \'false\'\nText = \'[Pengaturan Model AI, Provider, model, dan API key]\'\nActions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]\nMergeDescendants = \'true\'\nHas 5 siblings\n2) Node #2143 at (l=0.0, t=21.0, r=495.0, b=147.0)px\nFocused = \'false\'\nText = \'[Pengaturan Model AI]\'\nActions = [OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution, GetTextLayoutResult]\nMergeDescendants = \'true\'\n\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)\nat androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)\nat androidx.compose.ui.test.ActionsKt.performTouchInput(Actions.kt:394)\nat androidx.compose.ui.test.Actions_androidKt.performClickImpl(Actions.android.kt:20)\nat androidx.compose.ui.test.ActionsKt.performClick(Actions.kt:54)\nat com.aidriy.app.ScreenshotTour.aiTour(ScreenshotTour.kt:318)\nat com.aidriy.app.ScreenshotTour.tour(ScreenshotTour.kt:207)\n"
+  }
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ScreenshotTour-tour.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "convert_to_note_copies_content_and_tags_and_keeps_the_idea"
+    start_time {
+      seconds: 1791983260
+      nanos: 129000000
+    }
+    end_time {
+      seconds: 1791983260
+      nanos: 413000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-convert_to_note_copies_content_and_tags_and_keeps_the_idea.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "search_ideas_by_title_and_content"
+    start_time {
+      seconds: 1791983260
+      nanos: 598000000
+    }
+    end_time {
+      seconds: 1791983260
+      nanos: 959000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-search_ideas_by_title_and_content.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "quick_capture_lands_in_inbox"
+    start_time {
+      seconds: 1791983260
+      nanos: 963000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 41000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-quick_capture_lands_in_inbox.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "convert_missing_idea_fails_without_creating_a_note"
+    start_time {
+      seconds: 1791983261
+      nanos: 44000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 86000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-convert_missing_idea_fails_without_creating_a_note.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "quick_capture_requires_a_title"
+    start_time {
+      seconds: 1791983261
+      nanos: 93000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 121000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-quick_capture_requires_a_title.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "status_transitions_persist_and_filter"
+    start_time {
+      seconds: 1791983261
+      nanos: 124000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 182000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-status_transitions_persist_and_filter.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "IdeaRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "stored_status_values_are_exactly_the_spec_keys"
+    start_time {
+      seconds: 1791983261
+      nanos: 187000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 213000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.IdeaRepositoryTest-stored_status_values_are_exactly_the_spec_keys.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "saving_an_entry_that_was_deleted_meanwhile_reports_not_found"
+    start_time {
+      seconds: 1791983261
+      nanos: 217000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 245000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-saving_an_entry_that_was_deleted_meanwhile_reports_not_found.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "editing_existing_entry_with_its_id_updates_it"
+    start_time {
+      seconds: 1791983261
+      nanos: 250000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 276000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-editing_existing_entry_with_its_id_updates_it.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "search_and_delete"
+    start_time {
+      seconds: 1791983261
+      nanos: 277000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 303000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-search_and_delete.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "creates_and_reads_entry_by_local_date"
+    start_time {
+      seconds: 1791983261
+      nanos: 305000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 331000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-creates_and_reads_entry_by_local_date.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "history_is_newest_first_and_range_is_chronological"
+    start_time {
+      seconds: 1791983261
+      nanos: 333000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 358000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-history_is_newest_first_and_range_is_chronological.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "database_enforces_one_entry_per_date"
+    start_time {
+      seconds: 1791983261
+      nanos: 360000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 386000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-database_enforces_one_entry_per_date.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "future_dates_are_rejected_using_the_local_calendar"
+    start_time {
+      seconds: 1791983261
+      nanos: 387000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 388000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-future_dates_are_rejected_using_the_local_calendar.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "date_does_not_shift_when_the_time_zone_changes"
+    start_time {
+      seconds: 1791983261
+      nanos: 389000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 415000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-date_does_not_shift_when_the_time_zone_changes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "JournalRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "second_entry_for_same_date_is_reported_as_duplicate_not_overwritten"
+    start_time {
+      seconds: 1791983261
+      nanos: 421000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 447000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.JournalRepositoryTest-second_entry_for_same_date_is_reported_as_duplicate_not_overwritten.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "MigrationTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "v1_database_upgrades_to_latest_and_keeps_notes"
+    start_time {
+      seconds: 1791983261
+      nanos: 449000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 525000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.MigrationTest-v1_database_upgrades_to_latest_and_keeps_notes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "favorites_and_archive_scopes"
+    start_time {
+      seconds: 1791983261
+      nanos: 527000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 577000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-favorites_and_archive_scopes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "like_wildcards_in_the_query_are_literal"
+    start_time {
+      seconds: 1791983261
+      nanos: 579000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 630000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-like_wildcards_in_the_query_are_literal.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "invalid_tag_rejects_the_whole_save"
+    start_time {
+      seconds: 1791983261
+      nanos: 632000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 633000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-invalid_tag_rejects_the_whole_save.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "update_of_missing_note_returns_not_found"
+    start_time {
+      seconds: 1791983261
+      nanos: 634000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 660000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-update_of_missing_note_returns_not_found.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "tags_are_reused_filterable_and_pruned_after_delete"
+    start_time {
+      seconds: 1791983261
+      nanos: 661000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 712000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-tags_are_reused_filterable_and_pruned_after_delete.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "insert_and_retrieve"
+    start_time {
+      seconds: 1791983261
+      nanos: 713000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 715000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-insert_and_retrieve.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "delete_removes_the_note"
+    start_time {
+      seconds: 1791983261
+      nanos: 741000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 742000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-delete_removes_the_note.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "sorting_by_updated_and_created"
+    start_time {
+      seconds: 1791983261
+      nanos: 743000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 794000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-sorting_by_updated_and_created.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "search_matches_title_and_content_case_insensitively"
+    start_time {
+      seconds: 1791983261
+      nanos: 797000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 823000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-search_matches_title_and_content_case_insensitively.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "update_changes_content_and_updatedAt_only"
+    start_time {
+      seconds: 1791983261
+      nanos: 824000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 850000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-update_changes_content_and_updatedAt_only.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NoteRepositoryTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "empty_note_is_rejected_and_nothing_is_written"
+    start_time {
+      seconds: 1791983261
+      nanos: 851000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 877000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.NoteRepositoryTest-empty_note_is_rejected_and_nothing_is_written.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "SearchAndTransactionTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "global_search_covers_notes_ideas_journal_and_archived_notes"
+    start_time {
+      seconds: 1791983261
+      nanos: 878000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 904000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.SearchAndTransactionTest-global_search_covers_notes_ideas_journal_and_archived_notes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "SearchAndTransactionTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "blank_global_search_returns_nothing"
+    start_time {
+      seconds: 1791983261
+      nanos: 906000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 932000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.SearchAndTransactionTest-blank_global_search_returns_nothing.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "SearchAndTransactionTest"
+    test_package: "com.aidriy.app.data"
+    test_method: "failed_transaction_rolls_back_every_write"
+    start_time {
+      seconds: 1791983261
+      nanos: 933000000
+    }
+    end_time {
+      seconds: 1791983261
+      nanos: 961000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.data.SearchAndTransactionTest-failed_transaction_rolls_back_every_write.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "ai_history_search_open_and_delete"
+    start_time {
+      seconds: 1791983261
+      nanos: 964000000
+    }
+    end_time {
+      seconds: 1791983268
+      nanos: 355000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-ai_history_search_open_and_delete.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "create_read_edit_and_delete_a_note"
+    start_time {
+      seconds: 1791983268
+      nanos: 537000000
+    }
+    end_time {
+      seconds: 1791983276
+      nanos: 475000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-create_read_edit_and_delete_a_note.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "global_search_finds_stored_content"
+    start_time {
+      seconds: 1791983276
+      nanos: 527000000
+    }
+    end_time {
+      seconds: 1791983280
+      nanos: 937000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-global_search_finds_stored_content.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "write_todays_journal_then_reopen_the_same_entry"
+    start_time {
+      seconds: 1791983280
+      nanos: 938000000
+    }
+    end_time {
+      seconds: 1791983286
+      nanos: 214000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-write_todays_journal_then_reopen_the_same_entry.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "drawer_opens_the_catatan_tab"
+    start_time {
+      seconds: 1791983286
+      nanos: 216000000
+    }
+    end_time {
+      seconds: 1791983289
+      nanos: 266000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-drawer_opens_the_catatan_tab.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "catatan_tab_lists_notes_and_reader_ticks_tasks"
+    start_time {
+      seconds: 1791983289
+      nanos: 268000000
+    }
+    end_time {
+      seconds: 1791983292
+      nanos: 302000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-catatan_tab_lists_notes_and_reader_ticks_tasks.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "editor_tools_open_their_sheets"
+    start_time {
+      seconds: 1791983292
+      nanos: 306000000
+    }
+    end_time {
+      seconds: 1791983296
+      nanos: 872000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-editor_tools_open_their_sheets.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DataFlowsTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "capture_an_idea_and_change_its_status"
+    start_time {
+      seconds: 1791983296
+      nanos: 874000000
+    }
+    end_time {
+      seconds: 1791983302
+      nanos: 644000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.DataFlowsTest-capture_an_idea_and_change_its_status.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NavigationTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "every_bottom_navigation_item_opens_its_screen"
+    start_time {
+      seconds: 1791983302
+      nanos: 749000000
+    }
+    end_time {
+      seconds: 1791983306
+      nanos: 700000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.NavigationTest-every_bottom_navigation_item_opens_its_screen.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NavigationTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "back_from_a_tab_returns_to_beranda"
+    start_time {
+      seconds: 1791983306
+      nanos: 753000000
+    }
+    end_time {
+      seconds: 1791983309
+      nanos: 270000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.NavigationTest-back_from_a_tab_returns_to_beranda.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NavigationTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "drawer_opens_journal_and_search"
+    start_time {
+      seconds: 1791983309
+      nanos: 271000000
+    }
+    end_time {
+      seconds: 1791983313
+      nanos: 515000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.NavigationTest-drawer_opens_journal_and_search.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NavigationTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "app_starts_on_beranda"
+    start_time {
+      seconds: 1791983313
+      nanos: 525000000
+    }
+    end_time {
+      seconds: 1791983315
+      nanos: 879000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.NavigationTest-app_starts_on_beranda.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "NavigationTest"
+    test_package: "com.aidriy.app.ui"
+    test_method: "quick_actions_open_their_screens_and_hide_the_bottom_bar"
+    start_time {
+      seconds: 1791983315
+      nanos: 881000000
+    }
+    end_time {
+      seconds: 1791983320
+      nanos: 599000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/logcat-com.aidriy.app.ui.NavigationTest-quick_actions_open_their_screens_and_hide_the_bottom_bar.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/home/runner/work/Aidriy/Aidriy/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 14/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

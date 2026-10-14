@@ -1,0 +1,3 @@
+10-14 13:07:40.772  6379  6399 I TestRunner: started: quick_capture_lands_in_inbox(com.aidriy.app.data.IdeaRepositoryTest)
+10-14 13:07:40.774  1721  2495 I A       : incrementApaDataDownloadStoreStatus(latency = PT0.127S, appVersion = 13.17.16.23, status = OK, locale = *, fileGroupnames = apa_head_suggest, accountScoped = false, localGroupsAvailable = false, timeSinceSearchBoot = Optional[PT5M5.2S] (FIVE_TO_TEN_MINUTES), timeSinceDataDownloadInit = PT3M29.974S (ONE_TO_FIVE_MINUTES))
+10-14 13:07:40.833  6379  6399 I TestRunner: finished: quick_capture_lands_in_inbox(com.aidriy.app.data.IdeaRepositoryTest)

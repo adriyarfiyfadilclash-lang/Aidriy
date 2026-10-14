@@ -1,0 +1,2 @@
+10-14 13:07:41.742  6379  6399 I TestRunner: started: failed_transaction_rolls_back_every_write(com.aidriy.app.data.SearchAndTransactionTest)
+10-14 13:07:41.757  6379  6399 I TestRunner: finished: failed_transaction_rolls_back_every_write(com.aidriy.app.data.SearchAndTransactionTest)

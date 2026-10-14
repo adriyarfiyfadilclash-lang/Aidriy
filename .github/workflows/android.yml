@@ -89,6 +89,8 @@ jobs:
     name: Unit tests and lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write   # publishes failure logs to the ci-logs-checks branch
     steps:
       - uses: actions/checkout@v4
 
@@ -102,7 +104,24 @@ jobs:
       - name: Unit tests and lint
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon testDebugUnitTest lintDebug
+          ./gradlew --no-daemon testDebugUnitTest lintDebug 2>&1 | tee checks.log
+          exit ${PIPESTATUS[0]}
+
+      # Failing test XML and lint text go to the `ci-logs-checks` branch, readable with plain git.
+      - name: Publish test failures
+        if: failure()
+        run: |
+          mkdir -p /tmp/out && cp checks.log /tmp/out/ || true
+          cp -r app/build/test-results /tmp/out/ 2>/dev/null || true
+          cp app/build/reports/lint-results-debug.txt /tmp/out/ 2>/dev/null || true
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-logs-checks
+          git rm -rf -q --cached . || true
+          rm -rf out && cp -r /tmp/out out
+          git add -f out
+          git commit -q -m "Check logs for ${{ github.sha }}"
+          git push -f origin ci-logs-checks
 
       - name: Upload test and lint reports
         if: always()
@@ -141,6 +160,7 @@ jobs:
           api-level: 34
           arch: x86_64
           target: google_apis
+          profile: pixel_6
           disable-animations: true
           # Screenshot tour first (its files would be removed by the uninstall after connected tests).
           script: |
@@ -163,6 +183,19 @@ jobs:
           git add -f screens
           git commit -q -m "Screenshots for ${{ github.sha }}"
           git push -f origin ci-screens
+
+      - name: Publish instrumented test failures
+        if: failure()
+        run: |
+          mkdir -p /tmp/ui && cp -r app/build/outputs/androidTest-results /tmp/ui/ 2>/dev/null || true
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout -f --orphan ci-logs-ui
+          git rm -rf -q --cached . || true
+          rm -rf ui && cp -r /tmp/ui ui
+          git add -f ui
+          git commit -q -m "UI test logs for ${{ github.sha }}" || true
+          git push -f origin ci-logs-ui
 
       - name: Upload instrumented test reports
         if: always()

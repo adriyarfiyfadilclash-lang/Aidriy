@@ -2,6 +2,7 @@
 
 package com.aidriy.app.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
@@ -87,6 +88,9 @@ fun AidriyApp(
         }
         onDeepLinkHandled()
     }
+
+    // Back closes the drawer first instead of leaving the screen.
+    BackHandler(enabled = drawerState.isOpen) { scope.launch { drawerState.close() } }
 
     fun go(route: String) {
         scope.launch { drawerState.close() }

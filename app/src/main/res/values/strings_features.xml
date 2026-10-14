@@ -205,7 +205,7 @@
     <string name="files_cat_images">Gambar</string>
     <string name="files_cat_audio">Audio</string>
     <string name="files_cat_video">Video</string>
-    <string name="files_cat_notes">Lampiran catatan</string>
+    <string name="files_cat_notes">Catatan</string>
     <string name="files_cat_archive">Arsip</string>
     <string name="files_item_count">%1$d item</string>
     <string name="files_item_count_date">%1$d item · %2$s</string>

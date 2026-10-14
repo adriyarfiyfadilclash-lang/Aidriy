@@ -36,6 +36,16 @@ sealed interface DataError {
     /** The id is malformed, or the record no longer exists (for example, deleted elsewhere). */
     data object NotFound : DataError
 
+    data class FileTooLarge(val maxBytes: Long) : DataError
+
+    data object FileUnreadable : DataError
+
+    data object OcrFailed : DataError
+
+    data object EmptyName : DataError
+
+    data object DuplicateName : DataError
+
     /** The database rejected or failed the operation. */
     data class Storage(val cause: Throwable) : DataError
 }

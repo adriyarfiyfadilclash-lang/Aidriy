@@ -26,4 +26,7 @@ interface NoteRepository {
     suspend fun setFavorite(id: String, favorite: Boolean): DataResult<Unit>
     suspend fun setArchived(id: String, archived: Boolean): DataResult<Unit>
     suspend fun delete(id: String): DataResult<Unit>
+    /** Stores (or clears, with null) the reminder time. Scheduling is done by the caller. */
+    suspend fun setReminder(id: String, atMillis: Long?): DataResult<Unit>
+    suspend fun clearReminder(id: String)
 }

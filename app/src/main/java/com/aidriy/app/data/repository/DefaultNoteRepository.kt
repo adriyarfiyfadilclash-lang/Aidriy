@@ -128,6 +128,18 @@ class DefaultNoteRepository internal constructor(
         }
     }
 
+    override suspend fun setReminder(id: String, atMillis: Long?): DataResult<Unit> {
+        if (!InputRules.isValidId(id)) return DataResult.Failure(DataError.NotFound)
+        return storageCall(LOG_TAG) {
+            if (noteDao.setReminder(id, atMillis) == 0) DataResult.Failure(DataError.NotFound)
+            else DataResult.Success(Unit)
+        }
+    }
+
+    override suspend fun clearReminder(id: String) {
+        storageCall(LOG_TAG) { DataResult.Success(noteDao.setReminder(id, null)) }
+    }
+
     private suspend fun loadNote(id: String): Note =
         checkNotNull(noteDao.getWithTags(id)) { "Note missing right after write" }.toDomain()
 

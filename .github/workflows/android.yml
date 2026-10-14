@@ -58,11 +58,19 @@ jobs:
           name: aidriy-debug-apk
           path: dist/*.apk
 
-      - name: Upload Room schema
-        uses: actions/upload-artifact@v4
-        with:
-          name: room-schemas
-          path: app/schemas/
+      # Exported Room schemas go to the `ci-schemas` branch so they can be committed for migration tests.
+      - name: Publish Room schemas
+        if: github.event_name != 'pull_request'
+        run: |
+          cp -r app/schemas /tmp/schemas
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-schemas
+          git rm -rf -q --cached . || true
+          rm -rf schemas && cp -r /tmp/schemas schemas
+          git add -f schemas
+          git commit -q -m "Room schemas for ${{ github.sha }}"
+          git push -f origin ci-schemas
 
       # Direct download link on the repo's Releases page (works from a phone browser).
       - name: Publish APK as a release

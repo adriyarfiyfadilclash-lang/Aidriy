@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Imported files (Berkas) and note attachments. -->
+    <files-path name="berkas" path="berkas/" />
+    <!-- Temporary camera captures for Pindai Teks. -->
+    <cache-path name="camera" path="camera/" />
+    <!-- Backup files prepared for sharing. -->
+    <cache-path name="backup" path="backup/" />
+</paths>

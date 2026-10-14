@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /*
- * Schema version 1. Column names are snake_case and stable: renaming a column requires a migration.
+ * Schema version 2 (v1 + notes.reminder_at, folders, files, ai_conversations, ai_messages). Column names are snake_case and stable: renaming a column requires a migration.
  * Timestamps are UTC epoch milliseconds. Journal dates are local calendar dates (ISO yyyy-MM-dd).
  */
 
@@ -27,6 +27,8 @@ data class NoteEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
     @ColumnInfo(name = "is_archived") val isArchived: Boolean,
+    /** Pending reminder time (UTC epoch millis), or null. Added in schema v2. */
+    @ColumnInfo(name = "reminder_at") val reminderAt: Long? = null,
 )
 
 @Entity(

@@ -64,6 +64,15 @@ interface NoteDao {
         sortByCreated: Boolean,
     ): Flow<List<NoteWithTags>>
 
+    @Query("UPDATE notes SET reminder_at = :reminderAt WHERE id = :id")
+    suspend fun setReminder(id: String, reminderAt: Long?): Int
+
+    @Query("SELECT * FROM notes WHERE reminder_at IS NOT NULL")
+    suspend fun getWithReminders(): List<NoteEntity>
+
+    @Query("SELECT COUNT(*) AS count, MAX(updated_at) AS latest FROM notes WHERE is_archived = :archived")
+    fun observeStats(archived: Boolean): Flow<FileGroupStats>
+
     @Transaction
     @Query("SELECT * FROM notes WHERE is_archived = 0 ORDER BY updated_at DESC LIMIT :limit")
     fun observeRecent(limit: Int): Flow<List<NoteWithTags>>

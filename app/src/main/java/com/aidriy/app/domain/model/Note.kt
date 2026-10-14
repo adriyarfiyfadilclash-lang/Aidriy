@@ -10,4 +10,6 @@ data class Note(
     val isFavorite: Boolean = false,
     val isArchived: Boolean = false,
     val tags: List<Tag> = emptyList(),
+    /** Pending reminder (UTC epoch millis), or null. */
+    val reminderAt: Long? = null,
 )

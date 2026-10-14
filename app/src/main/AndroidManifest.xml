@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Only used when the user configures an AI provider and sends a request. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Note reminders and the optional daily journal reminder (Android 13+ asks at runtime). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!--
-      No permissions are requested in Phase 1.
       Backups are disabled: personal notes must never leave the device automatically.
-      Users will get an explicit, local export/backup flow in a later phase.
+      Users export an explicit backup file from Pengaturan → Berkas & Backup.
     -->
     <application
         android:name=".AidriyApplication"
@@ -21,11 +25,23 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Shares app-private files with other apps (open with…, share) and receives camera photos. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>

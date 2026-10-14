@@ -26,6 +26,7 @@ internal fun NoteWithTags.toDomain(): Note = Note(
     isFavorite = note.isFavorite,
     isArchived = note.isArchived,
     tags = tags.toSortedDomain(),
+    reminderAt = note.reminderAt,
 )
 
 internal fun IdeaWithTags.toDomain(): Idea = Idea(

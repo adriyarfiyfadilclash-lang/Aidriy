@@ -88,6 +88,16 @@ class FakeNoteRepository : NoteRepository {
         return DataResult.Success(Unit)
     }
 
+    override suspend fun setReminder(id: String, atMillis: Long?): DataResult<Unit> {
+        val existing = notes.value[id] ?: return DataResult.Failure(DataError.NotFound)
+        notes.value = notes.value + (id to existing.copy(reminderAt = atMillis))
+        return DataResult.Success(Unit)
+    }
+
+    override suspend fun clearReminder(id: String) {
+        setReminder(id, null)
+    }
+
     override suspend fun delete(id: String): DataResult<Unit> {
         failWritesWith?.let { return DataResult.Failure(it) }
         if (id !in notes.value) return DataResult.Failure(DataError.NotFound)

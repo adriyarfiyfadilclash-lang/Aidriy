@@ -76,19 +76,19 @@ class EditorDraft(private val handle: SavedStateHandle) {
                 DataError.InvalidTag(TagProblem.TOO_MANY),
             )
         }
-        setTags(tags + TagNames.clean(raw))
+        replaceTags(tags + TagNames.clean(raw))
         return DataResult.Success(Unit)
     }
 
     fun removeTag(name: String) {
-        setTags(tags.filterNot { it == name })
+        replaceTags(tags.filterNot { it == name })
     }
 
     /** Fills the editor with stored values and marks them as the saved baseline. */
     fun load(title: String, content: String, tags: List<String>, extra: String = "") {
         updateTitle(title)
         updateContent(content)
-        setTags(tags)
+        replaceTags(tags)
         updateExtra(extra)
         markSaved()
         handle[KEY_INITIALIZED] = true
@@ -114,7 +114,7 @@ class EditorDraft(private val handle: SavedStateHandle) {
         handle[KEY_BASELINE] = baselineHash
     }
 
-    private fun setTags(value: List<String>) {
+    private fun replaceTags(value: List<String>) {
         tags = value
         handle[KEY_TAGS] = ArrayList(value)
     }

@@ -94,7 +94,7 @@
     <string name="ai_send">Kirim</string>
     <string name="ai_stop">Hentikan</string>
     <string name="ai_thinking">Sedang berpikir…</string>
-    <string name="ai_new_chat">Percakapan baru</string>
+    <string name="ai_new_chat">Chat Baru</string>
     <string name="ai_history">Riwayat AI</string>
     <string name="ai_history_empty_title">Belum ada percakapan</string>
     <string name="ai_history_empty_body">Percakapan yang kamu simpan akan muncul di sini.</string>

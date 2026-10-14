@@ -98,6 +98,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -157,6 +158,7 @@ fun AiChatRoute(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val focusManager = LocalFocusManager.current
     var picker by rememberSaveable { mutableStateOf<SuggestionInput?>(null) }
     var showAttachMenu by rememberSaveable { mutableStateOf(false) }
     var deleting by remember { mutableStateOf<Conversation?>(null) }
@@ -203,10 +205,13 @@ fun AiChatRoute(
                 query = viewModel.historyQuery,
                 onQuery = { viewModel.historyQuery = it },
                 onNewChat = {
+                    focusManager.clearFocus()
                     viewModel.newConversation()
                     scope.launch { drawerState.close() }
                 },
                 onOpen = {
+                    // Close the keyboard left open by the history search.
+                    focusManager.clearFocus()
                     viewModel.openConversation(it.id)
                     scope.launch { drawerState.close() }
                 },
@@ -443,6 +448,7 @@ private fun ChatTopBar(
                     text = { Text(stringResource(R.string.ai_model_settings)) },
                     leadingIcon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
                     onClick = { menu = false; onSettings() },
+                    modifier = Modifier.testTag("menu_ai_settings"),
                 )
             }
         }
@@ -849,7 +855,7 @@ private fun InputBar(
                 TextField(
                     value = value,
                     onValueChange = onValueChange,
-                    placeholder = { Text(stringResource(R.string.ai_input_placeholder)) },
+                    placeholder = { Text(stringResource(R.string.ai_input_placeholder), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                     maxLines = 5,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,

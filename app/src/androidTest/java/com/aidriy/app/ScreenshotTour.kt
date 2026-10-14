@@ -315,7 +315,7 @@ class ScreenshotTour {
         Thread.sleep(400)
 
         composeRule.onNodeWithTag("ai_more").performClick()
-        composeRule.onNodeWithText("Pengaturan Model AI").performClick()
+        composeRule.onNodeWithTag("menu_ai_settings").performClick()
         waitForTag("screen_settings_ai")
         Thread.sleep(400)
         shot("22_ai_pengaturan")

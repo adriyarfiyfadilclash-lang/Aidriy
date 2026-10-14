@@ -53,7 +53,7 @@ class DataFlowsTest {
 
     /** The splash shows briefly on launch. */
     @Before
-    fun waitForHome() = waitForTag("screen_catatan")
+    fun waitForHome() = waitForTag("screen_beranda")
 
     private fun openDrawerItem(tag: String) {
         composeRule.onNodeWithTag("home_menu").performClick()
@@ -62,57 +62,81 @@ class DataFlowsTest {
     }
 
     @Test
-    fun create_edit_reopen_and_delete_a_note() {
+    fun create_read_edit_and_delete_a_note() {
         composeRule.onNodeWithTag("quick_notes").performClick()
         waitForTag("screen_note_editor")
         composeRule.onNodeWithTag("editor_title").performTextInput("Catatan uji")
-        composeRule.onNodeWithTag("editor_content").performTextInput("Isi pertama")
-        composeRule.onNodeWithTag("editor_menu").performClick()
-        composeRule.onNodeWithTag("editor_save").performClick()
-        waitForText("Tersimpan")
+        composeRule.onNodeWithTag("editor_content").performTextInput("Isi **pertama**")
+        // New note + autosave: Back saves and closes.
         composeRule.onNodeWithTag("editor_back").performClick()
-
+        waitForTag("screen_beranda")
         waitForText("Catatan uji")
+
+        // Existing notes open in the reader, with Markdown rendered.
         composeRule.onNodeWithText("Catatan uji").performClick()
-        waitForTag("screen_note_editor")
-        composeRule.onNodeWithTag("editor_title").assertTextContains("Catatan uji")
+        waitForTag("note_reader")
+        composeRule.onNodeWithTag("reader_title").assertTextContains("Catatan uji")
+        composeRule.onAllNodesWithText("Isi pertama").onFirst().assertIsDisplayed()
+
+        composeRule.onNodeWithTag("editor_edit").performClick()
+        waitForTag("editor_title")
         composeRule.onNodeWithTag("editor_title").performTextClearance()
         composeRule.onNodeWithTag("editor_title").performTextInput("Catatan diedit")
-        // Autosave is on by default: going back stores the change.
-        composeRule.onNodeWithTag("editor_back").performClick()
+        composeRule.onNodeWithTag("editor_done").performClick()
+        waitForTag("note_reader")
+        composeRule.onNodeWithTag("reader_title").assertTextContains("Catatan diedit")
 
-        waitForText("Catatan diedit")
-        composeRule.onNodeWithText("Catatan diedit").performClick()
-        waitForTag("screen_note_editor")
         composeRule.onNodeWithTag("editor_menu").performClick()
         composeRule.onNodeWithTag("menu_delete").performClick()
         composeRule.onNodeWithText("Hapus catatan?").assertIsDisplayed()
         composeRule.onNodeWithText("Hapus").performClick()
 
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
         composeRule.waitUntil(5_000) {
             composeRule.onAllNodesWithText("Catatan diedit").fetchSemanticsNodes().isEmpty()
         }
     }
 
     @Test
-    fun notes_list_from_the_drawer_shows_stored_notes() {
-        runBlocking { container.noteRepository.create(NoteDraft("Daftar belanja", "telur")) }
-        openDrawerItem("drawer_notes")
-        waitForTag("screen_notes")
-        waitForText("Daftar belanja")
+    fun catatan_tab_lists_notes_and_reader_ticks_tasks() {
+        val id = runBlocking {
+            (container.noteRepository.create(NoteDraft("Belanja", "- [ ] beli kopi")) as com.aidriy.app.domain.DataResult.Success).value.id
+        }
+        composeRule.onNodeWithTag("nav_catatan").performClick()
+        waitForTag("screen_catatan")
+        waitForText("Belanja")
         composeRule.onNodeWithTag("notes_new").assertIsDisplayed()
+
+        composeRule.onNodeWithText("Belanja").performClick()
+        waitForTag("task_0")
+        composeRule.onNodeWithTag("task_0").performClick()
+        composeRule.waitUntil(5_000) {
+            runBlocking { container.noteRepository.getById(id)?.content } == "- [x] beli kopi"
+        }
     }
 
     @Test
-    fun back_with_autosave_keeps_a_new_note() {
-        composeRule.onNodeWithTag("quick_notes").performClick()
-        waitForTag("screen_note_editor")
-        composeRule.onNodeWithTag("editor_title").performTextInput("Draf otomatis")
-        composeRule.onNodeWithTag("editor_back").performClick()
-
+    fun drawer_opens_the_catatan_tab() {
+        runBlocking { container.noteRepository.create(NoteDraft("Daftar belanja", "telur")) }
+        openDrawerItem("drawer_notes")
         waitForTag("screen_catatan")
-        waitForText("Draf otomatis")
+        waitForText("Daftar belanja")
+    }
+
+    @Test
+    fun editor_tools_open_their_sheets() {
+        composeRule.onNodeWithTag("quick_notes").performClick()
+        waitForTag("editor_toolbar")
+        composeRule.onNodeWithTag("tool_image").performClick()
+        waitForTag("sheet_image")
+        composeRule.onNodeWithText("Pilih dari Galeri").assertIsDisplayed()
+        composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+        composeRule.waitUntil(5_000) { composeRule.onAllNodes(hasTestTag("sheet_image")).fetchSemanticsNodes().isEmpty() }
+
+        composeRule.onNodeWithTag("tool_more").performClick()
+        waitForTag("sheet_more")
+        composeRule.onNodeWithTag("more_divider").performClick()
+        composeRule.onNodeWithTag("editor_content").assertTextContains("---", substring = true)
     }
 
     @Test

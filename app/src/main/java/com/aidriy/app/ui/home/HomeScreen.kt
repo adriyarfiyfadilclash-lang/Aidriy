@@ -150,7 +150,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .testTag("screen_catatan"),
+            .testTag("screen_beranda"),
         contentPadding = PaddingValues(start = Spacing.screenHorizontal, end = Spacing.screenHorizontal, bottom = Spacing.xl),
     ) {
         item {
@@ -320,6 +320,7 @@ fun NoteRow(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     onRestore: (() -> Unit)? = null,
+    onMoveToFolder: (() -> Unit)? = null,
 ) {
     var menu by rememberSaveable(note.id) { mutableStateOf(false) }
     RecordCard(
@@ -353,6 +354,15 @@ fun NoteRow(
                             onToggleFavorite()
                         },
                     )
+                    if (onMoveToFolder != null) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.note_move_folder)) },
+                            onClick = {
+                                menu = false
+                                onMoveToFolder()
+                            },
+                        )
+                    }
                     if (onArchive != null) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.note_archive)) },

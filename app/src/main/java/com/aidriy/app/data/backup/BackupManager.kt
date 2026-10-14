@@ -152,14 +152,15 @@ class BackupManager(
                 dao.clearNoteTags(); dao.clearIdeaTags(); dao.clearJournalTags()
                 dao.clearFiles(); dao.clearFolders(); dao.clearTags()
                 dao.clearNotes(); dao.clearIdeas(); dao.clearJournal()
-                dao.insertNotes(data.notes.map { it.copy(reminderAt = null) })
                 dao.insertIdeas(data.ideas)
                 dao.insertJournal(data.journal)
                 dao.insertTags(data.tags)
                 dao.insertNoteTags(data.noteTags)
                 dao.insertIdeaTags(data.ideaTags)
                 dao.insertJournalTags(data.journalTags)
+                // Folders first: notes and files reference them.
                 dao.insertFolders(data.folders)
+                dao.insertNotes(data.notes.map { it.copy(reminderAt = null) })
                 dao.insertFiles(newFiles)
             }
             // Database committed: now swap stored file copies.
@@ -188,6 +189,7 @@ class BackupManager(
             JSONObject().put("id", it.id).put("title", it.title).put("content", it.content)
                 .put("createdAt", it.createdAt).put("updatedAt", it.updatedAt)
                 .put("isFavorite", it.isFavorite).put("isArchived", it.isArchived)
+                .put("folderId", it.folderId ?: JSONObject.NULL)
         }))
         .put("ideas", JSONArray(d.ideas.map {
             JSONObject().put("id", it.id).put("title", it.title).put("content", it.content).put("status", it.status)
@@ -224,7 +226,8 @@ class BackupManager(
         }
         val notes = o.list("notes") {
             NoteEntity(it.getString("id"), it.getString("title"), it.getString("content"), it.getLong("createdAt"),
-                it.getLong("updatedAt"), it.getBoolean("isFavorite"), it.getBoolean("isArchived"))
+                it.getLong("updatedAt"), it.getBoolean("isFavorite"), it.getBoolean("isArchived"),
+                folderId = if (it.has("folderId")) it.str("folderId") else null)
         }
         val ideas = o.list("ideas") {
             IdeaEntity(it.getString("id"), it.getString("title"), it.getString("content"), it.getString("status"),
@@ -243,7 +246,7 @@ class BackupManager(
         val folderIds = folders.map { it.id }.toSet()
         // Drop dangling references instead of failing the whole restore on foreign keys.
         return BackupData(
-            notes = notes,
+            notes = notes.map { n -> n.copy(folderId = n.folderId?.takeIf { f -> f in folderIds }) },
             ideas = ideas,
             journal = journal,
             tags = tags,

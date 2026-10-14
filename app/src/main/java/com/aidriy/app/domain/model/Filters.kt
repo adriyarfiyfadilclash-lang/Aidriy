@@ -10,6 +10,8 @@ data class NoteFilter(
     val query: String = "",
     val tagId: String? = null,
     val sort: SortOrder = SortOrder.UPDATED,
+    /** Only notes in this folder; null shows every folder. */
+    val folderId: String? = null,
 )
 
 data class IdeaFilter(

@@ -1,5 +1,8 @@
 package com.aidriy.app.data.ai
 
+import com.aidriy.app.domain.markdown.FormatGuard
+import com.aidriy.app.domain.markdown.FormatOptions
+import com.aidriy.app.domain.markdown.FormatPrompt
 import com.aidriy.app.core.IdGenerator
 import com.aidriy.app.core.time.TimeProvider
 import com.aidriy.app.core.time.nowMillis
@@ -29,6 +32,12 @@ import kotlinx.coroutines.flow.map
 import java.util.Locale
 
 /** Outcome of [AiChatRepository.send]. The user's message is always stored first. */
+sealed interface FormatOutcome {
+    data class Checked(val result: FormatGuard.Result) : FormatOutcome
+    data class Failed(val error: AiError) : FormatOutcome
+    data class TooLong(val maxChars: Int) : FormatOutcome
+}
+
 sealed interface SendOutcome {
     data class Answered(val conversationId: String) : SendOutcome
     data class Failed(val conversationId: String, val error: AiError) : SendOutcome
@@ -194,6 +203,34 @@ class AiChatRepository(
                 )
                 SendOutcome.Failed(convId, result.error)
             }
+        }
+    }
+
+    /**
+     * "Rapikan Format": asks the AI to reformat [markdown] and verifies that only formatting
+     * changed. Images and Berkas links are replaced by placeholders before sending. Nothing is
+     * stored; the caller shows a preview and applies it only after the user confirms.
+     */
+    suspend fun formatNote(
+        provider: AiProviderId,
+        model: String,
+        title: String,
+        markdown: String,
+        options: FormatOptions,
+    ): FormatOutcome {
+        if (markdown.length > FormatPrompt.MAX_CHARS) return FormatOutcome.TooLong(FormatPrompt.MAX_CHARS)
+        val key = secrets.getKey(provider) ?: return FormatOutcome.Failed(AiError.MissingKey)
+        val protected = FormatGuard.protect(markdown)
+        val result = AiProviders.forId(provider).complete(
+            apiKey = key,
+            model = model,
+            system = FormatPrompt.system(options),
+            turns = listOf(AiTurn(ChatRole.USER, FormatPrompt.user(title, protected.text))),
+            maxOutputTokens = FormatPrompt.maxOutputTokens(markdown.length),
+        )
+        return when (result) {
+            is AiResult.Failure -> FormatOutcome.Failed(result.error)
+            is AiResult.Success -> FormatOutcome.Checked(FormatGuard.check(markdown, protected, result.text))
         }
     }
 

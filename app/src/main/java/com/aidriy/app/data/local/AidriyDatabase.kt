@@ -53,7 +53,7 @@ abstract class AidriyDatabase : RoomDatabase() {
     abstract fun backupDao(): BackupDao
 
     companion object {
-        const val VERSION = 2
+        const val VERSION = 3
         const val NAME = "aidriy.db"
 
         /**
@@ -121,5 +121,16 @@ object AidriyMigrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2)
+    /** v2 → v3: notes can live in a folder (shared with Berkas). */
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE `notes` ADD COLUMN `folder_id` TEXT DEFAULT NULL " +
+                    "REFERENCES `folders`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL",
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_notes_folder_id` ON `notes` (`folder_id`)")
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
 }

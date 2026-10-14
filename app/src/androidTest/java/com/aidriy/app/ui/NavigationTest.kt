@@ -27,16 +27,16 @@ class NavigationTest {
 
     /** The splash shows briefly on launch. */
     @Before
-    fun waitForHome() = waitForTag("screen_catatan")
+    fun waitForHome() = waitForTag("screen_beranda")
 
     private fun pressBack() = composeRule.runOnUiThread {
         composeRule.activity.onBackPressedDispatcher.onBackPressed()
     }
 
     @Test
-    fun app_starts_on_catatan() {
-        composeRule.onNodeWithTag("screen_catatan").assertIsDisplayed()
-        composeRule.onNodeWithTag("nav_catatan").assertIsSelected()
+    fun app_starts_on_beranda() {
+        composeRule.onNodeWithTag("screen_beranda").assertIsDisplayed()
+        composeRule.onNodeWithTag("nav_beranda").assertIsSelected()
     }
 
     @Test
@@ -53,29 +53,29 @@ class NavigationTest {
     fun quick_actions_open_their_screens_and_hide_the_bottom_bar() {
         composeRule.onNodeWithTag("quick_notes").performClick()
         waitForTag("screen_note_editor")
-        composeRule.onNodeWithTag("nav_catatan").assertDoesNotExist()
+        composeRule.onNodeWithTag("nav_beranda").assertDoesNotExist()
         composeRule.onNodeWithTag("editor_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("quick_templates").performClick()
         waitForTag("screen_templates")
         composeRule.onNodeWithTag("header_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("quick_scan").performClick()
         waitForTag("screen_scan")
         pressBack()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("quick_ideas").performClick()
         waitForTag("screen_ideas")
         composeRule.onNodeWithTag("header_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("quick_journal").performClick()
         waitForTag("screen_journal_editor")
         composeRule.onNodeWithTag("editor_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
     }
 
     @Test
@@ -85,22 +85,22 @@ class NavigationTest {
         composeRule.onNodeWithTag("drawer_journal").performClick()
         waitForTag("screen_journal")
         composeRule.onNodeWithTag("header_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("home_search").performClick()
         waitForTag("screen_search")
         composeRule.onNodeWithTag("editor_back").performClick()
-        waitForTag("screen_catatan")
+        waitForTag("screen_beranda")
     }
 
     @Test
-    fun back_from_a_tab_returns_to_catatan() {
+    fun back_from_a_tab_returns_to_beranda() {
         composeRule.onNodeWithTag("nav_berkas").performClick()
         waitForTag("screen_berkas")
 
         pressBack()
 
-        waitForTag("screen_catatan")
-        composeRule.onNodeWithTag("nav_catatan").assertIsSelected()
+        waitForTag("screen_beranda")
+        composeRule.onNodeWithTag("nav_beranda").assertIsSelected()
     }
 }

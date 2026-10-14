@@ -9,7 +9,7 @@
     <string name="nav_settings">Pengaturan</string>
     <string name="drawer_open">Buka menu</string>
     <string name="drawer_all_notes">Semua Catatan</string>
-    <string name="drawer_favorites">Favorit</string>
+    <string name="drawer_favorites">Disematkan</string>
     <string name="drawer_archive">Arsip</string>
 
     <!-- Common actions -->
@@ -49,24 +49,18 @@
     <string name="qa_journal_sub">Tulis refleksi harianmu</string>
 
     <!-- Notes and editor -->
-    <string name="notes_all_title">Semua Catatan</string>
     <string name="notes_autosave">Simpan otomatis</string>
     <string name="notes_autosave_sub">Catatan disimpan sendiri saat kamu menulis dan saat keluar dari editor.</string>
     <string name="notes_default_sort">Urutan bawaan daftar catatan</string>
     <string name="notes_format_help">Format teks: **tebal**, *miring*, __garis bawah__, # judul, - daftar, 1. daftar bernomor, - [ ] checklist, [teks](tautan).</string>
     <string name="attachments_label">Lampiran</string>
-    <string name="attach_done">Berkas dilampirkan ke catatan.</string>
-    <string name="attach_needs_content">Tulis judul atau isi dulu sebelum melampirkan berkas.</string>
     <string name="fmt_bold">Tebal</string>
     <string name="fmt_italic">Miring</string>
     <string name="fmt_underline">Garis bawah</string>
-    <string name="fmt_heading">Judul</string>
     <string name="fmt_bullets">Daftar poin</string>
     <string name="fmt_numbers">Daftar bernomor</string>
     <string name="fmt_checklist">Checklist</string>
     <string name="fmt_link">Tautan</string>
-    <string name="fmt_image">Gambar</string>
-    <string name="fmt_attach">Lampirkan berkas</string>
     <string name="fmt_dictate">Dikte suara</string>
     <string name="link_text">Teks tautan</string>
     <string name="link_url">Alamat (URL)</string>
@@ -197,7 +191,7 @@
     <string name="files_rename_folder">Ganti nama folder</string>
     <string name="files_delete_folder">Hapus folder</string>
     <string name="files_delete_folder_title">Hapus folder?</string>
-    <string name="files_delete_folder_body">Folder dihapus. Berkas di dalamnya tetap ada dan dipindahkan keluar folder.</string>
+    <string name="files_delete_folder_body">Folder dihapus. Berkas dan catatan di dalamnya tetap ada dan dikeluarkan dari folder.</string>
     <string name="files_recent">Terbaru</string>
     <string name="files_empty_title">Belum ada berkas</string>
     <string name="files_empty_body">Impor PDF, gambar, atau dokumen lain untuk disimpan dan dicari.</string>

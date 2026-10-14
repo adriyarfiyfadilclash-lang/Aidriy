@@ -20,6 +20,7 @@ private const val FILTERED_NOTES = """
       AND (:favoritesOnly = 0 OR is_favorite = 1)
       AND (title LIKE :pattern ESCAPE '!' OR content LIKE :pattern ESCAPE '!')
       AND (:tagId IS NULL OR id IN (SELECT note_id FROM note_tags WHERE tag_id = :tagId))
+      AND (:folderId IS NULL OR folder_id = :folderId)
     ORDER BY CASE WHEN :sortByCreated = 1 THEN created_at ELSE updated_at END DESC, id ASC
 """
 
@@ -61,8 +62,12 @@ interface NoteDao {
         favoritesOnly: Boolean,
         pattern: String,
         tagId: String?,
+        folderId: String?,
         sortByCreated: Boolean,
     ): Flow<List<NoteWithTags>>
+
+    @Query("UPDATE notes SET folder_id = :folderId WHERE id = :id")
+    suspend fun setFolder(id: String, folderId: String?): Int
 
     @Query("UPDATE notes SET reminder_at = :reminderAt WHERE id = :id")
     suspend fun setReminder(id: String, reminderAt: Long?): Int

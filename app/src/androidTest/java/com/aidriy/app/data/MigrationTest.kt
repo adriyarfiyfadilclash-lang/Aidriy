@@ -32,7 +32,7 @@ class MigrationTest {
     }
 
     @Test
-    fun v1_database_upgrades_to_v2_and_keeps_notes() {
+    fun v1_database_upgrades_to_latest_and_keeps_notes() {
         val v1 = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath(name).apply { parentFile?.mkdirs() }, null)
         V1_SCHEMA.forEach(v1::execSQL)
         v1.execSQL(
@@ -65,11 +65,17 @@ class MigrationTest {
                 "INSERT INTO files (id, name, mime_type, size_bytes, local_path, folder_id, note_id, created_at, " +
                     "extracted_text, extraction_status) VALUES ('x1', 'a.pdf', 'application/pdf', 10, 'p', 'f1', 'n1', 4, NULL, 'PENDING')",
             )
+            // v3: notes can join a folder; deleting the folder keeps the note.
+            sql.execSQL("UPDATE notes SET folder_id = 'f1' WHERE id = 'n1'")
             sql.execSQL("DELETE FROM folders WHERE id = 'f1'")
             sql.query("SELECT folder_id, note_id FROM files WHERE id = 'x1'").use { c ->
                 assertTrue(c.moveToFirst())
                 assertTrue(c.isNull(0))
                 assertEquals("n1", c.getString(1))
+            }
+            sql.query("SELECT folder_id FROM notes WHERE id = 'n1'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertTrue(c.isNull(0))
             }
             assertEquals(AidriyDatabase.VERSION, sql.version)
         } finally {

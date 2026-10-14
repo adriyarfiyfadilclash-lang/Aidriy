@@ -2,6 +2,9 @@ package com.aidriy.app.ui.notes
 
 import androidx.lifecycle.SavedStateHandle
 import com.aidriy.app.R
+import com.aidriy.app.data.ai.FormatOutcome
+import com.aidriy.app.domain.markdown.FormatGuard
+import com.aidriy.app.domain.markdown.FormatOptions
 import com.aidriy.app.data.reminders.NoteReminders
 import com.aidriy.app.domain.DataError
 import com.aidriy.app.domain.DataResult
@@ -151,5 +154,108 @@ class NoteEditorViewModelTest {
 
         assertEquals(EditorEvent.Message(UiText(R.string.reminder_past)), vm.events.first())
         assertTrue(reminders.scheduled.isEmpty())
+    }
+
+    // ------------------------------------------------------------------ reader, undo, AI format
+
+    private fun existing(content: String): String =
+        runBlockingCreate(NoteDraft("Materi", content))
+
+    private fun runBlockingCreate(draft: NoteDraft): String =
+        kotlinx.coroutines.runBlocking { (notes.create(draft) as DataResult.Success).value.id }
+
+    @Test
+    fun existing_note_opens_in_reader_and_new_note_in_editor() = runTest {
+        val id = existing("isi")
+        assertEquals(NoteMode.READ, newEditor(SavedStateHandle(mapOf(Routes.ARG_NOTE_ID to id))).uiState.value.mode)
+        assertEquals(NoteMode.EDIT, newEditor().uiState.value.mode)
+    }
+
+    @Test
+    fun finishing_an_edit_saves_and_returns_to_the_reader() = runTest {
+        val id = existing("isi")
+        val vm = newEditor(SavedStateHandle(mapOf(Routes.ARG_NOTE_ID to id)))
+        vm.startEditing()
+        assertEquals(NoteMode.EDIT, vm.uiState.value.mode)
+        vm.onContentChange("isi baru")
+        vm.finishEditing()
+        assertEquals(NoteMode.READ, vm.uiState.value.mode)
+        assertEquals("isi baru", notes.stored(id)?.content)
+    }
+
+    @Test
+    fun ticking_a_task_in_the_reader_is_stored() = runTest {
+        val id = existing("- [ ] beli kopi\n- [ ] kirim laporan")
+        val vm = newEditor(SavedStateHandle(mapOf(Routes.ARG_NOTE_ID to id)))
+        vm.toggleTask(1)
+        assertEquals("- [ ] beli kopi\n- [x] kirim laporan", notes.stored(id)?.content)
+    }
+
+    @Test
+    fun undo_and_redo_restore_text() = runTest {
+        val vm = newEditor()
+        vm.onContentChange("a")
+        vm.onContentChange("ab")
+        assertTrue(vm.canUndo)
+        vm.undo()
+        assertEquals("", vm.draft.content)
+        assertTrue(vm.canRedo)
+        vm.redo()
+        assertEquals("ab", vm.draft.content)
+    }
+
+    @Test
+    fun moving_to_a_folder_is_stored() = runTest {
+        val id = existing("isi")
+        val vm = newEditor(SavedStateHandle(mapOf(Routes.ARG_NOTE_ID to id)))
+        vm.setFolder("folder-1")
+        assertEquals("folder-1", notes.stored(id)?.folderId)
+        assertEquals(EditorEvent.Message(UiText(R.string.note_moved)), vm.events.first())
+    }
+
+    private fun formattingEditor(id: String, answer: (String) -> String) = NoteEditorViewModel(
+        handle = SavedStateHandle(mapOf(Routes.ARG_NOTE_ID to id)),
+        notes = notes,
+        tags = FakeTagRepository(),
+        formatter = { _, markdown, _ ->
+            val protected = FormatGuard.protect(markdown)
+            FormatOutcome.Checked(FormatGuard.check(markdown, protected, answer(protected.text)))
+        },
+    )
+
+    @Test
+    fun ai_format_shows_a_preview_and_applies_only_after_confirming() = runTest {
+        val id = existing("1. pengertian\nisi catatan")
+        val vm = formattingEditor(id) { "## 1. Pengertian\n\nIsi catatan." }
+
+        vm.requestFormat(FormatOptions())
+        val preview = vm.format.value as FormatState.Preview
+        assertNull(preview.changedWords)
+        assertEquals("1. pengertian\nisi catatan", notes.stored(id)?.content) // nothing applied yet
+
+        vm.applyFormat()
+        assertEquals("## 1. Pengertian\n\nIsi catatan.", notes.stored(id)?.content)
+        assertEquals(FormatState.Idle, vm.format.value)
+
+        vm.undo()
+        assertEquals("1. pengertian\nisi catatan", vm.draft.content)
+    }
+
+    @Test
+    fun ai_format_that_changes_words_is_flagged() = runTest {
+        val id = existing("isi catatan")
+        val vm = formattingEditor(id) { "Isi catatan yang lebih baik." }
+        vm.requestFormat(FormatOptions())
+        val preview = vm.format.value as FormatState.Preview
+        assertEquals(listOf("yang", "lebih", "baik"), preview.changedWords?.added)
+    }
+
+    @Test
+    fun ai_format_that_drops_an_image_is_refused() = runTest {
+        val id = existing("teks\n![Gambar 1](berkas://img)")
+        val vm = formattingEditor(id) { "Teks" }
+        vm.requestFormat(FormatOptions())
+        assertEquals(FormatState.Failed(UiText(R.string.format_lost_blocks)), vm.format.value)
+        assertEquals("teks\n![Gambar 1](berkas://img)", notes.stored(id)?.content)
     }
 }

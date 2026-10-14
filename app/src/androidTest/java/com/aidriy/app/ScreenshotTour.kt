@@ -7,10 +7,12 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.aidriy.app.di.DefaultAppContainer
 import com.aidriy.app.domain.model.IdeaDraft
 import com.aidriy.app.domain.model.JournalDraft
@@ -44,67 +46,152 @@ class ScreenshotTour {
     private fun shot(name: String) {
         composeRule.waitForIdle()
         Thread.sleep(400)
-        val bitmap = composeRule.onRoot().captureToImage().asAndroidBitmap()
+        // Whole screen, so bottom sheets and dialogs (separate windows) are included.
+        val bitmap = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
+            ?: composeRule.onRoot().captureToImage().asAndroidBitmap()
         File(outDir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
     private fun back() = composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
 
+    /** A simple drawn picture (sky, ground, buildings) so the reader can show an image block. */
+    private fun sampleImageUri(): android.net.Uri {
+        val bmp = Bitmap.createBitmap(1200, 600, Bitmap.Config.ARGB_8888)
+        val c = android.graphics.Canvas(bmp)
+        val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        p.shader = android.graphics.LinearGradient(0f, 0f, 0f, 600f, 0xFF7FB2F0.toInt(), 0xFFDDEBFA.toInt(), android.graphics.Shader.TileMode.CLAMP)
+        c.drawRect(0f, 0f, 1200f, 600f, p)
+        p.shader = null
+        p.color = 0xFF5B6472.toInt()
+        listOf(80f to 260f, 260f to 200f, 420f to 300f, 640f to 180f, 860f to 240f, 1020f to 280f).forEach { (x, top) ->
+            c.drawRect(x, top, x + 140f, 520f, p)
+        }
+        p.color = 0xFF3D4450.toInt()
+        listOf(300f, 700f, 900f).forEach { x -> c.drawRect(x, 60f, x + 26f, 220f, p) }
+        p.color = 0xFF8A8F98.toInt()
+        c.drawRect(0f, 520f, 1200f, 600f, p)
+        val file = File(app.cacheDir, "contoh-area.png")
+        file.outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        return android.net.Uri.fromFile(file)
+    }
+
     @Test
     fun tour() {
-        runBlocking {
+        val richId = runBlocking {
             container.database.clearAllTables()
             container.settingsRepository.setProfileName("Adriy")
+            val folder = (container.fileRepository.createFolder("Kuliah") as com.aidriy.app.domain.DataResult.Success).value
+            val image = (container.fileRepository.import(sampleImageUri()) as com.aidriy.app.domain.DataResult.Success).value
             val notes = container.noteRepository
             notes.create(NoteDraft("Rencana konten minggu ini", "- Review aplikasi catatan\n- Tips produktivitas\n- [ ] Edit video Jumat", listOf("Konten")), isFavorite = true)
-            notes.create(NoteDraft("Ringkasan rapat", "**Keputusan:** rilis versi 0.2 minggu depan.\nPIC: desain dan pengujian.", listOf("Kerja")))
-            notes.create(NoteDraft("Daftar belanja", "Telur, roti, kopi susu, gula aren"))
+            notes.create(NoteDraft("Ringkasan rapat", "**Keputusan:** rilis versi 0.2 minggu depan.", listOf("Kerja")))
+            val rich = (
+                notes.create(
+                    NoteDraft(
+                        "Materi Coking Plant",
+                        """
+                        ## 1. Pengertian Coking Plant
+                        Coking plant adalah fasilitas yang mengubah **batubara** menjadi *kokas* melalui pemanasan tanpa udara.
+
+                        ![Gambar 1. Area oven (gambar contoh)](berkas://${image.id} "penuh")
+
+                        ## 2. Proses Utama
+                        1. Batubara dimasukkan ke oven
+                        2. Dipanaskan pada ==1.000–1.200 °C==
+                        3. Kokas didinginkan
+
+                        > [!PENTING]
+                        > Gas samping seperti tar dan benzena perlu diolah.
+
+                        | Produk | Kegunaan |
+                        |---|---|
+                        | Kokas | Bahan bakar tanur |
+                        | Tar | Bahan kimia |
+
+                        - [x] Baca bab 1
+                        - [ ] Ringkas bab 2
+                        """.trimIndent(),
+                        listOf("Kerja", "Industri"),
+                    ),
+                ) as com.aidriy.app.domain.DataResult.Success
+                ).value
+            notes.setFolder(rich.id, folder.id)
             container.ideaRepository.create(IdeaDraft("Fitur tandai warna catatan", "Biar mudah dikelompokkan"))
             container.journalRepository.save(LocalDate.now(), JournalDraft("", "Hari ini fokus menyelesaikan desain ulang AIDRIY."), null)
+            rich.id
         }
 
+        waitForTag("screen_beranda")
+        shot("01_beranda")
+
+        composeRule.onNodeWithTag("nav_catatan").performClick()
         waitForTag("screen_catatan")
-        shot("01_catatan")
+        shot("02_catatan")
+
+        composeRule.onNodeWithTag("mode_folder").performClick()
+        Thread.sleep(300)
+        shot("03_catatan_folder")
+        composeRule.onNodeWithTag("mode_all").performClick()
+
+        composeRule.onNodeWithText("Materi Coking Plant").performClick()
+        waitForTag("note_reader")
+        Thread.sleep(800) // image decode
+        shot("04_mode_baca")
+
+        composeRule.onNodeWithTag("editor_edit").performClick()
+        waitForTag("editor_toolbar")
+        Thread.sleep(500)
+        shot("05_mode_edit")
+
+        composeRule.onNodeWithTag("tool_image").performClick()
+        waitForTag("sheet_image")
+        Thread.sleep(400)
+        shot("06_sisipkan_gambar")
+        back()
+        Thread.sleep(400)
+
+        composeRule.onNodeWithTag("tool_more").performClick()
+        waitForTag("sheet_more")
+        Thread.sleep(400)
+        shot("07_lainnya")
+        back()
+        Thread.sleep(400)
+
+        composeRule.onNodeWithTag("editor_ai").performClick()
+        waitForTag("sheet_format")
+        Thread.sleep(400)
+        shot("08_rapikan_format")
+        back()
+        Thread.sleep(400)
+        back() // leave edit mode
+        waitForTag("note_reader")
+        back()
+        waitForTag("screen_catatan")
+
+        composeRule.onNodeWithTag("nav_beranda").performClick()
+        waitForTag("screen_beranda")
+        composeRule.onNodeWithTag("quick_notes").performClick()
+        waitForTag("editor_toolbar")
+        shot("09_catatan_baru")
+        composeRule.onNodeWithTag("editor_back").performClick()
+        waitForTag("screen_beranda")
 
         composeRule.onNodeWithTag("home_menu").performClick()
         waitForTag("drawer_notes")
-        shot("02_menu_samping")
+        shot("10_menu_samping")
         back()
-
-        composeRule.onNodeWithTag("quick_notes").performClick()
-        waitForTag("screen_note_editor")
-        shot("03_editor_catatan")
-        composeRule.onNodeWithTag("editor_back").performClick()
-        waitForTag("screen_catatan")
-
-        composeRule.onNodeWithTag("quick_templates").performClick()
-        waitForTag("screen_templates")
-        shot("04_template")
-        back()
-        waitForTag("screen_catatan")
-
-        composeRule.onNodeWithTag("quick_scan").performClick()
-        waitForTag("screen_scan")
-        shot("05_pindai_teks")
-        back()
-        waitForTag("screen_catatan")
-
-        composeRule.onNodeWithTag("quick_ideas").performClick()
-        waitForTag("screen_ideas")
-        shot("06_ide")
-        back()
-        waitForTag("screen_catatan")
 
         composeRule.onNodeWithTag("nav_ai").performClick()
         waitForTag("screen_ai")
-        shot("07_ai")
+        shot("11_ai")
 
         composeRule.onNodeWithTag("nav_berkas").performClick()
         waitForTag("screen_berkas")
-        shot("08_berkas")
+        shot("12_berkas")
 
         composeRule.onNodeWithTag("nav_pengaturan").performClick()
         waitForTag("screen_pengaturan")
-        shot("09_pengaturan")
+        shot("13_pengaturan")
+        check(richId.isNotEmpty())
     }
 }

@@ -36,6 +36,13 @@ import java.io.IOException
 interface AttachmentStore {
     fun observeAttachments(noteId: String): Flow<List<StoredFile>>
     suspend fun import(uri: Uri, folderId: String? = null, noteId: String? = null): DataResult<StoredFile>
+    suspend fun getFile(id: String): StoredFile?
+
+    /** Images already in Berkas, newest first (for "Dari Berkas"). */
+    fun observeImages(): Flow<List<StoredFile>>
+
+    /** Reads text from an image or PDF on the device (ML Kit). */
+    suspend fun runOcr(id: String, onProgress: (Int, Int) -> Unit = { _, _ -> }): DataResult<String>
 }
 
 /**
@@ -61,6 +68,8 @@ class FileRepository(
     fun observeFile(id: String): Flow<StoredFile?> =
         if (!InputRules.isValidId(id)) flowOf(null) else fileDao.observeById(id).map { it?.toDomain() }
 
+    override fun observeImages(): Flow<List<StoredFile>> = observeFiles("", FileKind.IMAGE, null)
+
     override fun observeAttachments(noteId: String): Flow<List<StoredFile>> =
         fileDao.observeForNote(noteId).map { rows -> rows.map { it.toDomain() } }
 
@@ -79,7 +88,7 @@ class FileRepository(
 
     fun observeTotalSize(): Flow<Long> = fileDao.observeTotalSize()
 
-    suspend fun getFile(id: String): StoredFile? = if (!InputRules.isValidId(id)) null else fileDao.getById(id)?.toDomain()
+    override suspend fun getFile(id: String): StoredFile? = if (!InputRules.isValidId(id)) null else fileDao.getById(id)?.toDomain()
 
     /** Copies the document behind [uri] into Berkas. */
     override suspend fun import(uri: Uri, folderId: String?, noteId: String?): DataResult<StoredFile> =
@@ -164,7 +173,7 @@ class FileRepository(
     }
 
     /** OCR for images and scanned PDFs. Returns the recognized text (possibly empty). */
-    suspend fun runOcr(id: String, onProgress: (Int, Int) -> Unit = { _, _ -> }): DataResult<String> {
+    override suspend fun runOcr(id: String, onProgress: (Int, Int) -> Unit): DataResult<String> {
         val file = fileDao.getById(id) ?: return DataResult.Failure(DataError.NotFound)
         return try {
             val text = when {

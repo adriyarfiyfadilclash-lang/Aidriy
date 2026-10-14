@@ -12,4 +12,6 @@ data class Note(
     val tags: List<Tag> = emptyList(),
     /** Pending reminder (UTC epoch millis), or null. */
     val reminderAt: Long? = null,
+    /** Folder (shared with Berkas), or null. */
+    val folderId: String? = null,
 )

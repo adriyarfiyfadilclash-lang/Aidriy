@@ -109,7 +109,10 @@ fun AidriyApp(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 28.dp, vertical = Spacing.md),
                 )
-                DrawerItem(Icons.Outlined.Description, R.string.drawer_all_notes, "drawer_notes") { go(Routes.notesList()) }
+                DrawerItem(Icons.Outlined.Description, R.string.drawer_all_notes, "drawer_notes") {
+                    scope.launch { drawerState.close() }
+                    navController.navigateToTopLevel(TopLevelDestination.NOTES)
+                }
                 DrawerItem(Icons.Outlined.PushPin, R.string.drawer_favorites, "drawer_favorites") { go(Routes.notesList(NoteScope.FAVORITES)) }
                 DrawerItem(Icons.Outlined.Archive, R.string.drawer_archive, "drawer_archive") { go(Routes.notesList(NoteScope.ARCHIVED)) }
                 HorizontalDivider(Modifier.padding(vertical = Spacing.sm, horizontal = 28.dp))

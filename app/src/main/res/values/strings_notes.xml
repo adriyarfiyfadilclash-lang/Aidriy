@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Catatan tab, reader/editor, Markdown elements and AI "Rapikan Format". -->
+<resources>
+    <string name="nav_home">Beranda</string>
+
+    <!-- Notes list -->
+    <string name="notes_pinned">Disematkan</string>
+    <string name="notes_pinned_empty_title">Belum ada catatan yang disematkan</string>
+    <string name="notes_pinned_empty_body">Ketuk ikon pin di catatan agar selalu mudah ditemukan.</string>
+    <string name="notes_folder_empty_title">Folder ini masih kosong</string>
+    <string name="notes_folder_empty_body">Pindahkan catatan ke sini lewat menu ⋮ pada catatan.</string>
+    <string name="notes_no_folders_title">Belum ada folder</string>
+    <string name="notes_no_folders_body">Buat folder untuk mengelompokkan catatan. Folder yang sama juga dipakai di Berkas.</string>
+    <string name="notes_no_tags_title">Belum ada tag</string>
+    <string name="notes_no_tags_body">Tambahkan tag dari menu catatan, lalu saring di sini.</string>
+    <string name="note_move_folder">Pindahkan ke folder</string>
+    <string name="note_moved">Catatan dipindahkan.</string>
+
+    <!-- Reader / editor -->
+    <string name="note_edit">Edit catatan</string>
+    <string name="note_done">Selesai</string>
+    <string name="note_reader_empty">Catatan ini masih kosong. Ketuk untuk mulai menulis.</string>
+    <string name="action_undo">Urungkan</string>
+    <string name="action_redo">Ulangi</string>
+    <string name="editor_processing">Memproses berkas…</string>
+    <string name="tool_text">Teks</string>
+    <string name="tool_image">Gambar</string>
+    <string name="text_style_title">Gaya teks</string>
+    <string name="text_style_paragraph">Teks biasa</string>
+    <string name="fmt_strike">Coret</string>
+    <string name="fmt_highlight">Sorot</string>
+    <string name="fmt_inline_code">Kode</string>
+
+    <!-- Images -->
+    <string name="insert_image_title">Sisipkan Gambar</string>
+    <string name="insert_image_gallery">Pilih dari Galeri</string>
+    <string name="insert_image_gallery_sub">Pilih foto dari penyimpanan</string>
+    <string name="insert_image_camera">Ambil Foto</string>
+    <string name="insert_image_camera_sub">Gunakan kamera</string>
+    <string name="insert_image_scan">Scan Dokumen</string>
+    <string name="insert_image_scan_sub">Ambil gambar dan ekstrak teks</string>
+    <string name="insert_image_berkas">Dari Berkas</string>
+    <string name="insert_image_berkas_sub">Pilih gambar dari menu Berkas</string>
+    <string name="insert_image_berkas_empty">Belum ada gambar di Berkas.</string>
+    <string name="image_default_caption">Gambar %1$d</string>
+    <string name="image_caption">Keterangan gambar</string>
+    <string name="image_caption_hint">Contoh: Gambar 1. Area oven</string>
+    <string name="image_resize">Ubah ukuran (%1$s)</string>
+    <string name="image_size_small">kecil</string>
+    <string name="image_size_medium">sedang</string>
+    <string name="image_size_full">penuh</string>
+    <string name="image_move_up">Pindah ke atas</string>
+    <string name="image_move_down">Pindah ke bawah</string>
+    <string name="image_delete">Hapus gambar</string>
+    <string name="md_image_missing">Gambar tidak ditemukan di Berkas</string>
+    <string name="md_image_external">Gambar dari internet tidak dimuat</string>
+
+    <!-- Lainnya -->
+    <string name="more_title">Lainnya</string>
+    <string name="more_heading">Heading</string>
+    <string name="more_heading_sub">Judul besar, subjudul</string>
+    <string name="more_numbered_sub">1. 2. 3.</string>
+    <string name="more_bullet_sub">• • •</string>
+    <string name="more_checklist_sub">Kotak centang tugas</string>
+    <string name="more_table">Tabel</string>
+    <string name="more_table_sub">Tabel sederhana</string>
+    <string name="more_quote">Kutipan</string>
+    <string name="more_quote_sub">Blok kutipan</string>
+    <string name="more_divider">Garis Pemisah</string>
+    <string name="more_divider_sub">Pembatas konten</string>
+    <string name="more_link_sub">Tambahkan link</string>
+    <string name="more_code">Kode</string>
+    <string name="more_code_sub">Kode atau perintah</string>
+    <string name="more_callout">Catatan Blok</string>
+    <string name="more_callout_sub">Callout / catatan penting</string>
+    <string name="more_datetime">Tanggal &amp; Waktu</string>
+    <string name="more_datetime_sub">Sisipkan tanggal</string>
+    <string name="more_emoji">Emoji</string>
+    <string name="more_emoji_sub">Tambahkan emoji</string>
+    <string name="more_dictate_sub">Ucapkan, jadi teks</string>
+    <string name="more_tags_sub">Kelompokkan catatan</string>
+    <string name="table_rows">Baris</string>
+    <string name="table_cols">Kolom</string>
+    <string name="table_column">Kolom</string>
+    <string name="callout_info">Info</string>
+    <string name="callout_tip">Tips</string>
+    <string name="callout_important">Penting</string>
+    <string name="callout_warning">Peringatan</string>
+
+    <!-- Rapikan Format (AI) -->
+    <string name="format_title">Rapikan Format</string>
+    <string name="format_intro">Susun ulang format agar lebih rapi dan mudah dibaca.</string>
+    <string name="format_promise">Tidak akan menghapus, memotong, atau mengubah isi teks.</string>
+    <string name="format_options">Opsi format</string>
+    <string name="format_opt_spacing">Rapikan jarak paragraf</string>
+    <string name="format_opt_headings">Perjelas heading dan daftar</string>
+    <string name="format_opt_indent">Rapikan indentasi</string>
+    <string name="format_opt_emphasis">Tebalkan istilah penting</string>
+    <string name="format_opt_rich">Pakai tabel, kutipan &amp; catatan blok bila cocok</string>
+    <string name="format_opt_keep_blocks">Pertahankan blok gambar dan berkas</string>
+    <string name="format_privacy">Isi catatan ini akan dikirim ke %1$s untuk dirapikan. Hasilnya ditampilkan dulu sebagai pratinjau.</string>
+    <string name="format_make_preview">Buat Pratinjau</string>
+    <string name="format_working">%1$s sedang merapikan…</string>
+    <string name="format_needs_key">Rapikan Format memakai AI dengan API key milikmu. Atur API key dulu di Pengaturan → AI.</string>
+    <string name="format_preview_title">Pratinjau Rapikan Format</string>
+    <string name="format_before">Sebelum</string>
+    <string name="format_after">Sesudah (Pratinjau)</string>
+    <string name="format_apply">Terapkan</string>
+    <string name="format_apply_anyway">Terapkan tetap</string>
+    <string name="format_confirm_title">Terapkan Format?</string>
+    <string name="format_confirm_body">Seluruh isi teks tetap dipertahankan. Hanya format yang akan diperbarui. Kamu bisa mengurungkannya.</string>
+    <string name="format_confirm_body_changed">AI mengubah sebagian kata. Periksa pratinjau dengan teliti. Kamu bisa mengurungkannya setelah diterapkan.</string>
+    <string name="format_changed_title">AI mengubah isi teks</string>
+    <string name="format_changed_removed">Hilang: %1$s</string>
+    <string name="format_changed_added">Bertambah: %1$s</string>
+    <string name="format_changed_tasks">Status checklist berubah.</string>
+    <string name="format_applied">Format diterapkan.</string>
+    <string name="format_empty">Catatan masih kosong.</string>
+    <string name="format_no_change">Format catatan sudah rapi. Tidak ada yang diubah.</string>
+    <string name="format_lost_blocks">AI menghilangkan gambar atau berkas, jadi hasilnya tidak dipakai. Coba lagi.</string>
+    <string name="format_too_long">Catatan terlalu panjang untuk dirapikan sekaligus (maksimal %1$d karakter).</string>
+    <string name="format_stale">Catatan berubah saat pratinjau dibuka. Buat pratinjau lagi.</string>
+</resources>

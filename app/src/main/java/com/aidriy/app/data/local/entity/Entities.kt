@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /*
- * Schema version 2 (v1 + notes.reminder_at, folders, files, ai_conversations, ai_messages). Column names are snake_case and stable: renaming a column requires a migration.
+ * Schema version 3 (v2 + notes.folder_id). v2 added notes.reminder_at, folders, files, ai_conversations, ai_messages. Column names are snake_case and stable: renaming a column requires a migration.
  * Timestamps are UTC epoch milliseconds. Journal dates are local calendar dates (ISO yyyy-MM-dd).
  */
 
@@ -17,6 +17,16 @@ import androidx.room.PrimaryKey
         Index(value = ["updated_at"]),
         Index(value = ["created_at"]),
         Index(value = ["is_archived", "is_favorite"]),
+        Index(value = ["folder_id"]),
+    ],
+    foreignKeys = [
+        // Deleting a folder keeps its notes; they just leave the folder.
+        ForeignKey(
+            entity = FolderEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["folder_id"],
+            onDelete = ForeignKey.SET_NULL,
+        ),
     ],
 )
 data class NoteEntity(
@@ -29,6 +39,8 @@ data class NoteEntity(
     @ColumnInfo(name = "is_archived") val isArchived: Boolean,
     /** Pending reminder time (UTC epoch millis), or null. Added in schema v2. */
     @ColumnInfo(name = "reminder_at") val reminderAt: Long? = null,
+    /** Folder shared with Berkas, or null. Added in schema v3. */
+    @ColumnInfo(name = "folder_id") val folderId: String? = null,
 )
 
 @Entity(

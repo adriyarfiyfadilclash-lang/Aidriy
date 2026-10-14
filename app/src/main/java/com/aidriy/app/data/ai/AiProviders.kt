@@ -30,7 +30,13 @@ sealed interface AiResult {
  */
 interface AiProvider {
     val id: AiProviderId
-    suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>): AiResult
+    suspend fun complete(
+        apiKey: String,
+        model: String,
+        system: String,
+        turns: List<AiTurn>,
+        maxOutputTokens: Int = MAX_OUTPUT_TOKENS,
+    ): AiResult
 }
 
 object AiProviders {
@@ -43,12 +49,12 @@ object AiProviders {
 
 private const val CONNECT_TIMEOUT_MS = 15_000
 private const val READ_TIMEOUT_MS = 90_000
-private const val MAX_OUTPUT_TOKENS = 2048
+internal const val MAX_OUTPUT_TOKENS = 2048
 
 private object OpenAiProvider : AiProvider {
     override val id = AiProviderId.OPENAI
 
-    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>): AiResult {
+    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>, maxOutputTokens: Int): AiResult {
         val messages = JSONArray().put(JSONObject().put("role", "system").put("content", system))
         turns.forEach { messages.put(JSONObject().put("role", it.role.wireName()).put("content", it.text)) }
         val body = JSONObject().put("model", model).put("messages", messages)
@@ -66,12 +72,12 @@ private object OpenAiProvider : AiProvider {
 private object AnthropicProvider : AiProvider {
     override val id = AiProviderId.ANTHROPIC
 
-    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>): AiResult {
+    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>, maxOutputTokens: Int): AiResult {
         val messages = JSONArray()
         turns.forEach { messages.put(JSONObject().put("role", it.role.wireName()).put("content", it.text)) }
         val body = JSONObject()
             .put("model", model)
-            .put("max_tokens", MAX_OUTPUT_TOKENS)
+            .put("max_tokens", maxOutputTokens)
             .put("system", system)
             .put("messages", messages)
         return postJson(
@@ -94,7 +100,7 @@ private object AnthropicProvider : AiProvider {
 private object GeminiProvider : AiProvider {
     override val id = AiProviderId.GEMINI
 
-    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>): AiResult {
+    override suspend fun complete(apiKey: String, model: String, system: String, turns: List<AiTurn>, maxOutputTokens: Int): AiResult {
         val contents = JSONArray()
         turns.forEach { turn ->
             contents.put(

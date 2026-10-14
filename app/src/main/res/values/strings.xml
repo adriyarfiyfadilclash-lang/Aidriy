@@ -78,18 +78,13 @@
 
     <!-- Notes -->
     <string name="notes_search_hint">Cari catatan</string>
-    <string name="notes_scope_active">Aktif</string>
-    <string name="notes_scope_favorites">Favorit</string>
     <string name="notes_scope_archived">Arsip</string>
     <string name="notes_new">Catatan baru</string>
     <string name="notes_empty_title">Belum ada catatan</string>
     <string name="notes_empty_body">Catatan tersimpan di perangkat ini dan tetap bisa dibuka tanpa internet.</string>
     <string name="notes_archive_empty_title">Arsip kosong</string>
     <string name="notes_archive_empty_body">Catatan yang kamu arsipkan akan muncul di sini.</string>
-    <string name="notes_favorites_empty_title">Belum ada favorit</string>
-    <string name="notes_favorites_empty_body">Tandai catatan dengan bintang untuk menemukannya lebih cepat.</string>
     <string name="note_editor_new">Catatan baru</string>
-    <string name="note_editor_edit">Edit catatan</string>
     <string name="note_title_hint">Judul</string>
     <string name="note_content_hint">Tulis catatanmu</string>
     <string name="note_favorite_add">Tandai favorit</string>

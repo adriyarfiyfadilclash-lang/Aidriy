@@ -36,7 +36,8 @@ class FakeNoteRepository : NoteRepository {
 
     fun stored(id: String): Note? = notes.value[id]
 
-    override fun observeNotes(filter: NoteFilter): Flow<List<Note>> = notes.map { it.values.toList() }
+    override fun observeNotes(filter: NoteFilter): Flow<List<Note>> =
+        notes.map { all -> all.values.filter { filter.folderId == null || it.folderId == filter.folderId } }
     override fun observeRecent(limit: Int): Flow<List<Note>> = notes.map { it.values.take(limit) }
     override fun observeNote(id: String): Flow<Note?> = notes.map { it[id] }
     override suspend fun getById(id: String): Note? = notes.value[id]
@@ -85,6 +86,12 @@ class FakeNoteRepository : NoteRepository {
         failWritesWith?.let { return DataResult.Failure(it) }
         val existing = notes.value[id] ?: return DataResult.Failure(DataError.NotFound)
         notes.value = notes.value + (id to existing.copy(isArchived = archived))
+        return DataResult.Success(Unit)
+    }
+
+    override suspend fun setFolder(id: String, folderId: String?): DataResult<Unit> {
+        val existing = notes.value[id] ?: return DataResult.Failure(DataError.NotFound)
+        notes.value = notes.value + (id to existing.copy(folderId = folderId))
         return DataResult.Success(Unit)
     }
 

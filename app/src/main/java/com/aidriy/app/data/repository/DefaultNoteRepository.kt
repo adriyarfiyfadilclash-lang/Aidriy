@@ -36,6 +36,7 @@ class DefaultNoteRepository internal constructor(
             favoritesOnly = filter.scope == NoteScope.FAVORITES,
             pattern = SearchQuery.toLikePattern(filter.query),
             tagId = filter.tagId,
+            folderId = filter.folderId,
             sortByCreated = filter.sort == SortOrder.CREATED,
         ).map { rows -> rows.map { it.toDomain() } }
 
@@ -102,6 +103,14 @@ class DefaultNoteRepository internal constructor(
         if (!InputRules.isValidId(id)) return DataResult.Failure(DataError.NotFound)
         return storageCall(LOG_TAG) {
             if (noteDao.setFavorite(id, favorite) == 0) DataResult.Failure(DataError.NotFound)
+            else DataResult.Success(Unit)
+        }
+    }
+
+    override suspend fun setFolder(id: String, folderId: String?): DataResult<Unit> {
+        if (!InputRules.isValidId(id)) return DataResult.Failure(DataError.NotFound)
+        return storageCall(LOG_TAG) {
+            if (noteDao.setFolder(id, folderId) == 0) DataResult.Failure(DataError.NotFound)
             else DataResult.Success(Unit)
         }
     }

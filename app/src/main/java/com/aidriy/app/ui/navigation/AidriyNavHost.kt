@@ -80,19 +80,19 @@ fun AidriyNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = TopLevelDestination.NOTES.route,
+        startDestination = TopLevelDestination.HOME.route,
         modifier = modifier,
         enterTransition = { fadeIn(tween(FADE_MILLIS)) },
         exitTransition = { fadeOut(tween(FADE_MILLIS)) },
     ) {
         // ------------------------------------------------------------------ tabs
-        composable(TopLevelDestination.NOTES.route) {
+        composable(TopLevelDestination.HOME.route) {
             HomeRoute(
                 actions = HomeActions(
                     openDrawer = onOpenDrawer,
                     openProfile = { nav.navigate(Routes.SETTINGS_PROFILE) },
                     openSearch = { nav.navigate(Routes.SEARCH) },
-                    openAllNotes = { nav.navigate(Routes.notesList()) },
+                    openAllNotes = { nav.navigateToTopLevel(TopLevelDestination.NOTES) },
                     createNote = createNote,
                     openNote = openNote,
                     openScan = { nav.navigate(Routes.SCAN) },
@@ -102,6 +102,9 @@ fun AidriyNavHost(
                     openJournal = openJournal,
                 ),
             )
+        }
+        composable(TopLevelDestination.NOTES.route) {
+            NotesRoute(onBack = null, onOpenNote = openNote, onCreateNote = createNote)
         }
         composable(TopLevelDestination.AI.route) {
             AiChatRoute(
@@ -117,7 +120,7 @@ fun AidriyNavHost(
         composable(TopLevelDestination.FILES.route) {
             FilesRoute(
                 actions = FilesActions(
-                    openNotes = { nav.navigate(Routes.notesList()) },
+                    openNotes = { nav.navigateToTopLevel(TopLevelDestination.NOTES) },
                     openArchive = { nav.navigate(Routes.notesList(NoteScope.ARCHIVED)) },
                     openCategory = { nav.navigate(Routes.filesFolder(kind = it)) },
                     openFolder = { nav.navigate(Routes.filesFolder(folderId = it)) },
@@ -157,7 +160,11 @@ fun AidriyNavHost(
             ),
         ) {
             // dropUnlessResumed prevents a double pop if close is triggered twice.
-            NoteEditorRoute(onClose = dropUnlessResumed { back() }, onOpenFile = openFile)
+            NoteEditorRoute(
+                onClose = dropUnlessResumed { back() },
+                onOpenFile = openFile,
+                onOpenAiSettings = { nav.navigate(Routes.SETTINGS_AI) },
+            )
         }
         composable(Routes.IDEAS) {
             IdeasRoute(onBack = dropUnlessResumed { back() }, onOpenIdea = openIdea)
@@ -237,7 +244,7 @@ fun AidriyNavHost(
         ) {
             FilesRoute(
                 actions = FilesActions(
-                    openNotes = { nav.navigate(Routes.notesList()) },
+                    openNotes = { nav.navigateToTopLevel(TopLevelDestination.NOTES) },
                     openArchive = { nav.navigate(Routes.notesList(NoteScope.ARCHIVED)) },
                     openCategory = { nav.navigate(Routes.filesFolder(kind = it)) },
                     openFolder = { nav.navigate(Routes.filesFolder(folderId = it)) },

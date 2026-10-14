@@ -130,7 +130,8 @@ class DataFlowsTest {
         composeRule.onNodeWithTag("tool_image").performClick()
         waitForTag("sheet_image")
         composeRule.onNodeWithText("Pilih dari Galeri").assertIsDisplayed()
-        composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+        // A real Back key reaches the sheet's window first (the activity dispatcher would skip it).
+        androidx.test.espresso.Espresso.pressBackUnconditionally()
         composeRule.waitUntil(5_000) { composeRule.onAllNodes(hasTestTag("sheet_image")).fetchSemanticsNodes().isEmpty() }
 
         composeRule.onNodeWithTag("tool_more").performClick()

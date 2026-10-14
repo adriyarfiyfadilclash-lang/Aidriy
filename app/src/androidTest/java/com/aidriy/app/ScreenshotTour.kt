@@ -52,7 +52,11 @@ class ScreenshotTour {
         File(outDir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
-    private fun back() = composeRule.runOnUiThread { composeRule.activity.onBackPressedDispatcher.onBackPressed() }
+    /** A real Back key, so open sheets and dialogs (own windows) receive it first. */
+    private fun back() {
+        androidx.test.espresso.Espresso.pressBackUnconditionally()
+        composeRule.waitForIdle()
+    }
 
     /** A simple drawn picture (sky, ground, buildings) so the reader can show an image block. */
     private fun sampleImageUri(): android.net.Uri {

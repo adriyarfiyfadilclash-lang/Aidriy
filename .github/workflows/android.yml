@@ -165,6 +165,8 @@ jobs:
           # Screenshot tour first (its files would be removed by the uninstall after connected tests).
           script: |
             chmod +x gradlew && ./gradlew --no-daemon installDebug installDebugAndroidTest
+            adb shell settings put global hide_error_dialogs 1 || true
+            sleep 25 && adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS || true
             adb shell am instrument -w -e class com.aidriy.app.ScreenshotTour com.aidriy.app.test/androidx.test.runner.AndroidJUnitRunner || true
             adb exec-out run-as com.aidriy.app tar c files/screens > screens.tar || true
             ./gradlew --no-daemon connectedDebugAndroidTest

@@ -97,4 +97,6 @@ data class AiMessageEntity(
     @ColumnInfo(name = "no_local_match") val noLocalMatch: Boolean,
     @ColumnInfo(name = "is_error") val isError: Boolean,
     @ColumnInfo(name = "created_at") val createdAt: Long,
+    /** Local feedback: 1 helpful, -1 not helpful, 0 none. Added in schema v4. */
+    @ColumnInfo(name = "rating", defaultValue = "0") val rating: Int = 0,
 )

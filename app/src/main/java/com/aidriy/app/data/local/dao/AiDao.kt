@@ -23,6 +23,23 @@ interface AiDao {
     @Query("SELECT * FROM ai_conversations ORDER BY updated_at DESC")
     fun observeConversations(): Flow<List<AiConversationEntity>>
 
+    /** Title or any message matches; `pattern` comes from SearchQuery.toLikePattern (escape '!'). */
+    @Query(
+        """
+        SELECT * FROM ai_conversations
+        WHERE title LIKE :pattern ESCAPE '!'
+           OR id IN (SELECT conversation_id FROM ai_messages WHERE is_error = 0 AND content LIKE :pattern ESCAPE '!')
+        ORDER BY updated_at DESC
+        """,
+    )
+    fun searchConversations(pattern: String): Flow<List<AiConversationEntity>>
+
+    @Query("UPDATE ai_conversations SET title = :title WHERE id = :id")
+    suspend fun renameConversation(id: String, title: String): Int
+
+    @Query("UPDATE ai_messages SET rating = :rating WHERE id = :id")
+    suspend fun setRating(id: String, rating: Int): Int
+
     @Query("DELETE FROM ai_conversations WHERE id = :id")
     suspend fun deleteConversation(id: String): Int
 

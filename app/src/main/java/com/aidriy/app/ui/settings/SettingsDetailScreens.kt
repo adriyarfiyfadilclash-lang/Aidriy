@@ -134,186 +134,7 @@ fun ProfileSettingsScreen(onBack: () -> Unit, viewModel: SettingsViewModel = vie
 // -------------------------------------------------------------------------------------- Preferensi AI
 
 @Composable
-fun AiSettingsScreen(onBack: () -> Unit, viewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)) {
-    val settings by viewModel.settings.collectAsStateWithLifecycle()
-    val configured by viewModel.configured.collectAsStateWithLifecycle()
-    var confirmRemoveAll by rememberSaveable { mutableStateOf(false) }
-    var confirmClearHistory by rememberSaveable { mutableStateOf(false) }
-
-    SettingsPage(stringResource(R.string.set_ai), onBack, viewModel, "screen_settings_ai") {
-        item { SettingsSectionLabel(stringResource(R.string.ai_default_model)) }
-        item {
-            Dropdown(
-                value = "${settings.defaultProvider.displayName} · ${settings.modelFor(settings.defaultProvider)}",
-                options = AiProviderId.entries.map { it to "${it.displayName} (${it.company})" },
-                onSelect = viewModel::setDefaultProvider,
-            )
-        }
-        item { SettingsSectionLabel(stringResource(R.string.ai_style)) }
-        item {
-            Dropdown(
-                value = stringResource(settings.answerStyle.labelRes()),
-                options = AnswerStyle.entries.map { it to stringResource(it.labelRes()) },
-                onSelect = viewModel::setStyle,
-            )
-        }
-        item { SettingsSectionLabel(stringResource(R.string.ai_language)) }
-        item {
-            Dropdown(
-                value = stringResource(settings.aiLanguage.labelRes()),
-                options = AiLanguage.entries.map { it to stringResource(it.labelRes()) },
-                onSelect = viewModel::setLanguage,
-            )
-        }
-        item {
-            AidriyCard(Modifier.fillMaxWidth()) {
-                Column {
-                    SwitchRow(
-                        stringResource(R.string.ai_save_history), stringResource(R.string.ai_save_history_sub),
-                        settings.saveChatHistory, { viewModel.setSaveHistory(it) },
-                    )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                    SwitchRow(
-                        stringResource(R.string.ai_show_suggestions), stringResource(R.string.ai_show_suggestions_sub),
-                        settings.showSuggestions, { viewModel.setShowSuggestions(it) },
-                    )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                    SwitchRow(
-                        stringResource(R.string.ai_use_notes), stringResource(R.string.ai_use_notes_sub),
-                        settings.useNotesData, { viewModel.setUseNotes(it) },
-                        modifier = Modifier.testTag("ai_use_notes"),
-                    )
-                }
-            }
-        }
-        item { SettingsSectionLabel(stringResource(R.string.ai_keys_section)) }
-        item {
-            Text(
-                stringResource(R.string.ai_keys_explain),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        AiProviderId.entries.forEach { p ->
-            item(key = p.key) {
-                ProviderKeyCard(
-                    provider = p,
-                    model = settings.modelFor(p),
-                    hasKey = p in configured,
-                    testing = viewModel.testingProvider == p,
-                    onSaveKey = { viewModel.saveKey(p, it) },
-                    onRemoveKey = { viewModel.removeKey(p) },
-                    onSaveModel = { viewModel.setModel(p, it) },
-                    onTest = { viewModel.testConnection(p) },
-                )
-            }
-        }
-        item {
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                OutlinedButton(onClick = { confirmClearHistory = true }) { Text(stringResource(R.string.ai_clear_history)) }
-                OutlinedButton(onClick = { confirmRemoveAll = true }, enabled = configured.isNotEmpty()) {
-                    Text(stringResource(R.string.ai_remove_all_keys))
-                }
-            }
-        }
-    }
-    if (confirmRemoveAll) {
-        ConfirmDeleteDialog(
-            title = stringResource(R.string.ai_remove_all_keys),
-            message = stringResource(R.string.ai_remove_all_keys_body),
-            onConfirm = {
-                confirmRemoveAll = false
-                viewModel.removeAllKeys()
-            },
-            onDismiss = { confirmRemoveAll = false },
-        )
-    }
-    if (confirmClearHistory) {
-        ConfirmDeleteDialog(
-            title = stringResource(R.string.ai_delete_all_title),
-            message = stringResource(R.string.ai_delete_all_body),
-            onConfirm = {
-                confirmClearHistory = false
-                viewModel.clearChatHistory()
-            },
-            onDismiss = { confirmClearHistory = false },
-        )
-    }
-}
-
-@Composable
-private fun ProviderKeyCard(
-    provider: AiProviderId,
-    model: String,
-    hasKey: Boolean,
-    testing: Boolean,
-    onSaveKey: (String) -> Unit,
-    onRemoveKey: () -> Unit,
-    onSaveModel: (String) -> Unit,
-    onTest: () -> Unit,
-) {
-    var key by rememberSaveable(provider) { mutableStateOf("") }
-    var showKey by rememberSaveable(provider) { mutableStateOf(false) }
-    var modelText by rememberSaveable(provider, model) { mutableStateOf(model) }
-    AidriyCard(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(Spacing.lg), verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("${provider.displayName} · ${provider.company}", style = MaterialTheme.typography.titleSmall)
-                    Text(
-                        stringResource(if (hasKey) R.string.ai_key_stored else R.string.ai_not_configured),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (hasKey) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (testing) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-            }
-            OutlinedTextField(
-                value = key,
-                onValueChange = { key = it.trim() },
-                label = { Text(stringResource(if (hasKey) R.string.ai_key_replace else R.string.ai_key_enter)) },
-                singleLine = true,
-                visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false),
-                trailingIcon = {
-                    IconButton(onClick = { showKey = !showKey }) {
-                        Icon(
-                            if (showKey) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                            contentDescription = stringResource(if (showKey) R.string.ai_key_hide else R.string.ai_key_show),
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("api_key_${provider.key}"),
-            )
-            OutlinedTextField(
-                value = modelText,
-                onValueChange = { modelText = it.trim() },
-                label = { Text(stringResource(R.string.ai_model_id)) },
-                supportingText = { Text(stringResource(R.string.ai_model_hint)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                Button(
-                    onClick = {
-                        if (key.isNotBlank()) onSaveKey(key)
-                        if (modelText != model) onSaveModel(modelText)
-                        key = ""
-                    },
-                    enabled = key.isNotBlank() || (modelText.isNotBlank() && modelText != model),
-                    modifier = Modifier.testTag("api_save_${provider.key}"),
-                ) { Text(stringResource(R.string.action_save)) }
-                OutlinedButton(onClick = onTest, enabled = hasKey && !testing) { Text(stringResource(R.string.ai_test)) }
-                if (hasKey) TextButton(onClick = onRemoveKey) { Text(stringResource(R.string.ai_key_remove)) }
-            }
-        }
-    }
-}
-
-@Composable
-private fun <T> Dropdown(value: String, options: List<Pair<T, String>>, onSelect: (T) -> Unit) {
+internal fun <T> Dropdown(value: String, options: List<Pair<T, String>>, onSelect: (T) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
         OutlinedTextField(
@@ -339,13 +160,13 @@ private fun <T> Dropdown(value: String, options: List<Pair<T, String>>, onSelect
     }
 }
 
-private fun AnswerStyle.labelRes() = when (this) {
+internal fun AnswerStyle.labelRes() = when (this) {
     AnswerStyle.BALANCED -> R.string.ai_style_balanced
     AnswerStyle.CONCISE -> R.string.ai_style_concise
     AnswerStyle.DETAILED -> R.string.ai_style_detailed
 }
 
-private fun AiLanguage.labelRes() = when (this) {
+internal fun AiLanguage.labelRes() = when (this) {
     AiLanguage.INDONESIAN -> R.string.lang_id
     AiLanguage.ENGLISH -> R.string.lang_en
 }

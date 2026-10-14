@@ -11,6 +11,8 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
@@ -192,5 +194,38 @@ class DataFlowsTest {
         composeRule.onNodeWithTag("search_input").performTextInput("gula AREN")
         waitForTag("search_result_note")
         composeRule.onNodeWithText("Resep kopi susu").assertIsDisplayed()
+    }
+
+    @Test
+    fun ai_history_search_open_and_delete() {
+        val dao = container.database.aiDao()
+        runBlocking {
+            dao.insertConversation(com.aidriy.app.data.local.entity.AiConversationEntity("c1", "Belajar Kotlin", 1, 2))
+            dao.insertMessage(
+                com.aidriy.app.data.local.entity.AiMessageEntity(
+                    "m1", "c1", "user", "Apa itu ViewModel?", null, null, "", false, false, 1,
+                ),
+            )
+            dao.insertConversation(com.aidriy.app.data.local.entity.AiConversationEntity("c2", "Resep kopi", 1, 1))
+        }
+        composeRule.onNodeWithTag("nav_ai").performClick()
+        waitForTag("screen_ai")
+        composeRule.onNodeWithTag("ai_menu").performClick()
+        waitForText("Resep kopi")
+
+        // Search matches message content, not only titles.
+        composeRule.onNodeWithTag("ai_history_search").performTextInput("viewmodel")
+        composeRule.waitUntil(5_000) { composeRule.onAllNodesWithText("Resep kopi").fetchSemanticsNodes().isEmpty() }
+        composeRule.onAllNodesWithText("Belajar Kotlin").onFirst().performClick()
+        waitForText("Apa itu ViewModel?")
+
+        // Long-press asks before deleting.
+        composeRule.onNodeWithTag("ai_menu").performClick()
+        composeRule.onNodeWithTag("ai_history_search").performTextClearance()
+        waitForText("Resep kopi")
+        composeRule.onAllNodesWithText("Resep kopi").onFirst().performTouchInput { longClick() }
+        waitForTag("ai_delete_dialog")
+        composeRule.onNodeWithTag("ai_delete_confirm").performClick()
+        composeRule.waitUntil(5_000) { runBlocking { dao.getConversation("c2") } == null }
     }
 }

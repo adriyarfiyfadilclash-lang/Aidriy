@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI chat (redesign), history sidebar and Pengaturan Model AI. -->
+<resources>
+    <string name="action_close">Tutup</string>
+
+    <!-- Chat -->
+    <string name="ai_hello_assistant">Halo, saya AI Assistant</string>
+    <string name="ai_hello_assistant_name">Halo %1$s, saya AI Assistant</string>
+    <string name="ai_hello_sub">Tanyakan sesuatu, pelajari hal baru, atau lanjutkan pekerjaanmu.</string>
+    <string name="ai_assistant_label">AI Assistant</string>
+    <string name="ai_input_placeholder">Ketik pesan untuk AI…</string>
+    <string name="ai_card_write">Bantu menulis</string>
+    <string name="ai_card_write_sub">Draft, ide, dan kerangka</string>
+    <string name="ai_card_learn">Belajar sesuatu</string>
+    <string name="ai_card_learn_sub">Penjelasan dan latihan</string>
+    <string name="ai_card_notes">Tanya catatan</string>
+    <string name="ai_card_notes_sub">Dengan izin pengguna</string>
+    <string name="ai_card_files">Analisis berkas</string>
+    <string name="ai_card_files_sub">Baca dan pahami dokumen</string>
+    <string name="ai_prompt_write">Bantu saya menulis </string>
+    <string name="ai_prompt_learn">Jelaskan dengan sederhana: </string>
+    <string name="ai_prompt_notes">Apa poin penting dari catatan ini?</string>
+    <string name="ai_prompt_file">Rangkum isi dokumen ini dan buat poin pentingnya.</string>
+    <string name="ai_sent">Terkirim</string>
+    <string name="ai_send_failed">Gagal mengirim</string>
+    <string name="ai_regenerate">Buat ulang jawaban</string>
+    <string name="ai_rate_up">Jawaban membantu</string>
+    <string name="ai_rate_down">Jawaban kurang membantu</string>
+    <string name="ai_rating_saved">Terima kasih. Penilaian disimpan di perangkat ini saja.</string>
+    <string name="ai_offline_title">Tidak ada koneksi internet</string>
+    <string name="ai_offline_body">Periksa koneksi jaringan dan coba lagi.</string>
+
+    <!-- Attachments -->
+    <string name="ai_attach">Lampirkan</string>
+    <string name="ai_attach_image">Lampirkan gambar</string>
+    <string name="ai_attach_device">Berkas dari perangkat</string>
+    <string name="ai_attach_device_sub">PDF, dokumen teks, atau gambar</string>
+    <string name="ai_attach_berkas">Dari Berkas</string>
+    <string name="ai_attach_berkas_sub">Dokumen yang sudah ada di Berkas</string>
+    <string name="ai_attach_note">Catatan</string>
+    <string name="ai_attach_note_sub">Pilih catatan untuk ditanyakan</string>
+    <string name="ai_attaching">Menyiapkan berkas…</string>
+    <string name="ai_file_no_text">Teks dokumen belum bisa dibaca. Untuk PDF hasil scan, jalankan OCR dari menu Berkas.</string>
+
+    <!-- History sidebar -->
+    <string name="ai_history_search">Cari riwayat chat…</string>
+    <string name="ai_group_today">Hari Ini</string>
+    <string name="ai_group_yesterday">Kemarin</string>
+    <string name="ai_group_week">7 hari terakhir</string>
+    <string name="ai_group_older">Lebih lama</string>
+    <string name="ai_rename_chat">Ganti nama</string>
+    <string name="ai_chat_deleted">Percakapan dihapus.</string>
+    <string name="ai_delete_one_body_local">Percakapan ini akan dihapus dari riwayat lokal. Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="ai_model_settings">Pengaturan Model AI</string>
+    <string name="ai_model_settings_sub">Provider, model, dan API key</string>
+
+    <!-- Consent -->
+    <string name="ai_consent_title">Izinkan penggunaan konteks?</string>
+    <string name="ai_consent_body">AI membutuhkan akses ke data berikut untuk menjawab pertanyaanmu:</string>
+    <string name="ai_consent_found">AIDRIY menemukan catatan yang relevan dengan pertanyaanmu:</string>
+    <string name="ai_consent_data">Data yang akan digunakan:</string>
+    <string name="ai_consent_text">Isi teks (%1$d karakter)</string>
+    <string name="ai_consent_images">Gambar yang dilampirkan</string>
+    <string name="ai_consent_provider">Dikirim ke %1$s</string>
+    <string name="ai_consent_scope">Hanya untuk percakapan ini</string>
+    <string name="ai_consent_deny_hint">Tolak: pesan tetap dikirim tanpa lampiran dan catatan.</string>
+    <string name="ai_consent_allow">Izinkan</string>
+    <string name="ai_consent_deny">Tolak</string>
+
+    <!-- Pengaturan Model AI -->
+    <string name="ai_provider">Provider</string>
+    <string name="ai_default_model_id">Model default</string>
+    <string name="ai_api_key">API Key</string>
+    <string name="ai_base_url">Alamat API (OpenAI-compatible)</string>
+    <string name="ai_base_url_hint">Contoh: https://openrouter.ai/api/v1</string>
+    <string name="ai_base_url_invalid">Alamat harus diawali https:// atau http://</string>
+    <string name="ai_preferences">Preferensi Jawaban</string>
+    <string name="ai_length">Panjang respons</string>
+    <string name="ai_length_short">Pendek</string>
+    <string name="ai_length_medium">Sedang</string>
+    <string name="ai_length_long">Panjang</string>
+    <string name="ai_streaming">Gunakan streaming</string>
+    <string name="ai_streaming_sub">Jawaban tampil bertahap saat diketik AI (jika tersedia).</string>
+    <string name="ai_test_success_title">Koneksi berhasil</string>
+    <string name="ai_test_failed_title">Koneksi gagal</string>
+</resources>

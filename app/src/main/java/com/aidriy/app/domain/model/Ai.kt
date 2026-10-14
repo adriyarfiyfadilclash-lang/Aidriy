@@ -5,12 +5,34 @@ package com.aidriy.app.domain.model
  * because providers rename and retire models over time.
  */
 enum class AiProviderId(val key: String, val displayName: String, val company: String, val defaultModel: String) {
-    OPENAI("openai", "OpenAI", "OpenAI", "gpt-4o"),
+    OPENAI("openai", "OpenAI", "OpenAI", "gpt-4o-mini"),
     ANTHROPIC("anthropic", "Claude", "Anthropic", "claude-sonnet-5-5"),
-    GEMINI("gemini", "Gemini", "Google", "gemini-2.5-flash");
+    GEMINI("gemini", "Google Gemini", "Google", "gemini-2.5-flash"),
+
+    /** Any OpenAI-compatible endpoint (OpenRouter, Groq, a local server, ...). */
+    OTHER("other", "Lainnya (OpenRouter, dll)", "OpenAI-compatible", "openai/gpt-4o-mini");
+
+    /** Shown in the model picker; any other ID can still be typed. Availability depends on the account. */
+    val suggestedModels: List<String>
+        get() = when (this) {
+            OPENAI -> listOf("gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1")
+            ANTHROPIC -> listOf("claude-sonnet-5-5", "claude-haiku-5-5", "claude-opus-5-5")
+            GEMINI -> listOf("gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash")
+            OTHER -> listOf("openai/gpt-4o-mini", "anthropic/claude-sonnet-5-5", "google/gemini-2.5-flash", "meta-llama/llama-3.3-70b-instruct")
+        }
 
     companion object {
         fun fromKey(key: String?): AiProviderId = entries.firstOrNull { it.key == key } ?: OPENAI
+        const val DEFAULT_OTHER_BASE_URL = "https://openrouter.ai/api/v1"
+    }
+}
+
+/** Answer length: a hint in the prompt plus an output-token cap. */
+enum class ResponseLength(val key: String, val maxTokens: Int) {
+    SHORT("short", 700), MEDIUM("medium", 1_600), LONG("long", 4_000);
+
+    companion object {
+        fun fromKey(key: String?): ResponseLength = entries.firstOrNull { it.key == key } ?: MEDIUM
     }
 }
 
@@ -66,9 +88,11 @@ data class ChatMessage(
     val noLocalMatch: Boolean,
     val isError: Boolean,
     val createdAt: Long,
+    /** Local feedback on an answer: 1 helpful, -1 not helpful, 0 none. Never sent anywhere. */
+    val rating: Int = 0,
 )
 
-data class Conversation(val id: String, val title: String, val updatedAt: Long)
+data class Conversation(val id: String, val title: String, val updatedAt: Long, val preview: String = "")
 
 /** Provider failures, mapped to understandable messages in the UI. */
 sealed interface AiError {

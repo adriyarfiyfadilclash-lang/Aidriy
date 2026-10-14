@@ -110,7 +110,7 @@ fun AidriyNavHost(
             AiChatRoute(
                 actions = AiActions(
                     openTools = { nav.navigate(Routes.AI_TOOLS) },
-                    openHistory = { nav.navigate(Routes.AI_HISTORY) },
+                    openHistory = { goToAi(AiRequest(openHistory = true)) },
                     openAiSettings = { nav.navigate(Routes.SETTINGS_AI) },
                     openSource = openSource,
                     saveAsNote = createNoteFromText,

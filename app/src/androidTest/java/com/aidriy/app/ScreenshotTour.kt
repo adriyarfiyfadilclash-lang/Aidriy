@@ -8,6 +8,12 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -197,5 +203,123 @@ class ScreenshotTour {
         waitForTag("screen_pengaturan")
         shot("13_pengaturan")
         check(richId.isNotEmpty())
+
+        aiTour()
+    }
+
+    /** A small real PDF so the chat can show an attached document. */
+    private fun samplePdfUri(): android.net.Uri {
+        val doc = android.graphics.pdf.PdfDocument()
+        val page = doc.startPage(android.graphics.pdf.PdfDocument.PageInfo.Builder(595, 842, 1).create())
+        val paint = android.graphics.Paint().apply { textSize = 16f }
+        listOf("Materi Coking Plant", "Proses pemanasan batubara di oven kokas.", "Produk utama: kokas.").forEachIndexed { i, line ->
+            page.canvas.drawText(line, 48f, 80f + i * 28f, paint)
+        }
+        doc.finishPage(page)
+        val file = File(app.cacheDir, "Materi_Coking_Plant.pdf")
+        file.outputStream().use { doc.writeTo(it) }
+        doc.close()
+        return android.net.Uri.fromFile(file)
+    }
+
+    private fun aiTour() {
+        val dao = container.database.aiDao()
+        val now = System.currentTimeMillis()
+        runBlocking {
+            // The example key only lets the screens show their "configured" state; it is removed at the end.
+            container.secretStore.setKey(com.aidriy.app.domain.model.AiProviderId.OPENAI, "sk-contoh-untuk-screenshot")
+            val pdf = (container.fileRepository.import(samplePdfUri()) as com.aidriy.app.domain.DataResult.Success).value
+            suspend fun conv(id: String, title: String, at: Long) =
+                dao.insertConversation(com.aidriy.app.data.local.entity.AiConversationEntity(id, title, at, at))
+            fun msg(id: String, conv: String, role: String, content: String, at: Long, sources: String = "", error: Boolean = false) =
+                com.aidriy.app.data.local.entity.AiMessageEntity(id, conv, role, content, if (role == "assistant") "openai" else null,
+                    if (role == "assistant") "gpt-4o-mini" else null, sources, false, error, at)
+
+            conv("c-off", "Ditanya saat offline", now - 60_000)
+            dao.insertMessage(msg("m-off-1", "c-off", "user", "Apa itu ViewModel?", now - 60_000))
+            dao.insertMessage(msg("m-off-2", "c-off", "assistant", "offline", now - 59_000, error = true))
+
+            conv("c-pdf", "Materi Coking Plant", now - 3_600_000)
+            dao.insertMessage(
+                msg("m-pdf-1", "c-pdf", "user", "Tolong jelaskan isi dokumen ini dan buat rangkuman poin pentingnya.", now - 3_600_000,
+                    sources = "file:${pdf.id}|${pdf.name}"),
+            )
+            dao.insertMessage(
+                msg("m-pdf-2", "c-pdf", "assistant",
+                    "Berikut rangkuman isi dokumen **Materi_Coking_Plant.pdf**:\n\n### Poin penting\n- Proses pemanasan batubara di oven kokas\n- Produk utama: kokas\n\nJika kamu ingin penjelasan lebih detail, sebutkan bagiannya.",
+                    now - 3_590_000),
+            )
+
+            conv("c-kotlin", "Belajar Kotlin Android", now - 7_200_000)
+            dao.insertMessage(msg("m-k-1", "c-kotlin", "user", "Jelaskan perbedaan Activity dan ViewModel di Android.", now - 7_200_000))
+            dao.insertMessage(
+                msg("m-k-2", "c-kotlin", "assistant",
+                    "Berikut perbedaan **Activity** dan **ViewModel**:\n\n1. **Activity**\n   - Menangani tampilan dan interaksi pengguna\n   - Mengikuti siklus hidup (lifecycle)\n2. **ViewModel**\n   - Menyimpan dan mengelola data UI\n   - Tetap ada saat rotasi layar\n\n> [!TIP]\n> Simpan logika di ViewModel, tampilan di Activity/Composable.",
+                    now - 7_190_000),
+            )
+        }
+
+        composeRule.onNodeWithTag("nav_ai").performClick()
+        waitForTag("ai_empty")
+        shot("14_ai_utama")
+
+        composeRule.onNodeWithTag("ai_menu").performClick()
+        waitForTag("ai_sidebar")
+        Thread.sleep(400)
+        shot("15_ai_riwayat")
+
+        composeRule.onAllNodesWithText("Materi Coking Plant").onFirst().performTouchInput { longClick() }
+        waitForTag("ai_delete_dialog")
+        shot("16_ai_hapus")
+        composeRule.onNodeWithText("Batal").performClick()
+
+        composeRule.onNodeWithTag("ai_history_search").performTextInput("viewmodel")
+        Thread.sleep(600)
+        shot("17_ai_cari")
+        composeRule.onNodeWithTag("ai_history_search").performTextClearance()
+        Thread.sleep(400)
+
+        composeRule.onAllNodesWithText("Belajar Kotlin Android").onFirst().performClick()
+        waitForTag("ai_answer")
+        Thread.sleep(600)
+        shot("18_ai_percakapan")
+
+        composeRule.onNodeWithTag("ai_menu").performClick()
+        waitForTag("ai_sidebar")
+        Thread.sleep(400)
+        composeRule.onAllNodesWithText("Materi Coking Plant").onFirst().performClick()
+        waitForTag("ai_attachment")
+        Thread.sleep(600)
+        shot("19_ai_berkas")
+
+        composeRule.onNodeWithTag("ai_menu").performClick()
+        waitForTag("ai_sidebar")
+        Thread.sleep(400)
+        composeRule.onAllNodesWithText("Ditanya saat offline").onFirst().performClick()
+        waitForTag("ai_error")
+        Thread.sleep(400)
+        shot("20_ai_offline")
+
+        composeRule.onNodeWithTag("ai_new_chat").performClick()
+        waitForTag("ai_card_notes")
+        composeRule.onNodeWithTag("ai_card_notes").performClick()
+        composeRule.waitUntilAtLeastOneExists(hasTestTag("picker_item"), 8_000)
+        Thread.sleep(400)
+        composeRule.onAllNodes(hasTestTag("picker_item")).onFirst().performClick()
+        Thread.sleep(400)
+        composeRule.onNodeWithTag("ai_send").performClick()
+        composeRule.waitUntilAtLeastOneExists(hasTestTag("ai_confirm_send"), 8_000)
+        Thread.sleep(400)
+        shot("21_ai_izin")
+        back()
+        Thread.sleep(400)
+
+        composeRule.onNodeWithTag("ai_more").performClick()
+        composeRule.onNodeWithText("Pengaturan Model AI").performClick()
+        waitForTag("screen_settings_ai")
+        Thread.sleep(400)
+        shot("22_ai_pengaturan")
+
+        runBlocking { container.secretStore.removeKey(com.aidriy.app.domain.model.AiProviderId.OPENAI) }
     }
 }

@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aidriy.app.domain.model.AiLanguage
 import com.aidriy.app.domain.model.AiProviderId
+import com.aidriy.app.domain.model.ResponseLength
 import com.aidriy.app.domain.model.AnswerStyle
 import com.aidriy.app.domain.model.SortOrder
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,11 @@ data class AppSettings(
     val models: Map<AiProviderId, String> = AiProviderId.entries.associateWith { it.defaultModel },
     val answerStyle: AnswerStyle = AnswerStyle.BALANCED,
     val aiLanguage: AiLanguage = AiLanguage.INDONESIAN,
+    val responseLength: ResponseLength = ResponseLength.MEDIUM,
+    /** Show answers as they arrive (server-sent events), when the provider supports it. */
+    val streaming: Boolean = true,
+    /** Base URL for the "Lainnya" OpenAI-compatible provider. */
+    val otherBaseUrl: String = AiProviderId.DEFAULT_OTHER_BASE_URL,
     val saveChatHistory: Boolean = true,
     val showSuggestions: Boolean = true,
     /** Off by default: notes are only shared with an AI provider when the user turns this on. */
@@ -64,6 +70,9 @@ class SettingsRepository(context: Context) {
         fun model(p: AiProviderId) = stringPreferencesKey("ai_model_${p.key}")
         val style = stringPreferencesKey("ai_style")
         val language = stringPreferencesKey("ai_language")
+        val responseLength = stringPreferencesKey("ai_response_length")
+        val streaming = booleanPreferencesKey("ai_streaming")
+        val otherBaseUrl = stringPreferencesKey("ai_other_base_url")
         val saveHistory = booleanPreferencesKey("ai_save_history")
         val suggestions = booleanPreferencesKey("ai_suggestions")
         val useNotes = booleanPreferencesKey("ai_use_notes")
@@ -90,6 +99,9 @@ class SettingsRepository(context: Context) {
                 models = AiProviderId.entries.associateWith { p[Keys.model(it)] ?: it.defaultModel },
                 answerStyle = AnswerStyle.fromKey(p[Keys.style]),
                 aiLanguage = AiLanguage.fromKey(p[Keys.language]),
+                responseLength = ResponseLength.fromKey(p[Keys.responseLength]),
+                streaming = p[Keys.streaming] ?: true,
+                otherBaseUrl = p[Keys.otherBaseUrl]?.takeIf { it.isNotBlank() } ?: AiProviderId.DEFAULT_OTHER_BASE_URL,
                 saveChatHistory = p[Keys.saveHistory] ?: true,
                 showSuggestions = p[Keys.suggestions] ?: true,
                 useNotesData = p[Keys.useNotes] ?: false,
@@ -126,6 +138,9 @@ class SettingsRepository(context: Context) {
     }
     suspend fun setAnswerStyle(value: AnswerStyle) = store.edit { it[Keys.style] = value.key }
     suspend fun setAiLanguage(value: AiLanguage) = store.edit { it[Keys.language] = value.key }
+    suspend fun setResponseLength(value: ResponseLength) = store.edit { it[Keys.responseLength] = value.key }
+    suspend fun setStreaming(value: Boolean) = store.edit { it[Keys.streaming] = value }
+    suspend fun setOtherBaseUrl(value: String) = store.edit { it[Keys.otherBaseUrl] = value.trim().trimEnd('/') }
     suspend fun setSaveChatHistory(value: Boolean) = store.edit { it[Keys.saveHistory] = value }
     suspend fun setShowSuggestions(value: Boolean) = store.edit { it[Keys.suggestions] = value }
     suspend fun setUseNotesData(value: Boolean) = store.edit { it[Keys.useNotes] = value }

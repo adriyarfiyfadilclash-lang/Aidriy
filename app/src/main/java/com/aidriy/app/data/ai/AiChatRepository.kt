@@ -1,5 +1,11 @@
 package com.aidriy.app.data.ai
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import com.aidriy.app.domain.model.ResponseLength
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.aidriy.app.domain.markdown.FormatGuard
 import com.aidriy.app.domain.markdown.FormatOptions
 import com.aidriy.app.domain.markdown.FormatPrompt
@@ -145,6 +151,9 @@ class AiChatRepository(
         settings: AppSettings,
         context: List<ContextItem>,
         retrievalRan: Boolean,
+        attachments: List<SourceRef> = emptyList(),
+        images: List<AiImage> = emptyList(),
+        onText: ((String) -> Unit)? = null,
     ): SendOutcome {
         val now = time.nowMillis()
         val convId = conversationId ?: ids.newId().also { id ->
@@ -160,7 +169,8 @@ class AiChatRepository(
         aiDao.insertMessage(
             AiMessageEntity(
                 id = ids.newId(), conversationId = convId, role = ROLE_USER, content = question,
-                provider = null, model = null, sources = "", noLocalMatch = false, isError = false, createdAt = now,
+                provider = null, model = null, sources = SourceRef.encodeAll(attachments), noLocalMatch = false,
+                isError = false, createdAt = now,
             ),
         )
 
@@ -169,11 +179,15 @@ class AiChatRepository(
         val result = if (apiKey == null) {
             AiResult.Failure(AiError.MissingKey)
         } else {
-            AiProviders.forId(provider).complete(
+            AiProviders.forId(provider, settings.otherBaseUrl).complete(
                 apiKey = apiKey,
-                model = model,
-                system = systemPrompt(settings.answerStyle, settings.aiLanguage, hasContext = context.isNotEmpty()),
-                turns = history + AiTurn(ChatRole.USER, userTurn(question, context)),
+                request = CompletionRequest(
+                    model = model,
+                    system = systemPrompt(settings, hasContext = context.isNotEmpty()),
+                    turns = history + AiTurn(ChatRole.USER, userTurn(question, context), images),
+                    maxOutputTokens = settings.responseLength.maxTokens,
+                ),
+                onText = if (settings.streaming) onText else null,
             )
         }
 
@@ -217,16 +231,19 @@ class AiChatRepository(
         title: String,
         markdown: String,
         options: FormatOptions,
+        otherBaseUrl: String = AiProviderId.DEFAULT_OTHER_BASE_URL,
     ): FormatOutcome {
         if (markdown.length > FormatPrompt.MAX_CHARS) return FormatOutcome.TooLong(FormatPrompt.MAX_CHARS)
         val key = secrets.getKey(provider) ?: return FormatOutcome.Failed(AiError.MissingKey)
         val protected = FormatGuard.protect(markdown)
-        val result = AiProviders.forId(provider).complete(
+        val result = AiProviders.forId(provider, otherBaseUrl).complete(
             apiKey = key,
-            model = model,
-            system = FormatPrompt.system(options),
-            turns = listOf(AiTurn(ChatRole.USER, FormatPrompt.user(title, protected.text))),
-            maxOutputTokens = FormatPrompt.maxOutputTokens(markdown.length),
+            request = CompletionRequest(
+                model = model,
+                system = FormatPrompt.system(options),
+                turns = listOf(AiTurn(ChatRole.USER, FormatPrompt.user(title, protected.text))),
+                maxOutputTokens = FormatPrompt.maxOutputTokens(markdown.length),
+            ),
         )
         return when (result) {
             is AiResult.Failure -> FormatOutcome.Failed(result.error)
@@ -235,11 +252,52 @@ class AiChatRepository(
     }
 
     /** Sends a tiny request to verify a key and model. Nothing is stored. */
-    suspend fun testConnection(provider: AiProviderId, model: String): AiResult {
+    suspend fun testConnection(provider: AiProviderId, model: String, otherBaseUrl: String = AiProviderId.DEFAULT_OTHER_BASE_URL): AiResult {
         val key = secrets.getKey(provider) ?: return AiResult.Failure(AiError.MissingKey)
-        return AiProviders.forId(provider).complete(
-            apiKey = key, model = model, system = "Reply with OK.", turns = listOf(AiTurn(ChatRole.USER, "OK?")),
+        return AiProviders.forId(provider, otherBaseUrl).complete(
+            apiKey = key,
+            request = CompletionRequest(model, "Reply with OK.", listOf(AiTurn(ChatRole.USER, "OK?")), maxOutputTokens = 16),
         )
+    }
+
+    fun searchConversations(query: String): Flow<List<Conversation>> =
+        aiDao.searchConversations(SearchQuery.toLikePattern(query)).map { rows ->
+            rows.map { Conversation(it.id, it.title, it.updatedAt) }
+        }
+
+    suspend fun renameConversation(id: String, title: String) {
+        val clean = title.replace('\n', ' ').trim().take(80)
+        if (clean.isNotEmpty()) aiDao.renameConversation(id, clean)
+    }
+
+    suspend fun setRating(messageId: String, rating: Int) {
+        aiDao.setRating(messageId, rating.coerceIn(-1, 1))
+    }
+
+    /**
+     * An image from Berkas, downscaled (longest side 1568 px) and JPEG-encoded for vision
+     * models. Returns null when the file is missing or not a decodable image.
+     */
+    suspend fun imageForAi(fileId: String): AiImage? = withContext(Dispatchers.IO) {
+        val file = files.getFile(fileId)?.takeIf { it.isImage } ?: return@withContext null
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(file.localPath, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
+        var sample = 1
+        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= MAX_IMAGE_SIDE) sample *= 2
+        val decoded = BitmapFactory.decodeFile(file.localPath, BitmapFactory.Options().apply { inSampleSize = sample })
+            ?: return@withContext null
+        val scale = MAX_IMAGE_SIDE.toFloat() / maxOf(decoded.width, decoded.height)
+        val bitmap = if (scale < 1f) {
+            Bitmap.createScaledBitmap(decoded, (decoded.width * scale).toInt(), (decoded.height * scale).toInt(), true)
+        } else {
+            decoded
+        }
+        val bytes = java.io.ByteArrayOutputStream().use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
+            out.toByteArray()
+        }
+        AiImage("image/jpeg", Base64.encodeToString(bytes, Base64.NO_WRAP))
     }
 
     suspend fun deleteMessage(id: String) {
@@ -252,7 +310,9 @@ class AiChatRepository(
         return "Konteks dari data pribadi pengguna:\n\n$block\n\n---\n\nPertanyaan: $question"
     }
 
-    private fun systemPrompt(style: AnswerStyle, language: AiLanguage, hasContext: Boolean): String = buildString {
+    private fun systemPrompt(settings: AppSettings, hasContext: Boolean): String = buildString {
+        val style = settings.answerStyle
+        val language = settings.aiLanguage
         append("Kamu adalah asisten pribadi di aplikasi catatan AIDRIY. ")
         append(
             when (language) {
@@ -267,6 +327,14 @@ class AiChatRepository(
                 AnswerStyle.DETAILED -> "Jawab lengkap dan rinci, dengan langkah atau contoh bila membantu. "
             },
         )
+        append(
+            when (settings.responseLength) {
+                ResponseLength.SHORT -> "Batasi jawaban sekitar 1-2 paragraf pendek. "
+                ResponseLength.MEDIUM -> ""
+                ResponseLength.LONG -> "Boleh menjawab panjang bila topiknya membutuhkan. "
+            },
+        )
+        append("Gunakan Markdown (heading, daftar, tabel, **tebal**, `kode`) bila membuat jawaban lebih mudah dibaca. ")
         if (hasContext) {
             append(
                 "Pesan pengguna menyertakan konteks bernomor dari catatannya. Gunakan konteks itu bila relevan dan " +
@@ -290,6 +358,7 @@ class AiChatRepository(
         noLocalMatch = noLocalMatch,
         isError = isError,
         createdAt = createdAt,
+        rating = rating,
     )
 
     companion object {
@@ -301,6 +370,7 @@ class AiChatRepository(
         private const val PER_ITEM_CHARS = 2_500
         private const val SINGLE_ITEM_CHARS = 30_000
         private const val TOTAL_CHARS = 9_000
+        private const val MAX_IMAGE_SIDE = 1_568
 
         private val STOPWORDS = setOf(
             "yang", "dan", "atau", "di", "ke", "dari", "ini", "itu", "untuk", "dengan", "pada", "ada", "apa",

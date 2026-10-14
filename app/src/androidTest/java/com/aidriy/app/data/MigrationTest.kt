@@ -77,6 +77,16 @@ class MigrationTest {
                 assertTrue(c.moveToFirst())
                 assertTrue(c.isNull(0))
             }
+            // v4: AI messages get a rating column defaulting to 0.
+            sql.execSQL("INSERT INTO ai_conversations (id, title, created_at, updated_at) VALUES ('c1', 'Chat', 1, 1)")
+            sql.execSQL(
+                "INSERT INTO ai_messages (id, conversation_id, role, content, provider, model, sources, no_local_match, " +
+                    "is_error, created_at) VALUES ('m1', 'c1', 'user', 'halo', NULL, NULL, '', 0, 0, 1)",
+            )
+            sql.query("SELECT rating FROM ai_messages WHERE id = 'm1'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertEquals(0, c.getInt(0))
+            }
             assertEquals(AidriyDatabase.VERSION, sql.version)
         } finally {
             db.close()

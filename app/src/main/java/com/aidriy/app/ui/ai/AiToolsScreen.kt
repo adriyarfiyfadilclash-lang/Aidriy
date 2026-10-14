@@ -89,9 +89,9 @@ fun AiToolsScreen(
             )
         }
         item { SectionTitle(stringResource(R.string.ai_pick_model)) }
-        item {
+        items(AiProviderId.entries.chunked(2)) { pair ->
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                AiProviderId.entries.forEach { p ->
+                pair.forEach { p ->
                     val selected = settings.defaultProvider == p
                     Surface(
                         onClick = { scope.launch { container.settingsRepository.setDefaultProvider(p) } },

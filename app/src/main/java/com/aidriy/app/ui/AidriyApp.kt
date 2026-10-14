@@ -121,7 +121,11 @@ fun AidriyApp(
                 DrawerItem(Icons.Outlined.Dashboard, R.string.templates_title, "drawer_templates") { go(Routes.TEMPLATES) }
                 DrawerItem(Icons.Outlined.Search, R.string.search_title, "drawer_search") { go(Routes.SEARCH) }
                 HorizontalDivider(Modifier.padding(vertical = Spacing.sm, horizontal = 28.dp))
-                DrawerItem(Icons.Outlined.Forum, R.string.ai_history, "drawer_ai_history") { go(Routes.AI_HISTORY) }
+                DrawerItem(Icons.Outlined.Forum, R.string.ai_history, "drawer_ai_history") {
+                    scope.launch { drawerState.close() }
+                    com.aidriy.app.ui.ai.AiInbox.post(com.aidriy.app.ui.ai.AiRequest(openHistory = true))
+                    navController.navigateToTopLevel(TopLevelDestination.AI)
+                }
                 DrawerItem(Icons.Outlined.Settings, R.string.nav_settings, "drawer_settings") {
                     scope.launch { drawerState.close() }
                     navController.navigateToTopLevel(TopLevelDestination.SETTINGS)

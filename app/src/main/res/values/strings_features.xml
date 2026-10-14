@@ -90,12 +90,7 @@
 
     <!-- AI -->
     <string name="ai_title">AIDRIY AI</string>
-    <string name="ai_subtitle">Asisten untuk catatan dan berkasmu</string>
     <string name="ai_tools_title">Alat AI</string>
-    <string name="ai_hello">Halo!</string>
-    <string name="ai_hello_name">Halo, %1$s!</string>
-    <string name="ai_hello_body">Tanyakan apa saja, atau minta AI merangkum, merapikan, dan mencari dari catatanmu.</string>
-    <string name="ai_input_hint">Tulis pertanyaan…</string>
     <string name="ai_send">Kirim</string>
     <string name="ai_stop">Hentikan</string>
     <string name="ai_thinking">Sedang berpikir…</string>
@@ -110,12 +105,10 @@
     <string name="ai_delete_all_body">Semua riwayat percakapan AI di perangkat ini akan dihapus. Catatanmu tidak terpengaruh.</string>
     <string name="ai_delete_one_title">Hapus percakapan?</string>
     <string name="ai_delete_one_body">Percakapan ini akan dihapus dari perangkat.</string>
-    <string name="ai_label">%1$s · %2$s</string>
     <string name="ai_save_note">Simpan sebagai catatan</string>
     <string name="ai_note_title">Jawaban AI</string>
     <string name="ai_sources">Sumber</string>
     <string name="ai_no_local_match">Tidak ada catatan yang cocok. Jawaban tidak memakai catatanmu.</string>
-    <string name="ai_using_notes_hint">AI bisa memakai catatan yang relevan. Kamu akan diminta konfirmasi sebelum isi dikirim.</string>
     <string name="ai_detach">Lepas sumber</string>
     <string name="ai_pick_note">Pilih catatan</string>
     <string name="ai_pick_document">Pilih dokumen</string>
@@ -130,11 +123,6 @@
     <string name="ai_setup_title">Masukkan API key %1$s</string>
     <string name="ai_setup_body">AIDRIY memakai API key milikmu sendiri. Key disimpan terenkripsi di perangkat dan hanya dikirim ke penyedia yang kamu pilih.</string>
     <string name="ai_setup_action">Atur API key</string>
-    <string name="ai_confirm_title">Kirim catatan ke AI?</string>
-    <string name="ai_confirm_body">Isi catatan atau dokumen berikut akan dikirim ke %1$s untuk menjawab pertanyaanmu.</string>
-    <string name="ai_confirm_chars">%1$d karakter akan dikirim.</string>
-    <string name="ai_confirm_send">Kirim dengan sumber</string>
-    <string name="ai_confirm_without">Kirim tanpa sumber</string>
     <string name="ai_error_missing_key">API key belum diatur. Buka Pengaturan → AI.</string>
     <string name="ai_error_invalid_key">API key ditolak. Periksa kembali key-mu.</string>
     <string name="ai_error_rate_limited">Batas pemakaian tercapai. Coba lagi nanti.</string>
@@ -146,11 +134,8 @@
     <string name="ai_error_rejected_detail">Permintaan ditolak (kode %1$d): %2$s</string>
     <string name="ai_error_bad_response">Jawaban dari server AI tidak bisa dibaca.</string>
     <string name="ai_test">Uji koneksi</string>
-    <string name="ai_test_ok">Koneksi ke %1$s berhasil.</string>
-    <string name="ai_default_model">Penyedia AI utama</string>
-    <string name="ai_model_id">ID model</string>
+    <string name="ai_test_ok">%1$s terhubung. Model siap digunakan.</string>
     <string name="ai_model_hint">Bisa diganti jika penyedia merilis model baru.</string>
-    <string name="ai_keys_section">API key</string>
     <string name="ai_keys_explain">Key dienkripsi dengan Android Keystore dan tidak pernah ditampilkan atau dicatat di log.</string>
     <string name="ai_key_enter">Masukkan API key</string>
     <string name="ai_key_show">Tampilkan</string>

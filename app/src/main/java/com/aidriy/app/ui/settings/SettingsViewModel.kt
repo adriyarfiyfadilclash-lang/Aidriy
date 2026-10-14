@@ -22,6 +22,7 @@ import com.aidriy.app.di.AppContainer
 import com.aidriy.app.di.appContainer
 import com.aidriy.app.domain.model.AiLanguage
 import com.aidriy.app.domain.model.AiProviderId
+import com.aidriy.app.domain.model.ResponseLength
 import com.aidriy.app.domain.model.AnswerStyle
 import com.aidriy.app.domain.model.SortOrder
 import com.aidriy.app.ui.common.UiText
@@ -58,6 +59,12 @@ class SettingsViewModel(
     val messages: Flow<UiText> = messageChannel.receiveAsFlow()
 
     var testingProvider by mutableStateOf<AiProviderId?>(null)
+        private set
+
+    /** Result of the last "Uji Koneksi", shown under the button: true ok, false failed, null none. */
+    var testOk by mutableStateOf<Boolean?>(null)
+        private set
+    var testMessage by mutableStateOf<UiText?>(null)
         private set
     var pendingRestore by mutableStateOf<PendingRestore?>(null)
         private set
@@ -109,12 +116,28 @@ class SettingsViewModel(
 
     // ------------------------------------------------------------ AI
 
-    fun setDefaultProvider(p: AiProviderId) { viewModelScope.launch { c.settingsRepository.setDefaultProvider(p) } }
+    fun setDefaultProvider(p: AiProviderId) { viewModelScope.launch {
+        c.settingsRepository.setDefaultProvider(p)
+        testOk = null
+        testMessage = null
+    } }
     fun setStyle(style: AnswerStyle) { viewModelScope.launch { c.settingsRepository.setAnswerStyle(style) } }
     fun setLanguage(language: AiLanguage) { viewModelScope.launch { c.settingsRepository.setAiLanguage(language) } }
     fun setSaveHistory(on: Boolean) { viewModelScope.launch { c.settingsRepository.setSaveChatHistory(on) } }
     fun setShowSuggestions(on: Boolean) { viewModelScope.launch { c.settingsRepository.setShowSuggestions(on) } }
     fun setUseNotes(on: Boolean) { viewModelScope.launch { c.settingsRepository.setUseNotesData(on) } }
+    fun setResponseLength(value: ResponseLength) { viewModelScope.launch { c.settingsRepository.setResponseLength(value) } }
+    fun setStreaming(on: Boolean) { viewModelScope.launch { c.settingsRepository.setStreaming(on) } }
+    fun setOtherBaseUrl(url: String) { viewModelScope.launch {
+        val clean = url.trim()
+        if (!clean.startsWith("https://") && !clean.startsWith("http://")) {
+            say(R.string.ai_base_url_invalid)
+        } else {
+            c.settingsRepository.setOtherBaseUrl(clean)
+            testOk = null
+            say(R.string.saved)
+        }
+    } }
 
     fun setModel(p: AiProviderId, model: String) { viewModelScope.launch {
         c.settingsRepository.setModel(p, model)
@@ -145,11 +168,19 @@ class SettingsViewModel(
         if (testingProvider != null) return
         viewModelScope.launch {
             testingProvider = p
-            val result = c.aiChatRepository.testConnection(p, settings.value.modelFor(p))
+            testOk = null
+            testMessage = null
+            val result = c.aiChatRepository.testConnection(p, settings.value.modelFor(p), settings.value.otherBaseUrl)
             testingProvider = null
             when (result) {
-                is AiResult.Success -> say(R.string.ai_test_ok, p.displayName)
-                is AiResult.Failure -> messageChannel.send(result.error.toUiText())
+                is AiResult.Success -> {
+                    testOk = true
+                    testMessage = UiText(R.string.ai_test_ok, listOf(p.displayName))
+                }
+                is AiResult.Failure -> {
+                    testOk = false
+                    testMessage = result.error.toUiText()
+                }
             }
         }
     }

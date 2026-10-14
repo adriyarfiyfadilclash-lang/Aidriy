@@ -666,6 +666,7 @@ class NoteEditorViewModel(
                             title = title,
                             markdown = markdown,
                             options = options,
+                            otherBaseUrl = s.otherBaseUrl,
                         )
                     },
                 )

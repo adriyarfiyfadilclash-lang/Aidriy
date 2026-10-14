@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -81,6 +82,7 @@ fun SourcePickerSheet(
                             meta = formatRelative(note.updatedAt),
                             onClick = { onPicked(SourceRef(SourceType.NOTE, note.id, note.title.ifBlank { "Catatan" })) },
                             leading = { AccentTile(Icons.Outlined.Description, AidriyColors.accentFor(note.id)) },
+                            modifier = Modifier.testTag("picker_item"),
                         )
                     }
                 }
@@ -108,6 +110,7 @@ fun SourcePickerSheet(
                             meta = formatRelative(file.createdAt),
                             onClick = { onPicked(SourceRef(SourceType.FILE, file.id, file.name)) },
                             leading = { AccentTile(Icons.Outlined.Description, AidriyColors.accent(AccentKey.RED)) },
+                            modifier = Modifier.testTag("picker_item"),
                         )
                     }
                 }

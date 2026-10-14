@@ -10,6 +10,8 @@ data class AiRequest(
     val suggestionId: String? = null,
     val conversationId: String? = null,
     val source: SourceRef? = null,
+    /** Open the chat history sidebar (from the main drawer's "Riwayat AI"). */
+    val openHistory: Boolean = false,
 )
 
 /** In-memory hand-off to the AI tab; consumed once by the chat screen. */

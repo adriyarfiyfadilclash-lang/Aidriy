@@ -37,7 +37,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
@@ -308,7 +310,8 @@ fun ImageBlock(
 ) {
     val id = Markdown.berkasId(target)
     val lookup = LocalBerkasLookup.current
-    val file by produceState<StoredFile?>(null, id) { value = id?.let { lookup(it) } }
+    var file by remember(id) { mutableStateOf<StoredFile?>(null) }
+    LaunchedEffect(id) { file = id?.let { lookup(it) } }
     Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         val shape = MaterialTheme.shapes.medium
         val f = file

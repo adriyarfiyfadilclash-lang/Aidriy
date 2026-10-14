@@ -33,13 +33,20 @@ fun RecordCard(
     modifier: Modifier = Modifier,
     tags: List<Tag> = emptyList(),
     badge: String? = null,
+    leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     AidriyCard(modifier = modifier.fillMaxWidth(), onClick = onClick) {
         Row(
-            modifier = Modifier.padding(start = Spacing.lg, top = Spacing.md, bottom = Spacing.md, end = Spacing.sm),
+            modifier = Modifier.padding(start = Spacing.md, top = Spacing.md, bottom = Spacing.md, end = Spacing.xs),
             verticalAlignment = Alignment.Top,
         ) {
+            if (leading != null) {
+                leading()
+                Spacer(Modifier.width(Spacing.md))
+            } else {
+                Spacer(Modifier.width(Spacing.xs))
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -53,9 +60,10 @@ fun RecordCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                if (preview.isNotBlank()) {
+                val plainPreview = MarkdownLite.plain(preview)
+                if (plainPreview.isNotBlank()) {
                     Text(
-                        text = preview.trim(),
+                        text = plainPreview,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,

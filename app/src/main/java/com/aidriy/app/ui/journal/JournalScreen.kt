@@ -23,6 +23,8 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +50,7 @@ import com.aidriy.app.ui.components.EmptyState
 import com.aidriy.app.ui.components.ErrorState
 import com.aidriy.app.ui.components.LoadingState
 import com.aidriy.app.ui.components.RecordCard
-import com.aidriy.app.ui.components.ScreenHeader
+import com.aidriy.app.ui.components.AppHeaderBar
 import com.aidriy.app.ui.components.SearchField
 import com.aidriy.app.ui.components.SectionHeader
 import com.aidriy.app.ui.navigation.TopLevelDestination
@@ -58,6 +60,7 @@ import java.time.LocalDate
 
 @Composable
 fun JournalRoute(
+    onBack: () -> Unit,
     onOpenDate: (LocalDate) -> Unit,
     viewModel: JournalViewModel = viewModel(factory = JournalViewModel.Factory),
 ) {
@@ -71,6 +74,7 @@ fun JournalRoute(
     }
 
     JournalScreen(
+        onBack = onBack,
         uiState = uiState,
         todayEntry = todayEntry,
         history = history,
@@ -83,6 +87,7 @@ fun JournalRoute(
 
 @Composable
 fun JournalScreen(
+    onBack: () -> Unit,
     uiState: JournalUiState,
     todayEntry: JournalEntry?,
     history: ListUiState<JournalEntry>,
@@ -106,9 +111,13 @@ fun JournalScreen(
         verticalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         item {
-            ScreenHeader(
+            AppHeaderBar(
                 title = stringResource(R.string.nav_journal),
-                subtitle = stringResource(R.string.journal_subtitle),
+                navigation = {
+                    IconButton(onClick = onBack, modifier = Modifier.testTag("header_back")) {
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                },
             )
         }
         item {

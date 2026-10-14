@@ -10,22 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.SearchOff
-import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,23 +40,22 @@ import com.aidriy.app.domain.model.NoteScope
 import com.aidriy.app.domain.model.SortOrder
 import com.aidriy.app.domain.model.Tag
 import com.aidriy.app.ui.common.ListUiState
-import com.aidriy.app.ui.common.formatTimestamp
+import com.aidriy.app.ui.components.AppHeaderBar
 import com.aidriy.app.ui.components.ChipOption
 import com.aidriy.app.ui.components.ChoiceChipRow
+import com.aidriy.app.ui.components.ConfirmDeleteDialog
 import com.aidriy.app.ui.components.EmptyState
 import com.aidriy.app.ui.components.ErrorState
 import com.aidriy.app.ui.components.LoadingState
-import com.aidriy.app.ui.components.RecordCard
-import com.aidriy.app.ui.components.ScreenHeader
 import com.aidriy.app.ui.components.SearchField
 import com.aidriy.app.ui.components.SortMenu
 import com.aidriy.app.ui.components.TagFilterRow
-import com.aidriy.app.ui.navigation.TopLevelDestination
-import com.aidriy.app.ui.navigation.icon
+import com.aidriy.app.ui.home.NoteRow
 import com.aidriy.app.ui.theme.Spacing
 
 @Composable
 fun NotesRoute(
+    onBack: () -> Unit,
     onOpenNote: (String) -> Unit,
     onCreateNote: () -> Unit,
     viewModel: NotesViewModel = viewModel(factory = NotesViewModel.Factory),
@@ -76,12 +76,16 @@ fun NotesRoute(
         options = options,
         tags = tags,
         snackbarHostState = snackbarHostState,
+        onBack = onBack,
         onQueryChange = viewModel::onQueryChange,
         onScopeChange = viewModel::setScope,
         onSortChange = viewModel::setSort,
         onTagChange = viewModel::setTag,
         onRetry = viewModel::retry,
         onToggleFavorite = viewModel::toggleFavorite,
+        onArchive = viewModel::archive,
+        onRestore = viewModel::restore,
+        onDelete = viewModel::delete,
         onOpenNote = onOpenNote,
         onCreateNote = onCreateNote,
     )
@@ -94,16 +98,21 @@ fun NotesScreen(
     options: NoteListOptions,
     tags: List<Tag>,
     snackbarHostState: SnackbarHostState,
+    onBack: () -> Unit,
     onQueryChange: (String) -> Unit,
     onScopeChange: (NoteScope) -> Unit,
     onSortChange: (SortOrder) -> Unit,
     onTagChange: (String?) -> Unit,
     onRetry: () -> Unit,
     onToggleFavorite: (Note) -> Unit,
+    onArchive: (Note) -> Unit,
+    onRestore: (Note) -> Unit,
+    onDelete: (Note) -> Unit,
     onOpenNote: (String) -> Unit,
     onCreateNote: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var pendingDelete by remember { mutableStateOf<Note?>(null) }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -119,9 +128,13 @@ fun NotesScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.sm),
         ) {
             item {
-                ScreenHeader(
-                    title = stringResource(R.string.nav_notes),
-                    subtitle = stringResource(R.string.notes_subtitle),
+                AppHeaderBar(
+                    title = stringResource(R.string.notes_all_title),
+                    navigation = {
+                        IconButton(onClick = onBack, modifier = Modifier.testTag("header_back")) {
+                            Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                        }
+                    },
                 )
             }
             item {
@@ -133,10 +146,7 @@ fun NotesScreen(
                 )
             }
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     ChoiceChipRow(
                         options = listOf(
                             ChipOption(NoteScope.ACTIVE, stringResource(R.string.notes_scope_active), "scope_active"),
@@ -151,9 +161,7 @@ fun NotesScreen(
                 }
             }
             if (tags.isNotEmpty()) {
-                item {
-                    TagFilterRow(tags = tags, selectedTagId = options.tagId, onSelect = onTagChange)
-                }
+                item { TagFilterRow(tags = tags, selectedTagId = options.tagId, onSelect = onTagChange) }
             }
 
             when (uiState) {
@@ -161,49 +169,43 @@ fun NotesScreen(
                 is ListUiState.Error -> item { ErrorState(uiState.message.asString(), onRetry) }
                 is ListUiState.Empty -> item { NotesEmptyState(options.scope, uiState.isFiltered) }
                 is ListUiState.Success -> items(uiState.items, key = { it.id }) { note ->
-                    RecordCard(
-                        title = note.title,
-                        preview = note.content,
-                        meta = if (options.sort == SortOrder.CREATED) {
-                            stringResource(R.string.meta_created, formatTimestamp(note.createdAt))
-                        } else {
-                            stringResource(R.string.meta_updated, formatTimestamp(note.updatedAt))
-                        },
-                        tags = note.tags,
-                        onClick = { onOpenNote(note.id) },
-                        modifier = Modifier.testTag("note_item"),
-                        trailing = {
-                            IconButton(onClick = { onToggleFavorite(note) }) {
-                                Icon(
-                                    imageVector = if (note.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                                    contentDescription = stringResource(
-                                        if (note.isFavorite) R.string.note_favorite_remove else R.string.note_favorite_add,
-                                    ),
-                                    tint = if (note.isFavorite) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    },
-                                )
-                            }
-                        },
+                    NoteRow(
+                        note = note,
+                        onOpen = { onOpenNote(note.id) },
+                        onToggleFavorite = { onToggleFavorite(note) },
+                        onArchive = if (note.isArchived) null else ({ onArchive(note) }),
+                        onRestore = if (note.isArchived) ({ onRestore(note) }) else null,
+                        onDelete = { pendingDelete = note },
                     )
                 }
             }
         }
 
-        ExtendedFloatingActionButton(
+        FloatingActionButton(
             onClick = onCreateNote,
-            icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
-            text = { Text(stringResource(R.string.notes_new)) },
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = androidx.compose.foundation.shape.CircleShape,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(Spacing.lg)
                 .testTag("notes_new"),
-        )
+        ) {
+            Icon(Icons.Outlined.Add, contentDescription = stringResource(R.string.notes_new))
+        }
         SnackbarHost(snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
+    }
+
+    pendingDelete?.let { note ->
+        ConfirmDeleteDialog(
+            title = stringResource(R.string.note_delete_title),
+            message = stringResource(R.string.note_delete_body),
+            onConfirm = {
+                pendingDelete = null
+                onDelete(note)
+            },
+            onDismiss = { pendingDelete = null },
+        )
     }
 }
 
@@ -219,7 +221,7 @@ private fun NotesEmptyState(scope: NoteScope, isFiltered: Boolean) {
         icon = when {
             scope == NoteScope.ARCHIVED -> Icons.Outlined.Inventory2
             isFiltered -> Icons.Outlined.SearchOff
-            else -> TopLevelDestination.NOTES.icon
+            else -> Icons.Outlined.Description
         },
         title = stringResource(title),
         body = stringResource(body),

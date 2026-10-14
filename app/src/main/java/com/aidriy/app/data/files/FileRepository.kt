@@ -32,6 +32,12 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
+/** What the note editor needs from Berkas (an interface so the editor can be unit-tested). */
+interface AttachmentStore {
+    fun observeAttachments(noteId: String): Flow<List<StoredFile>>
+    suspend fun import(uri: Uri, folderId: String? = null, noteId: String? = null): DataResult<StoredFile>
+}
+
 /**
  * Berkas: files are copied into app-private storage and indexed in Room.
  * Text extraction runs in [appScope] after import, so it continues if the screen closes.
@@ -45,7 +51,7 @@ class FileRepository(
     private val time: TimeProvider,
     private val ids: IdGenerator,
     private val appScope: CoroutineScope,
-) {
+) : AttachmentStore {
     val storageDir: File get() = File(context.filesDir, DIR).apply { mkdirs() }
 
     fun observeFiles(query: String, kind: FileKind?, folderId: String?): Flow<List<StoredFile>> =
@@ -55,7 +61,7 @@ class FileRepository(
     fun observeFile(id: String): Flow<StoredFile?> =
         if (!InputRules.isValidId(id)) flowOf(null) else fileDao.observeById(id).map { it?.toDomain() }
 
-    fun observeAttachments(noteId: String): Flow<List<StoredFile>> =
+    override fun observeAttachments(noteId: String): Flow<List<StoredFile>> =
         fileDao.observeForNote(noteId).map { rows -> rows.map { it.toDomain() } }
 
     fun observeStats(kind: FileKind?): Flow<GroupStats> =
@@ -76,7 +82,7 @@ class FileRepository(
     suspend fun getFile(id: String): StoredFile? = if (!InputRules.isValidId(id)) null else fileDao.getById(id)?.toDomain()
 
     /** Copies the document behind [uri] into Berkas. */
-    suspend fun import(uri: Uri, folderId: String? = null, noteId: String? = null): DataResult<StoredFile> =
+    override suspend fun import(uri: Uri, folderId: String?, noteId: String?): DataResult<StoredFile> =
         withContext(Dispatchers.IO) {
             try {
                 val resolver = context.contentResolver

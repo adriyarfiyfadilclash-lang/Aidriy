@@ -26,12 +26,18 @@ import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
+/** What the note editor needs for reminders (an interface so the editor can be unit-tested). */
+interface NoteReminders {
+    fun scheduleNote(noteId: String, title: String, atMillis: Long)
+    fun cancelNote(noteId: String)
+}
+
 /** Schedules note reminders and the optional daily journal reminder. Fully local. */
-class ReminderScheduler(private val context: Context) {
+class ReminderScheduler(private val context: Context) : NoteReminders {
 
     private val workManager get() = WorkManager.getInstance(context)
 
-    fun scheduleNote(noteId: String, title: String, atMillis: Long) {
+    override fun scheduleNote(noteId: String, title: String, atMillis: Long) {
         val delay = (atMillis - System.currentTimeMillis()).coerceAtLeast(0)
         val request = OneTimeWorkRequestBuilder<NoteReminderWorker>()
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
@@ -40,7 +46,7 @@ class ReminderScheduler(private val context: Context) {
         workManager.enqueueUniqueWork(noteWorkName(noteId), ExistingWorkPolicy.REPLACE, request)
     }
 
-    fun cancelNote(noteId: String) {
+    override fun cancelNote(noteId: String) {
         workManager.cancelUniqueWork(noteWorkName(noteId))
     }
 

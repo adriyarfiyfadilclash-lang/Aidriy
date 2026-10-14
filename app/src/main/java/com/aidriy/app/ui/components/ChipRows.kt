@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +50,7 @@ fun <T> ChoiceChipRow(
                 onClick = { onSelect(option.value) },
                 label = { Text(option.label) },
                 colors = brandFilterChipColors(),
+                shape = CircleShape,
                 modifier = option.testTag?.let { Modifier.testTag(it) } ?: Modifier,
             )
         }
@@ -74,6 +76,7 @@ fun TagFilterRow(
                 onClick = { onSelect(null) },
                 label = { Text(stringResource(R.string.tags_filter_all)) },
                 colors = brandFilterChipColors(),
+                shape = CircleShape,
             )
         }
         items(tags, key = { it.id }) { tag ->
@@ -82,6 +85,7 @@ fun TagFilterRow(
                 onClick = { onSelect(if (tag.id == selectedTagId) null else tag.id) },
                 label = { Text("#${tag.name}") },
                 colors = brandFilterChipColors(),
+                shape = CircleShape,
             )
         }
     }
@@ -89,6 +93,8 @@ fun TagFilterRow(
 
 @Composable
 private fun brandFilterChipColors() = FilterChipDefaults.filterChipColors(
-    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    containerColor = MaterialTheme.colorScheme.surface,
+    selectedContainerColor = MaterialTheme.colorScheme.primary,
+    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+    selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
 )

@@ -6,9 +6,9 @@ import org.junit.Test
 class TopLevelDestinationTest {
 
     @Test
-    fun has_exactly_five_destinations_in_required_order() {
+    fun has_four_tabs_in_the_order_of_the_design() {
         assertEquals(
-            listOf("home", "notes", "ideas", "journal", "insight"),
+            listOf("catatan", "ai", "berkas", "pengaturan"),
             TopLevelDestination.entries.map { it.route },
         )
     }

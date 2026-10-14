@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.aidriy.app.data.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,7 +84,7 @@ class AppLockManager(
         val s = settings.settings.first()
         val hash = s.pinHash ?: return true.also { _locked.value = false }
         val salt = s.pinSalt ?: return false
-        val ok = PinHasher.matches(pin, salt, hash)
+        val ok = withContext(Dispatchers.Default) { PinHasher.matches(pin, salt, hash) }
         if (ok) _locked.value = false
         return ok
     }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -26,6 +27,7 @@ import com.aidriy.app.ui.common.SEARCH_DEBOUNCE_MS
 import com.aidriy.app.ui.common.UiText
 import com.aidriy.app.ui.common.toListState
 import com.aidriy.app.ui.common.toUiText
+import com.aidriy.app.ui.navigation.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -55,16 +57,31 @@ data class NoteListOptions(
 class NotesViewModel(
     private val notes: NoteRepository,
     tags: TagRepository,
+    initialScope: NoteScope = NoteScope.ACTIVE,
+    defaultSort: Flow<SortOrder>? = null,
 ) : ViewModel() {
 
     /** Text field state lives in Compose state so typing never lags or jumps the cursor. */
     var query by mutableStateOf("")
         private set
 
-    private val options = MutableStateFlow(NoteListOptions())
+    private val options = MutableStateFlow(NoteListOptions(scope = initialScope))
     val listOptions: StateFlow<NoteListOptions> = options.asStateFlow()
 
     private val retryTrigger = MutableStateFlow(0)
+
+    /** Until the user picks a sort on this screen, follow the default from Pengaturan. */
+    private var sortChosenHere = false
+
+    init {
+        if (defaultSort != null) {
+            viewModelScope.launch {
+                defaultSort.catch { }.collect { sort ->
+                    if (!sortChosenHere) options.update { it.copy(sort = sort) }
+                }
+            }
+        }
+    }
 
     private val messageChannel = Channel<UiText>(Channel.BUFFERED)
     val messages: Flow<UiText> = messageChannel.receiveAsFlow()
@@ -95,13 +112,24 @@ class NotesViewModel(
     }
 
     fun setScope(scope: NoteScope) = options.update { it.copy(scope = scope) }
-    fun setSort(sort: SortOrder) = options.update { it.copy(sort = sort) }
+    fun setSort(sort: SortOrder) {
+        sortChosenHere = true
+        options.update { it.copy(sort = sort) }
+    }
     fun setTag(tagId: String?) = options.update { it.copy(tagId = tagId) }
     fun retry() = retryTrigger.update { it + 1 }
 
-    fun toggleFavorite(note: Note) {
+    fun toggleFavorite(note: Note) = report { notes.setFavorite(note.id, !note.isFavorite) }
+
+    fun archive(note: Note) = report { notes.setArchived(note.id, true) }
+
+    fun restore(note: Note) = report { notes.setArchived(note.id, false) }
+
+    fun delete(note: Note) = report { notes.delete(note.id) }
+
+    private fun report(action: suspend () -> DataResult<Unit>) {
         viewModelScope.launch {
-            val result = notes.setFavorite(note.id, !note.isFavorite)
+            val result = action()
             if (result is DataResult.Failure) messageChannel.send(result.error.toUiText())
         }
     }
@@ -110,7 +138,15 @@ class NotesViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val container = appContainer()
-                NotesViewModel(container.noteRepository, container.tagRepository)
+                val scope = createSavedStateHandle().get<String>(Routes.ARG_SCOPE)
+                    ?.let { value -> NoteScope.entries.firstOrNull { it.name == value } }
+                    ?: NoteScope.ACTIVE
+                NotesViewModel(
+                    container.noteRepository,
+                    container.tagRepository,
+                    scope,
+                    container.settingsRepository.settings.map { it.noteSort }.distinctUntilChanged(),
+                )
             }
         }
     }

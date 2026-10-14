@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Only colors needed before Compose draws (window background, launcher icon). -->
-    <color name="aidriy_background">#FFF7F8FA</color>
-    <color name="ic_launcher_background">#FF1F5EDB</color>
+    <color name="aidriy_background">#FFF6F8FB</color>
+    <color name="ic_launcher_background">#FF2563EB</color>
 </resources>

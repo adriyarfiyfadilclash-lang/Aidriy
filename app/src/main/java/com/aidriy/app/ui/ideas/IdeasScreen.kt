@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +52,7 @@ import com.aidriy.app.ui.components.ErrorState
 import com.aidriy.app.ui.components.InlineError
 import com.aidriy.app.ui.components.LoadingState
 import com.aidriy.app.ui.components.RecordCard
-import com.aidriy.app.ui.components.ScreenHeader
+import com.aidriy.app.ui.components.AppHeaderBar
 import com.aidriy.app.ui.components.SearchField
 import com.aidriy.app.ui.components.SortMenu
 import com.aidriy.app.ui.components.TagFilterRow
@@ -61,6 +62,7 @@ import com.aidriy.app.ui.theme.Spacing
 
 @Composable
 fun IdeasRoute(
+    onBack: () -> Unit,
     onOpenIdea: (String) -> Unit,
     viewModel: IdeasViewModel = viewModel(factory = IdeasViewModel.Factory),
 ) {
@@ -75,6 +77,7 @@ fun IdeasRoute(
     }
 
     IdeasScreen(
+        onBack = onBack,
         uiState = uiState,
         query = viewModel.query,
         captureText = viewModel.captureText,
@@ -96,6 +99,7 @@ fun IdeasRoute(
 
 @Composable
 fun IdeasScreen(
+    onBack: () -> Unit,
     uiState: ListUiState<Idea>,
     query: String,
     captureText: String,
@@ -129,10 +133,14 @@ fun IdeasScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.sm),
         ) {
             item {
-                ScreenHeader(
-                    title = stringResource(R.string.nav_ideas),
-                    subtitle = stringResource(R.string.ideas_subtitle),
-                )
+                AppHeaderBar(
+                title = stringResource(R.string.nav_ideas),
+                navigation = {
+                    IconButton(onClick = onBack, modifier = Modifier.testTag("header_back")) {
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                },
+            )
             }
             item {
                 QuickCaptureCard(

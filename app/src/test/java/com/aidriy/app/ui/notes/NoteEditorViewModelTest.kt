@@ -2,6 +2,7 @@ package com.aidriy.app.ui.notes
 
 import androidx.lifecycle.SavedStateHandle
 import com.aidriy.app.R
+import com.aidriy.app.data.reminders.NoteReminders
 import com.aidriy.app.domain.DataError
 import com.aidriy.app.domain.DataResult
 import com.aidriy.app.domain.model.NoteDraft
@@ -109,5 +110,46 @@ class NoteEditorViewModelTest {
         vm.delete()
         assertEquals(EditorEvent.Close, vm.events.first())
         assertNull(notes.stored(created.id))
+    }
+
+    private class RecordingReminders : NoteReminders {
+        val scheduled = mutableMapOf<String, Long>()
+        override fun scheduleNote(noteId: String, title: String, atMillis: Long) {
+            scheduled[noteId] = atMillis
+        }
+        override fun cancelNote(noteId: String) {
+            scheduled.remove(noteId)
+        }
+    }
+
+    @Test
+    fun reminder_saves_the_note_and_schedules_it() = runTest {
+        val reminders = RecordingReminders()
+        val vm = NoteEditorViewModel(SavedStateHandle(), notes, FakeTagRepository(), reminders = reminders)
+        vm.onTitleChange("Bayar listrik")
+        val at = System.currentTimeMillis() + 3_600_000
+
+        vm.setReminder(at)
+
+        assertEquals(EditorEvent.Message(UiText(R.string.reminder_set)), vm.events.first())
+        val id = vm.uiState.value.noteId!!
+        assertEquals(at, notes.stored(id)?.reminderAt)
+        assertEquals(at, reminders.scheduled[id])
+
+        vm.setReminder(null)
+        assertNull(notes.stored(id)?.reminderAt)
+        assertTrue(reminders.scheduled.isEmpty())
+    }
+
+    @Test
+    fun reminder_in_the_past_is_rejected() = runTest {
+        val reminders = RecordingReminders()
+        val vm = NoteEditorViewModel(SavedStateHandle(), notes, FakeTagRepository(), reminders = reminders)
+        vm.onTitleChange("Lewat")
+
+        vm.setReminder(System.currentTimeMillis() - 60_000)
+
+        assertEquals(EditorEvent.Message(UiText(R.string.reminder_past)), vm.events.first())
+        assertTrue(reminders.scheduled.isEmpty())
     }
 }

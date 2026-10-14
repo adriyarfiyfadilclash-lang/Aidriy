@@ -51,55 +51,74 @@ class DataFlowsTest {
     private fun waitForTag(tag: String) =
         composeRule.waitUntilAtLeastOneExists(hasTestTag(tag), timeoutMillis = 5_000)
 
+    /** The splash shows briefly on launch. */
+    @Before
+    fun waitForHome() = waitForTag("screen_catatan")
+
+    private fun openDrawerItem(tag: String) {
+        composeRule.onNodeWithTag("home_menu").performClick()
+        waitForTag(tag)
+        composeRule.onNodeWithTag(tag).performClick()
+    }
+
     @Test
     fun create_edit_reopen_and_delete_a_note() {
-        composeRule.onNodeWithTag("nav_notes").performClick()
-        composeRule.onNodeWithTag("notes_new").performClick()
+        composeRule.onNodeWithTag("quick_notes").performClick()
+        waitForTag("screen_note_editor")
         composeRule.onNodeWithTag("editor_title").performTextInput("Catatan uji")
         composeRule.onNodeWithTag("editor_content").performTextInput("Isi pertama")
+        composeRule.onNodeWithTag("editor_menu").performClick()
         composeRule.onNodeWithTag("editor_save").performClick()
         waitForText("Tersimpan")
         composeRule.onNodeWithTag("editor_back").performClick()
 
         waitForText("Catatan uji")
         composeRule.onNodeWithText("Catatan uji").performClick()
+        waitForTag("screen_note_editor")
         composeRule.onNodeWithTag("editor_title").assertTextContains("Catatan uji")
         composeRule.onNodeWithTag("editor_title").performTextClearance()
         composeRule.onNodeWithTag("editor_title").performTextInput("Catatan diedit")
-        composeRule.onNodeWithTag("editor_save").performClick()
-        waitForText("Tersimpan")
+        // Autosave is on by default: going back stores the change.
         composeRule.onNodeWithTag("editor_back").performClick()
 
         waitForText("Catatan diedit")
         composeRule.onNodeWithText("Catatan diedit").performClick()
+        waitForTag("screen_note_editor")
         composeRule.onNodeWithTag("editor_menu").performClick()
         composeRule.onNodeWithTag("menu_delete").performClick()
         composeRule.onNodeWithText("Hapus catatan?").assertIsDisplayed()
         composeRule.onNodeWithText("Hapus").performClick()
 
-        waitForTag("screen_notes")
+        waitForTag("screen_catatan")
         composeRule.waitUntil(5_000) {
             composeRule.onAllNodesWithText("Catatan diedit").fetchSemanticsNodes().isEmpty()
         }
     }
 
     @Test
-    fun leaving_with_unsaved_changes_asks_first_and_discard_saves_nothing() {
-        composeRule.onNodeWithTag("nav_notes").performClick()
-        composeRule.onNodeWithTag("notes_new").performClick()
-        composeRule.onNodeWithTag("editor_content").performTextInput("draf sementara")
+    fun notes_list_from_the_drawer_shows_stored_notes() {
+        runBlocking { container.noteRepository.create(NoteDraft("Daftar belanja", "telur")) }
+        openDrawerItem("drawer_notes")
+        waitForTag("screen_notes")
+        waitForText("Daftar belanja")
+        composeRule.onNodeWithTag("notes_new").assertIsDisplayed()
+    }
+
+    @Test
+    fun back_with_autosave_keeps_a_new_note() {
+        composeRule.onNodeWithTag("quick_notes").performClick()
+        waitForTag("screen_note_editor")
+        composeRule.onNodeWithTag("editor_title").performTextInput("Draf otomatis")
         composeRule.onNodeWithTag("editor_back").performClick()
 
-        composeRule.onNodeWithText("Simpan perubahan?").assertIsDisplayed()
-        composeRule.onNodeWithText("Buang").performClick()
-
-        waitForTag("screen_notes")
-        composeRule.onNodeWithText("Belum ada catatan").assertIsDisplayed()
+        waitForTag("screen_catatan")
+        waitForText("Draf otomatis")
     }
 
     @Test
     fun capture_an_idea_and_change_its_status() {
-        composeRule.onNodeWithTag("nav_ideas").performClick()
+        openDrawerItem("drawer_ideas")
+        waitForTag("screen_ideas")
         composeRule.onNodeWithTag("idea_capture_input").performTextInput("Ide uji")
         composeRule.onNodeWithTag("idea_capture_send").performClick()
         waitForTag("idea_item")
@@ -121,7 +140,8 @@ class DataFlowsTest {
 
     @Test
     fun write_todays_journal_then_reopen_the_same_entry() {
-        composeRule.onNodeWithTag("nav_journal").performClick()
+        openDrawerItem("drawer_journal")
+        waitForTag("screen_journal")
         composeRule.onNodeWithTag("journal_today").performClick()
         composeRule.onNodeWithTag("editor_content").performTextInput("Hari ini menyenangkan")
         composeRule.onNodeWithTag("editor_save").performClick()

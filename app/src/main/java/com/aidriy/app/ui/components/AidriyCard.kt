@@ -15,9 +15,10 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.aidriy.app.ui.theme.AidriyColors
 
 /**
- * Flat card with a hairline border and no shadow: the single container style used app-wide.
+ * White card with a soft hairline border and a very light shadow: the container style used app-wide.
  * Pass [onClick] only when the whole card is an action.
  */
 @Composable
@@ -26,9 +27,10 @@ fun AidriyCard(
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val shape = MaterialTheme.shapes.medium
+    val shape = MaterialTheme.shapes.large
     val color = MaterialTheme.colorScheme.surface
-    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    val elevation = if (AidriyColors.isDark) 0.dp else 1.dp
 
     if (onClick != null) {
         Surface(
@@ -37,6 +39,7 @@ fun AidriyCard(
             shape = shape,
             color = color,
             border = border,
+            shadowElevation = elevation,
             content = content,
         )
     } else {
@@ -45,6 +48,7 @@ fun AidriyCard(
             shape = shape,
             color = color,
             border = border,
+            shadowElevation = elevation,
             content = content,
         )
     }

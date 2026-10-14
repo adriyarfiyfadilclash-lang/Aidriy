@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings for the redesign: 4-tab layout, AI, Berkas, Pengaturan, scan, voice, templates. -->
+<resources>
+    <!-- App and navigation -->
+    <string name="app_full_name">AIDRIY — Second Brain AI</string>
+    <string name="tagline">Second Brain AI yang menjaga ide, catatan, dan berkasmu tetap rapi.</string>
+    <string name="nav_ai">Ai</string>
+    <string name="nav_files">Berkas</string>
+    <string name="nav_settings">Pengaturan</string>
+    <string name="drawer_open">Buka menu</string>
+    <string name="drawer_all_notes">Semua Catatan</string>
+    <string name="drawer_favorites">Favorit</string>
+    <string name="drawer_archive">Arsip</string>
+
+    <!-- Common actions -->
+    <string name="action_share">Bagikan</string>
+    <string name="action_insert">Sisipkan</string>
+    <string name="action_next">Lanjut</string>
+    <string name="action_copy">Salin</string>
+    <string name="copied">Disalin ke papan klip</string>
+    <string name="filter_all">Semua</string>
+    <string name="saving">Menyimpan…</string>
+    <string name="autosaved">Tersimpan otomatis</string>
+    <string name="speech_unavailable">Pengenalan suara tidak tersedia di perangkat ini.</string>
+    <string name="voice_note_title">Catatan suara</string>
+
+    <!-- Errors -->
+    <string name="error_file_too_large">Berkas terlalu besar (maksimal %1$d MB).</string>
+    <string name="error_file_unreadable">Berkas tidak bisa dibaca.</string>
+    <string name="error_ocr_failed">Gagal membaca teks dari gambar.</string>
+    <string name="error_empty_name">Nama tidak boleh kosong.</string>
+    <string name="error_duplicate_name">Nama itu sudah dipakai.</string>
+
+    <!-- Home -->
+    <string name="home_subtitle">Apa yang ingin kamu catat hari ini?</string>
+    <string name="home_filter">Filter catatan</string>
+    <string name="note_pinned">Disematkan</string>
+    <string name="qa_new_note">Catatan Baru</string>
+    <string name="qa_new_note_sub">Tulis catatan dengan cepat</string>
+    <string name="qa_scan">Pindai Teks</string>
+    <string name="qa_scan_sub">Ambil teks dari foto</string>
+    <string name="qa_voice">Rekam Suara</string>
+    <string name="qa_voice_sub">Ubah ucapan jadi catatan</string>
+    <string name="qa_template">Template</string>
+    <string name="qa_template_sub">Mulai dari format siap pakai</string>
+    <string name="qa_ideas">Ide</string>
+    <string name="qa_ideas_sub">Kumpulkan dan kembangkan ide</string>
+    <string name="qa_journal">Journal</string>
+    <string name="qa_journal_sub">Tulis refleksi harianmu</string>
+
+    <!-- Notes and editor -->
+    <string name="notes_all_title">Semua Catatan</string>
+    <string name="notes_autosave">Simpan otomatis</string>
+    <string name="notes_autosave_sub">Catatan disimpan sendiri saat kamu menulis dan saat keluar dari editor.</string>
+    <string name="notes_default_sort">Urutan bawaan daftar catatan</string>
+    <string name="notes_format_help">Format teks: **tebal**, *miring*, __garis bawah__, # judul, - daftar, 1. daftar bernomor, - [ ] checklist, [teks](tautan).</string>
+    <string name="attachments_label">Lampiran</string>
+    <string name="attach_done">Berkas dilampirkan ke catatan.</string>
+    <string name="attach_needs_content">Tulis judul atau isi dulu sebelum melampirkan berkas.</string>
+    <string name="fmt_bold">Tebal</string>
+    <string name="fmt_italic">Miring</string>
+    <string name="fmt_underline">Garis bawah</string>
+    <string name="fmt_heading">Judul</string>
+    <string name="fmt_bullets">Daftar poin</string>
+    <string name="fmt_numbers">Daftar bernomor</string>
+    <string name="fmt_checklist">Checklist</string>
+    <string name="fmt_link">Tautan</string>
+    <string name="fmt_image">Gambar</string>
+    <string name="fmt_attach">Lampirkan berkas</string>
+    <string name="fmt_dictate">Dikte suara</string>
+    <string name="link_text">Teks tautan</string>
+    <string name="link_url">Alamat (URL)</string>
+    <string name="reminder_chip">Pengingat %1$s</string>
+    <string name="reminder_set">Pengingat dipasang.</string>
+    <string name="reminder_removed">Pengingat dihapus.</string>
+    <string name="reminder_past">Waktu pengingat sudah lewat. Pilih waktu yang akan datang.</string>
+    <string name="reminder_set_action">Pasang pengingat</string>
+    <string name="reminder_remove">Hapus pengingat</string>
+    <string name="reminder_time_title">Pilih jam pengingat</string>
+
+    <!-- Templates and scan -->
+    <string name="templates_title">Template</string>
+    <string name="scan_title">Pindai Teks</string>
+    <string name="scan_intro">Ambil foto dokumen atau pilih gambar. Teks dibaca langsung di perangkat.</string>
+    <string name="scan_camera">Kamera</string>
+    <string name="scan_camera_sub">Foto dokumen atau papan tulis</string>
+    <string name="scan_camera_unavailable">Kamera tidak tersedia di perangkat ini.</string>
+    <string name="scan_gallery">Galeri</string>
+    <string name="scan_gallery_sub">Pilih gambar yang sudah ada</string>
+    <string name="scan_working">Membaca teks…</string>
+    <string name="scan_no_text">Tidak ada teks yang terbaca.</string>
+    <string name="scan_result_label">Teks hasil pindai</string>
+    <string name="scan_result_hint">Periksa dan rapikan teks sebelum disimpan.</string>
+    <string name="scan_save_note">Simpan sebagai catatan</string>
+    <string name="scan_privacy">Pemindaian berjalan di perangkat. Gambar tidak dikirim ke internet.</string>
+
+    <!-- AI -->
+    <string name="ai_title">AIDRIY AI</string>
+    <string name="ai_subtitle">Asisten untuk catatan dan berkasmu</string>
+    <string name="ai_tools_title">Alat AI</string>
+    <string name="ai_hello">Halo!</string>
+    <string name="ai_hello_name">Halo, %1$s!</string>
+    <string name="ai_hello_body">Tanyakan apa saja, atau minta AI merangkum, merapikan, dan mencari dari catatanmu.</string>
+    <string name="ai_input_hint">Tulis pertanyaan…</string>
+    <string name="ai_send">Kirim</string>
+    <string name="ai_stop">Hentikan</string>
+    <string name="ai_thinking">Sedang berpikir…</string>
+    <string name="ai_new_chat">Percakapan baru</string>
+    <string name="ai_history">Riwayat AI</string>
+    <string name="ai_history_empty_title">Belum ada percakapan</string>
+    <string name="ai_history_empty_body">Percakapan yang kamu simpan akan muncul di sini.</string>
+    <string name="ai_history_cleared">Riwayat AI dihapus.</string>
+    <string name="ai_clear_history">Hapus riwayat AI</string>
+    <string name="ai_delete_all">Hapus semua</string>
+    <string name="ai_delete_all_title">Hapus semua percakapan?</string>
+    <string name="ai_delete_all_body">Semua riwayat percakapan AI di perangkat ini akan dihapus. Catatanmu tidak terpengaruh.</string>
+    <string name="ai_delete_one_title">Hapus percakapan?</string>
+    <string name="ai_delete_one_body">Percakapan ini akan dihapus dari perangkat.</string>
+    <string name="ai_label">%1$s · %2$s</string>
+    <string name="ai_save_note">Simpan sebagai catatan</string>
+    <string name="ai_note_title">Jawaban AI</string>
+    <string name="ai_sources">Sumber</string>
+    <string name="ai_no_local_match">Tidak ada catatan yang cocok. Jawaban tidak memakai catatanmu.</string>
+    <string name="ai_using_notes_hint">AI bisa memakai catatan yang relevan. Kamu akan diminta konfirmasi sebelum isi dikirim.</string>
+    <string name="ai_detach">Lepas sumber</string>
+    <string name="ai_pick_note">Pilih catatan</string>
+    <string name="ai_pick_document">Pilih dokumen</string>
+    <string name="ai_no_documents">Belum ada dokumen dengan teks yang bisa dibaca.</string>
+    <string name="ai_source_unavailable">Sumber itu tidak bisa dipakai (teks kosong atau sudah dihapus).</string>
+    <string name="ai_quick_suggestions">Saran cepat</string>
+    <string name="ai_pick_model">Pilih model</string>
+    <string name="ai_manage_keys">Kelola API key</string>
+    <string name="ai_connected">Terhubung</string>
+    <string name="ai_not_configured">Belum diatur</string>
+    <string name="ai_open_settings">Buka pengaturan AI</string>
+    <string name="ai_setup_title">Masukkan API key %1$s</string>
+    <string name="ai_setup_body">AIDRIY memakai API key milikmu sendiri. Key disimpan terenkripsi di perangkat dan hanya dikirim ke penyedia yang kamu pilih.</string>
+    <string name="ai_setup_action">Atur API key</string>
+    <string name="ai_confirm_title">Kirim catatan ke AI?</string>
+    <string name="ai_confirm_body">Isi catatan atau dokumen berikut akan dikirim ke %1$s untuk menjawab pertanyaanmu.</string>
+    <string name="ai_confirm_chars">%1$d karakter akan dikirim.</string>
+    <string name="ai_confirm_send">Kirim dengan sumber</string>
+    <string name="ai_confirm_without">Kirim tanpa sumber</string>
+    <string name="ai_error_missing_key">API key belum diatur. Buka Pengaturan → AI.</string>
+    <string name="ai_error_invalid_key">API key ditolak. Periksa kembali key-mu.</string>
+    <string name="ai_error_rate_limited">Batas pemakaian tercapai. Coba lagi nanti.</string>
+    <string name="ai_error_offline">Tidak ada koneksi internet.</string>
+    <string name="ai_error_timeout">Server AI terlalu lama merespons. Coba lagi.</string>
+    <string name="ai_error_server">Server AI bermasalah (kode %1$d). Coba lagi nanti.</string>
+    <string name="ai_error_model">Model \"%1$s\" tidak tersedia untuk key ini. Ganti ID model di Pengaturan → AI.</string>
+    <string name="ai_error_rejected">Permintaan ditolak (kode %1$d).</string>
+    <string name="ai_error_rejected_detail">Permintaan ditolak (kode %1$d): %2$s</string>
+    <string name="ai_error_bad_response">Jawaban dari server AI tidak bisa dibaca.</string>
+    <string name="ai_test">Uji koneksi</string>
+    <string name="ai_test_ok">Koneksi ke %1$s berhasil.</string>
+    <string name="ai_default_model">Penyedia AI utama</string>
+    <string name="ai_model_id">ID model</string>
+    <string name="ai_model_hint">Bisa diganti jika penyedia merilis model baru.</string>
+    <string name="ai_keys_section">API key</string>
+    <string name="ai_keys_explain">Key dienkripsi dengan Android Keystore dan tidak pernah ditampilkan atau dicatat di log.</string>
+    <string name="ai_key_enter">Masukkan API key</string>
+    <string name="ai_key_show">Tampilkan</string>
+    <string name="ai_key_hide">Sembunyikan</string>
+    <string name="ai_key_stored">Key tersimpan</string>
+    <string name="ai_key_replace">Ganti key</string>
+    <string name="ai_key_remove">Hapus key</string>
+    <string name="ai_key_saved">API key disimpan.</string>
+    <string name="ai_key_removed">API key dihapus.</string>
+    <string name="ai_key_encrypt_failed">Gagal mengenkripsi API key. Key tidak disimpan.</string>
+    <string name="ai_remove_all_keys">Hapus semua API key</string>
+    <string name="ai_remove_all_keys_body">Semua API key akan dihapus dari perangkat. Fitur AI berhenti sampai kamu memasukkan key lagi.</string>
+    <string name="ai_style">Gaya jawaban</string>
+    <string name="ai_style_concise">Ringkas</string>
+    <string name="ai_style_balanced">Seimbang</string>
+    <string name="ai_style_detailed">Detail</string>
+    <string name="ai_language">Bahasa jawaban</string>
+    <string name="ai_use_notes">Gunakan catatan sebagai konteks</string>
+    <string name="ai_use_notes_sub">AI mencari catatan yang relevan. Kamu tetap mengonfirmasi sebelum dikirim.</string>
+    <string name="ai_save_history">Simpan riwayat percakapan</string>
+    <string name="ai_save_history_sub">Percakapan disimpan hanya di perangkat ini.</string>
+    <string name="ai_show_suggestions">Tampilkan saran cepat</string>
+    <string name="ai_show_suggestions_sub">Contoh pertanyaan di layar AI.</string>
+    <string name="lang_id">Bahasa Indonesia</string>
+    <string name="lang_en">English</string>
+
+    <!-- Files -->
+    <string name="files_subtitle">Dokumen, gambar, dan lampiran catatanmu</string>
+    <string name="files_search_hint">Cari berkas</string>
+    <string name="files_add">Tambah</string>
+    <string name="files_import">Impor berkas</string>
+    <string name="files_import_sub">PDF, gambar, audio, dan lainnya (maks. 100 MB)</string>
+    <string name="files_imported">\"%1$s\" ditambahkan.</string>
+    <string name="files_new_folder">Folder baru</string>
+    <string name="files_new_folder_sub">Kelompokkan berkas</string>
+    <string name="files_folder">Folder</string>
+    <string name="files_folder_created">Folder dibuat.</string>
+    <string name="files_rename_folder">Ganti nama folder</string>
+    <string name="files_delete_folder">Hapus folder</string>
+    <string name="files_delete_folder_title">Hapus folder?</string>
+    <string name="files_delete_folder_body">Folder dihapus. Berkas di dalamnya tetap ada dan dipindahkan keluar folder.</string>
+    <string name="files_recent">Terbaru</string>
+    <string name="files_empty_title">Belum ada berkas</string>
+    <string name="files_empty_body">Impor PDF, gambar, atau dokumen lain untuk disimpan dan dicari.</string>
+    <string name="files_cat_documents">Dokumen</string>
+    <string name="files_cat_images">Gambar</string>
+    <string name="files_cat_audio">Audio</string>
+    <string name="files_cat_video">Video</string>
+    <string name="files_cat_notes">Lampiran catatan</string>
+    <string name="files_cat_archive">Arsip</string>
+    <string name="files_item_count">%1$d item</string>
+    <string name="files_item_count_date">%1$d item · %2$s</string>
+    <string name="files_viewer">Lihat berkas</string>
+    <string name="files_page">Halaman %1$d</string>
+    <string name="files_pdf_error">PDF tidak bisa ditampilkan.</string>
+    <string name="files_view_text">Lihat teks</string>
+    <string name="files_run_ocr">Baca teks (OCR)</string>
+    <string name="files_ocr_progress">Membaca halaman %1$d dari %2$d…</string>
+    <string name="files_ocr_done">Teks berhasil dibaca.</string>
+    <string name="files_ask_ai">Tanya AI</string>
+    <string name="files_open_with">Buka dengan aplikasi lain</string>
+    <string name="files_no_app">Tidak ada aplikasi untuk membuka berkas ini.</string>
+    <string name="files_audio_hint">Putar audio ini dengan aplikasi lain.</string>
+    <string name="files_video_hint">Putar video ini dengan aplikasi lain.</string>
+    <string name="files_other_hint">Pratinjau belum tersedia untuk jenis berkas ini.</string>
+    <string name="files_rename">Ganti nama</string>
+    <string name="files_move">Pindahkan ke folder</string>
+    <string name="files_moved">Berkas dipindahkan.</string>
+    <string name="files_no_folder">Tanpa folder</string>
+    <string name="files_no_folders_yet">Belum ada folder. Buat dari layar Berkas.</string>
+    <string name="files_delete_title">Hapus berkas?</string>
+    <string name="files_delete_body">\"%1$s\" akan dihapus permanen dari perangkat.</string>
+    <string name="files_storage_title">Penyimpanan berkas</string>
+    <string name="files_storage_private">Berkas disalin ke penyimpanan pribadi aplikasi. Aplikasi lain tidak bisa mengaksesnya.</string>
+    <string name="extract_pending">Menunggu pembacaan teks</string>
+    <string name="extract_done">Teks bisa dicari</string>
+    <string name="extract_no_text">Tidak ada teks — coba OCR</string>
+    <string name="extract_protected">PDF terkunci kata sandi</string>
+    <string name="extract_unsupported">Teks tidak dibaca untuk jenis ini</string>
+    <string name="extract_failed">Gagal membaca teks</string>
+    <string name="extract_image">Gambar</string>
+
+    <!-- Settings home -->
+    <string name="set_profile">Profil</string>
+    <string name="set_profile_sub">Nama dan foto</string>
+    <string name="set_ai">AI</string>
+    <string name="set_ai_sub">Penyedia, model, dan API key</string>
+    <string name="set_appearance">Tampilan</string>
+    <string name="set_appearance_sub">Tema dan ukuran teks</string>
+    <string name="set_notes">Catatan</string>
+    <string name="set_notes_sub">Simpan otomatis dan urutan</string>
+    <string name="set_files">Berkas dan cadangan</string>
+    <string name="set_files_sub">Penyimpanan, ekspor, dan pulihkan</string>
+    <string name="set_security">Keamanan dan privasi</string>
+    <string name="set_security_sub">Kunci aplikasi dan biometrik</string>
+    <string name="set_notifications">Notifikasi</string>
+    <string name="set_notifications_sub">Pengingat catatan dan journal</string>
+    <string name="set_about">Tentang</string>
+    <string name="set_about_sub">Versi dan lisensi</string>
+
+    <!-- Profile -->
+    <string name="profile_name">Nama</string>
+    <string name="profile_no_name">Pengguna AIDRIY</string>
+    <string name="profile_change_photo">Ganti foto</string>
+    <string name="profile_remove_photo">Hapus foto</string>
+    <string name="profile_device">Perangkat ini</string>
+    <string name="profile_local_only">Profil hanya disimpan di perangkat ini. Tidak ada akun atau sinkronisasi cloud.</string>
+    <string name="profile_storage">Penyimpanan dipakai: %1$s</string>
+
+    <!-- Appearance -->
+    <string name="appearance_theme">Tema</string>
+    <string name="appearance_text_size">Ukuran teks</string>
+    <string name="theme_system">Ikuti sistem</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="text_small">Kecil</string>
+    <string name="text_normal">Normal</string>
+    <string name="text_large">Besar</string>
+
+    <!-- Backup -->
+    <string name="backup_title">Cadangan</string>
+    <string name="backup_explain">Ekspor semua catatan, ide, journal, dan berkas ke satu file .zip yang bisa kamu simpan sendiri.</string>
+    <string name="backup_not_included">API key dan PIN tidak ikut dicadangkan.</string>
+    <string name="backup_export">Ekspor cadangan</string>
+    <string name="backup_import">Pulihkan dari cadangan</string>
+    <string name="backup_warn_title">Cadangan tidak terenkripsi</string>
+    <string name="backup_warn_body">File cadangan berisi catatanmu dalam bentuk biasa. Simpan di tempat yang aman.</string>
+    <string name="backup_exported">Cadangan dibuat: %1$d catatan, %2$d ide, %3$d journal, %4$d berkas.</string>
+    <string name="backup_restore_title">Pulihkan cadangan?</string>
+    <string name="backup_restore_body">Cadangan berisi %1$d catatan, %2$d ide, %3$d journal, dan %4$d berkas. Data saat ini di perangkat akan diganti.</string>
+    <string name="backup_restore_confirm">Ganti dan pulihkan</string>
+    <string name="backup_restored">Dipulihkan: %1$d catatan, %2$d ide, %3$d journal, %4$d berkas.</string>
+    <string name="backup_error_not_backup">File ini bukan cadangan AIDRIY.</string>
+    <string name="backup_error_damaged">File cadangan rusak atau tidak lengkap.</string>
+    <string name="backup_error_newer">Cadangan dibuat oleh versi AIDRIY yang lebih baru. Perbarui aplikasi dulu.</string>
+    <string name="backup_error_io">Gagal membaca atau menulis file cadangan.</string>
+
+    <!-- Security and lock -->
+    <string name="lock_title">Kunci aplikasi</string>
+    <string name="lock_sub">Minta PIN saat membuka AIDRIY</string>
+    <string name="lock_pin">PIN</string>
+    <string name="lock_pin_confirm">Ulangi PIN</string>
+    <string name="lock_pin_rules">PIN terdiri dari 4–6 angka.</string>
+    <string name="lock_set_pin">Buat PIN</string>
+    <string name="lock_change_pin">Ganti PIN</string>
+    <string name="lock_pin_invalid">PIN harus 4–6 angka.</string>
+    <string name="lock_pin_mismatch">PIN tidak sama.</string>
+    <string name="lock_enabled">Kunci aplikasi aktif.</string>
+    <string name="lock_disabled">Kunci aplikasi dimatikan.</string>
+    <string name="lock_biometric">Buka dengan sidik jari</string>
+    <string name="lock_biometric_sub">Gunakan biometrik perangkat selain PIN</string>
+    <string name="lock_biometric_unavailable">Biometrik tidak tersedia atau belum diatur di perangkat.</string>
+    <string name="lock_biometric_title">Buka AIDRIY</string>
+    <string name="lock_use_pin">Pakai PIN</string>
+    <string name="lock_enter_pin">Masukkan PIN</string>
+    <string name="lock_wrong_pin">PIN salah</string>
+    <string name="lock_delete_digit">Hapus angka</string>
+    <string name="privacy_title">Privasi</string>
+    <string name="privacy_point_local">Semua data disimpan di perangkat ini.</string>
+    <string name="privacy_point_ai">Isi catatan hanya dikirim ke AI setelah kamu konfirmasi.</string>
+    <string name="privacy_point_keys">API key dienkripsi dengan Android Keystore.</string>
+    <string name="privacy_point_backup">Cadangan hanya dibuat saat kamu mengekspornya.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_reminders">Pengingat</string>
+    <string name="notif_note_title">Pengingat catatan</string>
+    <string name="notif_daily_title">Waktunya menulis journal</string>
+    <string name="notif_daily_body">Luangkan beberapa menit untuk mencatat harimu.</string>
+    <string name="notif_daily">Pengingat journal harian</string>
+    <string name="notif_daily_sub">Setiap hari pukul %1$s</string>
+    <string name="notif_change_time">Ubah jam</string>
+    <string name="notif_note_info">Pengingat per catatan dipasang dari menu di editor catatan.</string>
+    <string name="notif_allowed">Notifikasi diizinkan</string>
+    <string name="notif_blocked">Notifikasi diblokir untuk AIDRIY</string>
+    <string name="notif_allow">Izinkan notifikasi</string>
+    <string name="notif_open_settings">Buka pengaturan sistem</string>
+
+    <!-- About -->
+    <string name="about_version">Versi %1$s</string>
+    <string name="about_privacy">AIDRIY bekerja offline. Tidak ada iklan, pelacakan, atau akun. Internet hanya dipakai untuk fitur AI dengan API key milikmu.</string>
+    <string name="about_licenses">Lisensi pihak ketiga</string>
+    <string name="about_licenses_body">AndroidX dan Jetpack Compose (Apache 2.0), ML Kit Text Recognition (Google), PdfBox-Android (Apache 2.0), Coil (Apache 2.0), Kotlin Coroutines (Apache 2.0).</string>
+</resources>

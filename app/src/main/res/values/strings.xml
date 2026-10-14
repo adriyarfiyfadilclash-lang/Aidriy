@@ -3,11 +3,9 @@
     <string name="app_name">AIDRIY</string>
 
     <!-- Bottom navigation -->
-    <string name="nav_home">Beranda</string>
     <string name="nav_notes">Catatan</string>
     <string name="nav_ideas">Ide</string>
     <string name="nav_journal">Journal</string>
-    <string name="nav_insight">Insight</string>
 
     <!-- Common actions and labels -->
     <string name="action_save">Simpan</string>
@@ -57,15 +55,7 @@
 
     <!-- Home -->
     <string name="home_search_hint">Cari catatan, ide, dan journal</string>
-    <string name="home_quick_access">Akses cepat</string>
-    <string name="home_quick_notes">Catatan baru</string>
-    <string name="home_quick_ideas">Ide baru</string>
-    <string name="home_quick_journal">Journal hari ini</string>
-    <string name="home_insight_title">Tanya Insight</string>
-    <string name="home_insight_body">Bantuan AI opsional untuk memahami pengetahuanmu</string>
     <string name="home_recent_notes">Catatan terbaru</string>
-    <string name="home_recent_ideas">Ide terbaru</string>
-    <string name="home_recent_journal">Journal terakhir</string>
     <string name="home_see_all">Lihat semua</string>
     <string name="home_empty_title">Ruang pengetahuanmu masih kosong</string>
     <string name="home_empty_body">Catatan, ide, dan journal yang kamu simpan akan muncul di sini, tersimpan di perangkat ini.</string>
@@ -87,7 +77,6 @@
     <string name="tags_filter_all">Semua tag</string>
 
     <!-- Notes -->
-    <string name="notes_subtitle">Pengetahuan terstruktur milikmu</string>
     <string name="notes_search_hint">Cari catatan</string>
     <string name="notes_scope_active">Aktif</string>
     <string name="notes_scope_favorites">Favorit</string>
@@ -114,7 +103,6 @@
     <string name="note_delete_body">Catatan ini akan dihapus permanen dari perangkat.</string>
 
     <!-- Ideas -->
-    <string name="ideas_subtitle">Tangkap ide secepat munculnya</string>
     <string name="ideas_capture_hint">Tulis ide, lalu tekan Enter</string>
     <string name="ideas_capture_action">Simpan ide</string>
     <string name="ideas_captured">Ide masuk ke Inbox</string>
@@ -137,7 +125,6 @@
     <string name="idea_delete_body">Ide ini akan dihapus permanen. Catatan yang pernah dibuat darinya tidak ikut terhapus.</string>
 
     <!-- Journal -->
-    <string name="journal_subtitle">Catatan harian pribadimu</string>
     <string name="journal_today_label">Hari ini</string>
     <string name="journal_today_write">Tulis journal hari ini</string>
     <string name="journal_today_open">Lanjutkan journal hari ini</string>
@@ -154,12 +141,4 @@
     <string name="journal_deleted_elsewhere">Entri ini sudah dihapus. Simpan lagi untuk membuat entri baru.</string>
     <string name="journal_invalid_date">Tanggal tidak valid.</string>
 
-    <!-- Insight -->
-    <string name="insight_subtitle">Pahami dan hubungkan pengetahuanmu</string>
-    <string name="insight_setup_title">AI belum diatur</string>
-    <string name="insight_setup_body">Insight bersifat opsional. Semua fitur lain tetap berjalan tanpa AI dan tanpa internet.</string>
-    <string name="insight_point_key">AI memakai API key milikmu sendiri, disimpan terenkripsi di perangkat.</string>
-    <string name="insight_point_consent">Isi catatan tidak pernah dikirim ke penyedia AI tanpa persetujuanmu.</string>
-    <string name="insight_point_sources">Setiap jawaban menunjukkan catatan yang dijadikan sumber.</string>
-    <string name="insight_unavailable">Pengaturan penyedia AI belum tersedia di versi ini.</string>
 </resources>

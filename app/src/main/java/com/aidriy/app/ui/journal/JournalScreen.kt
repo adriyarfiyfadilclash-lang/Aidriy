@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material3.DatePicker
@@ -53,7 +54,6 @@ import com.aidriy.app.ui.components.RecordCard
 import com.aidriy.app.ui.components.AppHeaderBar
 import com.aidriy.app.ui.components.SearchField
 import com.aidriy.app.ui.components.SectionHeader
-import com.aidriy.app.ui.navigation.TopLevelDestination
 import com.aidriy.app.ui.navigation.icon
 import com.aidriy.app.ui.theme.Spacing
 import java.time.LocalDate
@@ -159,7 +159,7 @@ fun JournalScreen(
                     )
                 } else {
                     EmptyState(
-                        icon = TopLevelDestination.JOURNAL.icon,
+                        icon = Icons.Outlined.Book,
                         title = stringResource(R.string.journal_empty_title),
                         body = stringResource(R.string.journal_empty_body),
                     )

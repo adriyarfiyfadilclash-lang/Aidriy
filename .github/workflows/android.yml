@@ -117,6 +117,8 @@ jobs:
     name: Instrumented tests (emulator)
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write   # pushes screenshots to the ci-screens branch
     steps:
       - uses: actions/checkout@v4
 
@@ -140,7 +142,27 @@ jobs:
           arch: x86_64
           target: google_apis
           disable-animations: true
-          script: chmod +x gradlew && ./gradlew --no-daemon connectedDebugAndroidTest
+          # Screenshot tour first (its files would be removed by the uninstall after connected tests).
+          script: |
+            chmod +x gradlew && ./gradlew --no-daemon installDebug installDebugAndroidTest
+            adb shell am instrument -w -e class com.aidriy.app.ScreenshotTour com.aidriy.app.test/androidx.test.runner.AndroidJUnitRunner || true
+            adb exec-out run-as com.aidriy.app tar c files/screens > screens.tar || true
+            ./gradlew --no-daemon connectedDebugAndroidTest
+
+      # Publishes the tour screenshots to the `ci-screens` branch for design review.
+      - name: Publish screenshots
+        if: always()
+        run: |
+          mkdir -p /tmp/shots && tar xf screens.tar -C /tmp/shots 2>/dev/null || true
+          ls /tmp/shots/files/screens/*.png >/dev/null 2>&1 || { echo "no screenshots"; exit 0; }
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-screens
+          git rm -rf -q --cached . || true
+          mkdir -p screens && cp /tmp/shots/files/screens/*.png screens/
+          git add -f screens
+          git commit -q -m "Screenshots for ${{ github.sha }}"
+          git push -f origin ci-screens
 
       - name: Upload instrumented test reports
         if: always()

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material3.Icon
@@ -56,7 +57,6 @@ import com.aidriy.app.ui.components.AppHeaderBar
 import com.aidriy.app.ui.components.SearchField
 import com.aidriy.app.ui.components.SortMenu
 import com.aidriy.app.ui.components.TagFilterRow
-import com.aidriy.app.ui.navigation.TopLevelDestination
 import com.aidriy.app.ui.navigation.icon
 import com.aidriy.app.ui.theme.Spacing
 
@@ -192,7 +192,7 @@ fun IdeasScreen(
                         )
                     } else {
                         EmptyState(
-                            icon = TopLevelDestination.IDEAS.icon,
+                            icon = Icons.Outlined.Lightbulb,
                             title = stringResource(R.string.ideas_empty_title),
                             body = stringResource(R.string.ideas_empty_body),
                         )

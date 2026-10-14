@@ -2,6 +2,7 @@
 
 package com.aidriy.app.ui.files
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color as AndroidColor
 import android.graphics.pdf.PdfRenderer
@@ -100,6 +101,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
+// Lint false positive: every producer below assigns `value` (inside collect / withContext).
+@SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
 fun FileViewerRoute(
     fileId: String,
@@ -419,6 +422,8 @@ private class PdfDocument(file: File) {
     }
 }
 
+// Lint false positive: every producer below assigns `value` (inside collect / withContext).
+@SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
 private fun PdfViewer(file: StoredFile) {
     val document by produceState<Result<PdfDocument>?>(null, file.localPath) {
@@ -440,6 +445,8 @@ private fun PdfViewer(file: StoredFile) {
     }
 }
 
+// Lint false positive: every producer below assigns `value` (inside collect / withContext).
+@SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
 private fun PdfPages(doc: PdfDocument) {
     val pagerState = rememberPagerState { doc.pageCount }

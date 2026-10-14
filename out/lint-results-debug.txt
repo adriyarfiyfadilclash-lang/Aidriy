@@ -1,0 +1,332 @@
+/home/runner/work/Aidriy/Aidriy/app/build.gradle.kts:18: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk = 35
+        ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application runs on a version of Android that is more recent than
+   your targetSdkVersion specifies that it has been tested with, various
+   compatibility modes kick in. This ensures that your application continues
+   to work, but it may look out of place. For example, if the targetSdkVersion
+   is less than 14, your app may get an option button in the UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:2: Warning: A newer version of com.android.application than 8.7.3 is available: 9.4.1 [AndroidGradlePluginVersion]
+agp = "8.7.3"
+      ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:2: Warning: A newer version of com.android.application than 8.7.3 is available: 9.4.1 [AndroidGradlePluginVersion]
+agp = "8.7.3"
+      ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:2: Warning: A newer version of com.android.application than 8.7.3 is available: 9.4.1 [AndroidGradlePluginVersion]
+agp = "8.7.3"
+      ~~~~~~~
+
+   Explanation for issues of type "AndroidGradlePluginVersion":
+   This detector looks for usage of the Android Gradle Plugin where the
+   version you are using is not the current stable release. Using older
+   versions is fine, and there are cases where you deliberately want to stick
+   with an older version. However, you may simply not be aware that a more
+   recent version is available, and that is what this lint check helps find.
+
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:4: Warning: A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.1 [GradleDependency]
+coreKtx = "1.15.0"
+          ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:4: Warning: A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.1 [GradleDependency]
+coreKtx = "1.15.0"
+          ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:4: Warning: A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.19.1 [GradleDependency]
+coreKtx = "1.15.0"
+          ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-process than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-process than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-process than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:5: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.8.7 is available: 2.11.0 [GradleDependency]
+lifecycle = "2.8.7"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:6: Warning: A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0 [GradleDependency]
+activityCompose = "1.9.3"
+                  ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:6: Warning: A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0 [GradleDependency]
+activityCompose = "1.9.3"
+                  ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:6: Warning: A newer version of androidx.activity:activity-compose than 1.9.3 is available: 1.13.0 [GradleDependency]
+activityCompose = "1.9.3"
+                  ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:7: Warning: A newer version of androidx.compose:compose-bom than 2024.12.01 is available: 2026.09.00 [GradleDependency]
+composeBom = "2024.12.01"
+             ~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:7: Warning: A newer version of androidx.compose:compose-bom than 2024.12.01 is available: 2026.09.00 [GradleDependency]
+composeBom = "2024.12.01"
+             ~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:7: Warning: A newer version of androidx.compose:compose-bom than 2024.12.01 is available: 2026.09.00 [GradleDependency]
+composeBom = "2024.12.01"
+             ~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:8: Warning: A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.10.2 [GradleDependency]
+navigationCompose = "2.8.5"
+                    ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:8: Warning: A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.10.2 [GradleDependency]
+navigationCompose = "2.8.5"
+                    ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:8: Warning: A newer version of androidx.navigation:navigation-compose than 2.8.5 is available: 2.10.2 [GradleDependency]
+navigationCompose = "2.8.5"
+                    ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:11: Warning: A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.5 [GradleDependency]
+room = "2.6.1"
+       ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:12: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1 [GradleDependency]
+datastore = "1.1.1"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:12: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1 [GradleDependency]
+datastore = "1.1.1"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:12: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1 [GradleDependency]
+datastore = "1.1.1"
+            ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:13: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.12.0 [GradleDependency]
+work = "2.10.0"
+       ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:13: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.12.0 [GradleDependency]
+work = "2.10.0"
+       ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:13: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.12.0 [GradleDependency]
+work = "2.10.0"
+       ~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:19: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+androidxJunit = "1.2.1"
+                ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:19: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+androidxJunit = "1.2.1"
+                ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:19: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+androidxJunit = "1.2.1"
+                ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:20: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+espressoCore = "3.6.1"
+               ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:20: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+espressoCore = "3.6.1"
+               ~~~~~~~
+/home/runner/work/Aidriy/Aidriy/gradle/libs.versions.toml:20: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+espressoCore = "3.6.1"
+               ~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/markdown/MarkdownView.kt:311: Error: produceState calls should assign value inside the producer lambda [ProduceStateDoesNotAssignValue from androidx.compose.runtime]
+    val file by produceState<StoredFile?>(null, id) { value = id?.let { lookup(it) } }
+                ~~~~~~~~~~~~
+
+   Explanation for issues of type "ProduceStateDoesNotAssignValue":
+   produceState returns an observable State using values assigned inside the
+   producer lambda. If the lambda never assigns (i.e value = foo), then the
+   State will never change. Make sure to assign a value when the source you
+   are producing values from changes / emits a new value. For sample usage see
+   the produceState documentation.
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.runtime
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings.xml:38: Warning: Formatting %d followed by words ("karakter"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="error_title_too_long">Judul terlalu panjang (maksimal %1$d karakter).</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings.xml:39: Warning: Formatting %d followed by words ("karakter"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="error_content_too_long">Isi terlalu panjang (maksimal %1$d karakter).</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings.xml:43: Warning: Formatting %d followed by words ("karakter"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="error_tag_too_long">Nama tag maksimal %1$d karakter.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings.xml:44: Warning: Formatting %d followed by words ("tag"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="error_tag_too_many">Maksimal %1$d tag per item.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:135: Warning: Formatting %d followed by words ("karakter"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="ai_confirm_chars">%1$d karakter akan dikirim.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:204: Warning: Formatting %d followed by words ("item"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="files_item_count">%1$d item</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:205: Warning: Formatting %d followed by words ("item"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="files_item_count_date">%1$d item · %2$s</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:211: Warning: Formatting %d followed by words ("dari"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="files_ocr_progress">Membaca halaman %1$d dari %2$d…</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:281: Warning: Formatting %d followed by words ("catatan"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="backup_exported">Cadangan dibuat: %1$d catatan, %2$d ide, %3$d journal, %4$d berkas.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:283: Warning: Formatting %d followed by words ("catatan"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="backup_restore_body">Cadangan berisi %1$d catatan, %2$d ide, %3$d journal, dan %4$d berkas. Data saat ini di perangkat akan diganti.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_features.xml:285: Warning: Formatting %d followed by words ("catatan"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="backup_restored">Dipulihkan: %1$d catatan, %2$d ide, %3$d journal, %4$d berkas.</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/res/values/strings_notes.xml:121: Warning: Formatting %d followed by words ("karakter"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="format_too_long">Catatan terlalu panjang untuk dirapikan sekaligus (maksimal %1$d karakter).</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "PluralsCandidate":
+   This lint check looks for potential errors in internationalization where
+   you have translated a message which involves a quantity and it looks like
+   other parts of the string may need grammatical changes.
+
+   For example, rather than something like this:
+     <string name="try_again">Try again in %d seconds.</string>
+   you should be using a plural:
+      <plurals name="try_again">
+           <item quantity="one">Try again in %d second</item>
+           <item quantity="other">Try again in %d seconds</item>
+       </plurals>
+   This will ensure that in other languages the right set of translations are
+   provided for the different quantity classes.
+
+   (This check depends on some heuristics, so it may not accurately determine
+   whether a string really should be a quantity. You can use tools:ignore to
+   filter out false positives.
+
+   https://developer.android.com/guide/topics/resources/string-resource.html#Plurals
+
+/home/runner/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+/home/runner/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+/home/runner/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar: Warning: checkServerTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+
+   Explanation for issues of type "TrustAllX509TrustManager":
+   This check looks for X509TrustManager implementations whose
+   checkServerTrusted or checkClientTrusted methods do nothing (thus trusting
+   any certificate chain) which could result in insecure network traffic
+   caused by trusting arbitrary TLS/SSL certificates presented by peers.
+
+   https://goo.gle/TrustAllX509TrustManager
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/AndroidManifest.xml:17: Warning: The attribute android:dataExtractionRules only applies for Android 12 and higher; since minSdkVersion is API 26 you should also set android:fullBackupContent [DataExtractionRules]
+        android:dataExtractionRules="@xml/data_extraction_rules"
+                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "DataExtractionRules":
+   Before Android 12, the attributes android:allowBackup and
+   android:fullBackupContent were used to configure all forms of backup,
+   including cloud backups, device-to-device transfers and adb backup.
+
+   In Android 12 and higher, these attributes have been deprecated and will
+   only apply to cloud backups. You should instead use the attribute
+   android:dataExtractionRules, specifying an @xml resource that configures
+   which files to back up, for cloud backups and for device-to-device
+   transfers, separately. If your minSdkVersion supports older versions,
+   you'll still want to specify an android:fullBackupContent resource if the
+   default behavior is not right for your app.
+
+   https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   https://goo.gle/DataExtractionRules
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/data/reminders/Reminders.kt:81: Warning: Unnecessary; SDK_INT is always >= 26 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/common/EditorDraft.kt:39: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    private var baselineHash by mutableStateOf(handle.get<Int>(KEY_BASELINE) ?: emptyHash())
+                                ~~~~~~~~~~~~~~
+/home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/settings/SettingsDetailScreens.kt:626: Information: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    var permissionTick by remember { mutableStateOf(0) }
+                                     ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "AutoboxingStateCreation":
+   Calling mutableStateOf<T>() when T is either backed by a primitive type on
+   the JVM or is a value class results in a state implementation that requires
+   all state values to be boxed. This usually causes an additional allocation
+   for each state write, and adds some additional work to auto-unbox values
+   when reading the value of the state. Instead, prefer to use a specialized
+   primitive state implementation for Int, Long, Float, and Double when the
+   state does not need to track null values and does not override the default
+   SnapshotMutationPolicy. See mutableIntStateOf(), mutableLongStateOf(),
+   mutableFloatStateOf(), and mutableDoubleStateOf() for more information.
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.runtime
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+1 errors, 69 warnings

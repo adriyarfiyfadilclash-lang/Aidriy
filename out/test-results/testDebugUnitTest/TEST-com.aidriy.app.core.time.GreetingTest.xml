@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.core.time.GreetingTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.005">
+  <properties/>
+  <testcase name="malam_from_eighteen_until_before_four" classname="com.aidriy.app.core.time.GreetingTest" time="0.0"/>
+  <testcase name="sore_from_fifteen_until_before_eighteen" classname="com.aidriy.app.core.time.GreetingTest" time="0.0"/>
+  <testcase name="pagi_from_four_until_before_eleven" classname="com.aidriy.app.core.time.GreetingTest" time="0.001"/>
+  <testcase name="siang_from_eleven_until_before_fifteen" classname="com.aidriy.app.core.time.GreetingTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

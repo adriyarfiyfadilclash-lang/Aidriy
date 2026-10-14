@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.model.IdeaStatusTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.002">
+  <properties/>
+  <testcase name="storage_keys_round_trip" classname="com.aidriy.app.domain.model.IdeaStatusTest" time="0.001"/>
+  <testcase name="lenient_lookup_falls_back_to_inbox_for_reading" classname="com.aidriy.app.domain.model.IdeaStatusTest" time="0.001"/>
+  <testcase name="storage_keys_match_spec" classname="com.aidriy.app.domain.model.IdeaStatusTest" time="0.0"/>
+  <testcase name="labels_match_product_spec" classname="com.aidriy.app.domain.model.IdeaStatusTest" time="0.0"/>
+  <testcase name="strict_lookup_rejects_unknown_keys" classname="com.aidriy.app.domain.model.IdeaStatusTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

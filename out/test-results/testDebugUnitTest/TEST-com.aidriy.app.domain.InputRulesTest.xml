@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.InputRulesTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.052">
+  <properties/>
+  <testcase name="note_title_length_is_limited" classname="com.aidriy.app.domain.InputRulesTest" time="0.033"/>
+  <testcase name="idea_requires_a_title" classname="com.aidriy.app.domain.InputRulesTest" time="0.001"/>
+  <testcase name="journal_rejects_future_dates_but_accepts_today_and_past" classname="com.aidriy.app.domain.InputRulesTest" time="0.002"/>
+  <testcase name="note_content_length_is_limited" classname="com.aidriy.app.domain.InputRulesTest" time="0.01"/>
+  <testcase name="note_needs_title_or_content" classname="com.aidriy.app.domain.InputRulesTest" time="0.001"/>
+  <testcase name="id_validation" classname="com.aidriy.app.domain.InputRulesTest" time="0.0"/>
+  <testcase name="journal_must_not_be_empty" classname="com.aidriy.app.domain.InputRulesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.ui.common.EditorDraftTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.049">
+  <properties/>
+  <testcase name="typing_during_a_save_stays_unsaved" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.04"/>
+  <testcase name="invalid_or_excess_tags_are_rejected" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.002"/>
+  <testcase name="typing_marks_changes_and_reverting_clears_them" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <testcase name="extra_field_is_part_of_change_detection" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <testcase name="loaded_values_are_the_saved_baseline" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.006"/>
+  <testcase name="text_survives_recreation_from_saved_state" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <testcase name="new_editor_has_no_unsaved_changes" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <testcase name="very_long_content_is_not_mirrored_and_is_flagged" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <testcase name="tags_are_cleaned_and_deduplicated" classname="com.aidriy.app.ui.common.EditorDraftTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

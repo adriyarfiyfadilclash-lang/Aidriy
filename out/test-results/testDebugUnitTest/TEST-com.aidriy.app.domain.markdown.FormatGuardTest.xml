@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.markdown.FormatGuardTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.1">
+  <properties/>
+  <testcase name="protect_replaces_images_and_berkas_links_with_placeholders" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.021"/>
+  <testcase name="removed_words_are_reported" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.038"/>
+  <testcase name="dropped_image_is_refused" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.005"/>
+  <testcase name="flipped_checkbox_counts_as_a_change" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.014"/>
+  <testcase name="added_words_are_reported" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.007"/>
+  <testcase name="prompt_lists_only_enabled_options" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.004"/>
+  <testcase name="words_ignore_markers_case_and_punctuation" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.004"/>
+  <testcase name="formatting_only_change_is_accepted_and_restored" classname="com.aidriy.app.domain.markdown.FormatGuardTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

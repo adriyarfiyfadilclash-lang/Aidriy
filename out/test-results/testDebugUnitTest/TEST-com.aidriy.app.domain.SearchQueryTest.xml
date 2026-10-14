@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.SearchQueryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.012">
+  <properties/>
+  <testcase name="escapes_the_escape_character_itself" classname="com.aidriy.app.domain.SearchQueryTest" time="0.006"/>
+  <testcase name="keeps_case_for_sqlite_case_insensitive_like" classname="com.aidriy.app.domain.SearchQueryTest" time="0.003"/>
+  <testcase name="wraps_query_in_contains_pattern" classname="com.aidriy.app.domain.SearchQueryTest" time="0.0"/>
+  <testcase name="empty_or_blank_query_matches_everything" classname="com.aidriy.app.domain.SearchQueryTest" time="0.0"/>
+  <testcase name="trims_and_collapses_whitespace" classname="com.aidriy.app.domain.SearchQueryTest" time="0.001"/>
+  <testcase name="escapes_like_wildcards_so_they_match_literally" classname="com.aidriy.app.domain.SearchQueryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

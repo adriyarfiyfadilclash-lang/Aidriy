@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.core.time.DatePickerDatesTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.091">
+  <properties/>
+  <testcase name="localDateOf_uses_the_given_zone" classname="com.aidriy.app.core.time.DatePickerDatesTest" time="0.039"/>
+  <testcase name="picker_millis_are_utc_midnight" classname="com.aidriy.app.core.time.DatePickerDatesTest" time="0.004"/>
+  <testcase name="round_trip_keeps_the_same_calendar_day_in_every_zone" classname="com.aidriy.app.core.time.DatePickerDatesTest" time="0.045"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

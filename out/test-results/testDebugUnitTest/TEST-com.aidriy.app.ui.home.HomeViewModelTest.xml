@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.ui.home.HomeViewModelTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.518">
+  <properties/>
+  <testcase name="toggle_favorite_updates_the_note" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.38"/>
+  <testcase name="refresh_picks_up_new_time_and_date" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.002"/>
+  <testcase name="content_reflects_notes_from_the_repository" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.057"/>
+  <testcase name="initial_state_uses_local_time_and_date" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.009"/>
+  <testcase name="profile_follows_settings" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.024"/>
+  <testcase name="content_shows_error_when_repository_fails" classname="com.aidriy.app.ui.home.HomeViewModelTest" time="0.042"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

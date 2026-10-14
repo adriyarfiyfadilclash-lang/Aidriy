@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.markdown.MarkdownTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.058">
+  <properties/>
+  <testcase name="image_line_round_trips" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.018"/>
+  <testcase name="underscores_inside_words_are_not_italic" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.004"/>
+  <testcase name="inline_styles_links_and_escapes" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.011"/>
+  <testcase name="parses_lists_tasks_and_nesting" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.006"/>
+  <testcase name="toggles_only_task_lines" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.007"/>
+  <testcase name="parses_headings_paragraphs_and_keeps_line_breaks" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.001"/>
+  <testcase name="parses_quote_callout_code_divider_table_and_image" classname="com.aidriy.app.domain.markdown.MarkdownTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

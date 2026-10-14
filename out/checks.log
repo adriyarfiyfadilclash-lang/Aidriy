@@ -1,0 +1,122 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugResValues
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:generateDebugAndroidTestResValues
+> Task :app:extractProguardFiles
+> Task :app:processDebugResources
+> Task :app:kspDebugKotlin
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/ai/AiChatScreen.kt:470:37 'val Icons.Outlined.NoteAdd: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.NoteAdd.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/ai/AiChatScreen.kt:480:28 'val Icons.Outlined.NoteAdd: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.NoteAdd.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/ai/AiSuggestions.kt:67:90 'val Icons.Outlined.HelpOutline: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.HelpOutline.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/files/FileViewerScreen.kt:147:45 'val Icons.Outlined.TextSnippet: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.TextSnippet.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/files/FileViewerScreen.kt:200:65 'val Icons.Outlined.DriveFileMove: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.DriveFileMove.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/files/FilesScreen.kt:381:28 'val Icons.Outlined.InsertDriveFile: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.InsertDriveFile.
+w: file:///home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/notes/templates/TemplatesScreen.kt:87:35 'val Icons.Outlined.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.MenuBook.
+
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:generateDebugLintReportModel
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+> Task :app:lintAnalyzeDebug
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///home/runner/work/Aidriy/Aidriy/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug FAILED
+Lint found 1 errors, 69 warnings. First failure:
+
+/home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/markdown/MarkdownView.kt:311: Error: produceState calls should assign value inside the producer lambda [ProduceStateDoesNotAssignValue from androidx.compose.runtime]
+    val file by produceState<StoredFile?>(null, id) { value = id?.let { lookup(it) } }
+                ~~~~~~~~~~~~
+
+   Explanation for issues of type "ProduceStateDoesNotAssignValue":
+   produceState returns an observable State using values assigned inside the
+   producer lambda. If the lambda never assigns (i.e value = foo), then the
+   State will never change. Make sure to assign a value when the source you
+   are producing values from changes / emits a new value. For sample usage see
+   the produceState documentation.
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.runtime
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+
+The full lint text report is located at:
+  /home/runner/work/Aidriy/Aidriy/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791970206543.json
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:lintDebug'.
+> Lint found errors in the project; aborting build.
+  
+  Fix the issues identified by lint, or create a baseline to see only new errors.
+  To create a baseline, run `gradlew updateLintBaseline` after adding the following to the module's build.gradle file:
+  ```
+  android {
+      lint {
+          baseline = file("lint-baseline.xml")
+      }
+  }
+  ```
+  For more details, see https://developer.android.com/studio/write/lint#snapshot
+  
+  Lint found 1 errors, 69 warnings. First failure:
+  
+  /home/runner/work/Aidriy/Aidriy/app/src/main/java/com/aidriy/app/ui/markdown/MarkdownView.kt:311: Error: produceState calls should assign value inside the producer lambda [ProduceStateDoesNotAssignValue from androidx.compose.runtime]
+      val file by produceState<StoredFile?>(null, id) { value = id?.let { lookup(it) } }
+                  ~~~~~~~~~~~~
+  
+     Explanation for issues of type "ProduceStateDoesNotAssignValue":
+     produceState returns an observable State using values assigned inside the
+     producer lambda. If the lambda never assigns (i.e value = foo), then the
+     State will never change. Make sure to assign a value when the source you
+     are producing values from changes / emits a new value. For sample usage see
+     the produceState documentation.
+  
+     Vendor: Jetpack Compose
+     Identifier: androidx.compose.runtime
+     Feedback: https://issuetracker.google.com/issues/new?component=612128
+  
+  
+  The full lint text report is located at:
+    /home/runner/work/Aidriy/Aidriy/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2m 34s
+34 actionable tasks: 34 executed

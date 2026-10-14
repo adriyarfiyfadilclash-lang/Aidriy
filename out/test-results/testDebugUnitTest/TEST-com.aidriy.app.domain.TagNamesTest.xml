@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.domain.TagNamesTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:20" hostname="runnervmmprz5" time="0.028">
+  <properties/>
+  <testcase name="clean_removes_hash_and_extra_whitespace" classname="com.aidriy.app.domain.TagNamesTest" time="0.005"/>
+  <testcase name="cleanList_fails_on_invalid_name" classname="com.aidriy.app.domain.TagNamesTest" time="0.001"/>
+  <testcase name="normalize_is_case_insensitive_key" classname="com.aidriy.app.domain.TagNamesTest" time="0.001"/>
+  <testcase name="cleanList_deduplicates_case_insensitively_keeping_first_spelling" classname="com.aidriy.app.domain.TagNamesTest" time="0.009"/>
+  <testcase name="cleanList_fails_when_too_many_distinct_tags" classname="com.aidriy.app.domain.TagNamesTest" time="0.006"/>
+  <testcase name="validate_rejects_empty_and_too_long_names" classname="com.aidriy.app.domain.TagNamesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

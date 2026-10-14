@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.aidriy.app.ui.notes.NoteEditorViewModelTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2026-10-14T09:31:21" hostname="runnervmmprz5" time="0.443">
+  <properties/>
+  <testcase name="editing_an_existing_note_updates_it_instead_of_creating_a_copy" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.124"/>
+  <testcase name="ai_format_that_changes_words_is_flagged" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.037"/>
+  <testcase name="moving_to_a_folder_is_stored" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.018"/>
+  <testcase name="favorite_on_a_new_note_is_applied_when_first_saved" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.012"/>
+  <testcase name="undo_and_redo_restore_text" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.016"/>
+  <testcase name="reminder_saves_the_note_and_schedules_it" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.017"/>
+  <testcase name="empty_note_is_rejected_with_validation_message" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.013"/>
+  <testcase name="failed_save_keeps_the_text_and_shows_an_error" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.017"/>
+  <testcase name="ai_format_that_drops_an_image_is_refused" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.023"/>
+  <testcase name="creating_a_note_reports_saved_only_after_the_repository_succeeds" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.019"/>
+  <testcase name="reminder_in_the_past_is_rejected" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.016"/>
+  <testcase name="ai_format_shows_a_preview_and_applies_only_after_confirming" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.019"/>
+  <testcase name="finishing_an_edit_saves_and_returns_to_the_reader" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.016"/>
+  <testcase name="ticking_a_task_in_the_reader_is_stored" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.022"/>
+  <testcase name="existing_note_opens_in_reader_and_new_note_in_editor" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.02"/>
+  <testcase name="unknown_note_id_shows_not_found_and_blocks_saving" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.013"/>
+  <testcase name="deleting_closes_the_editor_after_success" classname="com.aidriy.app.ui.notes.NoteEditorViewModelTest" time="0.015"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

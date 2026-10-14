@@ -29,7 +29,23 @@ jobs:
       - name: Build APK
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
+          set -o pipefail
+          ./gradlew --no-daemon assembleDebug 2>&1 | tee build.log
+
+      # Saves the full build log to the `ci-logs` branch so it can be read with plain git.
+      - name: Publish build log on failure
+        if: failure()
+        run: |
+          grep -E "^e: |What went wrong|FAILED" build.log | head -20 | while IFS= read -r line; do echo "::error::$line"; done || true
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          cp build.log /tmp/build.log
+          git checkout --orphan ci-logs
+          git rm -rf -q --cached . || true
+          cp /tmp/build.log build.log
+          git add -f build.log
+          git commit -q -m "Build log for ${{ github.sha }}"
+          git push -f origin ci-logs
 
       - name: Rename APK
         run: |

@@ -15,5 +15,6 @@ class AidriyApplication : Application() {
         container = DefaultAppContainer(this)
         Notifications.ensureChannel(this)
         container.appLock.start()
+        container.syncManager.start()
     }
 }

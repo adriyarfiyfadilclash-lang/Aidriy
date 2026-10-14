@@ -88,7 +88,7 @@ data class ChatMessage(
     val noLocalMatch: Boolean,
     val isError: Boolean,
     val createdAt: Long,
-    /** Local feedback on an answer: 1 helpful, -1 not helpful, 0 none. Never sent anywhere. */
+    /** Feedback on an answer: 1 helpful, -1 not helpful, 0 none. Never sent to AI providers (only to the user's own cloud backup). */
     val rating: Int = 0,
 )
 

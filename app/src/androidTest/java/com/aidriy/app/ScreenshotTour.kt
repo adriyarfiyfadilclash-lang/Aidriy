@@ -126,6 +126,33 @@ class ScreenshotTour {
                 ) as com.aidriy.app.domain.DataResult.Success
                 ).value
             notes.setFolder(rich.id, folder.id)
+            notes.create(
+                NoteDraft(
+                    "Contoh Markdown",
+                    """
+                    [TOC]
+
+                    ## Kode
+                    ```kotlin
+                    // Hitung total belanja
+                    fun total(harga: List<Int>): Int = harga.sum()
+                    val pesan = "Total: ${'$'}{total(listOf(5_000, 12_500))}"
+                    ```
+
+                    ## Kutipan bertingkat
+                    > Catatan dosen:
+                    >> Ulangi bab 2 sebelum ujian.
+
+                    ## Callout
+                    > [!CONTOH]- Klik untuk membuka contoh
+                    > Isi contoh tersembunyi.
+
+                    > [!SUKSES] Tugas selesai
+                    > Lihat juga [[Ringkasan rapat]].
+                    """.trimIndent(),
+                    listOf("Belajar"),
+                ),
+            )
             container.ideaRepository.create(IdeaDraft("Fitur tandai warna catatan", "Biar mudah dikelompokkan"))
             container.journalRepository.save(LocalDate.now(), JournalDraft("", "Hari ini fokus menyelesaikan desain ulang AIDRIY."), null)
             rich.id
@@ -254,7 +281,7 @@ class ScreenshotTour {
             dao.insertMessage(msg("m-k-1", "c-kotlin", "user", "Jelaskan perbedaan Activity dan ViewModel di Android.", now - 7_200_000))
             dao.insertMessage(
                 msg("m-k-2", "c-kotlin", "assistant",
-                    "Berikut perbedaan **Activity** dan **ViewModel**:\n\n1. **Activity**\n   - Menangani tampilan dan interaksi pengguna\n   - Mengikuti siklus hidup (lifecycle)\n2. **ViewModel**\n   - Menyimpan dan mengelola data UI\n   - Tetap ada saat rotasi layar\n\n> [!TIP]\n> Simpan logika di ViewModel, tampilan di Activity/Composable.",
+                    "Berikut perbedaan **Activity** dan **ViewModel**:\n\n1. **Activity**\n   - Menangani tampilan dan interaksi pengguna\n   - Mengikuti siklus hidup (lifecycle)\n2. **ViewModel**\n   - Menyimpan dan mengelola data UI\n   - Tetap ada saat rotasi layar\n\n> [!TIP]\n> Simpan logika di ViewModel, tampilan di Activity/Composable.\n\n```kotlin\nclass CatatanViewModel : ViewModel() {\n    val judul = MutableStateFlow(\"\") // bertahan saat rotasi\n}\n```",
                     now - 7_190_000),
             )
         }
@@ -321,5 +348,33 @@ class ScreenshotTour {
         shot("22_ai_pengaturan")
 
         runBlocking { container.secretStore.removeKey(com.aidriy.app.domain.model.AiProviderId.OPENAI) }
+        back()
+        Thread.sleep(400)
+
+        // Markdown reader: outline, highlighted code, nested quote, foldable callout, note link.
+        composeRule.onNodeWithTag("nav_catatan").performClick()
+        waitForTag("screen_catatan")
+        composeRule.onAllNodesWithText("Contoh Markdown").onFirst().performClick()
+        waitForTag("note_reader")
+        Thread.sleep(600)
+        shot("23_markdown")
+        back()
+        Thread.sleep(400)
+
+        // Account: signed-out form, then a local validation message (nothing is sent).
+        composeRule.onNodeWithTag("nav_pengaturan").performClick()
+        waitForTag("settings_account")
+        composeRule.onNodeWithTag("settings_account").performClick()
+        waitForTag("screen_settings_account")
+        Thread.sleep(400)
+        shot("24_akun_masuk")
+        composeRule.onNodeWithTag("acc_email").performTextInput("bukan-email")
+        composeRule.onNodeWithTag("acc_password").performTextInput("rahasia123")
+        composeRule.onNodeWithTag("acc_submit").performClick()
+        waitForTag("acc_error")
+        shot("25_akun_validasi")
+        composeRule.onNodeWithTag("acc_to_register").performClick()
+        Thread.sleep(300)
+        shot("26_akun_daftar")
     }
 }

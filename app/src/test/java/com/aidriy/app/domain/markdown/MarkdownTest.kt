@@ -97,4 +97,52 @@ class MarkdownTest {
     fun underscores_inside_words_are_not_italic() {
         assertEquals(listOf(InlineRun("nama_file_baru")), MarkdownInline.parse("nama_file_baru"))
     }
+
+    @Test
+    fun note_links_with_and_without_alias() {
+        val runs = MarkdownInline.parse("lihat [[Rencana Kuliah]] dan [[Resep|resep nasi]]")
+        val byText = runs.associateBy { it.text }
+        assertEquals("catatan:Rencana Kuliah", byText.getValue("Rencana Kuliah").link)
+        assertEquals("catatan:Resep", byText.getValue("resep nasi").link)
+        assertEquals("Resep", Markdown.noteTitle("catatan:Resep"))
+        assertEquals(null, Markdown.noteTitle("https://x.id"))
+    }
+
+    @Test
+    fun foldable_callouts_and_more_kinds() {
+        val a = Markdown.parse("> [!CONTOH]- Klik untuk buka\n> isi").single() as MdBlock.Callout
+        assertEquals(CalloutKind.EXAMPLE, a.kind)
+        assertTrue(a.foldable && a.collapsed)
+        assertEquals("Klik untuk buka", a.title)
+        val b = Markdown.parse("> [!BAHAYA]+\n> x").single() as MdBlock.Callout
+        assertEquals(CalloutKind.DANGER, b.kind)
+        assertTrue(b.foldable && !b.collapsed)
+        assertEquals(CalloutKind.SUCCESS, Markdown.calloutKind("berhasil"))
+        assertEquals(CalloutKind.QUESTION, Markdown.calloutKind("FAQ"))
+    }
+
+    @Test
+    fun nested_quote_body_is_markdown() {
+        val q = Markdown.parse("> luar\n>> dalam\n> - poin").single() as MdBlock.Quote
+        val inner = Markdown.parse(q.text)
+        assertEquals(MdBlock.Paragraph("luar"), inner[0])
+        assertTrue(inner[1] is MdBlock.Quote)
+    }
+
+    @Test
+    fun toc_lists_all_headings() {
+        val blocks = Markdown.parse("[TOC]\n# Satu\n## Dua\nteks")
+        val toc = blocks[0] as MdBlock.Toc
+        assertEquals(listOf("Satu", "Dua"), toc.headings.map { it.text })
+    }
+
+    @Test
+    fun preview_strips_markers() {
+        val md = "# Judul\n> [!TIP] Saran\n> isi **tebal**\n- [ ] tugas\n- [x] beres\n```kotlin\nval a = 1\n```\n| A | B |\n|---|---|\n| 1 | 2 |\n![foto](berkas://x)\nlihat [[Catatan Lain|lain]] ~~coret~~"
+        assertEquals(
+            "Judul Saran isi tebal ☐ tugas ☑ beres val a = 1 A · B 1 · 2 🖼 foto lihat lain coret",
+            Markdown.preview(md),
+        )
+        assertEquals("abc", Markdown.preview("abcdef", max = 3))
+    }
 }

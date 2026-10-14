@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.aidriy.app.data.local.AidriyDatabase
 import com.aidriy.app.data.local.AidriyMigrations
+import com.aidriy.app.data.local.SyncTriggers
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -87,6 +88,21 @@ class MigrationTest {
                 assertTrue(c.moveToFirst())
                 assertEquals(0, c.getInt(0))
             }
+            // v5: sync bookkeeping. The app installs the triggers on every open (paused until sign-in).
+            SyncTriggers.install(sql)
+            sql.execSQL("UPDATE notes SET title = 'Diam' WHERE id = 'n1'")
+            sql.query("SELECT COUNT(*) FROM sync_dirty").use { c ->
+                c.moveToFirst()
+                assertEquals(0, c.getInt(0))
+            }
+            sql.execSQL("UPDATE sync_meta SET paused = 0 WHERE id = 1")
+            sql.execSQL("UPDATE notes SET title = 'Baru' WHERE id = 'n1'")
+            sql.query("SELECT kind, id FROM sync_dirty").use { c ->
+                assertTrue(c.moveToFirst())
+                assertEquals("notes", c.getString(0))
+                assertEquals("n1", c.getString(1))
+            }
+            sql.query("SELECT COUNT(*) FROM sync_uploaded").use { c -> assertTrue(c.moveToFirst()) }
             assertEquals(AidriyDatabase.VERSION, sql.version)
         } finally {
             db.close()

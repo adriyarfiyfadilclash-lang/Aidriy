@@ -42,13 +42,14 @@ import androidx.compose.material.icons.outlined.HorizontalRule
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.AddLink
+import androidx.compose.material.icons.automirrored.outlined.Toc
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.Sell
 import androidx.compose.material.icons.outlined.TableChart
 import androidx.compose.material.icons.outlined.TextFields
 import androidx.compose.material.icons.outlined.Title
-import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -93,6 +94,7 @@ import com.aidriy.app.domain.markdown.FormatOptions
 import com.aidriy.app.domain.model.StoredFile
 import com.aidriy.app.ui.components.AccentTile
 import com.aidriy.app.ui.markdown.MarkdownView
+import com.aidriy.app.ui.markdown.calloutStyle
 import com.aidriy.app.ui.theme.AccentKey
 import com.aidriy.app.ui.theme.AidriyColors
 import com.aidriy.app.ui.theme.Spacing
@@ -211,7 +213,7 @@ fun BerkasImagePickerSheet(images: List<StoredFile>, onPick: (StoredFile) -> Uni
 
 // ------------------------------------------------------------------ Lainnya
 
-enum class MoreElement { HEADING, NUMBERED, BULLET, CHECKLIST, TABLE, QUOTE, DIVIDER, LINK, CODE, CALLOUT, DATETIME, EMOJI, DICTATE, TAGS }
+enum class MoreElement { HEADING, NUMBERED, BULLET, CHECKLIST, TABLE, QUOTE, DIVIDER, LINK, CODE, CALLOUT, DATETIME, EMOJI, DICTATE, TAGS, NOTE_LINK, TOC }
 
 @Composable
 fun MoreElementsSheet(onPick: (MoreElement) -> Unit, onDismiss: () -> Unit) {
@@ -230,9 +232,11 @@ fun MoreElementsSheet(onPick: (MoreElement) -> Unit, onDismiss: () -> Unit) {
         Triple(MoreElement.EMOJI, Icons.Outlined.EmojiEmotions, R.string.more_emoji to R.string.more_emoji_sub),
         Triple(MoreElement.DICTATE, Icons.Outlined.Mic, R.string.fmt_dictate to R.string.more_dictate_sub),
         Triple(MoreElement.TAGS, Icons.Outlined.Sell, R.string.tags_label to R.string.more_tags_sub),
+        Triple(MoreElement.NOTE_LINK, Icons.Outlined.AddLink, R.string.more_note_link to R.string.more_note_link_sub),
+        Triple(MoreElement.TOC, Icons.AutoMirrored.Outlined.Toc, R.string.md_toc to R.string.more_toc_sub),
     )
     ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(Modifier.padding(bottom = Spacing.xl).testTag("sheet_more")) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(bottom = Spacing.xl).testTag("sheet_more")) {
             SheetTitle(stringResource(R.string.more_title))
             items.chunked(2).forEach { row ->
                 Row(Modifier.fillMaxWidth().padding(horizontal = Spacing.sm)) {
@@ -337,12 +341,8 @@ fun CalloutDialog(onPick: (CalloutKind) -> Unit, onDismiss: () -> Unit) {
         title = { Text(stringResource(R.string.more_callout)) },
         text = {
             Column {
-                listOf(
-                    Triple(CalloutKind.INFO, Icons.Outlined.Info, R.string.callout_info),
-                    Triple(CalloutKind.TIP, Icons.Outlined.AutoAwesome, R.string.callout_tip),
-                    Triple(CalloutKind.IMPORTANT, Icons.Outlined.Info, R.string.callout_important),
-                    Triple(CalloutKind.WARNING, Icons.Outlined.WarningAmber, R.string.callout_warning),
-                ).forEach { (kind, icon, label) ->
+                CalloutKind.entries.map { k -> calloutStyle(k).let { Triple(k, it.icon, it.label) } }
+                    .forEach { (kind, icon, label) ->
                     Row(
                         Modifier
                             .fillMaxWidth()

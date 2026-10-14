@@ -86,6 +86,20 @@
     <string name="callout_tip">Tips</string>
     <string name="callout_important">Penting</string>
     <string name="callout_warning">Peringatan</string>
+    <string name="callout_danger">Bahaya</string>
+    <string name="callout_success">Berhasil</string>
+    <string name="callout_question">Pertanyaan</string>
+    <string name="callout_example">Contoh</string>
+    <string name="more_note_link">Tautan catatan</string>
+    <string name="more_note_link_sub">[[Judul catatan lain]]</string>
+    <string name="more_toc_sub">Ringkasan semua heading</string>
+    <string name="md_code">Kode</string>
+    <string name="md_copy_code">Salin kode</string>
+    <string name="md_toc">Daftar isi</string>
+    <string name="md_fold">Tutup</string>
+    <string name="md_unfold">Buka</string>
+    <string name="note_link_missing">Catatan \"%1$s\" belum ada</string>
+    <string name="note_link_create">Buat</string>
 
     <!-- Rapikan Format (AI) -->
     <string name="format_title">Rapikan Format</string>

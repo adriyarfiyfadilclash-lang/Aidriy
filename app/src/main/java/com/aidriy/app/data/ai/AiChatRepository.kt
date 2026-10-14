@@ -334,7 +334,13 @@ class AiChatRepository(
                 ResponseLength.LONG -> "Boleh menjawab panjang bila topiknya membutuhkan. "
             },
         )
-        append("Gunakan Markdown (heading, daftar, tabel, **tebal**, `kode`) bila membuat jawaban lebih mudah dibaca. ")
+        append(
+            "Format jawaban dengan Markdown yang rapi bila membantu: ## heading untuk bagian, daftar bernomor untuk langkah, " +
+                "- poin untuk daftar, **tebal** untuk istilah kunci, tabel untuk perbandingan, ```bahasa untuk kode " +
+                "(selalu sebutkan bahasanya, misalnya ```kotlin), > kutipan, dan callout '> [!TIP]', '> [!PENTING]', " +
+                "'> [!PERINGATAN]', '> [!CONTOH]' untuk hal yang perlu menonjol. Jangan memakai LaTeX; tulis rumus " +
+                "dengan teks biasa atau simbol Unicode (x², √, ≤). Untuk jawaban pendek cukup paragraf biasa. ",
+        )
         if (hasContext) {
             append(
                 "Pesan pengguna menyertakan konteks bernomor dari catatannya. Gunakan konteks itu bila relevan dan " +

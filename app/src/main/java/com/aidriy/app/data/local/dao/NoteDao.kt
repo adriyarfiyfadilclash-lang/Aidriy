@@ -40,6 +40,10 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :id")
     suspend fun getById(id: String): NoteEntity?
 
+    /** For [[Judul]] links: exact title, any letter case; active notes first, newest first. */
+    @Query("SELECT id FROM notes WHERE title = :title COLLATE NOCASE ORDER BY is_archived ASC, updated_at DESC LIMIT 1")
+    suspend fun findIdByTitle(title: String): String?
+
     @Transaction
     @Query("SELECT * FROM notes WHERE id = :id")
     suspend fun getWithTags(id: String): NoteWithTags?

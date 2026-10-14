@@ -26,7 +26,7 @@ object FormatPrompt {
         appendLine("- Keep placeholders like ⟦GAMBAR_1⟧ and ⟦BERKAS_1⟧ exactly as they are, each on the same position relative to the text. Images (⟦GAMBAR_n⟧) stay on their own line.")
         appendLine("- Keep checklist states exactly ([ ] stays [ ], [x] stays [x]).")
         appendLine("- Keep code blocks (```) unchanged, including their content.")
-        appendLine("- Use this Markdown: # ## ### headings, - bullets, 1. numbers, - [ ] tasks, > quotes, **bold**, *italic*, __underline__, ~~strike~~, ==highlight==, `code`, | tables |, --- dividers, > [!INFO] / [!TIP] / [!PENTING] / [!PERINGATAN] callouts.")
+        appendLine("- Use this Markdown: # ## ### headings, - bullets, 1. numbers, - [ ] tasks, > quotes, **bold**, *italic*, __underline__, ~~strike~~, ==highlight==, `code`, | tables | (with :--: alignment), --- dividers, nested > > quotes, and callouts: > [!INFO], [!TIP], [!PENTING], [!PERINGATAN], [!BAHAYA], [!SUKSES], [!PERTANYAAN], [!CONTOH]. A callout marker may end with - to start folded (for long details).")
         appendLine()
         appendLine("Allowed improvements:")
         if (options.spacing) appendLine("- Tidy spacing: one blank line between paragraphs and blocks, no trailing spaces, no runs of blank lines.")
@@ -37,7 +37,8 @@ object FormatPrompt {
         if (options.indentation) appendLine("- Fix indentation of nested lists (2 spaces per level) and remove stray leading spaces from paragraphs.")
         if (options.emphasis) appendLine("- Mark a few key terms in **bold** (only existing words).")
         if (options.richBlocks) {
-            appendLine("- Where it clearly fits, use a table (header cells must be existing words from the note), a > quote, a --- divider, or a callout written as '> [!INFO]' with no title text followed by '> ' lines.")
+            appendLine("- Where it clearly fits, use a table (header cells must be existing words from the note), a > quote, a --- divider, or a callout written as '> [!INFO]' (pick the kind that matches: TIP for advice, PERINGATAN for cautions, CONTOH for examples, PERTANYAAN for questions, SUKSES for results) with no title text, followed by '> ' lines.")
+            appendLine("- Group a long list of steps or definitions under existing heading words; keep lists short and scannable.")
         }
         if (!options.spacing && !options.headingsAndLists && !options.indentation && !options.emphasis && !options.richBlocks) {
             appendLine("- Only fix obviously broken Markdown syntax.")

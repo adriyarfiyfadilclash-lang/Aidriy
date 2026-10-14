@@ -83,4 +83,7 @@
     <string name="ai_streaming_sub">Jawaban tampil bertahap saat diketik AI (jika tersedia).</string>
     <string name="ai_test_success_title">Koneksi berhasil</string>
     <string name="ai_test_failed_title">Koneksi gagal</string>
+    <string name="ai_you_label">Kamu</string>
+    <string name="ai_copy_chat">Salin seluruh chat</string>
+    <string name="ai_share_chat">Bagikan chat</string>
 </resources>

@@ -71,6 +71,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -96,6 +97,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -105,7 +107,6 @@ import coil.compose.AsyncImage
 import com.aidriy.app.R
 import com.aidriy.app.core.time.DatePickerDates
 import com.aidriy.app.core.time.IndonesianDateFormatter
-import com.aidriy.app.domain.markdown.CalloutKind
 import com.aidriy.app.domain.markdown.Markdown
 import com.aidriy.app.domain.model.StoredFile
 import com.aidriy.app.ui.common.EditorEvent
@@ -147,6 +148,8 @@ fun NoteEditorRoute(
     onClose: () -> Unit,
     onOpenFile: (String) -> Unit,
     onOpenAiSettings: () -> Unit = {},
+    onOpenNote: (String) -> Unit = {},
+    onCreateNoteTitled: (String) -> Unit = {},
     viewModel: NoteEditorViewModel = viewModel(factory = NoteEditorViewModel.Factory),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -372,6 +375,21 @@ fun NoteEditorRoute(
                         attachments = attachments.filter { !draft.content.contains(Markdown.berkasTarget(it.id)) },
                         onToggleTask = viewModel::toggleTask,
                         onOpenFile = onOpenFile,
+                        onOpenNoteLink = { title ->
+                            scope.launch {
+                                val id = viewModel.findLinkedNote(title)
+                                if (id != null) {
+                                    if (id != uiState.noteId) onOpenNote(id)
+                                } else {
+                                    val result = snackbarHostState.showSnackbar(
+                                        context.getString(R.string.note_link_missing, title),
+                                        actionLabel = context.getString(R.string.note_link_create),
+                                        withDismissAction = true,
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) onCreateNoteTitled(title)
+                                }
+                            }
+                        },
                         onReminder = askReminder,
                         onClearReminder = { viewModel.setReminder(null) },
                         onEdit = viewModel::startEditing,
@@ -441,6 +459,12 @@ fun NoteEditorRoute(
                     MoreElement.EMOJI -> showEmojiSheet = true
                     MoreElement.DICTATE -> dictate()
                     MoreElement.TAGS -> showTagSheet = true
+                    MoreElement.NOTE_LINK -> applyEdit { v ->
+                        val selected = v.text.substring(v.selection.min, v.selection.max)
+                        val text = v.text.replaceRange(v.selection.min, v.selection.max, "[[$selected]]")
+                        TextFieldValue(text, TextRange(v.selection.min + 2 + selected.length))
+                    }
+                    MoreElement.TOC -> applyEdit { MarkdownLite.insertBlock(it, "[TOC]\n") }
                 }
             },
             onDismiss = { showMoreSheet = false },
@@ -460,13 +484,7 @@ fun NoteEditorRoute(
         CalloutDialog(
             onPick = { kind ->
                 showCalloutDialog = false
-                val key = when (kind) {
-                    CalloutKind.INFO -> "INFO"
-                    CalloutKind.TIP -> "TIP"
-                    CalloutKind.IMPORTANT -> "PENTING"
-                    CalloutKind.WARNING -> "PERINGATAN"
-                }
-                applyEdit { MarkdownLite.insertBlock(it, "> [!$key]\n> ") }
+                applyEdit { MarkdownLite.insertBlock(it, "> [!${Markdown.calloutKeyword(kind)}]\n> ") }
             },
             onDismiss = { showCalloutDialog = false },
         )
@@ -628,6 +646,7 @@ private fun NoteReader(
     attachments: List<StoredFile>,
     onToggleTask: (Int) -> Unit,
     onOpenFile: (String) -> Unit,
+    onOpenNoteLink: (String) -> Unit,
     onReminder: () -> Unit,
     onClearReminder: () -> Unit,
     onEdit: () -> Unit,
@@ -668,6 +687,7 @@ private fun NoteReader(
                 markdown = content,
                 onToggleTask = onToggleTask,
                 onOpenBerkas = onOpenFile,
+                onOpenNote = onOpenNoteLink,
             )
         }
         if (attachments.isNotEmpty()) AttachmentStrip(attachments, onOpenFile)

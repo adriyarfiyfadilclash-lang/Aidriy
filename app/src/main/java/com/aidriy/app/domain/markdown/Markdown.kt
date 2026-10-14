@@ -6,15 +6,16 @@ package com.aidriy.app.domain.markdown
  *
  * Supported:
  *   # .. ###### headings, paragraphs (single line breaks kept), - * + bullets, 1. / 1) numbers,
- *   - [ ] / - [x] tasks, nesting by indentation, > quotes, > [!INFO] callouts, ``` code blocks,
- *   --- dividers, | tables |, ![keterangan](berkas://id "ukuran") images,
+ *   - [ ] / - [x] tasks, nesting by indentation, > quotes (nested, with lists/code inside),
+ *   > [!INFO] callouts (foldable with [!TIP]- / [!TIP]+), ``` code blocks (highlighted),
+ *   --- dividers, | tables |, ![keterangan](berkas://id "ukuran") images, [TOC] outline,
  *   **tebal**, *miring* / _miring_, __garis bawah__, ~~coret~~, ==sorot==, `kode`,
- *   [tautan](https://...), bare https:// links, and \ escapes.
+ *   [tautan](https://...), [[Judul catatan]] / [[Judul|teks]] links, bare https:// links, \ escapes.
  */
 
 enum class ListKind { BULLET, ORDERED, TASK }
 
-enum class CalloutKind { INFO, TIP, IMPORTANT, WARNING }
+enum class CalloutKind { INFO, TIP, IMPORTANT, WARNING, DANGER, SUCCESS, QUESTION, EXAMPLE }
 
 enum class ColumnAlign { START, CENTER, END }
 
@@ -45,24 +46,39 @@ sealed interface MdBlock {
         val line: Int,
     )
     data class ListBlock(val items: List<ListItem>) : MdBlock
+    /** Quote body is Markdown itself, so quotes can nest and hold lists or code. */
     data class Quote(val text: String) : MdBlock
-    data class Callout(val kind: CalloutKind, val title: String, val text: String) : MdBlock
+    data class Callout(
+        val kind: CalloutKind,
+        val title: String,
+        val text: String,
+        /** `[!TIP]-` (starts closed) or `[!TIP]+` (starts open): the reader can fold it. */
+        val foldable: Boolean = false,
+        val collapsed: Boolean = false,
+    ) : MdBlock
     data class Code(val language: String, val code: String) : MdBlock
     data object Divider : MdBlock
     data class Table(val header: List<String>, val align: List<ColumnAlign>, val rows: List<List<String>>) : MdBlock
     data class Image(val target: String, val caption: String, val size: ImageSize) : MdBlock
+
+    /** `[TOC]` line: outline of the note's headings. */
+    data class Toc(val headings: List<Heading>) : MdBlock
 }
 
 object Markdown {
 
     const val BERKAS_SCHEME = "berkas://"
 
+    /** Link target used for [[Judul catatan]] links. */
+    const val NOTE_SCHEME = "catatan:"
+
     private val headingRe = Regex("""^(#{1,6})\s+(.*?)\s*#*\s*$""")
     private val listRe = Regex("""^(\s*)([-*+]|\d{1,9}[.)])\s+(.*)$""")
     private val taskRe = Regex("""^\[([ xX])]\s+(.*)$|^\[([ xX])]$""")
     private val fenceRe = Regex("""^\s*(```|~~~)\s*([\w+-]*)\s*$""")
     private val dividerRe = Regex("""^\s{0,3}((\*\s*){3,}|(-\s*){3,}|(_\s*){3,})$""")
-    private val calloutRe = Regex("""^\[!(\w+)]\s*(.*)$""")
+    private val calloutRe = Regex("""^\[!(\w+)]([+-]?)\s*(.*)$""")
+    private val tocRe = Regex("""^\s*\[{1,2}(TOC|DAFTAR ISI)]{1,2}\s*$""", RegexOption.IGNORE_CASE)
     private val tableSepRe = Regex("""^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$""")
     val imageLineRe = Regex("""^\s*!\[([^\]]*)]\(\s*(\S+?)(?:\s+"([^"]*)")?\s*\)\s*$""")
 
@@ -124,6 +140,13 @@ object Markdown {
                 continue
             }
 
+            if (tocRe.matches(line)) {
+                flushAll()
+                blocks += MdBlock.Toc(emptyList())
+                i++
+                continue
+            }
+
             if (dividerRe.matches(line)) {
                 flushAll()
                 blocks += MdBlock.Divider
@@ -150,8 +173,10 @@ object Markdown {
                 blocks += if (first != null) {
                     MdBlock.Callout(
                         kind = calloutKind(first.groupValues[1]),
-                        title = first.groupValues[2],
+                        title = first.groupValues[3],
                         text = quoted.drop(1).joinToString("\n"),
+                        foldable = first.groupValues[2].isNotEmpty(),
+                        collapsed = first.groupValues[2] == "-",
                     )
                 } else {
                     MdBlock.Quote(quoted.joinToString("\n"))
@@ -226,7 +251,9 @@ object Markdown {
             i++
         }
         flushAll()
-        return blocks
+        if (blocks.none { it is MdBlock.Toc }) return blocks
+        val headings = blocks.filterIsInstance<MdBlock.Heading>()
+        return blocks.map { if (it is MdBlock.Toc) MdBlock.Toc(headings) else it }
     }
 
     private fun cells(line: String): List<String> {
@@ -256,10 +283,51 @@ object Markdown {
     }
 
     fun calloutKind(raw: String): CalloutKind = when (raw.uppercase()) {
-        "TIP", "SARAN" -> CalloutKind.TIP
+        "TIP", "SARAN", "HINT" -> CalloutKind.TIP
         "PENTING", "IMPORTANT" -> CalloutKind.IMPORTANT
         "PERINGATAN", "WARNING", "CAUTION", "AWAS" -> CalloutKind.WARNING
+        "BAHAYA", "DANGER", "ERROR", "GAGAL", "BUG" -> CalloutKind.DANGER
+        "SUKSES", "SUCCESS", "BERHASIL", "SELESAI", "DONE", "CHECK" -> CalloutKind.SUCCESS
+        "PERTANYAAN", "QUESTION", "FAQ", "TANYA" -> CalloutKind.QUESTION
+        "CONTOH", "EXAMPLE" -> CalloutKind.EXAMPLE
         else -> CalloutKind.INFO
+    }
+
+    /**
+     * One-line plain text for lists, cards and search results: Markdown markers removed, tasks
+     * shown as ☐/☑, bullets as •, images as 🖼, code fences and table rules dropped.
+     */
+    fun preview(text: String, max: Int = 300): String {
+        if (text.isBlank()) return ""
+        val out = StringBuilder()
+        for (raw in text.take(max * 4).split('\n')) {
+            var line = raw.trim()
+            if (fenceRe.matches(line) || tableSepRe.matches(line) || dividerRe.matches(line) || tocRe.matches(line)) continue
+            imageLineRe.find(line)?.let { line = "🖼 " + it.groupValues[1] }
+            while (line.startsWith(">")) line = line.removePrefix(">").trimStart()
+            calloutRe.find(line)?.let { line = it.groupValues[3] }
+            line = line.replace(Regex("""^#{1,6}\s+"""), "")
+            line = line.replace(Regex("""^[-*+]\s+\[[xX]]\s*"""), "☑ ")
+                .replace(Regex("""^[-*+]\s+\[ ]\s*"""), "☐ ")
+                .replace(Regex("""^[-*+]\s+"""), "• ")
+            if (line.startsWith("|")) line = cells(line).joinToString(" · ")
+            line = MarkdownInline.plain(line)
+            if (line.isNotBlank()) out.append(line).append(' ')
+            if (out.length > max) break
+        }
+        return out.toString().replace(Regex("""\s+"""), " ").trim().take(max)
+    }
+
+    /** Keyword written for a callout picked in the editor (Bahasa Indonesia where it reads well). */
+    fun calloutKeyword(kind: CalloutKind): String = when (kind) {
+        CalloutKind.INFO -> "INFO"
+        CalloutKind.TIP -> "TIP"
+        CalloutKind.IMPORTANT -> "PENTING"
+        CalloutKind.WARNING -> "PERINGATAN"
+        CalloutKind.DANGER -> "BAHAYA"
+        CalloutKind.SUCCESS -> "SUKSES"
+        CalloutKind.QUESTION -> "PERTANYAAN"
+        CalloutKind.EXAMPLE -> "CONTOH"
     }
 
     /** Flips "- [ ]" / "- [x]" on [line]. Returns the text unchanged if that line is not a task. */
@@ -283,6 +351,10 @@ object Markdown {
 
     fun berkasId(target: String): String? =
         if (target.startsWith(BERKAS_SCHEME)) target.removePrefix(BERKAS_SCHEME).takeIf { it.isNotBlank() } else null
+
+    /** Title from a [[Judul]] link target, or null for other links. */
+    fun noteTitle(target: String): String? =
+        if (target.startsWith(NOTE_SCHEME)) target.removePrefix(NOTE_SCHEME).trim().takeIf { it.isNotEmpty() } else null
 }
 
 /** One styled piece of inline text. */
@@ -312,14 +384,15 @@ object MarkdownInline {
         listOf(
             """\\([\\`*_~=\[\]()#>|!-])""",                 // 1 escape
             """`([^`\n]+)`""",                                // 2 code
-            """\[([^\]\n]+)]\(([^)\s]+)\)""",                 // 3,4 link
-            """\*\*(.+?)\*\*""",                              // 5 bold
-            """__(.+?)__""",                                  // 6 underline (AIDRIY convention)
-            """~~(.+?)~~""",                                  // 7 strike
-            """==(.+?)==""",                                  // 8 highlight
-            """(?<![*\w])\*(?![\s*])(.+?)(?<![\s*])\*(?![*\w])""", // 9 italic *
-            """(?<![_\w])_(?![\s_])(.+?)(?<![\s_])_(?![_\w])""",   // 10 italic _
-            """(https?://[^\s<>()\[\]]+[^\s<>()\[\].,;:!?'"])""",    // 11 bare url
+            """\[\[([^\]|\n]+)(?:\|([^\]\n]+))?]]""",        // 3,4 note link [[Judul|teks]]
+            """\[([^\]\n]+)]\(([^)\s]+)\)""",                 // 5,6 link
+            """\*\*(.+?)\*\*""",                              // 7 bold
+            """__(.+?)__""",                                  // 8 underline (AIDRIY convention)
+            """~~(.+?)~~""",                                  // 9 strike
+            """==(.+?)==""",                                  // 10 highlight
+            """(?<![*\w])\*(?![\s*])(.+?)(?<![\s*])\*(?![*\w])""", // 11 italic *
+            """(?<![_\w])_(?![\s_])(.+?)(?<![\s_])_(?![_\w])""",   // 12 italic _
+            """(https?://[^\s<>()\[\]]+[^\s<>()\[\].,;:!?'"])""",    // 13 bare url
         ).joinToString("|"),
     )
 
@@ -353,14 +426,18 @@ object MarkdownInline {
             when {
                 g[1] != null -> out += run(g[1]!!.value, style)
                 g[2] != null -> out += run(g[2]!!.value, style, code = true)
-                g[3] != null -> parseInto(g[3]!!.value, style.copy(link = g[4]!!.value), out)
-                g[5] != null -> parseInto(g[5]!!.value, style.copy(bold = true), out)
-                g[6] != null -> parseInto(g[6]!!.value, style.copy(underline = true), out)
-                g[7] != null -> parseInto(g[7]!!.value, style.copy(strike = true), out)
-                g[8] != null -> parseInto(g[8]!!.value, style.copy(highlight = true), out)
-                g[9] != null -> parseInto(g[9]!!.value, style.copy(italic = true), out)
-                g[10] != null -> parseInto(g[10]!!.value, style.copy(italic = true), out)
-                g[11] != null -> out += run(g[11]!!.value, style.copy(link = style.link ?: g[11]!!.value))
+                g[3] != null -> {
+                    val title = g[3]!!.value.trim()
+                    out += run((g[4]?.value ?: title).trim(), style.copy(link = Markdown.NOTE_SCHEME + title))
+                }
+                g[5] != null -> parseInto(g[5]!!.value, style.copy(link = g[6]!!.value), out)
+                g[7] != null -> parseInto(g[7]!!.value, style.copy(bold = true), out)
+                g[8] != null -> parseInto(g[8]!!.value, style.copy(underline = true), out)
+                g[9] != null -> parseInto(g[9]!!.value, style.copy(strike = true), out)
+                g[10] != null -> parseInto(g[10]!!.value, style.copy(highlight = true), out)
+                g[11] != null -> parseInto(g[11]!!.value, style.copy(italic = true), out)
+                g[12] != null -> parseInto(g[12]!!.value, style.copy(italic = true), out)
+                g[13] != null -> out += run(g[13]!!.value, style.copy(link = style.link ?: g[13]!!.value))
             }
             cursor = m.range.last + 1
         }

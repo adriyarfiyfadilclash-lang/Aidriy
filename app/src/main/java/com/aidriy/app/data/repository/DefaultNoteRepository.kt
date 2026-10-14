@@ -50,6 +50,9 @@ class DefaultNoteRepository internal constructor(
     override suspend fun getById(id: String): Note? =
         if (!InputRules.isValidId(id)) null else noteDao.getWithTags(id)?.toDomain()
 
+    override suspend fun findIdByTitle(title: String): String? =
+        title.trim().takeIf { it.isNotEmpty() }?.let { noteDao.findIdByTitle(it) }
+
     override suspend fun create(draft: NoteDraft, isFavorite: Boolean): DataResult<Note> {
         InputRules.validateNote(draft.title, draft.content)?.let { return DataResult.Failure(it) }
         val tagNames = when (val cleaned = TagNames.cleanList(draft.tagNames)) {

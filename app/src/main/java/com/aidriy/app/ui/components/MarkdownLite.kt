@@ -15,11 +15,11 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import com.aidriy.app.domain.markdown.Markdown
 
 /**
- * Notes are stored as plain text with a small Markdown subset, so they stay readable in any app
- * and in backups: **tebal**, *miring*, __garis bawah__, # judul, - poin, 1. nomor, - [ ] tugas,
- * [teks](https://tautan).
+ * Notes are stored as plain text with Markdown, so they stay readable in any app and in backups
+ * (full syntax in [Markdown]). This styles the editor in place and offers editing helpers.
  */
 object MarkdownLite {
 
@@ -27,23 +27,17 @@ object MarkdownLite {
     private val underline = Regex("""__(.+?)__""")
     private val italic = Regex("""(?<![*\w])\*(?!\s|\*)(.+?)(?<!\s|\*)\*(?![*\w])""")
     private val link = Regex("""\[([^\]\n]+)]\(([^)\s]+)\)""")
+    private val strike = Regex("""~~(.+?)~~""")
+    private val highlight = Regex("""==(.+?)==""")
+    private val code = Regex("""`([^`\n]+)`""")
+    private val noteLink = Regex("""\[\[([^\]\n]+)]]""")
+    private val quote = Regex("""(?m)^(\s*>+\s?(\[![\w]+][+-]?)?)""")
+    private val fence = Regex("""(?m)^\s*(```|~~~).*$""")
     private val heading = Regex("""(?m)^(#{1,3}) """)
     private val listMarker = Regex("""(?m)^(\s*)(- \[[ xX]] |- |\d+\. )""")
 
     /** Plain preview text for lists and search results (markers removed, whitespace collapsed). */
-    fun plain(text: String, max: Int = 300): String {
-        if (text.isBlank()) return ""
-        var s = text.take(max * 3)
-        s = link.replace(s) { it.groupValues[1] }
-        s = bold.replace(s) { it.groupValues[1] }
-        s = underline.replace(s) { it.groupValues[1] }
-        s = italic.replace(s) { it.groupValues[1] }
-        s = s.replace(Regex("""(?m)^#{1,3} """), "")
-        s = s.replace(Regex("""(?m)^\s*- \[[xX]] """), "☑ ")
-        s = s.replace(Regex("""(?m)^\s*- \[ ] """), "☐ ")
-        s = s.replace(Regex("""(?m)^\s*- """), "• ")
-        return s.replace(Regex("""\s+"""), " ").trim().take(max)
-    }
+    fun plain(text: String, max: Int = 300): String = Markdown.preview(text, max)
 
     /** Styles markers in place (text and cursor positions are unchanged). */
     fun styled(text: String, markerColor: Color, linkColor: Color): AnnotatedString = buildAnnotatedString {
@@ -58,6 +52,16 @@ object MarkdownLite {
         bold.findAll(text).forEach { mark(it.range, 2, SpanStyle(fontWeight = FontWeight.Bold)) }
         underline.findAll(text).forEach { mark(it.range, 2, SpanStyle(textDecoration = TextDecoration.Underline)) }
         italic.findAll(text).forEach { mark(it.range, 1, SpanStyle(fontStyle = FontStyle.Italic)) }
+        strike.findAll(text).forEach { mark(it.range, 2, SpanStyle(textDecoration = TextDecoration.LineThrough)) }
+        highlight.findAll(text).forEach { mark(it.range, 2, SpanStyle(background = Color(0x66FFD54F))) }
+        code.findAll(text).forEach { mark(it.range, 1, SpanStyle(fontFamily = FontFamily.Monospace, background = markerColor.copy(alpha = 0.12f))) }
+        noteLink.findAll(text).forEach { mark(it.range, 2, SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)) }
+        quote.findAll(text).forEach { m ->
+            val lineEnd = text.indexOf('\n', m.range.last + 1).let { if (it < 0) text.length else it }
+            addStyle(SpanStyle(fontStyle = FontStyle.Italic), m.range.last + 1, lineEnd)
+            addStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Bold), m.range.first, m.range.last + 1)
+        }
+        fence.findAll(text).forEach { addStyle(marker, it.range.first, it.range.last + 1) }
         link.findAll(text).forEach { m ->
             val label = m.groups[1]!!.range
             addStyle(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline), label.first, label.last + 1)

@@ -307,6 +307,9 @@ class NoteEditorViewModel(
     }
 
     /** Ticks a checklist item from the reader and stores it right away. */
+    /** Note id for a [[Judul]] link, or null when no note has that title. */
+    suspend fun findLinkedNote(title: String): String? = notes.findIdByTitle(title)
+
     fun toggleTask(line: Int) {
         val updated = Markdown.toggleTask(draft.content, line)
         if (updated == draft.content) return

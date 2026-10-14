@@ -4,6 +4,8 @@ package com.aidriy.app.ui.ai
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -50,6 +52,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.NoteAdd
 import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.Stop
@@ -156,6 +159,9 @@ fun AiChatRoute(
     val streaming by viewModel.streaming.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val transcript = {
+        ChatTranscript.build(title, messages, context.getString(R.string.ai_you_label), context.getString(R.string.ai_assistant_label))
+    }
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val focusManager = LocalFocusManager.current
@@ -240,6 +246,12 @@ fun AiChatRoute(
                     onRename = { conversations.firstOrNull { it.id == conversation }?.let { renaming = it } },
                     onDelete = { conversations.firstOrNull { it.id == conversation }?.let { deleting = it } },
                     onSettings = actions.openAiSettings,
+                    onCopyAll = {
+                        context.getSystemService(ClipboardManager::class.java)
+                            ?.setPrimaryClip(ClipData.newPlainText("AIDRIY", transcript()))
+                        scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.copied)) }
+                    },
+                    onShareAll = { shareText(context, transcript()) },
                 )
                 val listState = rememberLazyListState()
                 LaunchedEffect(messages.size, viewModel.isSending, streaming?.length) {
@@ -298,6 +310,7 @@ fun AiChatRoute(
                                         scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.copied)) }
                                     },
                                     onRegenerate = { viewModel.regenerate(message) },
+                                    onShare = { shareText(context, message.content) },
                                     onRate = { viewModel.rate(message, it) },
                                     onSaveNote = { actions.saveAsNote(title ?: context.getString(R.string.ai_note_title), message.content) },
                                 )
@@ -396,6 +409,8 @@ private fun ChatTopBar(
     onRename: () -> Unit,
     onDelete: () -> Unit,
     onSettings: () -> Unit,
+    onCopyAll: () -> Unit,
+    onShareAll: () -> Unit,
 ) {
     var menu by remember { mutableStateOf(false) }
     Row(
@@ -442,6 +457,18 @@ private fun ChatTopBar(
                         text = { Text(stringResource(R.string.ai_delete_one_title).removeSuffix("?")) },
                         leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                         onClick = { menu = false; onDelete() },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.ai_copy_chat)) },
+                        leadingIcon = { Icon(Icons.Outlined.ContentCopy, contentDescription = null) },
+                        onClick = { menu = false; onCopyAll() },
+                        modifier = Modifier.testTag("menu_ai_copy_chat"),
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.ai_share_chat)) },
+                        leadingIcon = { Icon(Icons.Outlined.Share, contentDescription = null) },
+                        onClick = { menu = false; onShareAll() },
+                        modifier = Modifier.testTag("menu_ai_share_chat"),
                     )
                 }
                 DropdownMenuItem(
@@ -606,6 +633,7 @@ private fun AssistantMessage(
     onOpenSource: (SourceRef) -> Unit,
     onCopy: () -> Unit,
     onRegenerate: () -> Unit,
+    onShare: () -> Unit,
     onRate: (Int) -> Unit,
     onSaveNote: () -> Unit,
 ) {
@@ -669,6 +697,7 @@ private fun AssistantMessage(
                     if (message.rating == Rating.DOWN) Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown,
                     R.string.ai_rate_down, "ai_rate_down", active = message.rating == Rating.DOWN,
                 ) { onRate(Rating.DOWN) }
+                SmallAction(Icons.Outlined.Share, R.string.action_share, "ai_share", onClick = onShare)
                 SmallAction(Icons.Outlined.NoteAdd, R.string.ai_save_note, "ai_save_note", onClick = onSaveNote)
             }
         }
@@ -1163,4 +1192,13 @@ private fun sourceLabel(type: SourceType): Int = when (type) {
     SourceType.IDEA -> R.string.nav_ideas
     SourceType.JOURNAL -> R.string.nav_journal
     SourceType.FILE -> R.string.nav_files
+}
+
+/** Opens the Android share sheet with [text] (WhatsApp, email, ...). */
+private fun shareText(context: Context, text: String) {
+    val send = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(send, context.getString(R.string.action_share)))
 }

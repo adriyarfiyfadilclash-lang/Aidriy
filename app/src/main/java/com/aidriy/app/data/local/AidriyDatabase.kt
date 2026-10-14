@@ -12,6 +12,7 @@ import com.aidriy.app.data.local.dao.FileDao
 import com.aidriy.app.data.local.dao.IdeaDao
 import com.aidriy.app.data.local.dao.JournalDao
 import com.aidriy.app.data.local.dao.NoteDao
+import com.aidriy.app.data.local.dao.SyncDao
 import com.aidriy.app.data.local.dao.TagDao
 import com.aidriy.app.data.local.entity.AiConversationEntity
 import com.aidriy.app.data.local.entity.AiMessageEntity
@@ -23,6 +24,9 @@ import com.aidriy.app.data.local.entity.JournalEntryEntity
 import com.aidriy.app.data.local.entity.JournalTagCrossRef
 import com.aidriy.app.data.local.entity.NoteEntity
 import com.aidriy.app.data.local.entity.NoteTagCrossRef
+import com.aidriy.app.data.local.entity.SyncDirtyEntity
+import com.aidriy.app.data.local.entity.SyncMetaEntity
+import com.aidriy.app.data.local.entity.SyncUploadedEntity
 import com.aidriy.app.data.local.entity.TagEntity
 
 @Database(
@@ -38,6 +42,9 @@ import com.aidriy.app.data.local.entity.TagEntity
         FileEntity::class,
         AiConversationEntity::class,
         AiMessageEntity::class,
+        SyncDirtyEntity::class,
+        SyncMetaEntity::class,
+        SyncUploadedEntity::class,
     ],
     version = AidriyDatabase.VERSION,
     exportSchema = true,
@@ -51,9 +58,10 @@ abstract class AidriyDatabase : RoomDatabase() {
     abstract fun fileDao(): FileDao
     abstract fun aiDao(): AiDao
     abstract fun backupDao(): BackupDao
+    abstract fun syncDao(): SyncDao
 
     companion object {
-        const val VERSION = 4
+        const val VERSION = 5
         const val NAME = "aidriy.db"
 
         /**
@@ -63,7 +71,15 @@ abstract class AidriyDatabase : RoomDatabase() {
         fun create(context: Context): AidriyDatabase =
             Room.databaseBuilder(context.applicationContext, AidriyDatabase::class.java, NAME)
                 .addMigrations(*AidriyMigrations.ALL)
+                .addCallback(SyncCallback)
                 .build()
+
+        /** Change-tracking triggers for cloud sync; reinstalled on every open (idempotent). */
+        private object SyncCallback : Callback() {
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                SyncTriggers.install(db)
+            }
+        }
     }
 }
 
@@ -139,5 +155,19 @@ object AidriyMigrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+    /** v4 → v5: change tracking for cloud sync (tables; triggers are installed on open). */
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `sync_dirty` (`kind` TEXT NOT NULL, `id` TEXT NOT NULL, " +
+                    "`seq` INTEGER NOT NULL, PRIMARY KEY(`kind`, `id`))",
+            )
+            db.execSQL("CREATE TABLE IF NOT EXISTS `sync_meta` (`id` INTEGER NOT NULL, `paused` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `sync_uploaded` (`id` TEXT NOT NULL, `uploaded_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+            )
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
 }

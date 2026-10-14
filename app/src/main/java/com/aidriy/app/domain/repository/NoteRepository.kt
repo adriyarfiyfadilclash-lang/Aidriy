@@ -20,6 +20,9 @@ interface NoteRepository {
     fun observeNote(id: String): Flow<Note?>
     suspend fun getById(id: String): Note?
 
+    /** Id of the note titled [title] (case-insensitive), for [[Judul]] links. */
+    suspend fun findIdByTitle(title: String): String? = null
+
     suspend fun create(draft: NoteDraft, isFavorite: Boolean = false): DataResult<Note>
     /** Replaces title, content and tags. Favorite and archive state are kept. */
     suspend fun update(id: String, draft: NoteDraft): DataResult<Note>

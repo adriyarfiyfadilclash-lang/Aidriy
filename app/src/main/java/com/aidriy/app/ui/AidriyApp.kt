@@ -65,6 +65,9 @@ import java.time.LocalDate
 sealed interface DeepLink {
     data class Note(val id: String) : DeepLink
     data object JournalToday : DeepLink
+
+    /** Back from an account email (confirmation or password reset). */
+    data object Account : DeepLink
 }
 
 @Composable
@@ -84,6 +87,7 @@ fun AidriyApp(
         when (deepLink) {
             is DeepLink.Note -> navController.navigate(Routes.noteEditor(deepLink.id))
             DeepLink.JournalToday -> navController.navigate(Routes.journalEditor(LocalDate.now()))
+            DeepLink.Account -> navController.navigate(Routes.SETTINGS_ACCOUNT)
             null -> return@LaunchedEffect
         }
         onDeepLinkHandled()

@@ -1,5 +1,21 @@
 package com.aidriy.app.ui.markdown
 
+import android.widget.Toast
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Dangerous
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Quiz
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import com.aidriy.app.domain.markdown.CodeHighlighter
+import com.aidriy.app.domain.markdown.CodeTokenKind
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -85,9 +101,13 @@ fun ProvideBerkasLookup(lookup: suspend (String) -> StoredFile?, content: @Compo
     CompositionLocalProvider(LocalBerkasLookup provides lookup, content = content)
 }
 
+/** How links behave inside one rendered Markdown text. */
+private class LinkHandler(val canOpen: (String) -> Boolean, val open: (String) -> Unit)
+
 /**
  * Renders note Markdown. Tasks are tappable when [onToggleTask] is set (it receives the source
- * line). Links open in the browser; `berkas://` links and images open the Berkas viewer.
+ * line). Links open in the browser; `berkas://` links and images open the Berkas viewer;
+ * [[Judul]] links open that note when [onOpenNote] is set (otherwise they are shown as text).
  */
 @Composable
 fun MarkdownView(
@@ -95,29 +115,58 @@ fun MarkdownView(
     modifier: Modifier = Modifier,
     onToggleTask: ((Int) -> Unit)? = null,
     onOpenBerkas: (String) -> Unit = {},
+    onOpenNote: ((String) -> Unit)? = null,
 ) {
     val blocks = remember(markdown) { Markdown.parse(markdown) }
     val uriHandler = LocalUriHandler.current
-    val onLink: (String) -> Unit = { url ->
-        val berkas = Markdown.berkasId(url)
-        when {
-            berkas != null -> onOpenBerkas(berkas)
-            url.startsWith("https://") || url.startsWith("http://") || url.startsWith("mailto:") ->
-                runCatching { uriHandler.openUri(url) }
-        }
-    }
+    val links = LinkHandler(
+        canOpen = { url -> Markdown.noteTitle(url) == null || onOpenNote != null },
+        open = { url ->
+            val berkas = Markdown.berkasId(url)
+            val note = Markdown.noteTitle(url)
+            when {
+                berkas != null -> onOpenBerkas(berkas)
+                note != null -> onOpenNote?.invoke(note)
+                url.startsWith("https://") || url.startsWith("http://") || url.startsWith("mailto:") ->
+                    runCatching { uriHandler.openUri(url) }
+            }
+        },
+    )
     Column(modifier = modifier.testTag("markdown_view"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        blocks.forEach { block -> BlockView(block, onToggleTask, onLink, onOpenBerkas) }
+        blocks.forEach { block -> BlockView(block, onToggleTask, links, onOpenBerkas, depth = 0) }
     }
 }
+
+/** Quotes and callouts hold Markdown themselves; nesting deeper than this is shown as text. */
+private const val MAX_DEPTH = 4
+
+@Composable
+private fun NestedBlocks(text: String, links: LinkHandler, onOpenBerkas: (String) -> Unit, depth: Int, style: TextStyle) {
+    if (depth >= MAX_DEPTH) {
+        InlineText(text, style, links)
+        return
+    }
+    val blocks = remember(text) { Markdown.parse(text) }
+    CompositionLocalProvider(LocalBodyStyle provides style) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Tasks inside quotes are not toggled: their source lines are relative to the quote.
+            blocks.forEach { BlockView(it, null, links, onOpenBerkas, depth + 1) }
+        }
+    }
+}
+
+/** Body text style; quotes and callouts provide their own for nested blocks. */
+private val LocalBodyStyle = staticCompositionLocalOf<TextStyle?> { null }
 
 @Composable
 private fun BlockView(
     block: MdBlock,
     onToggleTask: ((Int) -> Unit)?,
-    onLink: (String) -> Unit,
+    links: LinkHandler,
     onOpenBerkas: (String) -> Unit,
+    depth: Int,
 ) {
+    val onLink = links
     val type = MaterialTheme.typography
     val colors = MaterialTheme.colorScheme
     when (block) {
@@ -129,10 +178,10 @@ private fun BlockView(
                 3 -> type.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                 else -> type.titleSmall.copy(fontWeight = FontWeight.SemiBold)
             },
-            onLink = onLink,
+            links = onLink,
             modifier = Modifier.padding(top = if (block.level <= 2) 6.dp else 2.dp),
         )
-        is MdBlock.Paragraph -> InlineText(block.text, type.bodyLarge, onLink)
+        is MdBlock.Paragraph -> InlineText(block.text, LocalBodyStyle.current ?: type.bodyLarge, onLink)
         is MdBlock.ListBlock -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             block.items.forEach { item -> ListItemView(item, onToggleTask, onLink) }
         }
@@ -144,35 +193,117 @@ private fun BlockView(
                     .background(colors.primary.copy(alpha = 0.5f), RoundedCornerShape(2.dp)),
             )
             Spacer(Modifier.width(12.dp))
-            InlineText(block.text, type.bodyLarge.copy(fontStyle = FontStyle.Italic, color = colors.onSurfaceVariant), onLink)
+            NestedBlocks(
+                block.text, onLink, onOpenBerkas, depth,
+                type.bodyLarge.copy(fontStyle = FontStyle.Italic, color = colors.onSurfaceVariant),
+            )
         }
-        is MdBlock.Callout -> CalloutView(block, onLink)
-        is MdBlock.Code -> Surface(
-            color = colors.surfaceContainerHigh,
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(Modifier.padding(12.dp)) {
-                if (block.language.isNotBlank()) {
-                    Text(block.language, style = type.labelSmall, color = colors.onSurfaceVariant)
-                    Spacer(Modifier.height(4.dp))
-                }
-                Text(
-                    block.code,
-                    style = type.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                    softWrap = false,
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                )
-            }
-        }
+        is MdBlock.Callout -> CalloutView(block, onLink, onOpenBerkas, depth)
+        is MdBlock.Code -> CodeBlockView(block)
         MdBlock.Divider -> HorizontalDivider(Modifier.padding(vertical = 6.dp), color = colors.outlineVariant)
         is MdBlock.Table -> TableView(block, onLink)
         is MdBlock.Image -> ImageBlock(block.target, block.caption, block.size.fraction, onOpenBerkas)
+        is MdBlock.Toc -> TocView(block, onLink)
     }
 }
 
 @Composable
-private fun ListItemView(item: MdBlock.ListItem, onToggleTask: ((Int) -> Unit)?, onLink: (String) -> Unit) {
+private fun CodeBlockView(block: MdBlock.Code) {
+    val type = MaterialTheme.typography
+    val colors = MaterialTheme.colorScheme
+    val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
+    val dark = colors.surface.luminance() < 0.5f
+    val highlighted = remember(block, dark) { highlightCode(block, CodePalette.of(dark)) }
+    Surface(
+        color = colors.surfaceContainerHigh,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.fillMaxWidth().testTag("md_code"),
+    ) {
+        Column(Modifier.padding(start = 12.dp, end = 4.dp, bottom = 12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    block.language.ifBlank { stringResource(R.string.md_code) },
+                    style = type.labelSmall,
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(
+                    onClick = {
+                        clipboard.setText(AnnotatedString(block.code))
+                        Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.size(36.dp).testTag("md_code_copy"),
+                ) {
+                    Icon(
+                        Icons.Outlined.ContentCopy,
+                        contentDescription = stringResource(R.string.md_copy_code),
+                        tint = colors.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            }
+            Text(
+                highlighted,
+                style = type.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                softWrap = false,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .horizontalScroll(rememberScrollState()),
+            )
+        }
+    }
+}
+
+/** Token colours that read well on light and dark code backgrounds. */
+private data class CodePalette(val keyword: Color, val string: Color, val comment: Color, val number: Color, val type: Color) {
+    companion object {
+        fun of(dark: Boolean) = if (dark) {
+            CodePalette(Color(0xFFC792EA), Color(0xFFC3E88D), Color(0xFF8A93A6), Color(0xFFF78C6C), Color(0xFF82AAFF))
+        } else {
+            CodePalette(Color(0xFF7B2FBE), Color(0xFF2E7D32), Color(0xFF6B7280), Color(0xFFC2410C), Color(0xFF1D4ED8))
+        }
+    }
+}
+
+private fun highlightCode(block: MdBlock.Code, p: CodePalette): AnnotatedString = buildAnnotatedString {
+    append(block.code)
+    CodeHighlighter.highlight(block.language, block.code).forEach { span ->
+        val style = when (span.kind) {
+            CodeTokenKind.KEYWORD -> SpanStyle(color = p.keyword, fontWeight = FontWeight.SemiBold)
+            CodeTokenKind.STRING -> SpanStyle(color = p.string)
+            CodeTokenKind.COMMENT -> SpanStyle(color = p.comment, fontStyle = FontStyle.Italic)
+            CodeTokenKind.NUMBER -> SpanStyle(color = p.number)
+            CodeTokenKind.TYPE -> SpanStyle(color = p.type)
+        }
+        addStyle(style, span.start, span.end)
+    }
+}
+
+@Composable
+private fun TocView(block: MdBlock.Toc, links: LinkHandler) {
+    if (block.headings.isEmpty()) return
+    val colors = MaterialTheme.colorScheme
+    Surface(
+        color = colors.surfaceContainer,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.fillMaxWidth().testTag("md_toc"),
+    ) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(stringResource(R.string.md_toc), style = MaterialTheme.typography.titleSmall, color = colors.primary)
+            val top = block.headings.minOf { it.level }
+            block.headings.forEach { h ->
+                Row(Modifier.padding(start = ((h.level - top) * 16).dp)) {
+                    Text("–", color = colors.onSurfaceVariant, modifier = Modifier.width(14.dp))
+                    InlineText(h.text, MaterialTheme.typography.bodyMedium, links)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ListItemView(item: MdBlock.ListItem, onToggleTask: ((Int) -> Unit)?, onLink: LinkHandler) {
     val type = MaterialTheme.typography
     val colors = MaterialTheme.colorScheme
     Row(
@@ -202,49 +333,76 @@ private fun ListItemView(item: MdBlock.ListItem, onToggleTask: ((Int) -> Unit)?,
                     .testTag("task_${item.line}"),
             )
         }
+        val body = LocalBodyStyle.current ?: type.bodyLarge
         val style = if (item.kind == ListKind.TASK && item.checked) {
-            type.bodyLarge.copy(color = colors.onSurfaceVariant, textDecoration = TextDecoration.LineThrough)
+            body.copy(color = colors.onSurfaceVariant, textDecoration = TextDecoration.LineThrough)
         } else {
-            type.bodyLarge
+            body
         }
         InlineText(item.text, style, onLink)
     }
 }
 
+/** Colour, icon and default title of a callout kind (also used by the editor's picker). */
+data class CalloutStyle(val accent: AccentKey, val icon: ImageVector, val label: Int)
+
+fun calloutStyle(kind: CalloutKind): CalloutStyle = when (kind) {
+    CalloutKind.INFO -> CalloutStyle(AccentKey.BLUE, Icons.Outlined.Info, R.string.callout_info)
+    CalloutKind.TIP -> CalloutStyle(AccentKey.GREEN, Icons.Outlined.Lightbulb, R.string.callout_tip)
+    CalloutKind.IMPORTANT -> CalloutStyle(AccentKey.PURPLE, Icons.Outlined.PriorityHigh, R.string.callout_important)
+    CalloutKind.WARNING -> CalloutStyle(AccentKey.ORANGE, Icons.Outlined.WarningAmber, R.string.callout_warning)
+    CalloutKind.DANGER -> CalloutStyle(AccentKey.RED, Icons.Outlined.Dangerous, R.string.callout_danger)
+    CalloutKind.SUCCESS -> CalloutStyle(AccentKey.TEAL, Icons.Outlined.CheckCircle, R.string.callout_success)
+    CalloutKind.QUESTION -> CalloutStyle(AccentKey.YELLOW, Icons.Outlined.Quiz, R.string.callout_question)
+    CalloutKind.EXAMPLE -> CalloutStyle(AccentKey.BLUE, Icons.Outlined.Category, R.string.callout_example)
+}
+
 @Composable
-private fun CalloutView(block: MdBlock.Callout, onLink: (String) -> Unit) {
-    val (accentKey, icon, label) = when (block.kind) {
-        CalloutKind.INFO -> Triple(AccentKey.BLUE, Icons.Outlined.Info, R.string.callout_info)
-        CalloutKind.TIP -> Triple(AccentKey.GREEN, Icons.Outlined.Lightbulb, R.string.callout_tip)
-        CalloutKind.IMPORTANT -> Triple(AccentKey.PURPLE, Icons.Outlined.PriorityHigh, R.string.callout_important)
-        CalloutKind.WARNING -> Triple(AccentKey.ORANGE, Icons.Outlined.WarningAmber, R.string.callout_warning)
-    }
-    val accent = AidriyColors.accent(accentKey)
+private fun CalloutView(block: MdBlock.Callout, links: LinkHandler, onOpenBerkas: (String) -> Unit, depth: Int) {
+    val look = calloutStyle(block.kind)
+    val accent = AidriyColors.accent(look.accent)
+    var open by rememberSaveable(block.title, block.text) { mutableStateOf(!block.collapsed) }
     Surface(
         color = accent.container,
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, accent.content.copy(alpha = 0.25f)),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().testTag("md_callout"),
     ) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, contentDescription = null, tint = accent.content, modifier = Modifier.size(18.dp))
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = if (block.foldable) Modifier.fillMaxWidth().clickable { open = !open } else Modifier,
+            ) {
+                Icon(look.icon, contentDescription = null, tint = accent.content, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    block.title.ifBlank { stringResource(label) },
+                    block.title.ifBlank { stringResource(look.label) },
                     style = MaterialTheme.typography.titleSmall,
                     color = accent.content,
+                    modifier = Modifier.weight(1f, fill = false),
                 )
+                if (block.foldable) {
+                    Spacer(Modifier.width(4.dp))
+                    Icon(
+                        if (open) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                        contentDescription = stringResource(if (open) R.string.md_fold else R.string.md_unfold),
+                        tint = accent.content,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
-            if (block.text.isNotBlank()) {
-                InlineText(block.text, MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface), onLink)
+            if (open && block.text.isNotBlank()) {
+                NestedBlocks(
+                    block.text, links, onOpenBerkas, depth,
+                    MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                )
             }
         }
     }
 }
 
 @Composable
-private fun TableView(block: MdBlock.Table, onLink: (String) -> Unit) {
+private fun TableView(block: MdBlock.Table, onLink: LinkHandler) {
     val colors = MaterialTheme.colorScheme
     val columns = block.header.size
     // Width per column from its longest cell, so short tables stay compact.
@@ -362,17 +520,23 @@ fun ImageBlock(
 }
 
 @Composable
-private fun InlineText(text: String, style: TextStyle, onLink: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun InlineText(text: String, style: TextStyle, links: LinkHandler, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
-    val annotated = remember(text, colors.primary, colors.surfaceContainerHigh) {
-        inlineAnnotated(text, colors.primary, colors.surfaceContainerHigh, onLink)
+    val annotated = remember(text, colors.primary, colors.surfaceContainerHigh, links) {
+        inlineAnnotated(text, colors.primary, colors.surfaceContainerHigh, links.canOpen, links.open)
     }
     Text(annotated, style = style, modifier = modifier)
 }
 
 private val HighlightColor = Color(0x66FFD54F)
 
-fun inlineAnnotated(text: String, linkColor: Color, codeBackground: Color, onLink: (String) -> Unit): AnnotatedString =
+fun inlineAnnotated(
+    text: String,
+    linkColor: Color,
+    codeBackground: Color,
+    canOpen: (String) -> Boolean = { true },
+    onLink: (String) -> Unit,
+): AnnotatedString =
     buildAnnotatedString {
         MarkdownInline.parse(text).forEach { run ->
             val style = SpanStyle(
@@ -392,7 +556,10 @@ fun inlineAnnotated(text: String, linkColor: Color, codeBackground: Color, onLin
                 },
             )
             val link = run.link
-            if (link != null) {
+            if (link != null && !canOpen(link)) {
+                // e.g. [[Judul]] in an AI answer: shown as emphasised text, nothing to tap.
+                withStyle(style.merge(SpanStyle(color = linkColor))) { append(run.text) }
+            } else if (link != null) {
                 withLink(
                     LinkAnnotation.Clickable(
                         tag = link,

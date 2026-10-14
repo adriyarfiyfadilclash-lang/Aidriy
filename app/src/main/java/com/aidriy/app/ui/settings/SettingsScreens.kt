@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
@@ -66,6 +67,7 @@ data class SettingsActions(
     val openNotifications: () -> Unit,
     val openAbout: () -> Unit,
     val openSearch: () -> Unit,
+    val openAccount: () -> Unit,
 )
 
 /** Pengaturan tab: profile card and one row per settings area (as in the reference design). */
@@ -75,6 +77,8 @@ fun SettingsHomeScreen(
     viewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModel.Factory)
+    val cloud by accountViewModel.state.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -109,6 +113,17 @@ fun SettingsHomeScreen(
                         )
                     }
                 }
+            }
+        }
+        item {
+            AidriyCard(modifier = Modifier.fillMaxWidth()) {
+                SettingsRow(
+                    Icons.Outlined.CloudSync,
+                    stringResource(R.string.set_account),
+                    cloud.email?.let { stringResource(R.string.set_account_sub_in, it) } ?: stringResource(R.string.set_account_sub_out),
+                    actions.openAccount,
+                    Modifier.testTag("settings_account"),
+                )
             }
         }
         item {

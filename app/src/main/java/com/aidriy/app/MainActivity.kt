@@ -1,7 +1,10 @@
 package com.aidriy.app
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,8 +36,8 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) deepLinks.value = intent.toDeepLink()
         val container = (application as AidriyApplication).container
+        if (savedInstanceState == null) deepLinks.value = intent.toDeepLink()
 
         setContent {
             val settings by container.settingsRepository.settings.collectAsState(initial = null)
@@ -87,8 +90,18 @@ class MainActivity : FragmentActivity() {
         intent.toDeepLink()?.let { deepLinks.value = it }
     }
 
+    /** aidriy://auth#access_token=...: finish sign-in (or password reset) and show the account screen. */
+    private fun handleAuthLink(uri: Uri) {
+        val container = (application as AidriyApplication).container
+        lifecycleScope.launch { container.syncManager.handleRedirect(uri) }
+    }
+
     private fun Intent?.toDeepLink(): DeepLink? = when {
         this == null -> null
+        data?.scheme == "aidriy" && data?.host == "auth" -> {
+            handleAuthLink(data!!)
+            DeepLink.Account
+        }
         getStringExtra(Notifications.EXTRA_OPEN_NOTE) != null -> DeepLink.Note(getStringExtra(Notifications.EXTRA_OPEN_NOTE)!!)
         getBooleanExtra(Notifications.EXTRA_OPEN_JOURNAL_TODAY, false) -> DeepLink.JournalToday
         else -> null

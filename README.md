@@ -24,7 +24,10 @@ Setiap push ke `main` membuat APK debug di [Releases](https://github.com/adriyar
   - Gambar di antara teks: bisa diubah ukurannya, diberi keterangan, dipindah, dan dihapus.
   - Sisipkan gambar dari Galeri, Kamera, Scan Dokumen (dengan OCR), atau Berkas.
 - **Rapikan Format (AI):** lihat bagian di bawah.
-- **Ai:** chat dengan API key milik pengguna (OpenAI, Anthropic, Gemini). Catatan hanya dikirim setelah pengguna konfirmasi.
+- **Ai:** chat dengan API key milik pengguna (OpenAI, Anthropic, Gemini, OpenRouter, atau penyedia lain). Catatan hanya dikirim setelah pengguna konfirmasi.
+  - Di setiap jawaban: salin, buat ulang (jawaban terakhir), suka/tidak suka, bagikan, dan simpan sebagai catatan.
+  - Menu ⋮: salin atau bagikan seluruh chat sebagai Markdown.
+- **Akun & Sinkronisasi:** daftar/masuk dengan email + kata sandi, lupa kata sandi, ganti kata sandi, keluar. Catatan, ide, journal, folder, berkas (termasuk isinya), dan riwayat AI dicadangkan ke Supabase dan disinkronkan antar HP.
 - **Berkas:** impor berkas, folder, penampil PDF, ekstraksi teks, dan OCR.
 - **Pengaturan:** profil, AI, tema, ukuran teks, simpan otomatis, cadangan zip, kunci PIN/biometrik, dan pengingat.
 
@@ -35,9 +38,11 @@ Setiap push ke `main` membuat APK debug di [Releases](https://github.com/adriyar
 | Heading | `#` sampai `######` |
 | Gaya teks | `**tebal**`, `*miring*` / `_miring_`, `__garis bawah__`, `~~coret~~`, `==sorot==`, `` `kode` `` |
 | Daftar | `-` / `*` / `+`, `1.` / `1)`, `- [ ]` / `- [x]`, bersarang dengan indentasi |
-| Blok | `> kutipan`, `> [!INFO]` / `[!TIP]` / `[!PENTING]` / `[!PERINGATAN]`, blok ` ``` `, `---` |
+| Blok | `> kutipan` (bisa bertingkat `>>` dan berisi daftar/kode), blok ` ```bahasa ` dengan warna sintaks dan tombol salin, `---` |
+| Callout | `> [!INFO]`, `[!TIP]`, `[!PENTING]`, `[!PERINGATAN]`, `[!BAHAYA]`, `[!SUKSES]`, `[!PERTANYAAN]`, `[!CONTOH]`; akhiri dengan `-` (tertutup) atau `+` (terbuka) agar bisa dilipat |
+| Daftar isi | baris `[TOC]` |
 | Tabel | `\| tabel \|` dengan perataan `:--` / `:-:` / `--:` |
-| Tautan | `[tautan](https://…)` dan URL langsung |
+| Tautan | `[tautan](https://…)`, URL langsung, dan `[[Judul catatan]]` / `[[Judul\|teks]]` ke catatan lain |
 | Gambar | `![keterangan](berkas://id "kecil\|sedang\|penuh")` |
 | Escape | `\` |
 
@@ -74,16 +79,29 @@ Lokal (JDK 17, Android SDK 35): `./gradlew testDebugUnitTest lintDebug assembleD
 
 ## Database
 
-Room versi 3, tanpa migrasi destruktif.
+Room versi 5, tanpa migrasi destruktif.
 
 | Versi | Perubahan |
 |---|---|
 | v2 | `notes.reminder_at`, `folders`, `files`, `ai_conversations`, `ai_messages` |
 | v3 | `notes.folder_id` (FK ke `folders`, `ON DELETE SET NULL`) |
+| v4 | `ai_messages.rating` |
+| v5 | `sync_dirty`, `sync_meta`, `sync_uploaded` + trigger pencatat perubahan untuk sinkronisasi |
+
+## Sinkronisasi cloud
+
+- Backend: Supabase (Auth email + kata sandi, Postgres, Storage bucket privat `berkas`).
+- Setiap tabel memakai Row Level Security `auth.uid() = user_id`: akun hanya bisa membaca dan menulis datanya sendiri.
+- Room tetap sumber data utama (offline-first). Trigger SQLite mencatat baris yang berubah; sinkronisasi menarik perubahan dari cloud lalu mengirim perubahan lokal. Perubahan lokal yang belum terkirim menang.
+- Berjalan setelah masuk, 5 detik setelah ada perubahan, tiap 15 menit (WorkManager, butuh internet), dan lewat tombol "Sinkronkan sekarang".
+- Sesi login disimpan terenkripsi dengan Android Keystore.
+- Tautan konfirmasi/reset kata sandi membuka aplikasi lewat `aidriy://auth`; alamat ini perlu ada di Supabase → Authentication → URL Configuration → Redirect URLs.
 
 ## Keterbatasan yang diketahui
 
-- Tidak ada sinkronisasi cloud. Cadangan dibuat manual berupa zip yang tidak terenkripsi.
+- Cadangan zip manual tidak terenkripsi. Sinkronisasi cloud memakai HTTPS; data di server tidak dienkripsi end-to-end.
+- Email dari Supabase bawaan dibatasi beberapa email per jam; untuk banyak pengguna perlu SMTP sendiri.
+- Bila dua HP mengubah catatan yang sama sebelum sinkron, versi yang terkirim terakhir yang dipakai (tidak ada penggabungan per kata).
 - Mode Edit menampilkan penanda Markdown (diredupkan), sedangkan Mode Baca menampilkan hasil akhirnya.
 - Gambar dari internet tidak dimuat. Hanya gambar di Berkas yang ditampilkan.
 - Kualitas Rapikan Format bergantung pada model AI. ID model bisa diubah di Pengaturan, tapi ketersediaannya belum diverifikasi untuk tiap akun.

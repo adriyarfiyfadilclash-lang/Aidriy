@@ -14,6 +14,10 @@ import com.aidriy.app.data.local.AidriyDatabase
 import com.aidriy.app.data.reminders.ReminderScheduler
 import com.aidriy.app.data.security.AppLockManager
 import com.aidriy.app.data.settings.SecretStore
+import com.aidriy.app.data.cloud.CloudAuth
+import com.aidriy.app.data.cloud.SessionStore
+import com.aidriy.app.data.repository.TagWriter
+import com.aidriy.app.data.sync.SyncManager
 import com.aidriy.app.data.settings.SettingsRepository
 import com.aidriy.app.domain.repository.IdeaRepository
 import com.aidriy.app.domain.repository.JournalRepository
@@ -41,6 +45,7 @@ interface AppContainer {
     val aiChatRepository: AiChatRepository
     val settingsRepository: SettingsRepository
     val secretStore: SecretStore
+    val syncManager: SyncManager
     val reminderScheduler: ReminderScheduler
     val backupManager: BackupManager
     val ocrService: OcrService
@@ -101,4 +106,16 @@ class DefaultAppContainer(context: Context) : AppContainer {
     override val reminderScheduler: ReminderScheduler by lazy { ReminderScheduler(appContext) }
     override val backupManager: BackupManager by lazy { BackupManager(appContext, database, fileRepository) }
     override val appLock: AppLockManager by lazy { AppLockManager(settingsRepository, appScope) }
+
+    override val syncManager: SyncManager by lazy {
+        SyncManager(
+            context = appContext,
+            db = database,
+            tags = TagWriter(database.tagDao(), UuidGenerator),
+            sessions = SessionStore(appContext),
+            auth = CloudAuth(),
+            storageDir = { fileRepository.storageDir },
+            scope = appScope,
+        )
+    }
 }

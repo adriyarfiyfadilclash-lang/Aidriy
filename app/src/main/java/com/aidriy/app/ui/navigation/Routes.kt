@@ -32,6 +32,7 @@ object Routes {
     const val FILES_FOLDER = "files/folder?$ARG_FOLDER_ID={$ARG_FOLDER_ID}&$ARG_KIND={$ARG_KIND}"
     const val FILE_VIEWER = "files/view/{$ARG_FILE_ID}"
     const val SETTINGS_PROFILE = "settings/profile"
+    const val SETTINGS_ACCOUNT = "settings/account"
     const val SETTINGS_AI = "settings/ai"
     const val SETTINGS_APPEARANCE = "settings/appearance"
     const val SETTINGS_NOTES = "settings/notes"

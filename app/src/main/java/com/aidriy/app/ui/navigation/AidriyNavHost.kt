@@ -36,6 +36,7 @@ import com.aidriy.app.ui.notes.templates.TemplatesScreen
 import com.aidriy.app.ui.scan.ScanRoute
 import com.aidriy.app.ui.search.SearchRoute
 import com.aidriy.app.ui.settings.AboutScreen
+import com.aidriy.app.ui.settings.AccountScreen
 import com.aidriy.app.ui.settings.AiSettingsScreen
 import com.aidriy.app.ui.settings.AppearanceSettingsScreen
 import com.aidriy.app.ui.settings.FileSettingsScreen
@@ -140,6 +141,7 @@ fun AidriyNavHost(
                     openNotifications = { nav.navigate(Routes.SETTINGS_NOTIFICATIONS) },
                     openAbout = { nav.navigate(Routes.SETTINGS_ABOUT) },
                     openSearch = { nav.navigate(Routes.SEARCH) },
+                    openAccount = { nav.navigate(Routes.SETTINGS_ACCOUNT) },
                 ),
             )
         }
@@ -164,6 +166,8 @@ fun AidriyNavHost(
                 onClose = dropUnlessResumed { back() },
                 onOpenFile = openFile,
                 onOpenAiSettings = { nav.navigate(Routes.SETTINGS_AI) },
+                onOpenNote = openNote,
+                onCreateNoteTitled = { title -> nav.navigate(Routes.noteEditor(prefill = PrefillStore.put(title, ""))) },
             )
         }
         composable(Routes.IDEAS) {
@@ -274,6 +278,7 @@ fun AidriyNavHost(
         composable(Routes.SETTINGS_FILES) { FileSettingsScreen(onBack = dropUnlessResumed { back() }) }
         composable(Routes.SETTINGS_SECURITY) { SecuritySettingsScreen(onBack = dropUnlessResumed { back() }) }
         composable(Routes.SETTINGS_NOTIFICATIONS) { NotificationSettingsScreen(onBack = dropUnlessResumed { back() }) }
+        composable(Routes.SETTINGS_ACCOUNT) { AccountScreen(onBack = dropUnlessResumed { back() }) }
         composable(Routes.SETTINGS_ABOUT) { AboutScreen(onBack = dropUnlessResumed { back() }) }
     }
 }

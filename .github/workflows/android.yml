@@ -167,8 +167,8 @@ jobs:
             chmod +x gradlew && ./gradlew --no-daemon installDebug installDebugAndroidTest
             adb shell settings put global hide_error_dialogs 1 || true
             sleep 25 && adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS || true
-            adb shell am instrument -w -e class com.aidriy.app.ScreenshotTour com.aidriy.app.test/androidx.test.runner.AndroidJUnitRunner || true
-            adb exec-out run-as com.aidriy.app tar c files/screens > screens.tar || true
+            adb shell am instrument -w -e class com.aidriy.app.ScreenshotTour com.adriy.notesbyadriy.test/androidx.test.runner.AndroidJUnitRunner || true
+            adb exec-out run-as com.adriy.notesbyadriy tar c files/screens > screens.tar || true
             ./gradlew --no-daemon connectedDebugAndroidTest
 
       # Publishes the tour screenshots to the `ci-screens` branch for design review.

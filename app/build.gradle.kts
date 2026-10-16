@@ -12,7 +12,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.aidriy.app"
+        applicationId = "com.adriy.notesbyadriy"
         // API 26 gives java.time without desugaring and adaptive launcher icons.
         minSdk = 26
         targetSdk = 35

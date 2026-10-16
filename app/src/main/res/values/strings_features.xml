@@ -2,7 +2,7 @@
 <!-- Strings for the redesign: 4-tab layout, AI, Berkas, Pengaturan, scan, voice, templates. -->
 <resources>
     <!-- App and navigation -->
-    <string name="app_full_name">AIDRIY — Second Brain AI</string>
+    <string name="app_full_name">NotesByAdriy</string>
     <string name="tagline">Second Brain AI yang menjaga ide, catatan, dan berkasmu tetap rapi.</string>
     <string name="nav_ai">Ai</string>
     <string name="nav_files">Berkas</string>
@@ -89,7 +89,7 @@
     <string name="scan_privacy">Pemindaian berjalan di perangkat. Gambar tidak dikirim ke internet.</string>
 
     <!-- AI -->
-    <string name="ai_title">AIDRIY AI</string>
+    <string name="ai_title">NotesByAdriy AI</string>
     <string name="ai_tools_title">Alat AI</string>
     <string name="ai_send">Kirim</string>
     <string name="ai_stop">Hentikan</string>
@@ -121,7 +121,7 @@
     <string name="ai_not_configured">Belum diatur</string>
     <string name="ai_open_settings">Buka pengaturan AI</string>
     <string name="ai_setup_title">Masukkan API key %1$s</string>
-    <string name="ai_setup_body">AIDRIY memakai API key milikmu sendiri. Key disimpan terenkripsi di perangkat dan hanya dikirim ke penyedia yang kamu pilih.</string>
+    <string name="ai_setup_body">NotesByAdriy memakai API key milikmu sendiri. Key disimpan terenkripsi di perangkat dan hanya dikirim ke penyedia yang kamu pilih.</string>
     <string name="ai_setup_action">Atur API key</string>
     <string name="ai_error_missing_key">API key belum diatur. Buka Pengaturan → AI.</string>
     <string name="ai_error_invalid_key">API key ditolak. Periksa kembali key-mu.</string>
@@ -238,7 +238,7 @@
 
     <!-- Profile -->
     <string name="profile_name">Nama</string>
-    <string name="profile_no_name">Pengguna AIDRIY</string>
+    <string name="profile_no_name">Pengguna NotesByAdriy</string>
     <string name="profile_change_photo">Ganti foto</string>
     <string name="profile_remove_photo">Hapus foto</string>
     <string name="profile_device">Perangkat ini</string>
@@ -268,14 +268,14 @@
     <string name="backup_restore_body">Cadangan berisi %1$d catatan, %2$d ide, %3$d journal, dan %4$d berkas. Data saat ini di perangkat akan diganti.</string>
     <string name="backup_restore_confirm">Ganti dan pulihkan</string>
     <string name="backup_restored">Dipulihkan: %1$d catatan, %2$d ide, %3$d journal, %4$d berkas.</string>
-    <string name="backup_error_not_backup">File ini bukan cadangan AIDRIY.</string>
+    <string name="backup_error_not_backup">File ini bukan cadangan NotesByAdriy.</string>
     <string name="backup_error_damaged">File cadangan rusak atau tidak lengkap.</string>
-    <string name="backup_error_newer">Cadangan dibuat oleh versi AIDRIY yang lebih baru. Perbarui aplikasi dulu.</string>
+    <string name="backup_error_newer">Cadangan dibuat oleh versi NotesByAdriy yang lebih baru. Perbarui aplikasi dulu.</string>
     <string name="backup_error_io">Gagal membaca atau menulis file cadangan.</string>
 
     <!-- Security and lock -->
     <string name="lock_title">Kunci aplikasi</string>
-    <string name="lock_sub">Minta PIN saat membuka AIDRIY</string>
+    <string name="lock_sub">Minta PIN saat membuka NotesByAdriy</string>
     <string name="lock_pin">PIN</string>
     <string name="lock_pin_confirm">Ulangi PIN</string>
     <string name="lock_pin_rules">PIN terdiri dari 4–6 angka.</string>
@@ -288,7 +288,7 @@
     <string name="lock_biometric">Buka dengan sidik jari</string>
     <string name="lock_biometric_sub">Gunakan biometrik perangkat selain PIN</string>
     <string name="lock_biometric_unavailable">Biometrik tidak tersedia atau belum diatur di perangkat.</string>
-    <string name="lock_biometric_title">Buka AIDRIY</string>
+    <string name="lock_biometric_title">Buka NotesByAdriy</string>
     <string name="lock_use_pin">Pakai PIN</string>
     <string name="lock_enter_pin">Masukkan PIN</string>
     <string name="lock_wrong_pin">PIN salah</string>
@@ -309,13 +309,13 @@
     <string name="notif_change_time">Ubah jam</string>
     <string name="notif_note_info">Pengingat per catatan dipasang dari menu di editor catatan.</string>
     <string name="notif_allowed">Notifikasi diizinkan</string>
-    <string name="notif_blocked">Notifikasi diblokir untuk AIDRIY</string>
+    <string name="notif_blocked">Notifikasi diblokir untuk NotesByAdriy</string>
     <string name="notif_allow">Izinkan notifikasi</string>
     <string name="notif_open_settings">Buka pengaturan sistem</string>
 
     <!-- About -->
     <string name="about_version">Versi %1$s</string>
-    <string name="about_privacy">AIDRIY bekerja offline. Tidak ada iklan, pelacakan, atau akun. Internet hanya dipakai untuk fitur AI dengan API key milikmu.</string>
+    <string name="about_privacy">NotesByAdriy bekerja offline. Tidak ada iklan, pelacakan, atau akun. Internet hanya dipakai untuk fitur AI dengan API key milikmu.</string>
     <string name="about_licenses">Lisensi pihak ketiga</string>
     <string name="about_licenses_body">AndroidX dan Jetpack Compose (Apache 2.0), ML Kit Text Recognition (Google), PdfBox-Android (Apache 2.0), Coil (Apache 2.0), Kotlin Coroutines (Apache 2.0).</string>
 </resources>

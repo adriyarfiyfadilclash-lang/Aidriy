@@ -248,7 +248,7 @@ fun AiChatRoute(
                     onSettings = actions.openAiSettings,
                     onCopyAll = {
                         context.getSystemService(ClipboardManager::class.java)
-                            ?.setPrimaryClip(ClipData.newPlainText("AIDRIY", transcript()))
+                            ?.setPrimaryClip(ClipData.newPlainText("NotesByAdriy", transcript()))
                         scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.copied)) }
                     },
                     onShareAll = { shareText(context, transcript()) },
@@ -306,7 +306,7 @@ fun AiChatRoute(
                                     onOpenSource = actions.openSource,
                                     onCopy = {
                                         context.getSystemService(ClipboardManager::class.java)
-                                            ?.setPrimaryClip(ClipData.newPlainText("AIDRIY", message.content))
+                                            ?.setPrimaryClip(ClipData.newPlainText("NotesByAdriy", message.content))
                                         scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.copied)) }
                                     },
                                     onRegenerate = { viewModel.regenerate(message) },

@@ -194,5 +194,5 @@ fun ScanRoute(
 
 private fun copy(context: Context, text: String) {
     val clipboard = context.getSystemService(ClipboardManager::class.java)
-    clipboard?.setPrimaryClip(ClipData.newPlainText("AIDRIY", text))
+    clipboard?.setPrimaryClip(ClipData.newPlainText("NotesByAdriy", text))
 }

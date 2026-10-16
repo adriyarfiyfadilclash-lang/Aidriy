@@ -1,4 +1,4 @@
-# AIDRIY — Second Brain AI
+# NotesByAdriy — Second Brain AI
 
 *Your Knowledge. One Intelligent Space.*
 

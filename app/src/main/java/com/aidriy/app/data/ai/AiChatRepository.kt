@@ -313,7 +313,7 @@ class AiChatRepository(
     private fun systemPrompt(settings: AppSettings, hasContext: Boolean): String = buildString {
         val style = settings.answerStyle
         val language = settings.aiLanguage
-        append("Kamu adalah asisten pribadi di aplikasi catatan AIDRIY. ")
+        append("Kamu adalah asisten pribadi di aplikasi catatan NotesByAdriy. ")
         append(
             when (language) {
                 AiLanguage.INDONESIAN -> "Selalu jawab dalam Bahasa Indonesia. "

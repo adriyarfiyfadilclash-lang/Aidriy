@@ -57,7 +57,7 @@
     <!-- Consent -->
     <string name="ai_consent_title">Izinkan penggunaan konteks?</string>
     <string name="ai_consent_body">AI membutuhkan akses ke data berikut untuk menjawab pertanyaanmu:</string>
-    <string name="ai_consent_found">AIDRIY menemukan catatan yang relevan dengan pertanyaanmu:</string>
+    <string name="ai_consent_found">NotesByAdriy menemukan catatan yang relevan dengan pertanyaanmu:</string>
     <string name="ai_consent_data">Data yang akan digunakan:</string>
     <string name="ai_consent_text">Isi teks (%1$d karakter)</string>
     <string name="ai_consent_images">Gambar yang dilampirkan</string>

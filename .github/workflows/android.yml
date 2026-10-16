@@ -50,12 +50,12 @@ jobs:
       - name: Rename APK
         run: |
           mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk "dist/AIDRIY-debug-${{ github.run_number }}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "dist/NotesByAdriy-debug-${{ github.run_number }}.apk"
 
       - name: Upload APK (Actions artifact)
         uses: actions/upload-artifact@v4
         with:
-          name: aidriy-debug-apk
+          name: notesbyadriy-debug-apk
           path: dist/*.apk
 
       # Exported Room schemas go to the `ci-schemas` branch so they can be committed for migration tests.
@@ -78,7 +78,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: AIDRIY debug build ${{ github.run_number }}
+          name: NotesByAdriy debug build ${{ github.run_number }}
           prerelease: true
           files: dist/*.apk
           body: |

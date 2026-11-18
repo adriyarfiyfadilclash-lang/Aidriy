@@ -1,0 +1,6 @@
+# Dependensi untuk scripts/tts.py (VoxCPM2)
+# Pasang: python -m venv .venv && .venv/bin/pip install -r requirements-tts.txt
+# Tanpa GPU NVIDIA, pasang torch versi CPU dulu:
+#   pip install torch torchaudio torchcodec --index-url https://download.pytorch.org/whl/cpu
+voxcpm==2.0.3
+soundfile

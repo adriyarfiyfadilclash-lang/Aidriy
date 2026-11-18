@@ -2464,6 +2464,14 @@
   ]
  },
  {
+  "id": 398,
+  "title": "Garbage pile falling",
+  "duration": "0:10",
+  "categories": [
+   "warfare-crash"
+  ]
+ },
+ {
   "id": 400,
   "title": "Stones and rocks falling",
   "duration": "0:04",
@@ -9932,6 +9940,14 @@
   ]
  },
  {
+  "id": 1507,
+  "title": "Whip explosion",
+  "duration": "0:01",
+  "categories": [
+   "warfare-whip"
+  ]
+ },
+ {
   "id": 1508,
   "title": "Lightning whip",
   "duration": "0:01",
@@ -9948,6 +9964,22 @@
   ]
  },
  {
+  "id": 1510,
+  "title": "Cinematic impact whip echo",
+  "duration": "0:07",
+  "categories": [
+   "warfare-whip"
+  ]
+ },
+ {
+  "id": 1511,
+  "title": "Fast whip strike",
+  "duration": "0:01",
+  "categories": [
+   "warfare-whip"
+  ]
+ },
+ {
   "id": 1512,
   "title": "Game whip shot",
   "duration": "0:01",
@@ -9956,11 +9988,27 @@
   ]
  },
  {
+  "id": 1513,
+  "title": "Lasso fast whip",
+  "duration": "0:01",
+  "categories": [
+   "warfare-whip"
+  ]
+ },
+ {
   "id": 1514,
   "title": "Laser game whip",
   "duration": "0:01",
   "categories": [
    "technology-laser"
+  ]
+ },
+ {
+  "id": 1515,
+  "title": "Magical whip accent",
+  "duration": "0:02",
+  "categories": [
+   "warfare-whip"
   ]
  },
  {
@@ -9985,6 +10033,14 @@
   "duration": "0:05",
   "categories": [
    "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1519,
+  "title": "Whip small explosion",
+  "duration": "0:01",
+  "categories": [
+   "warfare-explosion"
   ]
  },
  {
@@ -10988,6 +11044,14 @@
   ]
  },
  {
+  "id": 1659,
+  "title": "Shotgun pump",
+  "duration": "0:01",
+  "categories": [
+   "warfare-gun"
+  ]
+ },
+ {
   "id": 1660,
   "title": "Handgun click",
   "duration": "0:01",
@@ -11001,6 +11065,38 @@
   "duration": "0:01",
   "categories": [
    "game-video-game"
+  ]
+ },
+ {
+  "id": 1664,
+  "title": "Handgun release",
+  "duration": "0:01",
+  "categories": [
+   "warfare-gun"
+  ]
+ },
+ {
+  "id": 1665,
+  "title": "Shotgun hard pump",
+  "duration": "0:01",
+  "categories": [
+   "warfare-gun"
+  ]
+ },
+ {
+  "id": 1666,
+  "title": "Shotgun long pump",
+  "duration": "0:01",
+  "categories": [
+   "warfare-gun"
+  ]
+ },
+ {
+  "id": 1668,
+  "title": "Handgun movement",
+  "duration": "0:01",
+  "categories": [
+   "warfare-gun"
   ]
  },
  {
@@ -11052,6 +11148,30 @@
   ]
  },
  {
+  "id": 1682,
+  "title": "Shot light explosion",
+  "duration": "0:01",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
+  "id": 1683,
+  "title": "Explosion long echo",
+  "duration": "0:05",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
+  "id": 1684,
+  "title": "Fantasy explosion and debris",
+  "duration": "0:02",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
   "id": 1685,
   "title": "Explosion spell",
   "duration": "0:02",
@@ -11084,6 +11204,14 @@
   ]
  },
  {
+  "id": 1689,
+  "title": "Multiple fireworks explosions",
+  "duration": "0:03",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
   "id": 1690,
   "title": "Distant explosion",
   "duration": "0:05",
@@ -11108,6 +11236,14 @@
   ]
  },
  {
+  "id": 1693,
+  "title": "Shatter shot explosion",
+  "duration": "0:02",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
   "id": 1694,
   "title": "Short explosion",
   "duration": "0:01",
@@ -11124,6 +11260,22 @@
   ]
  },
  {
+  "id": 1696,
+  "title": "Distant war explosions",
+  "duration": "0:03",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
+  "id": 1697,
+  "title": "Quick bomb drop explosion",
+  "duration": "0:10",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
   "id": 1698,
   "title": "Arcade game explosion echo",
   "duration": "0:03",
@@ -11137,6 +11289,38 @@
   "duration": "0:01",
   "categories": [
    "transition-boom"
+  ]
+ },
+ {
+  "id": 1700,
+  "title": "Gun explosion with long echo",
+  "duration": "0:07",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
+  "id": 1701,
+  "title": "Explosion and glass debris",
+  "duration": "0:06",
+  "categories": [
+   "warfare-explosion"
+  ]
+ },
+ {
+  "id": 1702,
+  "title": "War field explosion",
+  "duration": "0:07",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
+  "id": 1703,
+  "title": "Explosion with rocks debris",
+  "duration": "0:10",
+  "categories": [
+   "warfare-explosion"
   ]
  },
  {
@@ -13714,6 +13898,14 @@
   "duration": "0:01",
   "categories": [
    "transition-hit"
+  ]
+ },
+ {
+  "id": 2124,
+  "title": "Golf shot breaking the air",
+  "duration": "0:01",
+  "categories": [
+   "warfare-shot"
   ]
  },
  {
@@ -18458,6 +18650,22 @@
   ]
  },
  {
+  "id": 2772,
+  "title": "Bomb distant explotion",
+  "duration": "0:05",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
+  "id": 2773,
+  "title": "War explosions",
+  "duration": "0:02",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
   "id": 2774,
   "title": "Axe hits to a plate",
   "duration": "0:01",
@@ -18650,6 +18858,14 @@
   ]
  },
  {
+  "id": 2798,
+  "title": "Fantasy sword slide",
+  "duration": "0:01",
+  "categories": [
+   "warfare-sword"
+  ]
+ },
+ {
   "id": 2799,
   "title": "Metallic sword scrape",
   "duration": "0:01",
@@ -18663,6 +18879,22 @@
   "duration": "0:03",
   "categories": [
    "transition-impact"
+  ]
+ },
+ {
+  "id": 2801,
+  "title": "Dense bomb impact",
+  "duration": "0:03",
+  "categories": [
+   "warfare"
+  ]
+ },
+ {
+  "id": 2802,
+  "title": "Smoke bomb",
+  "duration": "0:06",
+  "categories": [
+   "warfare"
   ]
  },
  {
@@ -18711,6 +18943,14 @@
   "duration": "0:04",
   "categories": [
    "game-video-game"
+  ]
+ },
+ {
+  "id": 2809,
+  "title": "Explosion in battle",
+  "duration": "0:05",
+  "categories": [
+   "warfare"
   ]
  },
  {
@@ -19778,6 +20018,14 @@
   ]
  },
  {
+  "id": 2958,
+  "title": "Collapsing structure",
+  "duration": "0:05",
+  "categories": [
+   "warfare-crash"
+  ]
+ },
+ {
   "id": 2959,
   "title": "Spaceship system break down",
   "duration": "0:03",
@@ -20047,6 +20295,14 @@
   "duration": "0:02",
   "categories": [
    "human-laugh"
+  ]
+ },
+ {
+  "id": 2994,
+  "title": "Clear firework explosions",
+  "duration": "0:02",
+  "categories": [
+   "warfare-explosion"
   ]
  },
  {

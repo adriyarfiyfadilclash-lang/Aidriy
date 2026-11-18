@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 2687 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), 305 alam (folder `nature` dan 22 folder `nature-<tag>`), 430 transisi (folder `transition` dan 18 folder `transition-<tag>`, ditambah `whoosh`), 362 teknologi (folder `technology` dan 31 folder `technology-<tag>`), 174 game (folder `game` dan 17 folder `game-<tag>`), 118 alat musik (folder `instrument` dan 13 folder `instrument-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, wolf, morning, scary-woods, transition-whoosh, white-noise, tv, time-machine, goal, money, jump, guitar, bass, flute, violins, dan sleigh-bells tidak punya folder karena isinya sudah ada di folder lain. | Ya |
+| `public/mixkit/sfx-kategori/` | 2719 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), 305 alam (folder `nature` dan 22 folder `nature-<tag>`), 430 transisi (folder `transition` dan 18 folder `transition-<tag>`, ditambah `whoosh`), 362 teknologi (folder `technology` dan 31 folder `technology-<tag>`), 174 game (folder `game` dan 17 folder `game-<tag>`), 118 alat musik (folder `instrument` dan 13 folder `instrument-<tag>`), 32 perang (folder `warfare` dan 6 folder `warfare-<tag>`; 134 suara perang lain sudah ada di folder lain, misalnya human-fight dan transition-impact), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, wolf, morning, scary-woods, transition-whoosh, white-noise, tv, time-machine, goal, money, jump, guitar, bass, flute, violins, sleigh-bells, war, bomb, battle, battle-ambience, dan medieval-battle tidak punya folder karena isinya sudah ada di folder lain. | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -70,7 +70,7 @@ LIST
 
 ## Semua sound effect per kategori
 
-Daftar lengkap 2687 sound effect dari kategori whoosh, transition, pop, click, notification, human,
+Daftar lengkap 2719 sound effect dari kategori whoosh, transition, pop, click, notification, human,
 serta 31 tag suara manusia (applause, baby, blow, breathe, cartoon, cheer, children, clapping, cough,
 crowd, cry, drink, eat, fight, footsteps, gasp, girl, heartbeat, hurt, kiss, laugh, run, scream, sneeze,
 teeth, thank-you, voices, walk, whistle, wow, yawn, choir, fart, moan, punch, stomp, funny, happy, sad,
@@ -91,7 +91,8 @@ time-machine, space-shooter.
 Game: game, video-game, arcade, arcade-sport, goal, win, lose, player, game-show, game-over, casino,
 slot-machine, coin, money, jump, wrong, magic, spell, sparkle, fairy, toy.
 Alat musik: instrument, guitar, music, bass, brass, cymbal, drum, flute, orchestra, piano, synth, violins,
-chimes, bell, church-bell, sleigh-bells, horn, dj-record-scratch, suspense-music. Tiap file disimpan sekali, di kategori/tag pertama
+chimes, bell, church-bell, sleigh-bells, horn, dj-record-scratch, suspense-music.
+Perang: warfare, war, explosion, gun, bomb, battle, battle-ambience, medieval-battle, shot, sword, whip, crash. Tiap file disimpan sekali, di kategori/tag pertama
 tempat ia ditemukan,
 ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
 

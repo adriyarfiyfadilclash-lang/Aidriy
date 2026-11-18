@@ -38,6 +38,16 @@ opsional. Lihat `contoh/naskah-notesbyadriy.json`.
 Hasil ada di `media/<name>/` (tidak di-commit): `final-remotion.mp4`, `final-hyperframes.mp4`,
 `thumbnail.jpg`, dan semua file antara (`transcript.json`, `pages.json`, dan lain-lain).
 
+## Memeriksa sambungan
+
+```bash
+python3 pipeline/pipeline.py --check
+```
+
+Memeriksa semua alat (yt-dlp, ffmpeg, Whisper, VoxCPM, Remotion, HyperFrames), model dan profil suara,
+sambungan antar-alat (komposisi Subtitle, `pages.json`, `sfx_analyze.py`, font dan ukuran sound effect
+bersama), telemetri HyperFrames, dan skill. Tidak membuat video atau suara.
+
 ## Mengulang sebagian
 
 Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.

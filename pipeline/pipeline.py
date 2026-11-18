@@ -505,13 +505,105 @@ def step_finish(ctx):
         log("finish", "thumbnail.jpg")
 
 
+def check():
+    """Periksa semua alat dan sambungan antar-alat tanpa membuat video atau suara."""
+    results = []
+
+    def item(group, name, ok, detail, fix=""):
+        results.append((group, name, ok, detail, fix))
+
+    def cmd(c, cwd=None, timeout=120, env=None, stdout_only=False):
+        try:
+            r = subprocess.run(c, cwd=cwd, capture_output=True, text=True, timeout=timeout, env=env)
+            return r.returncode, (r.stdout if stdout_only else r.stdout + r.stderr).strip()
+        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+            return 1, str(e)
+
+    # 1. Alat
+    code, out = cmd(["yt-dlp", "--version"])
+    item("Alat", "yt-dlp", code == 0, out.splitlines()[-1] if code == 0 else "tidak ada", "pip install -U yt-dlp")
+    code, out = cmd(["ffmpeg", "-version"])
+    item("Alat", "ffmpeg", code == 0, out.split("\n")[0][:40] if code == 0 else "tidak ada", "pasang ffmpeg")
+    code, out = cmd(["ffprobe", "-version"])
+    item("Alat", "ffprobe", code == 0, out.split("\n")[0][:40] if code == 0 else "tidak ada", "pasang ffmpeg")
+    code, out = cmd([WHISPER_PY, "-c", "import transformers, torch; print(transformers.__version__, torch.__version__)"])
+    item("Alat", "Whisper (transformers + torch)", code == 0, f"{WHISPER_PY}: {out.splitlines()[-1]}" if code == 0 else out[-120:],
+         "pip install transformers torch, lalu set PIPELINE_PYTHON")
+    code, out = cmd([WHISPER_PY, "-W", "ignore", "-c", "import importlib.metadata as m; print(m.version('voxcpm'))"], stdout_only=True)
+    item("Alat", "VoxCPM", code == 0, out.splitlines()[-1] if code == 0 else "tidak ada", "pip install -r video/requirements-tts.txt")
+    code, out = cmd(["node", "-p", "require('remotion/package.json').version + ' (cli ' + require('@remotion/cli/package.json').version + ')'"],
+                    cwd=REMOTION, stdout_only=True)
+    item("Alat", "Remotion", code == 0, out if code == 0 else "tidak ada", "cd video && npm install")
+    hf = HYPERFRAMES / "node_modules/.bin/hyperframes"
+    code, out = cmd([str(hf), "--version"])
+    item("Alat", "HyperFrames", code == 0, out.splitlines()[-1] if code == 0 else "tidak ada", "cd hyperframes && npm install")
+
+    # 2. Data dan model yang dibutuhkan
+    hub = Path(os.environ.get("HF_HOME", Path.home() / ".cache/huggingface")) / "hub"
+    for model in [WHISPER_MODEL, "openbmb/VoxCPM2"]:
+        d = hub / ("models--" + model.replace("/", "--"))
+        item("Model", model, d.exists(), "sudah diunduh" if d.exists() else "belum diunduh (otomatis saat pertama dipakai)", "")
+    voices = sorted(p.name for p in (REMOTION / "voices").glob("*") if (p / "prompt.wav").exists()) if (REMOTION / "voices").exists() else []
+    item("Model", "Profil suara", bool(voices), ", ".join(voices) or "tidak ada", "buat profil di video/voices/<nama>/ (lihat scripts/tts.py)")
+    mk = len(list((REMOTION / "public/mixkit").rglob("*.mp3"))) if (REMOTION / "public/mixkit").exists() else 0
+    item("Model", "Sound effect Mixkit", mk > 0, f"{mk} file", "python3 video/scripts/mixkit_sfx_download.py")
+
+    # 3. Sambungan antar-alat
+    code, out = cmd([sys.executable, "-c", f"import sys; sys.path.insert(0, {str(REMOTION / 'scripts')!r}); from sfx_analyze import analyze; print('ok')"])
+    item("Sambungan", "pipeline -> sfx_analyze.py (ukur sound effect)", code == 0, "bisa diimpor" if code == 0 else out[-120:], "pip install numpy")
+    item("Sambungan", "pipeline -> tts_batch.py (VoxCPM)", (REMOTION / "scripts/tts_batch.py").exists(), "video/scripts/tts_batch.py", "")
+    code, out = cmd(["npx", "remotion", "compositions"], cwd=REMOTION, timeout=300)
+    comps = [c for c in ["Subtitle", "PromoSuara", "Promo"] if re.search(rf"^{c}\s", out, re.M)]
+    item("Sambungan", "pipeline -> Remotion (komposisi Subtitle)", "Subtitle" in comps, "komposisi terdaftar: " + ", ".join(comps) if comps else out[-150:], "periksa video/src/Root.tsx")
+    font = REMOTION / "public/fonts/PlusJakartaSans-latin.woff2"
+    item("Sambungan", "Remotion -> HyperFrames (font bersama)", font.exists(), str(font.relative_to(ROOT)), "")
+    meta = REMOTION / "src/promo/sfx-meta.json"
+    item("Sambungan", "Remotion -> HyperFrames (ukuran sound effect bersama)", meta.exists(), str(meta.relative_to(ROOT)), "python3 video/scripts/sfx_analyze.py ...")
+    sample = next((d for d in sorted((ROOT / "media").glob("*")) if (d / "pages.json").exists()), None) if (ROOT / "media").exists() else None
+    if sample:
+        pages = json.loads((sample / "pages.json").read_text())
+        ok_shape = all({"startMs", "durationMs", "tokens"} <= p.keys() for p in pages)
+        item("Sambungan", "Whisper -> pages.json -> Remotion + HyperFrames", ok_shape, f"media/{sample.name}: {len(pages)} halaman, format cocok", "")
+        proj = sample / "hyperframes"
+        if (proj / "index.html").exists():
+            code, out = cmd([str(hf), "lint"], cwd=proj, timeout=300)
+            errs = re.search(r"(\d+) error", out)
+            item("Sambungan", "pages.json -> HyperFrames (HTML yang dibuat pipeline)", code == 0 and (not errs or errs.group(1) == "0"),
+                 f"lint: {errs.group(0) if errs else 'lolos'}", "")
+    else:
+        item("Sambungan", "Whisper -> pages.json -> Remotion + HyperFrames", None, "belum ada hasil di media/ untuk dicek", "jalankan pipeline sekali")
+    code, out = cmd([str(hf), "telemetry", "status"], stdout_only=True)
+    line = next((l.strip() for l in out.splitlines() if re.search(r"(?i)status|enabled|disabled", l) and "env var" not in l.lower()), out[:80])
+    item("Privasi", "Telemetri HyperFrames", bool(re.search(r"(?i)disabled", line)), line[:80], "npx hyperframes telemetry disable")
+
+    # 4. Skill untuk Claude (membantu saat menulis kode, bukan dipanggil oleh pipeline)
+    sk = ROOT / ".claude/skills"
+    rem = sorted(p.name for p in sk.glob("remotion-*")) if sk.exists() else []
+    item("Skill", "Skill Remotion", len(rem) >= 13, f"{len(rem)} skill di .claude/skills/", "")
+    hfs = [p for p in [Path.home() / ".claude/skills/hyperframes", sk / "hyperframes"] if p.exists()]
+    item("Skill", "Skill HyperFrames", bool(hfs), "terpasang" if hfs else "belum (dilewati saat init)", "npx hyperframes skills update")
+
+    print()
+    group = None
+    for g, n, ok, det, fix in results:
+        if g != group:
+            print(f"\n{g}")
+            group = g
+        mark = "✓" if ok else ("·" if ok is None else "✗")
+        print(f"  {mark} {n:52s} {det}" + (f"\n      perbaikan: {fix}" if ok is False and fix else ""))
+    bad = sum(1 for r in results if r[2] is False)
+    print(f"\n{len(results)} pemeriksaan, {bad} perlu perhatian")
+    return bad
+
+
 FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_sfx, step_remotion, step_hyperframes, step_finish]))
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("input", help="URL video (yt-dlp) atau file video/audio")
-    ap.add_argument("--name", required=True, help="nama folder di media/, misalnya kaca-mobil")
+    ap.add_argument("input", nargs="?", help="URL video (yt-dlp), file video/audio, atau naskah .json")
+    ap.add_argument("--name", help="nama folder di media/, misalnya kaca-mobil")
+    ap.add_argument("--check", action="store_true", help="periksa semua alat dan sambungan, tanpa membuat apa pun")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
     ap.add_argument("--language", default="indonesian", help='bahasa untuk Whisper ("" = deteksi otomatis)')
     ap.add_argument("--from", dest="start", choices=STEPS, help="ulang mulai langkah ini (langkah setelahnya ikut diulang)")
@@ -519,6 +611,10 @@ def main():
     ap.add_argument("--skip", action="append", default=[], choices=STEPS, help="lewati langkah ini (bisa berulang)")
     ap.add_argument("--until", choices=STEPS, help="berhenti setelah langkah ini (misalnya --until sfx untuk dengar suara dulu)")
     args = ap.parse_args()
+    if args.check:
+        raise SystemExit(1 if check() else 0)
+    if not args.input or not args.name:
+        ap.error("butuh input dan --name (atau pakai --check)")
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False}
     ctx["dir"] = ROOT / "media" / args.name

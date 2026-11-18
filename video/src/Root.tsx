@@ -2,6 +2,7 @@ import { Composition, Folder } from "remotion";
 import { HelloWorld } from "./HelloWorld";
 import { PromoVideo } from "./promo/PromoVideo";
 import { calculatePromoVoiceMetadata, PromoVoice } from "./promo/PromoVoice";
+import { calculateSubtitleMetadata, SubtitleVideo } from "./pipeline/SubtitleVideo";
 import { IntroScene } from "./promo/IntroScene";
 import { HookScene } from "./promo/HookScene";
 import { FeatureScene } from "./promo/FeatureScene";
@@ -27,6 +28,16 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={{ sceneDurations: [120, 120, 120, 120, 120, 120, 150], voice: true, sfx: true }}
         calculateMetadata={calculatePromoVoiceMetadata}
+      />
+      <Composition
+        id="Subtitle"
+        component={SubtitleVideo}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ media: "kaca-mobil", pages: [], meta: null }}
+        calculateMetadata={calculateSubtitleMetadata}
       />
       <Folder name="Promo-Scenes">
         <Composition

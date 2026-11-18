@@ -1,0 +1,22 @@
+{
+  "id": "kuliner",
+  "label": "Kuliner (makanan, resep, review)",
+  "description": "Hangat dan menggugah selera: krem dan terakota, taplak kotak-kotak samar, uap yang mengepul pelan, gambar di atas piring bundar, judul tulisan tangan menu kafe (Pacifico), subtitle dalam label pill terakota. Untuk resep, review makanan, kuliner daerah, dan street food.",
+  "useFor": ["kuliner", "makanan", "masakan", "resep", "masak", "memasak", "review makanan", "street food", "jajanan", "warung", "restoran", "kafe", "kopi", "minuman", "sambal", "rendang", "nasi goreng", "bakso", "mie", "sate", "kue", "dessert", "enak", "lezat", "pedas"],
+  "font": { "family": "Poppins", "file": "fonts/Poppins-latin.woff2", "weight": 800 },
+  "titleFont": { "family": "Pacifico", "file": "fonts/Pacifico-latin.woff2" },
+  "palette": { "bg": "#FFF4E3", "bg2": "#F6D7B0", "ink": "#3B2416", "accent": "#D9480F", "muted": "#2F9E44", "strip": "#FFFFFF" },
+  "background": { "kind": "kuliner" },
+  "visual": { "filter": "saturate(1.25) contrast(1.05) brightness(1.04)", "blend": "normal", "frame": "plate", "note": "Gambar dipotong bundar seperti di atas piring, dengan pinggiran piring dan bayangan lembut. Paling bagus untuk foto makanan dari atas." },
+  "overlays": [],
+  "subtitle": { "size": 70, "case": "none", "box": "tag", "position": 300, "entrance": "pop", "letterSpacing": 0 },
+  "montage": { "transition": 0.4, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/rumah-kitchen/132-placing-cutlery-on-a-plate.mp3",
+    "sizzle": "mixkit/sfx-kategori/rumah-kitchen/123-frying-fish-on-a-hot-pan.mp3",
+    "boil": "mixkit/sfx-kategori/rumah-kitchen/1817-kettle-boiling.mp3",
+    "accent": "mixkit/sfx-kategori/rumah-kitchen/2936-wine-glass-clink.mp3"
+  },
+  "guidelines": "Review jujur: sebut kalau makanan diberi gratis atau ada kerja sama. Harga dan alamat sebutkan dengan tanggal.",
+  "preview": { "title": "Nasi Goreng Kampung", "caption": "Rahasianya ada di bumbu yang ditumis lama", "active": 2 }
+}

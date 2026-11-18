@@ -50,6 +50,10 @@ animasi subtitle, pengaturan montase, sound effect yang cocok, dan kata kunci to
 | `teknologi` | gadget, AI, internet, review | grid neon bergerak, garis sirkuit, bingkai HUD dengan garis pemindai, subtitle terminal yang muncul dengan glitch |
 | `olahraga` | pertandingan, atlet, klub | garis diagonal dan garis kecepatan, bingkai miring, subtitle bilah merah seperti papan skor yang menghantam masuk (Anton) |
 | `religi` | kajian, renungan, kisah teladan | gradasi senja, pola bintang bersegi delapan, bingkai lengkung, subtitle Lora yang muncul pelan; sound effect tanpa musik |
+| `kuliner` | resep, review makanan, street food | krem dan terakota, taplak kotak-kotak, uap mengepul, gambar di piring bundar, judul Pacifico, subtitle label pill |
+| `travel` | wisata, liburan, pendakian | peta dengan rute yang tergambar dan kompas, gambar kartu pos dengan perangko dan cap pos, judul Caveat, subtitle tiket yang meluncur |
+| `bisnis` | keuangan, investasi, UMKM, karier | grafik batang yang tumbuh, garis tren, ticker angka, gambar kartu presentasi, subtitle lower third rata kiri yang terbuka dari kiri |
+| `sains` | fisika, astronomi, biologi, fakta unik | cetak biru dengan grid, atom yang mengorbit, rumus samar, bingkai dengan garis dimensi, kata muncul satu per satu |
 
 ```bash
 python3 pipeline/pipeline.py --list-styles          # daftar style
@@ -64,11 +68,15 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 - Di naskah, `"sfx": "style:lineStart"` memakai sound effect dari style yang terpilih.
 - Membuat style baru: salin salah satu file di `styles/`, ubah isinya, lalu cek dengan `--preview-styles`.
   Pilihan yang tersedia:
-  - latar (`background.kind`): `gradient`, `wayang`, `koran`, `horor`, `anak`, `tekno`, `olahraga`, `religi`
-  - bingkai gambar (`visual.frame`): `none`, `kelir`, `torn`, `fade`, `sticker`, `hud`, `slant`, `arch`
+  - latar (`background.kind`): `gradient`, `wayang`, `koran`, `horor`, `anak`, `tekno`, `olahraga`, `religi`,
+    `kuliner`, `travel`, `bisnis`, `sains`
+  - bingkai gambar (`visual.frame`): `none`, `kelir`, `torn`, `fade`, `sticker`, `hud`, `slant`, `arch`, `plate`,
+    `postcard`, `card`, `blueprint`
   - tekstur (`overlays`): `grain`, `vignette`, `paper`, `fog`, `flicker`, `scanlines`
-  - kotak subtitle (`subtitle.box`): `none`, `glow`, `strip`, `bubble`, `terminal`, `bar`
-  - animasi masuk (`subtitle.entrance`): `pop`, `flicker`, `stamp`, `creep`, `bounce`, `glitch`, `slam`, `fade`
+  - kotak subtitle (`subtitle.box`): `none`, `glow`, `strip`, `bubble`, `terminal`, `bar`, `tag`, `ticket`,
+    `lowerthird`, `note`
+  - animasi masuk (`subtitle.entrance`): `pop`, `flicker`, `stamp`, `creep`, `bounce`, `glitch`, `slam`, `fade`,
+    `slide`, `wipe`, `type`
   - `titleFont` (opsional): font judul yang berbeda dari font subtitle
 - Style baru tersedia di Remotion. Versi HyperFrames masih memakai tampilan bersih.
 - Semua tampilan memakai CSS dan SVG biasa (tanpa WebGL), jadi render tetap andal tanpa GPU.

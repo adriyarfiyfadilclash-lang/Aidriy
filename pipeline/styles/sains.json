@@ -1,0 +1,20 @@
+{
+  "id": "sains",
+  "label": "Sains (ilmu pengetahuan dan penjelasan)",
+  "description": "Kertas cetak biru: biru tua dengan grid putih tipis, atom dengan elektron yang mengorbit, rumus samar, gambar dalam bingkai berukuran dengan garis dimensi dan label, judul dan subtitle Space Grotesk, kata-kata muncul satu per satu seperti diketik. Untuk sains, penjelasan fenomena, fakta unik, astronomi, dan biologi.",
+  "useFor": ["sains", "ilmu", "ilmiah", "fisika", "kimia", "biologi", "astronomi", "antariksa", "planet", "bintang", "galaksi", "lubang hitam", "atom", "molekul", "dna", "sel", "evolusi", "eksperimen", "penelitian", "ilmuwan", "fenomena", "fakta unik", "kenapa bisa", "bagaimana cara kerja", "teori"],
+  "font": { "family": "Space Grotesk", "file": "fonts/SpaceGrotesk-latin.woff2", "weight": 700 },
+  "palette": { "bg": "#0A2A5E", "bg2": "#0F3D82", "ink": "#EAF4FF", "accent": "#FFD43B", "muted": "#8EC5FF" },
+  "background": { "kind": "sains" },
+  "visual": { "filter": "saturate(0.95) contrast(1.08)", "blend": "normal", "frame": "blueprint", "note": "Gambar dalam bingkai cetak biru dengan garis dimensi, tanda silang di sudut, dan label FIG." },
+  "overlays": ["grain"],
+  "subtitle": { "size": 68, "case": "none", "box": "note", "position": 300, "entrance": "type", "letterSpacing": -0.5 },
+  "montage": { "transition": 0.4, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/click/221-positive-interface-beep.mp3",
+    "bubble": "mixkit/sfx-kategori/nature-bubbles/1317-water-bubble.mp3",
+    "electric": "mixkit/sfx-kategori/technology-electricity/2593-electricity-buzz.mp3"
+  },
+  "guidelines": "Klaim ilmiah sebutkan sumbernya (jurnal, lembaga). Bedakan fakta yang sudah mapan dari teori atau dugaan.",
+  "preview": { "title": "Kenapa Langit Berwarna Biru?", "caption": "Cahaya biru dihamburkan lebih kuat oleh udara", "active": 2 }
+}

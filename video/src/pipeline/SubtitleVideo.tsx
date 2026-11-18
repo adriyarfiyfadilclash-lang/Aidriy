@@ -87,9 +87,12 @@ export const StylePreview: React.FC<StylePreviewProps> = ({ style: loaded, title
   const tokens = words.map((w, i) => ({ text: (i ? " " : "") + w, fromMs: i === active ? 0 : -2, toMs: i === active ? 10_000 : -1 }));
   return (
     <AbsoluteFill>
-      <StyledFrame style={style} title={title}>
-        <Visual style={style} src={visual} kind="image" />
-      </StyledFrame>
+      {/* latar diambil dari detik ke-2, saat animasinya (grafik, rute, uap, dll.) sudah berjalan */}
+      <Sequence from={-60} layout="none">
+        <StyledFrame style={style} title={title}>
+          <Visual style={style} src={visual} kind="image" />
+        </StyledFrame>
+      </Sequence>
       <Caption style={style} tokens={tokens} nowMs={500} index={0} settled />
     </AbsoluteFill>
   );

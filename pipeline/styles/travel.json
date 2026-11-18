@@ -1,0 +1,22 @@
+{
+  "id": "travel",
+  "label": "Travel (perjalanan dan wisata)",
+  "description": "Petualangan: langit biru ke pasir, peta dengan garis rute putus-putus yang tergambar dan pesawat kecil yang terbang, kompas, gambar seperti kartu pos lengkap dengan perangko dan cap pos, judul tulisan tangan (Caveat), subtitle seperti tiket yang meluncur masuk. Untuk wisata, vlog perjalanan, dan tips liburan.",
+  "useFor": ["travel", "traveling", "jalan-jalan", "wisata", "liburan", "destinasi", "pantai", "gunung", "pendakian", "pulau", "bali", "lombok", "labuan bajo", "raja ampat", "backpacker", "hotel", "penginapan", "tiket pesawat", "itinerary", "road trip", "mudik", "turis", "hidden gem", "keliling"],
+  "font": { "family": "Poppins", "file": "fonts/Poppins-latin.woff2", "weight": 800 },
+  "titleFont": { "family": "Caveat", "file": "fonts/Caveat-latin.woff2" },
+  "palette": { "bg": "#8FD3F4", "bg2": "#FCE9C4", "ink": "#1D3557", "accent": "#E63946", "muted": "#2A9D8F", "strip": "#FFFDF7" },
+  "background": { "kind": "travel" },
+  "visual": { "filter": "saturate(1.2) contrast(1.05)", "blend": "normal", "frame": "postcard", "note": "Gambar sebagai kartu pos: bingkai putih, perangko bergerigi di pojok, dan cap pos melingkar." },
+  "overlays": ["grain"],
+  "subtitle": { "size": 68, "case": "none", "box": "ticket", "position": 300, "entrance": "slide", "letterSpacing": 0 },
+  "montage": { "transition": 0.5, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/technology-camera/1430-camera-shutter-hard-click.mp3",
+    "announce": "mixkit/sfx-kategori/transport-airport/1570-melodic-airport-announcement-ding.mp3",
+    "plane": "mixkit/sfx-kategori/transport-airport/1579-low-airplane-flying-over.mp3",
+    "waves": "mixkit/sfx-kategori/nature-sea/1204-gentle-sea-wave.mp3"
+  },
+  "guidelines": "Harga tiket, jam buka, dan aturan tempat wisata sebutkan dengan tanggal. Hormati aturan lokal dan privasi orang yang terekam.",
+  "preview": { "title": "3 Hari di Labuan Bajo", "caption": "Pagi pertama langsung naik ke Pulau Padar", "active": 4 }
+}

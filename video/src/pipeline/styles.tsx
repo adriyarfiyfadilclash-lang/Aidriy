@@ -14,7 +14,7 @@ export type Style = {
   titleFont?: { family: string; file: string };
   palette: { bg: string; bg2: string; ink: string; accent: string; muted: string; strip?: string };
   background: {
-    kind: "gradient" | "wayang" | "koran" | "horor" | "anak" | "tekno" | "olahraga" | "religi";
+    kind: "gradient" | "wayang" | "koran" | "horor" | "anak" | "tekno" | "olahraga" | "religi" | "kuliner" | "travel" | "bisnis" | "sains";
     moon?: { x: number; y: number };
     lightningEvery?: number;
     shapes?: number;
@@ -25,14 +25,14 @@ export type Style = {
     edition?: string;
     columns?: boolean;
   };
-  visual: { filter: string; blend: string; frame: "none" | "kelir" | "torn" | "fade" | "sticker" | "hud" | "slant" | "arch"; halftone?: boolean };
+  visual: { filter: string; blend: string; frame: "none" | "kelir" | "torn" | "fade" | "sticker" | "hud" | "slant" | "arch" | "plate" | "postcard" | "card" | "blueprint"; halftone?: boolean };
   overlays: ("grain" | "vignette" | "paper" | "fog" | "flicker" | "scanlines")[];
   subtitle: {
     size: number;
     case: "none" | "upper";
-    box: "none" | "glow" | "strip" | "bubble" | "terminal" | "bar";
+    box: "none" | "glow" | "strip" | "bubble" | "terminal" | "bar" | "tag" | "ticket" | "lowerthird" | "note";
     position: number;
-    entrance: "pop" | "flicker" | "stamp" | "creep" | "bounce" | "glitch" | "slam" | "fade";
+    entrance: "pop" | "flicker" | "stamp" | "creep" | "bounce" | "glitch" | "slam" | "fade" | "slide" | "wipe" | "type";
     letterSpacing: number;
   };
 };
@@ -49,6 +49,12 @@ for (const [family, file, weight] of [
   ["Anton", "fonts/Anton-latin.woff2", "400"],
   ["Amiri", "fonts/Amiri-latin.woff2", "700"],
   ["Lora", "fonts/Lora-latin.woff2", "400 700"],
+  ["Pacifico", "fonts/Pacifico-latin.woff2", "400"],
+  ["Poppins", "fonts/Poppins-latin.woff2", "800"],
+  ["Caveat", "fonts/Caveat-latin.woff2", "400 700"],
+  ["Montserrat", "fonts/Montserrat-latin.woff2", "100 900"],
+  ["Inter", "fonts/Inter-latin.woff2", "100 900"],
+  ["Space Grotesk", "fonts/SpaceGrotesk-latin.woff2", "300 700"],
 ] as const) {
   loadFont({ family, url: staticFile(file), weight });
 }
@@ -378,6 +384,137 @@ export const Backdrop: React.FC<{ style: Style; title?: string }> = ({ style, ti
       </AbsoluteFill>
     );
   }
+  if (bg.kind === "kuliner") {
+    // taplak kotak-kotak samar, uap yang mengepul pelan dari tengah
+    return (
+      <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 45%, ${p.bg} 0%, ${p.bg2} 100%)` }}>
+        <AbsoluteFill
+          style={{
+            backgroundImage: `linear-gradient(90deg, ${p.accent}14 50%, transparent 50%), linear-gradient(${p.accent}14 50%, transparent 50%)`,
+            backgroundSize: "120px 120px",
+          }}
+        />
+        <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
+          {[0, 1, 2].map((i) => {
+            const t = (frame / 90 + i / 3) % 1;
+            const x = 440 + i * 100;
+            const y = 560 - t * 240;
+            return (
+              <path
+                key={i}
+                d={`M${x} ${y + 200} C${x - 40} ${y + 140}, ${x + 40} ${y + 80}, ${x} ${y} S${x - 30} ${y - 80}, ${x} ${y - 120}`}
+                stroke="#FFFFFF"
+                strokeWidth="14"
+                strokeLinecap="round"
+                fill="none"
+                opacity={Math.sin(t * Math.PI) * 0.55}
+              />
+            );
+          })}
+        </svg>
+        {title && (
+          <div style={{ position: "absolute", top: 150, left: 60, right: 60, textAlign: "center", fontFamily: tf, fontSize: 104, lineHeight: 1.15, color: p.accent, textShadow: `0 6px 0 ${p.ink}22` }}>
+            {title}
+          </div>
+        )}
+      </AbsoluteFill>
+    );
+  }
+  if (bg.kind === "travel") {
+    // peta: garis kontur, rute putus-putus yang tergambar, pesawat kecil, kompas
+    const progress = (frame % 180) / 180;
+    const route = "M120 1720 C300 1500 220 1300 460 1260 S820 1120 760 900 S920 600 980 520";
+    const total = 1700;
+    return (
+      <AbsoluteFill style={{ background: `linear-gradient(180deg, ${p.bg} 0%, #CDEBF7 45%, ${p.bg2} 100%)` }}>
+        <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <path key={i} d={`M-50 ${1300 + i * 90} C300 ${1240 + i * 90}, 700 ${1380 + i * 90}, 1130 ${1290 + i * 90}`} stroke={p.muted} strokeOpacity="0.18" strokeWidth="3" fill="none" />
+          ))}
+          {/* rute putus-putus samar, lalu garis rute yang tergambar sedikit demi sedikit di atasnya */}
+          <path d={route} stroke={p.ink} strokeOpacity="0.25" strokeWidth="6" strokeDasharray="22 18" fill="none" strokeLinecap="round" />
+          <path d={route} stroke={p.accent} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={total} strokeDashoffset={total * (1 - progress)} />
+          <circle cx="120" cy="1720" r="16" fill={p.accent} />
+          <circle cx="980" cy="520" r="16" fill={p.ink} />
+          <g transform="translate(930 1640)">
+            <circle r="70" fill="none" stroke={p.ink} strokeOpacity="0.5" strokeWidth="3" />
+            <path d="M0 -60 L14 0 L0 60 L-14 0 Z" fill={p.ink} fillOpacity="0.5" />
+            <path d="M0 -60 L14 0 L-14 0 Z" fill={p.accent} />
+            <text y="-78" textAnchor="middle" fontSize="28" fill={p.ink} fillOpacity="0.6" fontFamily="Poppins">U</text>
+          </g>
+        </svg>
+        {title && (
+          <div style={{ position: "absolute", top: 140, left: 60, right: 60, textAlign: "center", fontFamily: tf, fontWeight: 700, fontSize: 110, lineHeight: 1.0, color: p.ink, rotate: "-3deg" }}>
+            {title}
+          </div>
+        )}
+      </AbsoluteFill>
+    );
+  }
+  if (bg.kind === "bisnis") {
+    // grafik batang yang tumbuh, garis tren naik, ticker angka di bawah
+    const bars = [0.35, 0.5, 0.42, 0.62, 0.58, 0.78, 0.9];
+    const grow = interpolate(frame, [0, 1.2 * fps], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.16, 1, 0.3, 1) });
+    const ticker = "IHSG +1,24%   USD/IDR 15.620   EMAS +0,8%   BTC +2,1%   OMZET +38%   ";
+    return (
+      <AbsoluteFill style={{ background: `linear-gradient(160deg, ${p.bg} 0%, ${p.bg2} 100%)` }}>
+        <AbsoluteFill style={{ backgroundImage: "linear-gradient(#FFFFFF0D 2px, transparent 2px)", backgroundSize: "100% 120px" }} />
+        <div style={{ position: "absolute", left: 80, right: 80, bottom: 120, height: 520, display: "flex", alignItems: "flex-end", gap: 26, opacity: 0.22 }}>
+          {bars.map((h, i) => (
+            <div key={i} style={{ flex: 1, height: `${h * 100 * grow}%`, background: i === bars.length - 1 ? p.accent : "#FFFFFF", borderRadius: "10px 10px 0 0" }} />
+          ))}
+        </div>
+        <svg width="1080" height="1920" style={{ position: "absolute", inset: 0, opacity: 0.5 }}>
+          <path d="M80 1650 L250 1560 L420 1600 L590 1450 L760 1480 L930 1300" stroke={p.accent} strokeWidth="6" fill="none" strokeDasharray="1200" strokeDashoffset={1200 * (1 - grow)} />
+        </svg>
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 70, background: "#00000055", overflow: "hidden", display: "flex", alignItems: "center" }}>
+          <div style={{ whiteSpace: "nowrap", fontFamily: "Inter", fontWeight: 700, fontSize: 30, color: p.accent, translate: `${-((frame * 4) % 1200)}px 0px` }}>
+            {ticker.repeat(4)}
+          </div>
+        </div>
+        {title && (
+          <div style={{ position: "absolute", top: 150, left: 80, right: 80, fontFamily: tf, fontWeight: 800, fontSize: 82, lineHeight: 1.08, color: p.ink, letterSpacing: -1.5 }}>
+            {title}
+            <div style={{ marginTop: 22, height: 8, width: 160, background: p.accent, borderRadius: 4 }} />
+          </div>
+        )}
+      </AbsoluteFill>
+    );
+  }
+  if (bg.kind === "sains") {
+    // cetak biru: grid tipis, atom dengan elektron yang mengorbit, rumus samar
+    const t = frame / 30;
+    return (
+      <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 35%, ${p.bg2} 0%, ${p.bg} 100%)` }}>
+        <AbsoluteFill
+          style={{
+            backgroundImage: "linear-gradient(#FFFFFF1A 1px, transparent 1px), linear-gradient(90deg, #FFFFFF1A 1px, transparent 1px), linear-gradient(#FFFFFF0D 1px, transparent 1px), linear-gradient(90deg, #FFFFFF0D 1px, transparent 1px)",
+            backgroundSize: "120px 120px, 120px 120px, 24px 24px, 24px 24px",
+          }}
+        />
+        <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
+          <g transform="translate(880 1640)" opacity="0.6">
+            {[0, 60, 120].map((r, i) => (
+              <g key={i} transform={`rotate(${r})`}>
+                <ellipse rx="130" ry="44" fill="none" stroke={p.muted} strokeWidth="3" />
+                <circle cx={130 * Math.cos(t * (1.6 + i * 0.4) + i)} cy={44 * Math.sin(t * (1.6 + i * 0.4) + i)} r="10" fill={p.accent} />
+              </g>
+            ))}
+            <circle r="18" fill={p.accent} />
+          </g>
+          <text x="70" y="1700" fontFamily="Space Grotesk" fontSize="40" fill="#FFFFFF" fillOpacity="0.18">E = mc²</text>
+          <text x="70" y="1780" fontFamily="Space Grotesk" fontSize="34" fill="#FFFFFF" fillOpacity="0.14">λ = c / f</text>
+          <text x="70" y="1850" fontFamily="Space Grotesk" fontSize="34" fill="#FFFFFF" fillOpacity="0.12">F = G·m₁m₂ / r²</text>
+        </svg>
+        {title && (
+          <div style={{ position: "absolute", top: 150, left: 80, right: 80, fontFamily: tf, fontWeight: 700, fontSize: 80, lineHeight: 1.08, color: p.ink, letterSpacing: -1 }}>
+            <div style={{ fontSize: 28, letterSpacing: 6, color: p.accent, marginBottom: 14 }}>FAKTA SAINS · NO. 01</div>
+            {title}
+          </div>
+        )}
+      </AbsoluteFill>
+    );
+  }
   return <AbsoluteFill style={{ background: `radial-gradient(circle at 50% 30%, ${p.bg2} 0%, ${p.bg} 100%)` }} />;
 };
 
@@ -509,6 +646,67 @@ export const Visual: React.FC<{ style: Style; src: string; kind: "video" | "imag
       </div>
     );
   }
+  if (v.frame === "plate") {
+    // piring bundar: pinggiran piring, bayangan lembut, berputar sangat pelan
+    return (
+      <div style={{ position: "absolute", left: 120, top: 470, width: 840, height: 840, borderRadius: "50%", background: "#FFFFFF", boxShadow: "0 40px 70px rgba(59,36,22,0.28), inset 0 0 0 26px #F4EEE6", padding: 70 }}>
+        <div style={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", rotate: `${frame * 0.05}deg`, boxShadow: "inset 0 0 30px rgba(0,0,0,0.25)" }}>{media({ filter: v.filter })}</div>
+      </div>
+    );
+  }
+  if (v.frame === "postcard") {
+    // kartu pos: bingkai putih, perangko bergerigi, cap pos melingkar
+    const p = style.palette;
+    return (
+      <div style={{ position: "absolute", left: 100, right: 100, top: 520, height: 760, background: p.strip ?? "#fff", padding: 26, rotate: "2deg", boxShadow: "0 26px 40px rgba(29,53,87,0.3)" }}>
+        <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>{media({ filter: v.filter })}</div>
+        <div style={{ position: "absolute", top: -30, right: 40, width: 130, height: 156, background: p.accent, border: `8px dotted ${p.strip ?? "#fff"}`, rotate: "6deg", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontFamily: "Caveat", fontWeight: 700, fontSize: 40 }}>ID</div>
+        <svg width="220" height="220" viewBox="0 0 220 220" style={{ position: "absolute", top: -10, right: 120, opacity: 0.55, rotate: "-14deg" }}>
+          <circle cx="110" cy="110" r="86" fill="none" stroke={p.ink} strokeWidth="5" />
+          <circle cx="110" cy="110" r="64" fill="none" stroke={p.ink} strokeWidth="3" />
+          <text x="110" y="102" textAnchor="middle" fontFamily="Poppins" fontSize="24" fill={p.ink}>POS</text>
+          <text x="110" y="132" textAnchor="middle" fontFamily="Poppins" fontSize="20" fill={p.ink}>NUSANTARA</text>
+        </svg>
+      </div>
+    );
+  }
+  if (v.frame === "card") {
+    // kartu seperti slide presentasi: bilah judul kecil dengan tiga titik
+    const p = style.palette;
+    return (
+      <div style={{ position: "absolute", left: 80, right: 80, top: 480, height: 800, background: "#FFFFFF", borderRadius: 32, overflow: "hidden", boxShadow: "0 30px 60px rgba(0,0,0,0.35)" }}>
+        <div style={{ height: 64, background: "#F1F4F9", display: "flex", alignItems: "center", gap: 14, padding: "0 26px" }}>
+          {[p.accent, p.muted, "#C5CEDB"].map((c) => (
+            <div key={c} style={{ width: 18, height: 18, borderRadius: 9, background: c }} />
+          ))}
+          <div style={{ marginLeft: 16, height: 14, width: 260, borderRadius: 7, background: "#D8DEE8" }} />
+        </div>
+        <div style={{ position: "absolute", top: 64, left: 0, right: 0, bottom: 0 }}>{media({ filter: v.filter })}</div>
+      </div>
+    );
+  }
+  if (v.frame === "blueprint") {
+    // cetak biru: garis tepi tipis, garis dimensi, tanda silang di sudut, label FIG
+    const p = style.palette;
+    return (
+      <div style={{ position: "absolute", left: 120, right: 120, top: 500, height: 780 }}>
+        <div style={{ position: "absolute", inset: 0, border: `3px solid ${p.ink}`, padding: 14 }}>
+          <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>{media({ filter: v.filter })}</div>
+        </div>
+        <svg width="840" height="900" style={{ position: "absolute", left: 0, top: -60, overflow: "visible" }}>
+          <g stroke={p.muted} strokeWidth="2" fill={p.muted} fontFamily="Space Grotesk" fontSize="24">
+            <path d="M0 30 H840 M0 18 V42 M840 18 V42" />
+            <text x="420" y="22" textAnchor="middle" stroke="none">840 px</text>
+            <path d="M-30 60 V840 M-42 60 H-18 M-42 840 H-18" />
+          </g>
+          {[[0, 60], [840, 60], [0, 840], [840, 840]].map(([x, y], i) => (
+            <path key={i} d={`M${x - 16} ${y} H${x + 16} M${x} ${y - 16} V${y + 16}`} stroke={p.accent} strokeWidth="3" />
+          ))}
+        </svg>
+        <div style={{ position: "absolute", bottom: -50, left: 0, fontFamily: "Space Grotesk", fontSize: 26, letterSpacing: 4, color: p.muted }}>FIG. 1</div>
+      </div>
+    );
+  }
   return <AbsoluteFill>{media({ filter: v.filter })}</AbsoluteFill>;
 };
 
@@ -567,11 +765,31 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
                       opacity: interpolate(frame, [0, 0.6 * fps], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
                       translate: `0px ${interpolate(frame, [0, 0.6 * fps], [24, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.16, 1, 0.3, 1) })}px`,
                     }
-                  : { scale: interpolate(frame, [0, 0.2 * fps], [0.85, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.34, 1.56, 0.64, 1) }) };
+                  : s.entrance === "slide"
+                    ? {
+                        translate: `${interpolate(frame, [0, 0.3 * fps], [-1100, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.16, 1, 0.3, 1) })}px 0px`,
+                        rotate: `${index % 2 ? 1.5 : -1.5}deg`,
+                      }
+                    : s.entrance === "wipe"
+                      ? {
+                          // terbuka dari kiri ke kanan
+                          clipPath: `inset(0 ${interpolate(frame, [0, 0.35 * fps], [100, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.65, 0, 0.35, 1) })}% 0 0)`,
+                        }
+                      : s.entrance === "type"
+                        ? {} // kata muncul satu per satu (diatur per kata di bawah)
+                        : { scale: interpolate(frame, [0, 0.2 * fps], [0.85, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.34, 1.56, 0.64, 1) }) };
 
   const bubbleColors = [p.accent, p.muted, "#FFB547", "#4CD3A5"];
   const box: React.CSSProperties =
-    s.box === "terminal"
+    s.box === "tag"
+      ? { background: p.accent, color: "#FFFFFF", padding: "8px 34px", borderRadius: 60, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: `0 8px 0 ${p.ink}33` }
+      : s.box === "ticket"
+        ? { background: p.strip ?? "#fff", color: p.ink, padding: "8px 30px", border: `3px dashed ${p.accent}`, borderRadius: 14, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: "0 12px 24px rgba(29,53,87,0.22)" }
+        : s.box === "lowerthird"
+          ? { background: p.strip ?? "#fff", color: p.bg, padding: "8px 28px", borderLeft: `14px solid ${p.accent}`, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: "0 14px 30px rgba(0,0,0,0.3)" }
+          : s.box === "note"
+            ? { background: `${p.bg}CC`, color: p.ink, padding: "8px 24px", border: `2px dashed ${p.muted}`, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }
+            : s.box === "terminal"
       ? { background: `${p.bg}E6`, color: p.ink, padding: "10px 22px", border: `2px solid ${p.accent}`, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: `0 0 24px ${p.accent}44` }
       : s.box === "bar"
         ? { background: p.muted, color: p.ink, padding: "4px 28px", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: `10px 10px 0 ${p.bg}` }
@@ -603,7 +821,8 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
         fontFamily: style.font.family,
         fontWeight: style.font.weight,
         fontSize: s.size,
-        lineHeight: s.box === "strip" ? 1.5 : s.box === "bubble" ? 1.7 : s.box === "terminal" || s.box === "bar" ? 1.45 : 1.15,
+        lineHeight: s.box === "strip" ? 1.5 : s.box === "bubble" ? 1.7 : ["terminal", "bar", "tag", "ticket", "lowerthird", "note"].includes(s.box) ? 1.5 : 1.15,
+        ...(s.box === "lowerthird" ? { textAlign: "left" as const } : {}),
         letterSpacing: s.letterSpacing,
         textTransform: s.case === "upper" ? "uppercase" : "none",
         ...enter,
@@ -613,7 +832,15 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
         {tokens.map((t, i) => {
           const active = nowMs >= t.fromMs && nowMs < t.toMs;
           const hl: React.CSSProperties =
-            s.box === "terminal"
+            s.box === "tag"
+              ? active ? { color: p.ink, background: "#FFFFFF", borderRadius: 12 } : {}
+              : s.box === "ticket"
+                ? active ? { color: p.accent } : {}
+                : s.box === "lowerthird"
+                  ? active ? { color: p.accent } : {}
+                  : s.box === "note"
+                    ? active ? { color: p.accent, borderBottom: `4px solid ${p.accent}` } : {}
+                    : s.box === "terminal"
               ? active ? { color: p.bg, background: p.accent } : {}
               : s.box === "bar"
                 ? active ? { color: p.accent } : {}
@@ -624,8 +851,10 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
                 : s.box === "strip"
               ? active ? { color: p.accent, textDecoration: `6px underline ${p.accent}`, textUnderlineOffset: 8 } : {}
               : { color: active ? p.accent : undefined };
+          // "type": kata yang belum diucapkan disembunyikan (tetap memakan tempat, jadi teks tidak bergeser)
+          const hidden = s.entrance === "type" && !settled && t.fromMs > nowMs ? { opacity: 0 } : {};
           return (
-            <span key={i} style={{ whiteSpace: "pre-wrap", ...hl }}>
+            <span key={i} style={{ whiteSpace: "pre-wrap", ...hl, ...hidden }}>
               {t.text}
             </span>
           );

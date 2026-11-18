@@ -1,0 +1,21 @@
+{
+  "id": "bisnis",
+  "label": "Bisnis (keuangan, karier, startup)",
+  "description": "Rapi dan profesional: biru tua dengan grafik batang yang tumbuh, garis tren yang naik, ticker angka di bawah, gambar dalam kartu putih seperti slide presentasi, judul Montserrat tebal, subtitle Inter rata kiri dengan garis aksen (lower third) yang terbuka dari kiri. Untuk bisnis, keuangan, investasi, karier, dan startup.",
+  "useFor": ["bisnis", "usaha", "umkm", "keuangan", "investasi", "saham", "reksadana", "uang", "gaji", "karier", "kerja", "kantor", "startup", "perusahaan", "ceo", "marketing", "penjualan", "omzet", "profit", "untung", "modal", "strategi", "produktivitas", "pajak", "inflasi"],
+  "font": { "family": "Inter", "file": "fonts/Inter-latin.woff2", "weight": 700 },
+  "titleFont": { "family": "Montserrat", "file": "fonts/Montserrat-latin.woff2" },
+  "palette": { "bg": "#0B1B33", "bg2": "#143E6B", "ink": "#FFFFFF", "accent": "#2ED47A", "muted": "#F5B700", "strip": "#FFFFFF" },
+  "background": { "kind": "bisnis" },
+  "visual": { "filter": "saturate(1.05) contrast(1.05)", "blend": "normal", "frame": "card", "note": "Gambar di dalam kartu putih berujung bulat dengan bilah judul kecil, seperti slide presentasi." },
+  "overlays": [],
+  "subtitle": { "size": 66, "case": "none", "box": "lowerthird", "position": 280, "entrance": "wipe", "letterSpacing": -0.5 },
+  "montage": { "transition": 0.3, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/click/1115-pen-click-and-release.mp3",
+    "typing": "mixkit/sfx-kategori/technology-typewriter/1376-typing-on-an-electronic-device.mp3",
+    "accent": "mixkit/sfx-kategori/game-win/600-achievement-bell.mp3"
+  },
+  "guidelines": "Bukan saran keuangan: beri keterangan itu untuk konten investasi. Angka dan data sebutkan sumber dan tanggalnya.",
+  "preview": { "title": "Cara UMKM Naik Kelas", "caption": "Omzet naik tiga kali lipat dalam setahun", "active": 1 }
+}

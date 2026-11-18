@@ -1,0 +1,148 @@
+<!doctype html>
+<!-- Dibuat oleh build.py. Jangan edit langsung: ubah build.py lalu jalankan ulang. -->
+<html lang="id" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Plus Jakarta Sans";
+        src: url("assets/fonts/PlusJakartaSans-latin.woff2") format("woff2");
+        font-weight: 200 800;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0E1218; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: "Plus Jakarta Sans", sans-serif; }
+      .scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+      .stack { width: 100%; padding: 0 90px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+      .stack.feature { align-items: stretch; gap: 44px; }
+      .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; height: 260px; align-content: center; }
+      .chip { padding: 24px 44px; border-radius: 999px; background: #1C222C; border: 3px solid; font-size: 48px; font-weight: 700; }
+      .headline { font-size: 104px; font-weight: 800; line-height: 1.08; letter-spacing: -2px; }
+      .sub { font-size: 54px; font-weight: 500; line-height: 1.35; }
+      .logo { background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 40px 80px rgba(11,42,107,.35); }
+      .step { font-size: 44px; font-weight: 800; letter-spacing: 6px; }
+      .icon-tile { width: 240px; height: 240px; border-radius: 64px; display: flex; align-items: center; justify-content: center; }
+      .card { margin-top: 40px; padding: 56px; border-radius: 56px; background: #fff; box-shadow: 0 30px 70px rgba(15,20,27,.10); display: flex; flex-direction: column; gap: 30px; }
+      .card .bar { height: 36px; width: 55%; border-radius: 18px; }
+      .card .line { height: 26px; width: 0; border-radius: 13px; background: #E6EAF1; }
+      .cta { margin-top: 30px; padding: 40px 80px; border-radius: 999px; background: #fff; color: #2563EB; font-size: 56px; font-weight: 800; box-shadow: 0 30px 60px rgba(11,42,107,.35); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="40.200" data-width="1080" data-height="1920">
+<section id="hook" class="clip scene" data-start="0.000" data-duration="6.433" data-track-index="0" style="background:#0E1218; z-index:1">
+  <div class="stack">
+    <div class="chips">
+      <div id="chip-ide" class="chip" style="color:#FFD25E;border-color:#FFD25E">💡 Ide</div>
+      <div id="chip-journal" class="chip" style="color:#FF8A8E;border-color:#FF8A8E">📓 Journal</div>
+      <div id="chip-berkas" class="chip" style="color:#7CA7FF;border-color:#7CA7FF">📎 Berkas</div>
+    </div>
+    <h1 id="hook-title" class="headline" style="color:#E8ECF2;text-align:center">Catatan di mana‑mana?</h1>
+    <p id="hook-sub" class="sub" style="color:#9AA4B2;text-align:center">Ide hilang, journal berserakan, berkas tercecer.</p>
+  </div>
+</section>
+<section id="intro" class="clip scene" data-start="5.933" data-duration="6.667" data-track-index="0" style="background:radial-gradient(circle at 50% 35%, #3B82F6 0%, #2563EB 45%, #0B2A6B 100%); z-index:2">
+  <div class="stack" style="align-items:center;gap:56px">
+    <div id="intro-logo" class="logo" style="width:300px;height:300px;border-radius:84px"><svg width="200" height="200" viewBox="0 0 24 24"><path d="M20.2,3.8C16.1,2.6 10.4,4.2 7.3,8.6C5.4,11.3 4.8,14.4 5.2,17.3L3.3,19.3C2.9,19.7 2.9,20.3 3.3,20.7C3.7,21.1 4.3,21.1 4.7,20.7L6.7,18.7C9.6,19.1 12.7,18.5 15.4,16.6C19.8,13.5 21.4,7.9 20.2,3.8ZM14.3,15C12.3,16.4 9.9,17 7.7,16.8L12.7,11.7L11.3,10.3L6.9,14.8C6.9,12.9 7.4,11.1 8.6,9.4C11,6 14.9,4.7 18.3,5.2C18.8,8.7 17.6,12.7 14.3,15Z" fill="#2563EB"/></svg></div>
+    <h1 id="intro-name" style="color:#fff;font-size:120px;font-weight:800;letter-spacing:-3px">NotesByAdriy</h1>
+    <p id="intro-tag" style="color:#DCE8FD;font-size:60px;font-weight:500">Second Brain AI</p>
+  </div>
+</section>
+<section id="catatan" class="clip scene" data-start="12.100" data-duration="5.733" data-track-index="0" style="background:#F6F8FB; z-index:3">
+  <div class="stack feature">
+    <div id="catatan-step" class="step" style="color:#2563EB">FITUR 01</div>
+    <div id="catatan-icon" class="icon-tile" style="background:#E6EFFE"><svg width="140" height="140" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="#2563EB"/></svg></div>
+    <h1 id="catatan-title" class="headline" style="color:#0F141B">Catatan pintar</h1>
+    <p id="catatan-desc" class="sub" style="color:#5B6472">Markdown, checklist, dan gambar di antara teks.</p>
+    <div id="catatan-card" class="card">
+      <div class="bar" style="background:#2563EB"></div>
+      <div id="catatan-line0" class="line"></div>
+      <div id="catatan-line1" class="line"></div>
+      <div id="catatan-line2" class="line"></div>
+    </div>
+  </div>
+</section>
+<section id="scan" class="clip scene" data-start="17.333" data-duration="5.067" data-track-index="0" style="background:#F6F8FB; z-index:4">
+  <div class="stack feature">
+    <div id="scan-step" class="step" style="color:#16A35A">FITUR 02</div>
+    <div id="scan-icon" class="icon-tile" style="background:#E3F7EC"><svg width="140" height="140" viewBox="0 0 24 24"><path d="M3 9V5c0-1.1.9-2 2-2h4v2H5v4H3zm2 6H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2zM7 11h10v2H7z" fill="#16A35A"/></svg></div>
+    <h1 id="scan-title" class="headline" style="color:#0F141B">Pindai teks</h1>
+    <p id="scan-desc" class="sub" style="color:#5B6472">Foto dokumen, teksnya langsung jadi catatan (OCR).</p>
+    <div id="scan-card" class="card">
+      <div class="bar" style="background:#16A35A"></div>
+      <div id="scan-line0" class="line"></div>
+      <div id="scan-line1" class="line"></div>
+      <div id="scan-line2" class="line"></div>
+    </div>
+  </div>
+</section>
+<section id="ai" class="clip scene" data-start="21.900" data-duration="5.067" data-track-index="0" style="background:#F6F8FB; z-index:5">
+  <div class="stack feature">
+    <div id="ai-step" class="step" style="color:#7C4DFF">FITUR 03</div>
+    <div id="ai-icon" class="icon-tile" style="background:#F0E9FE"><svg width="140" height="140" viewBox="0 0 24 24"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z" fill="#7C4DFF"/></svg></div>
+    <h1 id="ai-title" class="headline" style="color:#0F141B">Asisten AI</h1>
+    <p id="ai-desc" class="sub" style="color:#5B6472">Rapikan format dan tanya apa saja dengan API key-mu sendiri.</p>
+    <div id="ai-card" class="card">
+      <div class="bar" style="background:#7C4DFF"></div>
+      <div id="ai-line0" class="line"></div>
+      <div id="ai-line1" class="line"></div>
+      <div id="ai-line2" class="line"></div>
+    </div>
+  </div>
+</section>
+<section id="sinkron" class="clip scene" data-start="26.467" data-duration="6.033" data-track-index="0" style="background:#F6F8FB; z-index:6">
+  <div class="stack feature">
+    <div id="sinkron-step" class="step" style="color:#C2620E">FITUR 04</div>
+    <div id="sinkron-icon" class="icon-tile" style="background:#FFEEDF"><svg width="140" height="140" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17 15.18 9l1.41 1.41L10 17z" fill="#F07A16"/></svg></div>
+    <h1 id="sinkron-title" class="headline" style="color:#0F141B">Sinkron antar HP</h1>
+    <p id="sinkron-desc" class="sub" style="color:#5B6472">Catatan, ide, journal, dan berkas dicadangkan dengan aman.</p>
+    <div id="sinkron-card" class="card">
+      <div class="bar" style="background:#F07A16"></div>
+      <div id="sinkron-line0" class="line"></div>
+      <div id="sinkron-line1" class="line"></div>
+      <div id="sinkron-line2" class="line"></div>
+    </div>
+  </div>
+</section>
+<section id="outro" class="clip scene" data-start="32.000" data-duration="8.200" data-track-index="0" style="background:radial-gradient(circle at 50% 40%, #3B82F6 0%, #2563EB 50%, #0B2A6B 100%); z-index:7">
+  <div class="stack" style="align-items:center;gap:60px">
+    <div id="outro-logo" style="display:flex;align-items:center;gap:28px">
+      <div class="logo" style="width:150px;height:150px;border-radius:44px"><svg width="100" height="100" viewBox="0 0 24 24"><path d="M20.2,3.8C16.1,2.6 10.4,4.2 7.3,8.6C5.4,11.3 4.8,14.4 5.2,17.3L3.3,19.3C2.9,19.7 2.9,20.3 3.3,20.7C3.7,21.1 4.3,21.1 4.7,20.7L6.7,18.7C9.6,19.1 12.7,18.5 15.4,16.6C19.8,13.5 21.4,7.9 20.2,3.8ZM14.3,15C12.3,16.4 9.9,17 7.7,16.8L12.7,11.7L11.3,10.3L6.9,14.8C6.9,12.9 7.4,11.1 8.6,9.4C11,6 14.9,4.7 18.3,5.2C18.8,8.7 17.6,12.7 14.3,15Z" fill="#2563EB"/></svg></div>
+      <div style="color:#fff;font-size:84px;font-weight:800;letter-spacing:-2px">NotesByAdriy</div>
+    </div>
+    <h1 id="outro-slogan" style="color:#fff;font-size:80px;font-weight:800;line-height:1.1;text-align:center;letter-spacing:-2px">Your Knowledge.<br>One Intelligent Space.</h1>
+    <div id="outro-cta" class="cta">Unduh Gratis</div>
+    <p id="outro-note" style="color:#DCE8FD;font-size:46px;font-weight:500;text-align:center">Offline-first · Data tetap di HP kamu</p>
+  </div>
+</section>
+<audio id="vo-hook" class="clip" src="assets/vo/01-hook.wav" data-start="1.000" data-duration="4.960" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-intro" class="clip" src="assets/vo/02-intro.wav" data-start="6.533" data-duration="5.600" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-catatan" class="clip" src="assets/vo/03-catatan.wav" data-start="12.700" data-duration="4.640" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-scan" class="clip" src="assets/vo/04-scan.wav" data-start="17.933" data-duration="4.000" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-ai" class="clip" src="assets/vo/05-ai.wav" data-start="22.500" data-duration="4.000" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-sinkron" class="clip" src="assets/vo/06-sinkron.wav" data-start="27.067" data-duration="4.960" data-volume="1" data-track-index="1"></audio>
+<audio id="vo-outro" class="clip" src="assets/vo/07-outro.wav" data-start="32.600" data-duration="5.600" data-volume="1" data-track-index="1"></audio>
+<audio id="sfx-1" class="clip" src="assets/sfx/kertas-remas.wav" data-start="0.000" data-duration="0.588" data-media-start="0.392" data-volume="0.610" data-fade-out="0.15" data-track-index="2"></audio><!-- Kertas diremas, puncak = label terakhir mendarat -->
+<audio id="sfx-2" class="clip" src="assets/mixkit/pop-kering-notifikasi.mp3" data-start="6.050" data-duration="0.190" data-media-start="0.030" data-volume="0.462" data-fade-out="0.15" data-track-index="2"></audio><!-- Pop logo -->
+<audio id="sfx-3" class="clip" src="assets/mixkit/transisi-sweep-kecil.mp3" data-start="12.110" data-duration="0.510" data-media-start="0.090" data-volume="0.376" data-fade-out="0.15" data-track-index="3"></audio><!-- Sweep transisi ke catatan -->
+<audio id="sfx-4" class="clip" src="assets/mixkit/transisi-sweep-kecil.mp3" data-start="17.343" data-duration="0.510" data-media-start="0.090" data-volume="0.376" data-fade-out="0.15" data-track-index="3"></audio><!-- Sweep transisi ke scan -->
+<audio id="sfx-5" class="clip" src="assets/mixkit/transisi-sweep-kecil.mp3" data-start="21.910" data-duration="0.510" data-media-start="0.090" data-volume="0.376" data-fade-out="0.15" data-track-index="3"></audio><!-- Sweep transisi ke ai -->
+<audio id="sfx-6" class="clip" src="assets/mixkit/transisi-sweep-kecil.mp3" data-start="26.477" data-duration="0.510" data-media-start="0.090" data-volume="0.376" data-fade-out="0.15" data-track-index="3"></audio><!-- Sweep transisi ke sinkron -->
+<audio id="sfx-7" class="clip" src="assets/mixkit/ketik-keyboard-laptop.mp3" data-start="13.200" data-duration="0.900" data-media-start="2.000" data-volume="0.162" data-fade-out="0.15" data-track-index="2"></audio><!-- Ketik saat baris kartu catatan muncul -->
+<audio id="sfx-8" class="clip" src="assets/mixkit/jepret-kamera.mp3" data-start="17.446" data-duration="0.090" data-media-start="0.140" data-volume="0.871" data-fade-out="0.15" data-track-index="2"></audio><!-- Jepret saat ikon scan mendarat -->
+<audio id="sfx-9" class="clip" src="assets/mixkit/ai-magic-sparkle-whoosh.mp3" data-start="21.653" data-duration="0.700" data-media-start="0.040" data-volume="0.596" data-fade-out="0.15" data-track-index="2"></audio><!-- Sparkle saat ikon AI mendarat -->
+<audio id="sfx-10" class="clip" src="assets/mixkit/sukses-konfirmasi.mp3" data-start="27.296" data-duration="0.400" data-media-start="0.000" data-volume="0.106" data-fade-out="0.15" data-track-index="2"></audio><!-- Konfirmasi saat kartu sinkron muncul -->
+<audio id="sfx-11" class="clip" src="assets/mixkit/sukses-jawaban-benar.mp3" data-start="33.085" data-duration="0.440" data-media-start="0.000" data-volume="0.084" data-fade-out="0.15" data-track-index="2"></audio><!-- Sukses saat tombol Unduh muncul -->
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      
+tl.fromTo("#intro", {"opacity": 0}, {...{"opacity": 1}, duration: 0.5, ease: "none"}, 5.933);      tl.fromTo("#catatan", {"y": 1920}, {...{"y": 0}, duration: 0.5, ease: "power3.out"}, 12.1);      tl.to("#intro", {y: -1920, duration: 0.5, ease: "power3.out"}, 12.1);      tl.fromTo("#scan", {"x": 1080}, {...{"x": 0}, duration: 0.5, ease: "power3.out"}, 17.333);      tl.to("#catatan", {x: -1080, duration: 0.5, ease: "power3.out"}, 17.333);      tl.fromTo("#ai", {"x": 1080}, {...{"x": 0}, duration: 0.5, ease: "power3.out"}, 21.9);      tl.to("#scan", {x: -1080, duration: 0.5, ease: "power3.out"}, 21.9);      tl.fromTo("#sinkron", {"x": 1080}, {...{"x": 0}, duration: 0.5, ease: "power3.out"}, 26.467);      tl.to("#ai", {x: -1080, duration: 0.5, ease: "power3.out"}, 26.467);      tl.fromTo("#outro", {"opacity": 0}, {...{"opacity": 1}, duration: 0.5, ease: "none"}, 32.0);      tl.fromTo("#chip-ide", {"x": -260, "y": -120, "rotation": -12, "opacity": 0}, {...{"x": 0, "y": 0, "rotation": -4, "opacity": 1}, duration: 0.7, ease: "back.out(1.4)"}, 0.0);      tl.fromTo("#chip-journal", {"x": 240, "y": -160, "rotation": 10, "opacity": 0}, {...{"x": 0, "y": 0, "rotation": 5, "opacity": 1}, duration: 0.7, ease: "back.out(1.4)"}, 0.15);      tl.fromTo("#chip-berkas", {"x": 0, "y": 220, "rotation": -6, "opacity": 0}, {...{"x": 0, "y": 0, "rotation": 2, "opacity": 1}, duration: 0.7, ease: "back.out(1.4)"}, 0.3);      tl.fromTo("#hook-title", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 0.6);      tl.fromTo("#hook-sub", {"opacity": 0}, {...{"opacity": 1}, duration: 0.5, ease: "none"}, 1.0);      tl.fromTo("#intro-logo", {"scale": 0, "rotation": -25}, {...{"scale": 1, "rotation": 0}, duration: 0.8, ease: "back.out(2)"}, 5.933);      tl.fromTo("#intro-name", {"opacity": 0, "y": 60}, {...{"opacity": 1, "y": 0}, duration: 0.6, ease: "power4.out"}, 6.433);      tl.fromTo("#intro-tag", {"opacity": 0, "y": 40}, {...{"opacity": 1, "y": 0}, duration: 0.6, ease: "power4.out"}, 6.833);      tl.fromTo("#catatan-step", {"opacity": 0}, {...{"opacity": 1}, duration: 0.4, ease: "none"}, 12.1);      tl.fromTo("#catatan-icon", {"scale": 0}, {...{"scale": 1}, duration: 0.6, ease: "back.out(2)"}, 12.1);      tl.fromTo("#catatan-title", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 12.35);      tl.fromTo("#catatan-desc", {"opacity": 0, "y": 40}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 12.65);      tl.fromTo("#catatan-card", {"opacity": 0, "y": 120}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 12.9);      tl.fromTo("#catatan-line0", {"width": "0%"}, {...{"width": "100%"}, duration: 0.6, ease: "power4.out"}, 13.2);      tl.fromTo("#catatan-line1", {"width": "0%"}, {...{"width": "88%"}, duration: 0.6, ease: "power4.out"}, 13.35);      tl.fromTo("#catatan-line2", {"width": "0%"}, {...{"width": "64%"}, duration: 0.6, ease: "power4.out"}, 13.5);      tl.fromTo("#scan-step", {"opacity": 0}, {...{"opacity": 1}, duration: 0.4, ease: "none"}, 17.333);      tl.fromTo("#scan-icon", {"scale": 0}, {...{"scale": 1}, duration: 0.6, ease: "back.out(2)"}, 17.333);      tl.fromTo("#scan-title", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 17.583);      tl.fromTo("#scan-desc", {"opacity": 0, "y": 40}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 17.883);      tl.fromTo("#scan-card", {"opacity": 0, "y": 120}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 18.133);      tl.fromTo("#scan-line0", {"width": "0%"}, {...{"width": "100%"}, duration: 0.6, ease: "power4.out"}, 18.433);      tl.fromTo("#scan-line1", {"width": "0%"}, {...{"width": "88%"}, duration: 0.6, ease: "power4.out"}, 18.583);      tl.fromTo("#scan-line2", {"width": "0%"}, {...{"width": "64%"}, duration: 0.6, ease: "power4.out"}, 18.733);      tl.fromTo("#ai-step", {"opacity": 0}, {...{"opacity": 1}, duration: 0.4, ease: "none"}, 21.9);      tl.fromTo("#ai-icon", {"scale": 0}, {...{"scale": 1}, duration: 0.6, ease: "back.out(2)"}, 21.9);      tl.fromTo("#ai-title", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 22.15);      tl.fromTo("#ai-desc", {"opacity": 0, "y": 40}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 22.45);      tl.fromTo("#ai-card", {"opacity": 0, "y": 120}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 22.7);      tl.fromTo("#ai-line0", {"width": "0%"}, {...{"width": "100%"}, duration: 0.6, ease: "power4.out"}, 23.0);      tl.fromTo("#ai-line1", {"width": "0%"}, {...{"width": "88%"}, duration: 0.6, ease: "power4.out"}, 23.15);      tl.fromTo("#ai-line2", {"width": "0%"}, {...{"width": "64%"}, duration: 0.6, ease: "power4.out"}, 23.3);      tl.fromTo("#sinkron-step", {"opacity": 0}, {...{"opacity": 1}, duration: 0.4, ease: "none"}, 26.467);      tl.fromTo("#sinkron-icon", {"scale": 0}, {...{"scale": 1}, duration: 0.6, ease: "back.out(2)"}, 26.467);      tl.fromTo("#sinkron-title", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 26.717);      tl.fromTo("#sinkron-desc", {"opacity": 0, "y": 40}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 27.017);      tl.fromTo("#sinkron-card", {"opacity": 0, "y": 120}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 27.267);      tl.fromTo("#sinkron-line0", {"width": "0%"}, {...{"width": "100%"}, duration: 0.6, ease: "power4.out"}, 27.567);      tl.fromTo("#sinkron-line1", {"width": "0%"}, {...{"width": "88%"}, duration: 0.6, ease: "power4.out"}, 27.717);      tl.fromTo("#sinkron-line2", {"width": "0%"}, {...{"width": "64%"}, duration: 0.6, ease: "power4.out"}, 27.867);      tl.fromTo("#outro-logo", {"scale": 0.6, "opacity": 0}, {...{"scale": 1, "opacity": 1}, duration: 0.6, ease: "back.out(1.6)"}, 32.0);      tl.fromTo("#outro-slogan", {"opacity": 0, "y": 50}, {...{"opacity": 1, "y": 0}, duration: 0.5, ease: "power4.out"}, 32.4);      tl.fromTo("#outro-cta", {"scale": 0}, {...{"scale": 1}, duration: 0.5, ease: "back.out(3)"}, 33.0);      tl.to("#outro-cta", {scale: 1.06, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1}, 34.5);      tl.fromTo("#outro-note", {"opacity": 0}, {...{"opacity": 1}, duration: 0.5, ease: "none"}, 33.4);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

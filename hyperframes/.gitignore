@@ -2,3 +2,5 @@ node_modules/
 out/
 */out/
 .hyperframes/
+promo/assets/vo/
+promo/assets/mixkit/

@@ -1,0 +1,58 @@
+{
+ "sfx/kertas-remas.wav": {
+  "onset": 0.0,
+  "peak": 0.92,
+  "duration": 0.98,
+  "peakDb": -14.4,
+  "loudness": -19.7
+ },
+ "mixkit/sfx/transisi-sweep-kecil.mp3": {
+  "onset": 0.09,
+  "peak": 0.24,
+  "duration": 0.51,
+  "peakDb": -6.0,
+  "loudness": -15.5
+ },
+ "mixkit/sfx/pop-kering-notifikasi.mp3": {
+  "onset": 0.03,
+  "peak": 0.1,
+  "duration": 0.19,
+  "peakDb": -9.8,
+  "loudness": -17.3
+ },
+ "mixkit/sfx/ketik-keyboard-laptop.mp3": {
+  "onset": 0.0,
+  "peak": 11.71,
+  "duration": 19.57,
+  "peakDb": -10.2,
+  "loudness": -22.7
+ },
+ "mixkit/sfx/jepret-kamera.mp3": {
+  "onset": 0.14,
+  "peak": 0.05,
+  "duration": 0.09,
+  "peakDb": -14.0,
+  "loudness": -22.8
+ },
+ "mixkit/sfx/ai-magic-sparkle-whoosh.mp3": {
+  "onset": 0.04,
+  "peak": 0.41,
+  "duration": 1.42,
+  "peakDb": -11.0,
+  "loudness": -19.5
+ },
+ "mixkit/sfx/sukses-konfirmasi.mp3": {
+  "onset": 0.0,
+  "peak": 0.19,
+  "duration": 0.4,
+  "peakDb": -7.0,
+  "loudness": -12.5
+ },
+ "mixkit/sfx/sukses-jawaban-benar.mp3": {
+  "onset": 0.0,
+  "peak": 0.02,
+  "duration": 0.44,
+  "peakDb": -4.5,
+  "loudness": -13.5
+ }
+}

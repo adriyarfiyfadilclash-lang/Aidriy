@@ -25,7 +25,7 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{ sceneDurations: [120, 120, 120, 120, 120, 120, 150] }}
+        defaultProps={{ sceneDurations: [120, 120, 120, 120, 120, 120, 150], voice: true, sfx: true }}
         calculateMetadata={calculatePromoVoiceMetadata}
       />
       <Folder name="Promo-Scenes">

@@ -3,15 +3,37 @@
 Satu perintah dari sumber sampai video jadi, dengan subtitle yang menyala per kata:
 
 ```
-yt-dlp -> ffmpeg -> Whisper -> pages.json -> Remotion + HyperFrames -> ffmpeg
-ambil     siapkan   transkrip   subtitle     dua versi video          -14 LUFS, thumbnail
+yt-dlp / VoxCPM -> ffmpeg -> Whisper -> pages.json -> sound effect -> Remotion + HyperFrames -> ffmpeg
+ambil / suara      siapkan   transkrip   subtitle     dicampur        dua versi video          -14 LUFS, thumbnail
 ```
 
 ```bash
 python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --title "Kenapa kaca mobil berkabut?"
 python3 pipeline/pipeline.py video.mp4   --name klip                  # video sumber jadi latar
 python3 pipeline/pipeline.py "https://..." --name klip                # yt-dlp (video milik sendiri)
+python3 pipeline/pipeline.py pipeline/contoh/naskah-notesbyadriy.json --name iklan --until sfx
 ```
+
+## Dari naskah
+
+Naskah `.json` berisi kalimat, siapa yang mengucapkan (profil di `video/voices/`), dan sound effect
+opsional. Lihat `contoh/naskah-notesbyadriy.json`.
+
+```json
+{"title": "NotesByAdriy", "lines": [
+  {"voice": "ongky", "text": "Duh, catatanku hilang lagi.", "sfx": "public/sfx/kertas-remas.wav"},
+  {"voice": "adriy", "text": "Unduh gratis sekarang!", "sfx": {"file": "public/mixkit/sfx/sukses-jawaban-benar.mp3", "at": "end"}}
+]}
+```
+
+- VoxCPM membuat suara per kalimat. Kalimat yang tidak berubah tidak dibuat ulang.
+- Whisper dipakai untuk waktu tiap kata, tapi ejaan subtitle diambil dari naskah ("NotesByAdriy",
+  bukan "Notes by Edri" seperti yang didengar Whisper). Hasil asli Whisper di `transcript-whisper.json`.
+- Sound effect: `"at": "start"` (bawaan) menaruh puncak bunyi 0,1 detik sebelum kalimat dimulai,
+  `"at": "end"` setelah kalimat selesai. Volume diatur otomatis seperti komponen `Sfx` di Remotion
+  (`"role": "accent"` atau `"underVoice"`). Letak dan volumenya dicatat di `sfx-cues.json`, dan
+  `sfx-only.wav` bisa diperiksa dengan `video/scripts/sfx_check.py voice.wav sfx-only.wav`.
+- `--until sfx` berhenti sebelum render, supaya suaranya bisa didengar dulu.
 
 Hasil ada di `media/<name>/` (tidak di-commit): `final-remotion.mp4`, `final-hyperframes.mp4`,
 `thumbnail.jpg`, dan semua file antara (`transcript.json`, `pages.json`, dan lain-lain).
@@ -24,6 +46,7 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 |---|---|
 | Betulkan kata di subtitle | edit `media/<name>/transcript.json`, lalu `--from pages` |
 | Ganti tampilan subtitle | ubah `video/src/pipeline/SubtitleVideo.tsx` atau bagian HyperFrames di `pipeline.py`, lalu `--from remotion` |
+| Dengar suara dulu, render belakangan | `--until sfx`, lalu jalankan lagi tanpa `--until` |
 | Hanya satu versi | `--skip hyperframes` atau `--skip remotion` |
 | Satu langkah saja | `--only transcribe` |
 
@@ -31,7 +54,7 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 
 - Node.js 22 dan `npm install` di `video/` dan `hyperframes/`
 - ffmpeg dan ffprobe
-- Python dengan `transformers` dan `torch` untuk Whisper. Atur dengan `PIPELINE_PYTHON=/path/ke/python`.
+- Python dengan `transformers` dan `torch` untuk Whisper, plus `voxcpm` untuk naskah (lihat `video/requirements-tts.txt`). Atur dengan `PIPELINE_PYTHON=/path/ke/python`.
   Model diatur dengan `WHISPER_MODEL` (default `openai/whisper-large-v3-turbo`).
 - yt-dlp, hanya kalau sumbernya URL. YouTube memblokir server cloud, jadi jalankan dari komputer sendiri.
 

@@ -1,0 +1,9 @@
+{
+  "title": "NotesByAdriy",
+  "lines": [
+    {"voice": "ongky", "text": "Duh, catatanku hilang lagi. Kemarin aku tulis di mana, ya?", "sfx": "public/sfx/kertas-remas.wav"},
+    {"voice": "adriy", "text": "Pakai NotesByAdriy saja. Semua catatan, ide, dan journal tersimpan rapi di satu tempat.", "sfx": "public/mixkit/sfx/pop-kering-notifikasi.mp3"},
+    {"voice": "ongky", "text": "Bisa scan dokumen juga?", "sfx": "public/mixkit/sfx/jepret-kamera.mp3"},
+    {"voice": "adriy", "text": "Bisa. Unduh gratis sekarang!", "sfx": {"file": "public/mixkit/sfx/sukses-jawaban-benar.mp3", "at": "end"}}
+  ]
+}

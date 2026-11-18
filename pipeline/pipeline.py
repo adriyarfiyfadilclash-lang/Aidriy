@@ -1,16 +1,24 @@
-"""Pipeline video: yt-dlp -> ffmpeg -> Whisper -> subtitle -> Remotion + HyperFrames -> ffmpeg.
+"""Pipeline video: yt-dlp/VoxCPM -> ffmpeg -> Whisper -> subtitle -> sound effect -> Remotion + HyperFrames -> ffmpeg.
+
+Sumber bisa berupa URL (yt-dlp), file video/audio, atau naskah .json (suara dibuat VoxCPM):
+  {"title": "...", "lines": [{"voice": "adriy", "text": "...", "sfx": "public/sfx/kertas-remas.wav"}, ...]}
+  "sfx" boleh berupa path (relatif ke video/) atau {"file": ..., "at": "start"|"end", "role": "accent"|"underVoice"}.
 
 Contoh:
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --title "Kaca Mobil Berkabut"
   python3 pipeline/pipeline.py "https://www.youtube.com/watch?v=..." --name klip
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --from pages     # ulang mulai langkah pages
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --only remotion  # satu langkah saja
+  python3 pipeline/pipeline.py naskah.json --name iklan --until sfx            # buat suara dulu, belum render
 
 Semua hasil disimpan di media/<name>/ (tidak di-commit):
-  source.*          file asli (dari yt-dlp, atau salinan file yang diberikan)
-  audio.wav         audio 48 kHz untuk video;  audio-16k.wav  audio 16 kHz mono untuk Whisper
+  source.*          file asli (dari yt-dlp, salinan file, atau gabungan voiceover dari naskah)
+  vo/, lines.json   (naskah) suara per kalimat dan waktu mulai/selesai tiap kalimat
+  voice.wav         suara 48 kHz;  audio-16k.wav  16 kHz mono untuk Whisper
+  audio.wav         suara + sound effect, dipakai kedua renderer;  sfx-cues.json  letak dan volume tiap bunyi
   meta.json         durasi, judul, ada/tidaknya video
-  transcript.json   kata per kata dari Whisper, format Caption Remotion (text, startMs, endMs, ...)
+  transcript.json   kata per kata, format Caption Remotion (text, startMs, endMs, ...). Untuk naskah,
+                    waktu dari Whisper tapi ejaan dari naskah (transcript-whisper.json = hasil asli Whisper)
   pages.json        kata dikelompokkan jadi halaman subtitle; dipakai Remotion DAN HyperFrames
   remotion.mp4, hyperframes.mp4   hasil render
   final-remotion.mp4, final-hyperframes.mp4   volume disamakan ke -14 LUFS (standar TikTok/Reels/YouTube)
@@ -35,7 +43,9 @@ HYPERFRAMES = ROOT / "hyperframes"
 WHISPER_PY = os.environ.get("PIPELINE_PYTHON", "/root/voxcpm-venv/bin/python" if Path("/root/voxcpm-venv/bin/python").exists() else sys.executable)
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "openai/whisper-large-v3-turbo")
 
-STEPS = ["fetch", "prepare", "transcribe", "pages", "remotion", "hyperframes", "finish"]
+STEPS = ["fetch", "prepare", "transcribe", "pages", "sfx", "remotion", "hyperframes", "finish"]
+VOICE_LEAD, LINE_GAP = 0.6, 0.5  # detik: hening sebelum kalimat pertama, dan di antara kalimat
+SR = 48000
 
 
 def log(step, msg):
@@ -66,8 +76,74 @@ def probe(path):
 
 
 # ---------------------------------------------------------------- langkah
+def is_script(path):
+    return str(path).lower().endswith(".json") and Path(path).exists()
+
+
+def decode(path):
+    import numpy as np
+    raw = run_bytes(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"])
+    return np.frombuffer(raw, dtype=np.float32)
+
+
+def encode(x, path):
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", str(path)],
+                   input=x.astype("float32").tobytes(), check=True)
+
+
+def run_bytes(cmd):
+    r = subprocess.run(cmd, capture_output=True)
+    if r.returncode != 0:
+        raise SystemExit(f"Gagal: {' '.join(map(str, cmd))[:200]}\n{r.stderr.decode()[-1500:]}")
+    return r.stdout
+
+
+def step_tts(ctx):
+    """Naskah -> suara per kalimat (VoxCPM) -> satu file source.wav dengan jeda, plus lines.json."""
+    import hashlib
+    import numpy as np
+    d = ctx["dir"]
+    script = json.loads(Path(ctx["input"]).read_text(encoding="utf-8"))
+    shutil.copy2(ctx["input"], d / "script.json")
+    if script.get("title") and ctx["title"] == ctx["name"]:
+        ctx["title"] = script["title"]
+    vo_dir = d / "vo"
+    vo_dir.mkdir(exist_ok=True)
+    lines = script["lines"]
+    for ln in lines:  # nama file dari isi kalimat: kalimat yang tidak berubah tidak dibuat ulang
+        ln["id"] = hashlib.sha1(f'{ln["voice"]}|{ln["text"]}'.encode()).hexdigest()[:12]
+    todo = [{"id": ln["id"], "voice": ln["voice"], "text": ln["text"]} for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists()]
+    if todo:
+        log("fetch", f"VoxCPM membuat {len(todo)} dari {len(lines)} kalimat...")
+        job = d / ".tts.json"
+        job.write_text(json.dumps(todo, ensure_ascii=False))
+        t = time.time()
+        run([WHISPER_PY, str(REMOTION / "scripts/tts_batch.py"), str(job), str(vo_dir)], env=dict(os.environ, HF_HUB_OFFLINE=os.environ.get("HF_HUB_OFFLINE", "0")))
+        job.unlink()
+        log("fetch", f"selesai dalam {time.time() - t:.0f} dtk")
+    else:
+        log("fetch", "semua kalimat sudah ada suaranya")
+    parts, t, out_lines = [np.zeros(int(VOICE_LEAD * SR), np.float32)], VOICE_LEAD, []
+    for k, ln in enumerate(lines):
+        x = decode(vo_dir / f'{ln["id"]}.wav')
+        out_lines.append({"index": k, "voice": ln["voice"], "text": ln["text"], "start": round(t, 3),
+                          "end": round(t + len(x) / SR, 3), "sfx": ln.get("sfx")})
+        parts += [x, np.zeros(int(LINE_GAP * SR), np.float32)]
+        t += len(x) / SR + LINE_GAP
+    src = d / "source.wav"
+    encode(np.concatenate(parts), src)
+    (d / "lines.json").write_text(json.dumps(out_lines, ensure_ascii=False, indent=1))
+    ctx["source"] = src
+    log("fetch", f"-> source.wav ({t:.1f} dtk, {len(lines)} kalimat)")
+
+
 def step_fetch(ctx):
     src = ctx["input"]
+    if is_script(src):
+        if not ctx["force"] and fresh(ctx["dir"] / "source.wav", src) and (ctx["dir"] / "lines.json").exists():
+            ctx["source"] = ctx["dir"] / "source.wav"
+            return log("fetch", "sudah ada: source.wav (dari naskah)")
+        return step_tts(ctx)
     existing = sorted(ctx["dir"].glob("source.*"))
     if existing and not ctx["force"]:
         ctx["source"] = existing[0]
@@ -93,7 +169,7 @@ def step_fetch(ctx):
 
 def step_prepare(ctx):
     d, src = ctx["dir"], ctx["source"]
-    a48, a16, meta = d / "audio.wav", d / "audio-16k.wav", d / "meta.json"
+    a48, a16, meta = d / "voice.wav", d / "audio-16k.wav", d / "meta.json"
     if not ctx["force"] and fresh(a48, src) and fresh(a16, src) and fresh(meta, src):
         return log("prepare", "sudah ada")
     run(["ffmpeg", "-y", "-v", "error", "-i", str(src), "-vn", "-ac", "2", "-ar", "48000", str(a48)])
@@ -150,6 +226,49 @@ def step_transcribe(ctx):
     n = run([WHISPER_PY, "-I", str(script), str(d / "audio-16k.wav"), str(out), WHISPER_MODEL, ctx["language"]], env=env).strip().splitlines()[-1]
     script.unlink()
     log("transcribe", f"{n} kata dalam {time.time() - t:.0f} dtk")
+    if (d / "lines.json").exists():
+        shutil.copy2(out, d / "transcript-whisper.json")
+        words, fixed = align_to_script(json.loads(out.read_text()), json.loads((d / "lines.json").read_text()))
+        out.write_text(json.dumps(words, ensure_ascii=False, indent=1))
+        log("transcribe", f"ejaan disamakan dengan naskah ({fixed} bagian dibetulkan)")
+
+
+def norm(w):
+    return re.sub(r"[^0-9a-z]", "", w.lower())
+
+
+def align_to_script(whisper, lines):
+    """Ambil waktu dari Whisper, tapi teks dari naskah. Bagian yang berbeda (misalnya "Notes by Adri"
+    lawan "NotesByAdriy") dipetakan per blok, dan waktunya dibagi rata ke kata-kata naskah."""
+    import difflib
+    script = []  # (kata, indeks kalimat)
+    for ln in lines:
+        script += [(w, ln["index"]) for w in ln["text"].split()]
+    a, b = [norm(w["text"]) for w in whisper], [norm(w) for w, _ in script]
+    out, fixed = [None] * len(script), 0
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if tag == "equal":
+            for k in range(j2 - j1):
+                out[j1 + k] = (whisper[i1 + k]["startMs"], whisper[i1 + k]["endMs"])
+        elif j2 > j1:
+            fixed += 1
+            if i2 > i1:
+                s0, e0 = whisper[i1]["startMs"], whisper[i2 - 1]["endMs"]
+            else:  # kata naskah tidak terdengar oleh Whisper: sisipkan di antara tetangganya
+                s0 = whisper[i1 - 1]["endMs"] if i1 else 0
+                e0 = whisper[i1]["startMs"] if i1 < len(whisper) else s0 + 300 * (j2 - j1)
+            step = max(e0 - s0, 1) / (j2 - j1)
+            for k in range(j2 - j1):
+                out[j1 + k] = (round(s0 + k * step), round(s0 + (k + 1) * step))
+    # Kata tetap di dalam kalimatnya: kalau jatuh di luar waktu kalimat, jepit ke batasnya.
+    bounds = {ln["index"]: (ln["start"] * 1000, ln["end"] * 1000) for ln in lines}
+    words = []
+    for k, ((w, li), (s0, e0)) in enumerate(zip(script, out)):
+        lo, hi = bounds[li]
+        s0, e0 = min(max(s0, lo), hi), min(max(e0, lo), hi)
+        words.append({"text": (" " if k else "") + w, "startMs": round(s0), "endMs": round(max(e0, s0 + 1)),
+                      "timestampMs": round((s0 + e0) / 2), "confidence": None})
+    return words, fixed
 
 
 def step_pages(ctx):
@@ -179,6 +298,19 @@ def step_pages(ctx):
     if cur:
         groups.append(cur)
 
+    # Halaman satu kata yang pendek ("ya?") digabung ke halaman sebelumnya kalau masih muat,
+    # supaya subtitle tidak berganti terlalu cepat.
+    merged = []
+    for g in groups:
+        if merged and len(g) == 1 and g[0]["endMs"] - g[0]["startMs"] < 700:
+            prev = merged[-1]
+            joined = ("".join(x["text"] for x in prev) + g[0]["text"]).strip()
+            if len(joined) <= MAX_CHARS and len(prev) < MAX_WORDS + 1 and g[0]["startMs"] - prev[-1]["endMs"] <= GAP_MS:
+                prev.append(g[0])
+                continue
+        merged.append(g)
+    groups = merged
+
     pages = []
     for k, g in enumerate(groups):
         start = g[0]["startMs"]
@@ -190,6 +322,66 @@ def step_pages(ctx):
         pages.append({"startMs": start, "durationMs": end - start, "tokens": tokens})
     out.write_text(json.dumps(pages, ensure_ascii=False, indent=1))
     log("pages", f"{len(words)} kata -> {len(pages)} halaman subtitle")
+
+
+TARGET_DB = {"accent": -24, "underVoice": -32}       # sama dengan video/src/promo/Sfx.tsx
+PEAK_LIMIT_DB = {"accent": -12, "underVoice": -26}
+
+
+def step_sfx(ctx):
+    """Campur sound effect ke suara: puncak bunyi tepat di awal/akhir kalimat, volume menurut peran."""
+    import numpy as np
+    sys.path.insert(0, str(REMOTION / "scripts"))
+    from sfx_analyze import analyze
+    d = ctx["dir"]
+    out, lines_f = d / "audio.wav", d / "lines.json"
+    cue_files = []
+    lines = json.loads(lines_f.read_text()) if lines_f.exists() else []
+    for ln in lines:
+        if ln.get("sfx"):
+            c = ln["sfx"] if isinstance(ln["sfx"], dict) else {"file": ln["sfx"]}
+            p = Path(c["file"])
+            c["path"] = p if p.is_absolute() else REMOTION / p
+            if not c["path"].exists():
+                raise SystemExit(f"Sound effect tidak ditemukan: {c['path']}")
+            cue_files.append((ln, c))
+    if not ctx["force"] and fresh(out, d / "voice.wav", lines_f, *[c["path"] for _, c in cue_files]):
+        return log("sfx", "sudah ada")
+    if not cue_files:
+        shutil.copy2(d / "voice.wav", out)
+        return log("sfx", "tidak ada sound effect di naskah: audio.wav = suara saja")
+    voice = decode(d / "voice.wav")
+    mix = np.zeros(len(voice) + 3 * SR, np.float32)
+    mix[: len(voice)] += voice
+    sfx_only = np.zeros_like(mix)  # untuk diperiksa dengan video/scripts/sfx_check.py
+    cues = []
+    for ln, c in cue_files:
+        m = analyze(str(c["path"]))
+        role = c.get("role", "accent")
+        gain = min(1, 10 ** ((TARGET_DB[role] - m["loudness"]) / 20), 10 ** ((PEAK_LIMIT_DB[role] - m["peakDb"]) / 20))
+        x = decode(c["path"])[int(m["onset"] * SR):][: int(min(m["duration"], c.get("max", 99)) * SR)]
+        fade = min(len(x), int(0.15 * SR))
+        x = x * gain
+        x[-fade:] *= np.linspace(1, 0, fade)
+        if c.get("at", "start") == "start":  # di jeda sebelum kalimat: puncak 0,1 detik sebelum orang mulai bicara
+            t = ln["start"] - 0.1 - m["peak"]
+        else:                                 # setelah kalimat selesai
+            t = ln["end"] + 0.05
+        i = int(t * SR)
+        if i < 0:  # puncak terlalu jauh di dalam file untuk muat sebelum kalimat: potong bagian awalnya
+            x, i = x[-i:], 0
+        mix[i:i + len(x)] += x[: len(mix) - i]
+        sfx_only[i:i + len(x)] += x[: len(mix) - i]
+        cues.append({"line": ln["index"], "file": str(c["file"]), "role": role, "start": round(i / SR, 3),
+                     "peak": round(t + m["peak"], 3), "gainDb": round(20 * np.log10(gain), 1)})
+    peak = float(np.abs(mix).max())
+    if peak > 0.98:
+        mix *= 0.98 / peak
+    end = max(len(voice), max(int((cu["start"] + 3) * SR) for cu in cues))
+    encode(mix[:end], out)
+    encode(sfx_only[:end] * (0.98 / peak if peak > 0.98 else 1), d / "sfx-only.wav")
+    (d / "sfx-cues.json").write_text(json.dumps(cues, ensure_ascii=False, indent=1))
+    log("sfx", f"{len(cues)} sound effect dicampur -> audio.wav (lihat sfx-cues.json)")
 
 
 def step_remotion(ctx):
@@ -313,7 +505,7 @@ def step_finish(ctx):
         log("finish", "thumbnail.jpg")
 
 
-FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_remotion, step_hyperframes, step_finish]))
+FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_sfx, step_remotion, step_hyperframes, step_finish]))
 
 
 def main():
@@ -325,12 +517,13 @@ def main():
     ap.add_argument("--from", dest="start", choices=STEPS, help="ulang mulai langkah ini (langkah setelahnya ikut diulang)")
     ap.add_argument("--only", choices=STEPS, help="jalankan satu langkah saja")
     ap.add_argument("--skip", action="append", default=[], choices=STEPS, help="lewati langkah ini (bisa berulang)")
+    ap.add_argument("--until", choices=STEPS, help="berhenti setelah langkah ini (misalnya --until sfx untuk dengar suara dulu)")
     args = ap.parse_args()
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)
-    steps = [args.only] if args.only else STEPS
+    steps = [args.only] if args.only else STEPS[: STEPS.index(args.until) + 1] if args.until else STEPS
     t0 = time.time()
     for s in steps:
         if s in args.skip:

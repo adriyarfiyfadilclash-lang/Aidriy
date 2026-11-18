@@ -5,7 +5,7 @@
   "description": "Video NotesByAdriy dibuat dengan Remotion",
   "scripts": {
     "dev": "remotion studio",
-    "build": "remotion render HelloWorld out/video.mp4",
+    "build": "remotion render Promo out/promo.mp4",
     "upgrade": "remotion upgrade"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "@remotion/captions": "4.0.545",
     "@remotion/cli": "4.0.545",
     "@remotion/effects": "4.0.545",
+    "@remotion/fonts": "4.0.545",
     "@remotion/google-fonts": "4.0.545",
     "@remotion/media": "4.0.545",
     "@remotion/transitions": "4.0.545",

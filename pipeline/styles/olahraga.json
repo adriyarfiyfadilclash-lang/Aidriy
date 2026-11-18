@@ -1,0 +1,27 @@
+{
+  "id": "olahraga",
+  "label": "Olahraga (pertandingan dan atlet)",
+  "description": "Penuh energi: garis-garis diagonal bergerak cepat, garis kecepatan, gambar dalam bingkai miring, judul dan subtitle huruf tebal rapat (Anton) dalam bilah miring seperti papan skor, masuk dengan hentakan. Untuk sepak bola, bulu tangkis, MotoGP, dan profil atlet.",
+  "useFor": ["olahraga", "sepak bola", "bola", "timnas", "liga", "piala dunia", "gol", "pertandingan", "pemain", "atlet", "pelatih", "klub", "skor", "juara", "final", "badminton", "bulu tangkis", "motogp", "f1", "basket", "voli", "tinju", "lari", "maraton", "olimpiade"],
+  "font": { "family": "Anton", "file": "fonts/Anton-latin.woff2", "weight": 400 },
+  "palette": { "bg": "#0A0F14", "bg2": "#12324A", "ink": "#FFFFFF", "accent": "#FFE600", "muted": "#E10600" },
+  "background": { "kind": "olahraga" },
+  "visual": {
+    "filter": "saturate(1.3) contrast(1.15)",
+    "blend": "normal",
+    "frame": "slant",
+    "note": "Gambar dipotong miring seperti grafik siaran olahraga, dengan garis warna di tepinya."
+  },
+  "overlays": ["grain"],
+  "subtitle": { "size": 92, "case": "upper", "box": "bar", "position": 360, "entrance": "slam", "letterSpacing": 1 },
+  "montage": { "transition": 0.2, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/transition-sweep/168-fast-air-sweep-transition.mp3",
+    "whistle": "mixkit/sfx-kategori/human-whistle/615-police-short-whistle.mp3",
+    "crowd": "mixkit/sfx-kategori/human-crowd/459-male-crowd-cheering-short.mp3",
+    "ending": "mixkit/sfx-kategori/human-crowd/462-huge-crowd-cheering-victory.mp3",
+    "ball": "mixkit/sfx-kategori/olahraga-sports/2084-basketball-ball-hitting-the-net.mp3"
+  },
+  "guidelines": "Cuplikan pertandingan resmi biasanya dilindungi hak siar: pakai foto atau klip yang boleh dipakai, atau ilustrasi. Skor dan statistik sebutkan sumbernya.",
+  "preview": { "title": "Malam Penentuan di Final", "caption": "Gol menit terakhir mengubah segalanya", "active": 0 }
+}

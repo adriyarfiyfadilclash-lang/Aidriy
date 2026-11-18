@@ -1,0 +1,27 @@
+{
+  "id": "religi",
+  "label": "Religi (kajian, renungan, inspirasi)",
+  "description": "Tenang dan hangat: gradasi senja lembut, pola geometri bintang bersegi delapan yang samar, cahaya yang perlahan berpendar, gambar dalam bingkai lengkung, judul Amiri dan subtitle Lora yang muncul pelan. Untuk kajian, renungan, kisah teladan, dan kutipan inspiratif.",
+  "useFor": ["religi", "kajian", "ceramah", "renungan", "hikmah", "doa", "ibadah", "ramadan", "puasa", "lebaran", "idul fitri", "sholat", "al-quran", "hadits", "sedekah", "taubat", "akhlak", "nabi", "sahabat nabi", "kisah teladan", "inspirasi", "motivasi islami", "syukur", "sabar"],
+  "font": { "family": "Lora", "file": "fonts/Lora-latin.woff2", "weight": 700 },
+  "titleFont": { "family": "Amiri", "file": "fonts/Amiri-latin.woff2" },
+  "palette": { "bg": "#0E2A2A", "bg2": "#C98F4A", "ink": "#FFF8EC", "accent": "#F3C97A", "muted": "#7FB7A8" },
+  "background": { "kind": "religi" },
+  "visual": {
+    "filter": "saturate(0.9) brightness(1.02) sepia(0.12)",
+    "blend": "normal",
+    "frame": "arch",
+    "note": "Gambar di dalam bingkai lengkung dengan garis emas tipis."
+  },
+  "overlays": ["vignette"],
+  "subtitle": { "size": 70, "case": "none", "box": "glow", "position": 380, "entrance": "fade", "letterSpacing": 0 },
+  "montage": { "transition": 1.0, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/transition-sweep/167-long-sweeping-air-swoosh.mp3",
+    "accent": "mixkit/sfx-kategori/animals/17-little-birds-singing-in-the-trees.mp3",
+    "ambience": "mixkit/sfx-kategori/animals/61-natural-ambience-with-flowing-water-and-birds.mp3",
+    "note": "Sengaja tanpa alat musik: banyak konten kajian tidak memakai musik. Bunyinya angin, burung, dan air."
+  },
+  "guidelines": "Kutip ayat dan hadits dengan sumber yang jelas (nama surat dan ayat, perawi hadits). Hindari menggambarkan wajah nabi dan sahabat. Untuk agama lain, sesuaikan motif dan kata kunci, atau buat style terpisah.",
+  "preview": { "title": "Sabar Itu Tidak Ada Batasnya", "caption": "Setiap ujian datang bersama jalan keluarnya", "active": 1 }
+}

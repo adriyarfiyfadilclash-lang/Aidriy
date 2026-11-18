@@ -1,0 +1,84 @@
+{
+  "id": "teknologi",
+  "label": "Teknologi (gadget, AI, internet)",
+  "description": "Biru malam dengan grid neon yang bergerak, garis sirkuit, gambar dalam bingkai HUD dengan garis pemindai, judul Orbitron, subtitle huruf kode (JetBrains Mono) yang muncul dengan efek glitch. Untuk berita teknologi, review gadget, AI, dan internet.",
+  "useFor": [
+    "teknologi",
+    "tekno",
+    "gadget",
+    "smartphone",
+    "hp baru",
+    "laptop",
+    "aplikasi baru",
+    "ai",
+    "kecerdasan buatan",
+    "chatgpt",
+    "robot",
+    "internet",
+    "startup",
+    "coding",
+    "programmer",
+    "software",
+    "chip",
+    "prosesor",
+    "siber",
+    "hacker",
+    "keamanan data",
+    "kripto",
+    "blockchain",
+    "review"
+  ],
+  "font": {
+    "family": "JetBrains Mono",
+    "file": "fonts/JetBrainsMono-latin.woff2",
+    "weight": 700
+  },
+  "titleFont": {
+    "family": "Orbitron",
+    "file": "fonts/Orbitron-latin.woff2"
+  },
+  "palette": {
+    "bg": "#050A18",
+    "bg2": "#0B1E3F",
+    "ink": "#E6F6FF",
+    "accent": "#22E6FF",
+    "muted": "#7C5CFF"
+  },
+  "background": {
+    "kind": "tekno"
+  },
+  "visual": {
+    "filter": "saturate(1.1) contrast(1.1) hue-rotate(-8deg)",
+    "blend": "normal",
+    "frame": "hud",
+    "note": "Gambar di dalam bingkai HUD: sudut siku menyala, garis pemindai yang turun naik, dan label kecil di pojok."
+  },
+  "overlays": [
+    "scanlines",
+    "grain"
+  ],
+  "subtitle": {
+    "size": 64,
+    "case": "none",
+    "box": "terminal",
+    "position": 230,
+    "entrance": "glitch",
+    "letterSpacing": 0
+  },
+  "montage": {
+    "transition": 0.3,
+    "kenBurns": true
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/transition-sweep/2634-futuristic-transition-sweep.mp3",
+    "accent": "mixkit/sfx-kategori/click/901-sci-fi-interface-robot-click.mp3",
+    "glitch": "mixkit/sfx-kategori/instrument-synth/643-synth-glitchy-rhythm.mp3",
+    "ending": "mixkit/sfx-kategori/click/221-positive-interface-beep.mp3"
+  },
+  "guidelines": "Sebut spesifikasi dan harga dengan sumber dan tanggal, karena cepat berubah. Tandai jelas kalau ada kerja sama berbayar.",
+  "preview": {
+    "title": "AI Baru yang Bikin Heboh",
+    "caption": "Model ini bisa menulis kode dalam hitungan detik",
+    "active": 3
+  }
+}

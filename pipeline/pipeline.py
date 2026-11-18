@@ -79,9 +79,13 @@ def choose_style(ctx):
     text = ctx["title"].lower()
     if (d / "transcript.json").exists():
         text += " " + "".join(w["text"] for w in json.loads((d / "transcript.json").read_text())).lower()
-    scores = {sid: sum(text.count(k) for k in st.get("useFor", [])) for sid, st in styles.items()}
+    # Kata kunci dicocokkan sebagai kata utuh: "ai" tidak boleh cocok dengan "pakai" atau "sampai".
+    def hits(k):
+        return [m.start() for m in re.finditer(rf"(?<!\w){re.escape(k)}(?!\w)", text)]
+    found = {sid: [h for k in st.get("useFor", []) for h in hits(k)] for sid, st in styles.items()}
+    scores = {sid: len(v) for sid, v in found.items()}
     # posisi kata kunci pertama yang cocok: kalau nilai seri, topik yang disebut lebih dulu yang menang
-    first = {sid: min((text.find(k) for k in st.get("useFor", []) if k in text), default=10**9) for sid, st in styles.items()}
+    first = {sid: min(v, default=10**9) for sid, v in found.items()}
     best = min(scores, key=lambda sid: (-scores[sid], first[sid]))
     if scores[best] == 0:
         return styles.get("bersih", next(iter(styles.values()))), "otomatis (tidak ada kata kunci cocok)"

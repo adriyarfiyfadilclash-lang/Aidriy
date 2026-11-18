@@ -3,8 +3,8 @@
 Satu perintah dari sumber sampai video jadi, dengan subtitle yang menyala per kata:
 
 ```
-yt-dlp / VoxCPM -> ffmpeg -> Whisper -> pages.json -> sound effect -> Remotion + HyperFrames -> ffmpeg
-ambil / suara      siapkan   transkrip   subtitle     dicampur        dua versi video          -14 LUFS, thumbnail
+yt-dlp / VoxCPM -> ffmpeg -> Whisper -> pages.json -> sound effect -> Open Montage -> Remotion + HyperFrames -> ffmpeg
+ambil / suara      siapkan   transkrip   subtitle     dicampur        latar gambar   dua versi video          -14 LUFS, thumbnail
 ```
 
 ```bash
@@ -34,6 +34,17 @@ opsional. Lihat `contoh/naskah-notesbyadriy.json`.
   (`"role": "accent"` atau `"underVoice"`). Letak dan volumenya dicatat di `sfx-cues.json`, dan
   `sfx-only.wav` bisa diperiksa dengan `video/scripts/sfx_check.py voice.wav sfx-only.wav`.
 - `--until sfx` berhenti sebelum render, supaya suaranya bisa didengar dulu.
+
+## Latar dari gambar (Open Montage)
+
+Beri `"visual"` pada kalimat di naskah (gambar atau klip, relatif ke file naskah). Kalimat tanpa `"visual"`
+melanjutkan gambar sebelumnya. Untuk rekaman atau video biasa, pakai `--visuals FOLDER`: gambarnya dibagi
+rata sepanjang audio.
+
+Open Montage merangkai gambar jadi video latar 1080x1920 (crossfade 0,4 detik, zoom pelan). Tiap klip
+dipanjangkan sebesar crossfade, sehingga gambar baru mulai muncul tepat saat kalimatnya dimulai.
+Remotion dan HyperFrames lalu memakai `video.mp4` itu sebagai latar, dengan subtitle dan audio di atasnya.
+Gambar contoh ada di `contoh/visual/`. Ganti dengan screenshot aplikasi untuk video sungguhan.
 
 Hasil ada di `media/<name>/` (tidak di-commit): `final-remotion.mp4`, `final-hyperframes.mp4`,
 `thumbnail.jpg`, dan semua file antara (`transcript.json`, `pages.json`, dan lain-lain).
@@ -67,7 +78,8 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 - Python dengan `transformers` dan `torch` untuk Whisper, plus `voxcpm` untuk naskah (lihat `video/requirements-tts.txt`). Atur dengan `PIPELINE_PYTHON=/path/ke/python`.
   Model diatur dengan `WHISPER_MODEL` (default `openai/whisper-large-v3-turbo`).
 - OpenMontage (opsional, untuk merangkai gambar dan klip jadi montase): `pip install "open-montage[render]==0.4.0"`.
-  Belum dipakai langsung oleh pipeline, tapi ikut diperiksa `--check`.
+  Dipakai langkah `montage` kalau naskah punya `"visual"` atau ada `--visuals`. Atur lokasinya dengan
+  `OPENMONTAGE_BIN` kalau tidak ada di PATH.
 - yt-dlp, hanya kalau sumbernya URL. YouTube memblokir server cloud, jadi jalankan dari komputer sendiri.
 
 ## Data bersama

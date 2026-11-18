@@ -41,7 +41,7 @@ const CaptionPage: React.FC<{ page: Page }> = ({ page }) => {
         bottom: 520,
         textAlign: "center",
         fontFamily,
-        fontSize: 92,
+        fontSize: 84,
         fontWeight: 800,
         lineHeight: 1.15,
         letterSpacing: -1,
@@ -57,7 +57,7 @@ const CaptionPage: React.FC<{ page: Page }> = ({ page }) => {
       {page.tokens.map((t, i) => {
         const active = nowMs >= t.fromMs && nowMs < t.toMs;
         return (
-          <span key={i} style={{ color: active ? "#FFD25E" : "#FFFFFF", whiteSpace: "pre" }}>
+          <span key={i} style={{ color: active ? "#FFD25E" : "#FFFFFF", whiteSpace: "pre-wrap" }}>
             {t.text}
           </span>
         );

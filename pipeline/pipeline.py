@@ -1,8 +1,12 @@
 """Pipeline video: yt-dlp/VoxCPM -> ffmpeg -> Whisper -> subtitle -> sound effect -> Remotion + HyperFrames -> ffmpeg.
 
 Sumber bisa berupa URL (yt-dlp), file video/audio, atau naskah .json (suara dibuat VoxCPM):
-  {"title": "...", "lines": [{"voice": "adriy", "text": "...", "sfx": "public/sfx/kertas-remas.wav"}, ...]}
+  {"title": "...", "lines": [{"voice": "adriy", "text": "...", "sfx": "public/sfx/kertas-remas.wav", "visual": "a.png"}, ...]}
   "sfx" boleh berupa path (relatif ke video/) atau {"file": ..., "at": "start"|"end", "role": "accent"|"underVoice"}.
+  "visual" (opsional): gambar atau klip yang tampil selama kalimat itu (relatif ke file naskah). Kalimat tanpa
+  "visual" melanjutkan gambar sebelumnya. Untuk sumber biasa, pakai --visuals FOLDER (dibagi rata).
+  Gambar dirangkai Open Montage jadi video latar (crossfade, zoom pelan), lalu Remotion dan HyperFrames
+  menambahkan subtitle dan audio di atasnya.
 
 Contoh:
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --title "Kaca Mobil Berkabut"
@@ -16,6 +20,7 @@ Semua hasil disimpan di media/<name>/ (tidak di-commit):
   vo/, lines.json   (naskah) suara per kalimat dan waktu mulai/selesai tiap kalimat
   voice.wav         suara 48 kHz;  audio-16k.wav  16 kHz mono untuk Whisper
   audio.wav         suara + sound effect, dipakai kedua renderer;  sfx-cues.json  letak dan volume tiap bunyi
+  montage.json, video.mp4   (kalau ada visual) rangkaian gambar dari Open Montage, dipakai sebagai latar
   meta.json         durasi, judul, ada/tidaknya video
   transcript.json   kata per kata, format Caption Remotion (text, startMs, endMs, ...). Untuk naskah,
                     waktu dari Whisper tapi ejaan dari naskah (transcript-whisper.json = hasil asli Whisper)
@@ -43,7 +48,8 @@ HYPERFRAMES = ROOT / "hyperframes"
 WHISPER_PY = os.environ.get("PIPELINE_PYTHON", "/root/voxcpm-venv/bin/python" if Path("/root/voxcpm-venv/bin/python").exists() else sys.executable)
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "openai/whisper-large-v3-turbo")
 
-STEPS = ["fetch", "prepare", "transcribe", "pages", "sfx", "remotion", "hyperframes", "finish"]
+STEPS = ["fetch", "prepare", "transcribe", "pages", "sfx", "montage", "remotion", "hyperframes", "finish"]
+MONTAGE_TRANSITION = 0.4  # detik crossfade antar gambar
 VOICE_LEAD, LINE_GAP = 0.6, 0.5  # detik: hening sebelum kalimat pertama, dan di antara kalimat
 SR = 48000
 
@@ -324,6 +330,73 @@ def step_pages(ctx):
     log("pages", f"{len(words)} kata -> {len(pages)} halaman subtitle")
 
 
+def openmontage_bin():
+    return os.environ.get("OPENMONTAGE_BIN") or shutil.which("open-montage") or "/root/openmontage-venv/bin/open-montage"
+
+
+VISUAL_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tif", ".mp4", ".mov", ".webm", ".mkv", ".m4v"}
+
+
+def visual_plan(ctx, duration):
+    """Daftar (file, mulai, selesai) untuk latar. Dari "visual" per kalimat di naskah, atau --visuals FOLDER."""
+    d = ctx["dir"]
+    plan = []
+    if (d / "lines.json").exists() and (d / "script.json").exists():
+        script = json.loads((d / "script.json").read_text(encoding="utf-8"))
+        base = Path(ctx["input"]).resolve().parent if is_script(ctx["input"]) else d
+        lines = json.loads((d / "lines.json").read_text())
+        for ln, src in zip(lines, script["lines"]):
+            if src.get("visual"):
+                p = Path(src["visual"])
+                p = p if p.is_absolute() else base / p
+                if not p.exists():
+                    raise SystemExit(f"Visual tidak ditemukan: {p}")
+                plan.append([p, ln["start"] if plan else 0.0])
+    elif ctx.get("visuals"):
+        files = sorted(f for f in Path(ctx["visuals"]).iterdir() if f.suffix.lower() in VISUAL_EXT)
+        if not files:
+            raise SystemExit(f"Tidak ada gambar/klip di {ctx['visuals']}")
+        plan = [[f, i * duration / len(files)] for i, f in enumerate(files)]
+    return [(p, s, plan[i + 1][1] if i + 1 < len(plan) else duration) for i, (p, s) in enumerate(plan)]
+
+
+def step_montage(ctx):
+    """Open Montage merangkai gambar/klip jadi video latar 1080x1920 yang pas dengan waktu tiap kalimat."""
+    d = ctx["dir"]
+    meta_f = d / "meta.json"
+    meta = json.loads(meta_f.read_text())
+    plan = visual_plan(ctx, meta["duration"])
+    out = d / "video.mp4"
+    if not plan:
+        return log("montage", "tidak ada visual: dilewati (latar bawaan dipakai)")
+    # Crossfade memakan waktu dari klip berikutnya, jadi tiap klip (kecuali terakhir) dipanjangkan
+    # sebesar durasi crossfade: gambar baru mulai muncul tepat saat kalimatnya dimulai.
+    clips = []
+    for i, (p, s0, e0) in enumerate(plan):
+        dur = (e0 - s0) + (MONTAGE_TRANSITION if i + 1 < len(plan) else 0)
+        clips.append({"source": str(p), "duration": round(max(dur, 0.1), 3), "label": p.stem})
+    plan_json = json.dumps({"title": ctx["title"], "clips": clips}, ensure_ascii=False, indent=1)
+    old = (d / "montage.json").read_text() if (d / "montage.json").exists() else None
+    # Render ulang hanya kalau rangkaiannya berubah atau salah satu gambar diganti
+    # (meta.json tidak ikut dicek, karena langkah ini sendiri yang menulisnya).
+    if ctx["force"] or old != plan_json or not fresh(out, *[p for p, _, _ in plan]):
+        (d / "montage.json").write_text(plan_json)
+        log("montage", f"Open Montage merangkai {len(clips)} visual...")
+        t = time.time()
+        run([openmontage_bin(), "render", str(d / "montage.json"), "-o", str(d / "montage-raw.mp4"), "--fps", "30",
+             "--size", "1080x1920", "--fit", "cover", "--transition", str(MONTAGE_TRANSITION), "--ken-burns"])
+        # Samakan format dengan latar video biasa: H.264, tanpa suara, durasi pas dengan audio.
+        run(["ffmpeg", "-y", "-v", "error", "-i", str(d / "montage-raw.mp4"), "-an", "-t", str(meta["duration"]),
+             "-vf", "tpad=stop_mode=clone:stop_duration=1", "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", str(out)])
+        (d / "montage-raw.mp4").unlink()
+        log("montage", f"-> video.mp4 ({time.time() - t:.0f} dtk)")
+    else:
+        log("montage", "sudah ada")
+    if not (meta.get("hasVideo") and meta.get("source") == "video.mp4"):  # tulis hanya kalau berubah,
+        meta.update({"hasVideo": True, "source": "video.mp4"})          # supaya render tidak diulang
+        meta_f.write_text(json.dumps(meta, ensure_ascii=False, indent=1))
+
+
 TARGET_DB = {"accent": -24, "underVoice": -32}       # sama dengan video/src/promo/Sfx.tsx
 PEAK_LIMIT_DB = {"accent": -12, "underVoice": -26}
 
@@ -387,7 +460,7 @@ def step_sfx(ctx):
 def step_remotion(ctx):
     d, name = ctx["dir"], ctx["name"]
     out = d / "remotion.mp4"
-    inputs = [d / "pages.json", d / "meta.json", d / "audio.wav"]
+    inputs = [d / "pages.json", d / "meta.json", d / "audio.wav", d / "video.mp4"]
     if not ctx["force"] and fresh(out, *inputs):
         return log("remotion", "sudah ada")
     pub = REMOTION / "public" / "media" / name
@@ -411,9 +484,9 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0B2A6
 #brand { position: absolute; top: 260px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 40px; }
 #brand .logo { width: 200px; height: 200px; border-radius: 56px; background: #fff; display: flex; align-items: center; justify-content: center; }
 #brand .title { color: #DCE8FD; font-size: 52px; font-weight: 700; text-align: center; padding: 0 90px; }
-.page { position: absolute; left: 80px; right: 80px; bottom: 520px; text-align: center; font-size: 92px; font-weight: 800;
+.page { position: absolute; left: 80px; right: 80px; bottom: 520px; text-align: center; font-size: 84px; font-weight: 800;
   line-height: 1.15; letter-spacing: -1px; color: #fff; text-shadow: 0 6px 24px rgba(0,0,0,.45); }
-.w { white-space: pre; }
+.w { white-space: pre-wrap; }
 """
 FEATHER = "M20.2,3.8C16.1,2.6 10.4,4.2 7.3,8.6C5.4,11.3 4.8,14.4 5.2,17.3L3.3,19.3C2.9,19.7 2.9,20.3 3.3,20.7C3.7,21.1 4.3,21.1 4.7,20.7L6.7,18.7C9.6,19.1 12.7,18.5 15.4,16.6C19.8,13.5 21.4,7.9 20.2,3.8ZM14.3,15C12.3,16.4 9.9,17 7.7,16.8L12.7,11.7L11.3,10.3L6.9,14.8C6.9,12.9 7.4,11.1 8.6,9.4C11,6 14.9,4.7 18.3,5.2C18.8,8.7 17.6,12.7 14.3,15Z"
 
@@ -425,7 +498,7 @@ def esc(s):
 def step_hyperframes(ctx):
     d = ctx["dir"]
     out = d / "hyperframes.mp4"
-    inputs = [d / "pages.json", d / "meta.json", d / "audio.wav"]
+    inputs = [d / "pages.json", d / "meta.json", d / "audio.wav", d / "video.mp4"]
     if not ctx["force"] and fresh(out, *inputs):
         return log("hyperframes", "sudah ada")
     proj = d / "hyperframes"
@@ -534,8 +607,7 @@ def check():
     code, out = cmd(["node", "-p", "require('remotion/package.json').version + ' (cli ' + require('@remotion/cli/package.json').version + ')'"],
                     cwd=REMOTION, stdout_only=True)
     item("Alat", "Remotion", code == 0, out if code == 0 else "tidak ada", "cd video && npm install")
-    om = os.environ.get("OPENMONTAGE_BIN") or shutil.which("open-montage") or "/root/openmontage-venv/bin/open-montage"
-    code, out = cmd([om, "--version"], stdout_only=True)
+    code, out = cmd([openmontage_bin(), "--version"], stdout_only=True)
     item("Alat", "OpenMontage (montase gambar/klip)", code == 0, out if code == 0 else "tidak ada",
          'pip install "open-montage[render]==0.4.0" (lalu set OPENMONTAGE_BIN kalau tidak di PATH)')
     hf = HYPERFRAMES / "node_modules/.bin/hyperframes"
@@ -574,6 +646,14 @@ def check():
             errs = re.search(r"(\d+) error", out)
             item("Sambungan", "pages.json -> HyperFrames (HTML yang dibuat pipeline)", code == 0 and (not errs or errs.group(1) == "0"),
                  f"lint: {errs.group(0) if errs else 'lolos'}", "")
+        om_dir = next((d for d in sorted((ROOT / "media").glob("*")) if (d / "montage.json").exists()), None)
+        if om_dir:
+            m = json.loads((om_dir / "meta.json").read_text())
+            ok = (om_dir / "video.mp4").exists() and m.get("hasVideo") and m.get("source") == "video.mp4"
+            item("Sambungan", "Open Montage -> video latar -> Remotion + HyperFrames", ok,
+                 f"media/{om_dir.name}: {len(json.loads((om_dir / 'montage.json').read_text())['clips'])} visual jadi video.mp4", "")
+        else:
+            item("Sambungan", "Open Montage -> video latar -> Remotion + HyperFrames", None, "belum ada naskah dengan visual di media/", "")
     else:
         item("Sambungan", "Whisper -> pages.json -> Remotion + HyperFrames", None, "belum ada hasil di media/ untuk dicek", "jalankan pipeline sekali")
     code, out = cmd([str(hf), "telemetry", "status"], stdout_only=True)
@@ -600,7 +680,7 @@ def check():
     return bad
 
 
-FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_sfx, step_remotion, step_hyperframes, step_finish]))
+FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_sfx, step_montage, step_remotion, step_hyperframes, step_finish]))
 
 
 def main():
@@ -609,6 +689,7 @@ def main():
     ap.add_argument("--name", help="nama folder di media/, misalnya kaca-mobil")
     ap.add_argument("--check", action="store_true", help="periksa semua alat dan sambungan, tanpa membuat apa pun")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
+    ap.add_argument("--visuals", help="folder gambar/klip untuk latar (Open Montage), dibagi rata sepanjang audio")
     ap.add_argument("--language", default="indonesian", help='bahasa untuk Whisper ("" = deteksi otomatis)')
     ap.add_argument("--from", dest="start", choices=STEPS, help="ulang mulai langkah ini (langkah setelahnya ikut diulang)")
     ap.add_argument("--only", choices=STEPS, help="jalankan satu langkah saja")
@@ -620,7 +701,8 @@ def main():
     if not args.input or not args.name:
         ap.error("butuh input dan --name (atau pakai --check)")
 
-    ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False}
+    ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False,
+           "visuals": args.visuals}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)
     steps = [args.only] if args.only else STEPS[: STEPS.index(args.until) + 1] if args.until else STEPS

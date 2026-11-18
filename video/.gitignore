@@ -5,3 +5,4 @@ out/
 __pycache__/
 public/mixkit/
 mixkit-templates/
+voices/

@@ -11,9 +11,13 @@ export type Style = {
   id: string;
   label: string;
   font: { family: string; file: string; weight: number };
+  titleFont?: { family: string; file: string };
   palette: { bg: string; bg2: string; ink: string; accent: string; muted: string; strip?: string };
   background: {
-    kind: "gradient" | "wayang" | "koran";
+    kind: "gradient" | "wayang" | "koran" | "horor" | "anak";
+    moon?: { x: number; y: number };
+    lightningEvery?: number;
+    shapes?: number;
     lamp?: { x: number; y: number; flicker: number };
     gunungan?: boolean;
     border?: boolean;
@@ -21,14 +25,14 @@ export type Style = {
     edition?: string;
     columns?: boolean;
   };
-  visual: { filter: string; blend: string; frame: "none" | "kelir" | "torn"; halftone?: boolean };
-  overlays: ("grain" | "vignette" | "paper")[];
+  visual: { filter: string; blend: string; frame: "none" | "kelir" | "torn" | "fade" | "sticker"; halftone?: boolean };
+  overlays: ("grain" | "vignette" | "paper" | "fog" | "flicker" | "scanlines")[];
   subtitle: {
     size: number;
     case: "none" | "upper";
-    box: "none" | "glow" | "strip";
+    box: "none" | "glow" | "strip" | "bubble";
     position: number;
-    entrance: "pop" | "flicker" | "stamp";
+    entrance: "pop" | "flicker" | "stamp" | "creep" | "bounce";
     letterSpacing: number;
   };
 };
@@ -37,6 +41,9 @@ export type Style = {
 for (const [family, file, weight] of [
   ["Cinzel", "fonts/Cinzel-latin.woff2", "400 900"],
   ["Playfair Display", "fonts/PlayfairDisplay-latin.woff2", "400 900"],
+  ["Creepster", "fonts/Creepster-latin.woff2", "400"],
+  ["Special Elite", "fonts/SpecialElite-latin.woff2", "400"],
+  ["Fredoka", "fonts/Fredoka-latin.woff2", "300 700"],
 ] as const) {
   loadFont({ family, url: staticFile(file), weight });
 }
@@ -58,10 +65,36 @@ const noiseUrl = (freq: number, seed: number, alpha: number) =>
     `<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='${freq}' numOctaves='3' seed='${seed}' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 ${alpha} 0'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`,
   )}")`;
 
+// Angka "acak" yang selalu sama untuk frame yang sama (render harus deterministik, tanpa Math.random).
+const rand = (n: number) => {
+  const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+
 const Overlays: React.FC<{ style: Style }> = ({ style }) => {
   const frame = useCurrentFrame();
   return (
     <>
+      {style.overlays.includes("fog") && (
+        // dua lapis kabut bergerak berlawanan arah, pelan
+        <>
+          <AbsoluteFill style={{ backgroundImage: noiseUrl(0.004, 11, 0.9), backgroundSize: "1400px 1400px", backgroundPosition: `${frame * 0.9}px 0px`, mixBlendMode: "screen", opacity: 0.22 }} />
+          <AbsoluteFill style={{ backgroundImage: noiseUrl(0.007, 23, 0.9), backgroundSize: "900px 900px", backgroundPosition: `${-frame * 1.6}px ${frame * 0.3}px`, mixBlendMode: "screen", opacity: 0.16 }} />
+        </>
+      )}
+      {style.overlays.includes("scanlines") && (
+        <AbsoluteFill
+          style={{
+            backgroundImage: "repeating-linear-gradient(0deg, rgba(0,0,0,0.28) 0px, rgba(0,0,0,0.28) 2px, transparent 2px, transparent 5px)",
+            backgroundPosition: `0px ${(frame * 3) % 5}px`,
+            opacity: 0.6,
+          }}
+        />
+      )}
+      {style.overlays.includes("flicker") && (
+        // lampu yang tidak stabil: kadang meredup sesaat
+        <AbsoluteFill style={{ background: "#000", opacity: rand(Math.floor(frame / 2)) > 0.9 ? 0.35 : rand(frame) * 0.06 }} />
+      )}
       {style.overlays.includes("paper") && (
         <AbsoluteFill style={{ backgroundImage: noiseUrl(0.012, 7, 0.35), mixBlendMode: "multiply", opacity: 0.55 }} />
       )}
@@ -132,6 +165,7 @@ const NewspaperColumns: React.FC<{ ink: string }> = ({ ink }) => {
 
 export const Backdrop: React.FC<{ style: Style; title?: string }> = ({ style, title }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const p = style.palette;
   const bg = style.background;
   if (bg.kind === "wayang") {
@@ -176,6 +210,78 @@ export const Backdrop: React.FC<{ style: Style; title?: string }> = ({ style, ti
       </AbsoluteFill>
     );
   }
+  if (bg.kind === "horor") {
+    const moon = bg.moon ?? { x: 0.7, y: 0.16 };
+    // kilat: dua kilatan cepat di tengah tiap siklus (bukan di frame 0, supaya awal video tidak langsung silau)
+    const cycle = Math.round((bg.lightningEvery ?? 7.5) * fps);
+    const c = (frame + Math.round(cycle / 2)) % cycle;
+    const flash = c < 3 ? 0.55 : c >= 6 && c < 8 ? 0.35 : 0;
+    const tf = style.titleFont?.family ?? style.font.family;
+    return (
+      <AbsoluteFill style={{ background: p.bg }}>
+        <AbsoluteFill style={{ background: `radial-gradient(circle at ${moon.x * 100}% ${moon.y * 100}%, #DCE6EE 0%, #9FB3C2 3.5%, ${p.bg2}AA 14%, transparent 48%)` }} />
+        {/* siluet pohon gundul di bawah, sederhana */}
+        <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
+          <path d="M0 1920 L0 1560 C120 1540 180 1600 260 1580 C360 1555 420 1610 540 1600 C660 1590 720 1540 830 1560 C930 1578 1000 1540 1080 1550 L1080 1920 Z" fill="#000" opacity="0.85" />
+          <path d="M150 1600 L160 1300 M160 1420 L95 1330 M160 1380 L220 1290 M158 1340 L120 1260 M920 1580 L905 1250 M907 1380 L980 1300 M906 1330 L850 1240 M905 1290 L945 1210" stroke="#000" strokeWidth="14" strokeLinecap="round" fill="none" opacity="0.9" />
+        </svg>
+        {title && (
+          <div style={{ position: "absolute", top: 230, left: 70, right: 70, textAlign: "center", fontFamily: tf, fontSize: 104, lineHeight: 1.05, color: p.accent, textShadow: `0 0 30px ${p.accent}88, 0 6px 0 #000` }}>
+            {title}
+          </div>
+        )}
+        <AbsoluteFill style={{ background: "#D8E4FF", opacity: flash, mixBlendMode: "screen" }} />
+      </AbsoluteFill>
+    );
+  }
+  if (bg.kind === "anak") {
+    const colors = [p.accent, p.muted, "#FFB547", "#4CD3A5", "#5AA9FF", "#FF7A59"];
+    const n = bg.shapes ?? 18;
+    const tf = style.titleFont?.family ?? style.font.family;
+    return (
+      <AbsoluteFill style={{ background: `linear-gradient(160deg, ${p.bg} 0%, #FFD6E8 45%, ${p.bg2} 100%)` }}>
+        {/* bentuk-bentuk ceria yang melayang naik dan bergoyang */}
+        {Array.from({ length: n }, (_, i) => {
+          const size = 50 + rand(i * 3) * 90;
+          const x = rand(i * 7) * 1000;
+          const speed = 0.6 + rand(i * 11) * 1.2;
+          const y = 1960 - ((rand(i * 5) * 2100 + frame * speed * 2.2) % 2150);
+          const wob = Math.sin(frame / 20 + i) * 18;
+          const color = colors[i % colors.length];
+          const kind = i % 3;
+          return (
+            <svg key={i} width={size} height={size} viewBox="0 0 100 100" style={{ position: "absolute", left: x + wob, top: y, rotate: `${frame * (i % 2 ? 0.8 : -0.8)}deg`, opacity: 0.75 }}>
+              {kind === 0 && <circle cx="50" cy="50" r="44" fill={color} />}
+              {kind === 1 && <path d="M50 4 L62 36 L96 38 L69 59 L79 93 L50 73 L21 93 L31 59 L4 38 L38 36 Z" fill={color} />}
+              {kind === 2 && <rect x="14" y="14" width="72" height="72" rx="20" fill={color} />}
+            </svg>
+          );
+        })}
+        {title && (
+          <div
+            style={{
+              position: "absolute",
+              top: 200,
+              left: 60,
+              right: 60,
+              textAlign: "center",
+              fontFamily: tf,
+              fontWeight: 700,
+              fontSize: 96,
+              lineHeight: 1.05,
+              color: "#FFFFFF",
+              WebkitTextStroke: `10px ${p.ink}`,
+              paintOrder: "stroke fill",
+              textShadow: `0 10px 0 ${p.ink}`,
+              rotate: `${Math.sin(frame / 18) * 2}deg`,
+            }}
+          >
+            {title}
+          </div>
+        )}
+      </AbsoluteFill>
+    );
+  }
   return <AbsoluteFill style={{ background: `radial-gradient(circle at 50% 30%, ${p.bg2} 0%, ${p.bg} 100%)` }} />;
 };
 
@@ -192,6 +298,7 @@ const tornClip = (() => {
 })();
 
 export const Visual: React.FC<{ style: Style; src: string; kind: "video" | "image" }> = ({ style, src, kind }) => {
+  const frame = useCurrentFrame();
   const v = style.visual;
   const media = (css: React.CSSProperties) =>
     kind === "video" ? (
@@ -231,6 +338,39 @@ export const Visual: React.FC<{ style: Style; src: string; kind: "video" | "imag
       </div>
     );
   }
+  if (v.frame === "fade") {
+    // gambar memudar ke gelap di tepinya, dengan getaran halus seperti rekaman lama
+    const jx = (rand(frame * 2) - 0.5) * 4;
+    const jy = (rand(frame * 2 + 1) - 0.5) * 4;
+    const mask = "radial-gradient(ellipse 58% 46% at 50% 50%, #000 55%, transparent 100%)";
+    return (
+      <div style={{ position: "absolute", left: 0, right: 0, top: 420, height: 1100, translate: `${jx}px ${jy}px`, maskImage: mask, WebkitMaskImage: mask }}>
+        {media({ filter: v.filter })}
+      </div>
+    );
+  }
+  if (v.frame === "sticker") {
+    // stiker: bingkai putih tebal, sudut membulat, miring dan bergoyang pelan
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left: 140,
+          right: 140,
+          top: 470,
+          height: 780,
+          padding: 22,
+          background: "#FFFFFF",
+          borderRadius: 64,
+          boxShadow: `0 22px 0 ${style.palette.ink}22, 0 30px 50px rgba(0,0,0,0.18)`,
+          rotate: `${-3 + Math.sin(frame / 22) * 2}deg`,
+          translate: `0px ${Math.sin(frame / 15) * 10}px`,
+        }}
+      >
+        <div style={{ width: "100%", height: "100%", borderRadius: 44, overflow: "hidden" }}>{media({ filter: v.filter })}</div>
+      </div>
+    );
+  }
   return <AbsoluteFill>{media({ filter: v.filter })}</AbsoluteFill>;
 };
 
@@ -257,10 +397,35 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
             scale: interpolate(frame, [0, 0.12 * fps], [1.35, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.2, 0.9, 0.3, 1.2) }),
             rotate: `${index % 2 ? 1.6 : -1.6}deg`,
           }
-        : { scale: interpolate(frame, [0, 0.2 * fps], [0.85, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.34, 1.56, 0.64, 1) }) };
+        : s.entrance === "creep"
+          ? {
+              // muncul samar dari kabur, lalu terus bergetar halus
+              opacity: interpolate(frame, [0, 0.45 * fps], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+              filter: `blur(${interpolate(frame, [0, 0.45 * fps], [10, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}px)`,
+              translate: `${(rand(frame * 3) - 0.5) * 3}px ${(rand(frame * 3 + 1) - 0.5) * 3}px`,
+            }
+          : s.entrance === "bounce"
+            ? {
+                // memantul masuk lalu bergoyang lembut
+                scale: interpolate(frame, [0, 0.3 * fps], [0.3, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.34, 1.9, 0.6, 1) }),
+                rotate: `${Math.sin(frame / 10 + index) * 2}deg`,
+              }
+            : { scale: interpolate(frame, [0, 0.2 * fps], [0.85, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.34, 1.56, 0.64, 1) }) };
 
+  const bubbleColors = [p.accent, p.muted, "#FFB547", "#4CD3A5"];
   const box: React.CSSProperties =
-    s.box === "strip"
+    s.box === "bubble"
+      ? {
+          background: p.strip ?? "#fff",
+          color: p.ink,
+          padding: "8px 30px",
+          borderRadius: 40,
+          border: `7px solid ${bubbleColors[index % bubbleColors.length]}`,
+          boxDecorationBreak: "clone",
+          WebkitBoxDecorationBreak: "clone",
+          boxShadow: `0 10px 0 ${p.ink}`,
+        }
+      : s.box === "strip"
       ? { background: p.strip ?? "#fff", color: p.ink, padding: "6px 18px", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", boxShadow: "0 6px 14px rgba(0,0,0,0.25)" }
       : s.box === "glow"
         ? { color: p.ink, textShadow: `0 0 18px ${p.accent}, 0 0 42px ${p.accent}88, 0 4px 10px #000` }
@@ -277,7 +442,7 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
         fontFamily: style.font.family,
         fontWeight: style.font.weight,
         fontSize: s.size,
-        lineHeight: s.box === "strip" ? 1.5 : 1.15,
+        lineHeight: s.box === "strip" ? 1.5 : s.box === "bubble" ? 1.7 : 1.15,
         letterSpacing: s.letterSpacing,
         textTransform: s.case === "upper" ? "uppercase" : "none",
         ...enter,
@@ -287,7 +452,11 @@ export const Caption: React.FC<{ style: Style; tokens: Token[]; nowMs: number; i
         {tokens.map((t, i) => {
           const active = nowMs >= t.fromMs && nowMs < t.toMs;
           const hl: React.CSSProperties =
-            s.box === "strip"
+            s.box === "bubble"
+              ? active ? { color: bubbleColors[index % bubbleColors.length] } : {}
+              : s.entrance === "creep"
+                ? active ? { color: p.accent, textShadow: `0 0 18px ${p.accent}, 0 0 4px ${p.accent}` } : {}
+                : s.box === "strip"
               ? active ? { color: p.accent, textDecoration: `6px underline ${p.accent}`, textUnderlineOffset: 8 } : {}
               : { color: active ? p.accent : undefined };
           return (

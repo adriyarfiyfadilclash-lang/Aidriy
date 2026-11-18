@@ -1,0 +1,77 @@
+{
+  "id": "anak",
+  "label": "Anak-anak (edukasi dan dongeng)",
+  "description": "Warna pastel cerah, gelembung dan bintang yang melayang, gambar seperti stiker yang bergoyang, huruf bulat ramah, dan subtitle dalam balon warna-warni yang memantul masuk. Untuk edukasi anak, dongeng, lagu, dan pengetahuan dasar.",
+  "useFor": [
+    "anak",
+    "anak-anak",
+    "balita",
+    "dongeng",
+    "cerita anak",
+    "edukasi anak",
+    "belajar",
+    "berhitung",
+    "huruf",
+    "abjad",
+    "angka",
+    "warna",
+    "bentuk",
+    "hewan lucu",
+    "lagu anak",
+    "si kancil",
+    "tk",
+    "paud",
+    "sekolah dasar",
+    "mewarnai",
+    "ayo",
+    "teman-teman"
+  ],
+  "font": {
+    "family": "Fredoka",
+    "file": "fonts/Fredoka-latin.woff2",
+    "weight": 700
+  },
+  "palette": {
+    "bg": "#FFE8A3",
+    "bg2": "#A8E6FF",
+    "ink": "#2B2350",
+    "accent": "#FF5DA2",
+    "muted": "#7A6FD6",
+    "strip": "#FFFFFF"
+  },
+  "background": {
+    "kind": "anak",
+    "shapes": 18
+  },
+  "visual": {
+    "filter": "saturate(1.25) brightness(1.05)",
+    "blend": "normal",
+    "frame": "sticker",
+    "note": "Gambar ditaruh seperti stiker: bingkai putih tebal, sudut membulat, sedikit miring, dan bergoyang pelan."
+  },
+  "overlays": [],
+  "subtitle": {
+    "size": 78,
+    "case": "none",
+    "box": "bubble",
+    "position": 250,
+    "entrance": "bounce",
+    "letterSpacing": 0
+  },
+  "montage": {
+    "transition": 0.35,
+    "kenBurns": true
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/human-cartoon/731-cartoon-bubble-pop.mp3",
+    "accent": "mixkit/sfx-kategori/human-cartoon/736-cartoon-spring-sound.mp3",
+    "laugh": "mixkit/sfx-kategori/human-children/431-kid-giggle-laugh.mp3",
+    "ending": "mixkit/sfx-kategori/click/269-quick-win-video-game-notification.mp3"
+  },
+  "guidelines": "Untuk penonton anak: kalimat pendek, kosakata sederhana, tanpa iklan terselubung. Kalau diunggah ke YouTube, tandai sebagai konten untuk anak.",
+  "preview": {
+    "title": "Kenapa Langit Biru?",
+    "caption": "Ayo kita cari tahu bersama!",
+    "active": 2
+  }
+}

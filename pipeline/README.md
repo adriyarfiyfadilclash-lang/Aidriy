@@ -45,6 +45,8 @@ animasi subtitle, pengaturan montase, sound effect yang cocok, dan kata kunci to
 | `bersih` | promo aplikasi, tutorial, umum | biru NotesByAdriy, Plus Jakarta Sans |
 | `wayang` | sejarah, kerajaan, legenda, cerita rakyat | layar kelir dengan lampu blencong berkedip, siluet, gunungan, bingkai kawung, huruf Cinzel emas |
 | `koran` | tokoh publik, politik, berita, biografi | kertas koran, kop surat kabar, foto halftone bertepi sobek, subtitle potongan kertas |
+| `horor` | cerita hantu, misteri, urban legend | gelap, bulan pucat, kabut, kilat, garis VHS, judul Creepster merah, subtitle mesin tik yang muncul samar |
+| `anak` | edukasi anak, dongeng, lagu, pengetahuan dasar | pastel cerah, bintang dan gelembung melayang, gambar seperti stiker, subtitle balon yang memantul (Fredoka) |
 
 ```bash
 python3 pipeline/pipeline.py --list-styles          # daftar style
@@ -53,11 +55,18 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 ```
 
 - Tanpa `--style` atau `"style"` di naskah, style dipilih otomatis dari kata kunci di judul dan isi
-  (misalnya "Majapahit" -> wayang, "presiden" -> koran). Kalau tidak ada yang cocok, dipakai `bersih`.
+  (misalnya "Majapahit" -> wayang, "presiden" -> koran, "angker" -> horor, "dongeng" -> anak). Kalau tidak
+  ada yang cocok, dipakai `bersih`. Kalau seri (misalnya "legenda" + "kutukan"), yang menang adalah topik yang
+  disebut lebih dulu, dan pipeline memberi tahu bahwa hasilnya seri.
 - Di naskah, `"sfx": "style:lineStart"` memakai sound effect dari style yang terpilih.
 - Membuat style baru: salin salah satu file di `styles/`, ubah isinya, lalu cek dengan `--preview-styles`.
-  Latar (`background.kind`) yang tersedia: `gradient`, `wayang`, `koran`; bingkai gambar (`visual.frame`):
-  `none`, `kelir`, `torn`.
+  Pilihan yang tersedia:
+  - latar (`background.kind`): `gradient`, `wayang`, `koran`, `horor`, `anak`
+  - bingkai gambar (`visual.frame`): `none`, `kelir`, `torn`, `fade`, `sticker`
+  - tekstur (`overlays`): `grain`, `vignette`, `paper`, `fog`, `flicker`, `scanlines`
+  - kotak subtitle (`subtitle.box`): `none`, `glow`, `strip`, `bubble`
+  - animasi masuk (`subtitle.entrance`): `pop`, `flicker`, `stamp`, `creep`, `bounce`
+  - `titleFont` (opsional): font judul yang berbeda dari font subtitle
 - Style baru tersedia di Remotion. Versi HyperFrames masih memakai tampilan bersih.
 - Semua tampilan memakai CSS dan SVG biasa (tanpa WebGL), jadi render tetap andal tanpa GPU.
 - Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), bukan tiruan suara tokohnya; kutipan harus asli

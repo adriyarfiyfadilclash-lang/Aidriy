@@ -1,0 +1,28 @@
+{
+  "id": "horor",
+  "label": "Horor (cerita seram dan misteri)",
+  "description": "Gelap pekat dengan cahaya bulan dingin, kabut yang bergerak pelan, kilat sesekali, garis-garis kaset VHS, dan gambar pucat yang memudar di tepinya. Judul berhuruf meleleh, subtitle mesin tik usang yang muncul samar dan bergetar, kata aktif merah menyala. Untuk cerita hantu, misteri, urban legend, dan kisah seram.",
+  "useFor": ["horor", "hantu", "seram", "angker", "mistis", "misteri", "urban legend", "kuntilanak", "pocong", "genderuwo", "tuyul", "santet", "dukun", "kerasukan", "setan", "iblis", "makhluk halus", "malam jumat", "kisah nyata", "creepypasta", "teror", "arwah", "kutukan"],
+  "font": { "family": "Special Elite", "file": "fonts/SpecialElite-latin.woff2", "weight": 400 },
+  "titleFont": { "family": "Creepster", "file": "fonts/Creepster-latin.woff2" },
+  "palette": { "bg": "#050607", "bg2": "#1B2530", "ink": "#E6E2D6", "accent": "#E01E2B", "muted": "#6F7C86" },
+  "background": { "kind": "horor", "moon": { "x": 0.72, "y": 0.16 }, "lightningEvery": 7.5 },
+  "visual": {
+    "filter": "grayscale(0.85) sepia(0.15) contrast(1.35) brightness(0.62)",
+    "blend": "normal",
+    "frame": "fade",
+    "note": "Gambar dibuat pucat dan gelap, tepinya memudar ke hitam, dan bergetar halus seperti rekaman lama."
+  },
+  "overlays": ["fog", "flicker", "scanlines", "grain", "vignette"],
+  "subtitle": { "size": 72, "case": "none", "box": "none", "position": 420, "entrance": "creep", "letterSpacing": 1 },
+  "montage": { "transition": 0.8, "kenBurns": true },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/transition-hit/564-soft-horror-hit-drum.mp3",
+    "accent": "mixkit/sfx-kategori/transition-cinematic/557-deep-dark-horror-drum.mp3",
+    "creak": "mixkit/sfx-kategori/pertukangan-creaking-floorboard/336-haunted-house-creaking-floorboards.mp3",
+    "door": "mixkit/sfx-kategori/rumah-doors/190-scary-wooden-door-opening.mp3",
+    "ambience": "mixkit/sfx-kategori/human-heartbeat/491-heartbeat-horror-cinematic-transition.mp3"
+  },
+  "guidelines": "Kisah yang disebut 'kisah nyata' harus benar-benar dari sumber yang jelas. Hindari menyasar orang, tempat ibadah, atau kelompok tertentu sebagai sumber teror.",
+  "preview": { "title": "Rumah Kosong di Ujung Desa", "caption": "Setiap malam, pintu itu terbuka sendiri", "active": 4 }
+}

@@ -80,10 +80,14 @@ def choose_style(ctx):
     if (d / "transcript.json").exists():
         text += " " + "".join(w["text"] for w in json.loads((d / "transcript.json").read_text())).lower()
     scores = {sid: sum(text.count(k) for k in st.get("useFor", [])) for sid, st in styles.items()}
-    best = max(scores, key=scores.get)
+    # posisi kata kunci pertama yang cocok: kalau nilai seri, topik yang disebut lebih dulu yang menang
+    first = {sid: min((text.find(k) for k in st.get("useFor", []) if k in text), default=10**9) for sid, st in styles.items()}
+    best = min(scores, key=lambda sid: (-scores[sid], first[sid]))
     if scores[best] == 0:
         return styles.get("bersih", next(iter(styles.values()))), "otomatis (tidak ada kata kunci cocok)"
-    return styles[best], f"otomatis ({scores[best]} kata kunci cocok)"
+    ties = [sid for sid in scores if scores[sid] == scores[best] and sid != best]
+    note = f"; seri dengan {', '.join(ties)}, dipilih yang disebut lebih dulu. Pakai --style untuk memastikan" if ties else ""
+    return styles[best], f"otomatis ({scores[best]} kata kunci cocok{note})"
 
 
 def resolve_sfx_ref(value, style):

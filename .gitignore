@@ -11,3 +11,4 @@
 *.keystore
 *.jks
 media/
+__pycache__/

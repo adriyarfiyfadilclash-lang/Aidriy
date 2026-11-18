@@ -46,8 +46,12 @@ dipanjangkan sebesar crossfade, sehingga gambar baru mulai muncul tepat saat kal
 Remotion dan HyperFrames lalu memakai `video.mp4` itu sebagai latar, dengan subtitle dan audio di atasnya.
 Gambar contoh ada di `contoh/visual/`. Ganti dengan screenshot aplikasi untuk video sungguhan.
 
-Hasil ada di `media/<name>/` (tidak di-commit): `final-remotion.mp4`, `final-hyperframes.mp4`,
-`thumbnail.jpg`, dan semua file antara (`transcript.json`, `pages.json`, dan lain-lain).
+Hasil ada di `media/<name>/` (tidak di-commit): `final-remotion.mp4`, `thumbnail.jpg`, dan semua file
+antara (`transcript.json`, `pages.json`, dan lain-lain).
+
+Bawaannya hanya versi Remotion. Pilih mesin lain dengan `--renderer hyperframes`, atau `--renderer both`
+untuk dua versi sekaligus (`final-hyperframes.mp4` ikut dibuat). Data keduanya sama persis, jadi versi
+lain bisa dibuat belakangan tanpa mengulang suara, transkrip, atau montase.
 
 ## Memeriksa sambungan
 
@@ -68,7 +72,7 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 | Betulkan kata di subtitle | edit `media/<name>/transcript.json`, lalu `--from pages` |
 | Ganti tampilan subtitle | ubah `video/src/pipeline/SubtitleVideo.tsx` atau bagian HyperFrames di `pipeline.py`, lalu `--from remotion` |
 | Dengar suara dulu, render belakangan | `--until sfx`, lalu jalankan lagi tanpa `--until` |
-| Hanya satu versi | `--skip hyperframes` atau `--skip remotion` |
+| Versi HyperFrames juga | `--renderer both` (atau `--renderer hyperframes` saja) |
 | Satu langkah saja | `--only transcribe` |
 
 ## Yang dibutuhkan

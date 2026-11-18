@@ -14,6 +14,7 @@ Contoh:
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --from pages     # ulang mulai langkah pages
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --only remotion  # satu langkah saja
   python3 pipeline/pipeline.py naskah.json --name iklan --until sfx            # buat suara dulu, belum render
+  python3 pipeline/pipeline.py naskah.json --name iklan --renderer both        # Remotion + HyperFrames
 
 Semua hasil disimpan di media/<name>/ (tidak di-commit):
   source.*          file asli (dari yt-dlp, salinan file, atau gabungan voiceover dari naskah)
@@ -25,7 +26,7 @@ Semua hasil disimpan di media/<name>/ (tidak di-commit):
   transcript.json   kata per kata, format Caption Remotion (text, startMs, endMs, ...). Untuk naskah,
                     waktu dari Whisper tapi ejaan dari naskah (transcript-whisper.json = hasil asli Whisper)
   pages.json        kata dikelompokkan jadi halaman subtitle; dipakai Remotion DAN HyperFrames
-  remotion.mp4, hyperframes.mp4   hasil render
+  remotion.mp4, hyperframes.mp4   hasil render (bawaan hanya Remotion; pilih dengan --renderer)
   final-remotion.mp4, final-hyperframes.mp4   volume disamakan ke -14 LUFS (standar TikTok/Reels/YouTube)
   thumbnail.jpg
 
@@ -555,7 +556,7 @@ tl.seek(0);
 
 def step_finish(ctx):
     d = ctx["dir"]
-    for kind in ["remotion", "hyperframes"]:
+    for kind in ctx["renderers"]:
         src, out = d / f"{kind}.mp4", d / f"final-{kind}.mp4"
         if not src.exists():
             continue
@@ -572,7 +573,7 @@ def step_finish(ctx):
         log("finish", f"final-{kind}.mp4 (kekerasan awal {j['input_i']} LUFS -> -14 LUFS)")
     pages = json.loads((d / "pages.json").read_text())
     at = (pages[0]["startMs"] + 300) / 1000 if pages else 1
-    src = d / "final-remotion.mp4" if (d / "final-remotion.mp4").exists() else d / "final-hyperframes.mp4"
+    src = next((d / f"final-{k}.mp4" for k in ctx["renderers"] if (d / f"final-{k}.mp4").exists()), d / "final-remotion.mp4")
     if src.exists():
         run(["ffmpeg", "-y", "-v", "error", "-ss", f"{at:.2f}", "-i", str(src), "-frames:v", "1", "-q:v", "3", str(d / "thumbnail.jpg")])
         log("finish", "thumbnail.jpg")
@@ -689,6 +690,8 @@ def main():
     ap.add_argument("--name", help="nama folder di media/, misalnya kaca-mobil")
     ap.add_argument("--check", action="store_true", help="periksa semua alat dan sambungan, tanpa membuat apa pun")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
+    ap.add_argument("--renderer", choices=["remotion", "hyperframes", "both"], default="remotion",
+                    help="mesin render (bawaan: remotion; both = dua versi)")
     ap.add_argument("--visuals", help="folder gambar/klip untuk latar (Open Montage), dibagi rata sepanjang audio")
     ap.add_argument("--language", default="indonesian", help='bahasa untuk Whisper ("" = deteksi otomatis)')
     ap.add_argument("--from", dest="start", choices=STEPS, help="ulang mulai langkah ini (langkah setelahnya ikut diulang)")
@@ -702,7 +705,8 @@ def main():
         ap.error("butuh input dan --name (atau pakai --check)")
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False,
-           "visuals": args.visuals}
+           "visuals": args.visuals,
+           "renderers": ["remotion", "hyperframes"] if args.renderer == "both" else [args.renderer]}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)
     steps = [args.only] if args.only else STEPS[: STEPS.index(args.until) + 1] if args.until else STEPS
@@ -711,6 +715,8 @@ def main():
         if s in args.skip:
             log(s, "dilewati")
             continue
+        if s in ("remotion", "hyperframes") and s not in ctx["renderers"]:
+            continue  # tidak dipilih lewat --renderer
         ctx["force"] = bool(args.only) or (args.start is not None and STEPS.index(s) >= STEPS.index(args.start))
         if s != "fetch" and "source" not in ctx:
             found = sorted(ctx["dir"].glob("source.*"))

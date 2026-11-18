@@ -2,6 +2,8 @@ import { Composition, Folder, Still } from "remotion";
 import { HelloWorld } from "./HelloWorld";
 import { PromoVideo } from "./promo/PromoVideo";
 import { calculatePromoVoiceMetadata, PromoVoice } from "./promo/PromoVoice";
+import { AdriyVideo, calculateAdriyMetadata } from "./adriy/AdriyVideo";
+import { calculateScenePreviewMetadata, ScenePreview } from "./adriy/ScenePreview";
 import { calculateStylePreviewMetadata, calculateSubtitleMetadata, StylePreview, SubtitleVideo } from "./pipeline/SubtitleVideo";
 import { IntroScene } from "./promo/IntroScene";
 import { HookScene } from "./promo/HookScene";
@@ -38,6 +40,24 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={{ media: "kaca-mobil", pages: [], meta: null, style: null }}
         calculateMetadata={calculateSubtitleMetadata}
+      />
+      <Composition
+        id="AdriyVideo"
+        component={AdriyVideo}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ media: "kaca-mobil", scenes: [], pages: [], meta: null, brand: null }}
+        calculateMetadata={calculateAdriyMetadata}
+      />
+      <Still
+        id="ScenePreview"
+        component={ScenePreview}
+        width={1080}
+        height={1920}
+        defaultProps={{ type: "karakter", styleId: "adriy", brand: null, at: 2.6, caption: "Uap air berubah jadi titik-titik kecil di kaca" }}
+        calculateMetadata={calculateScenePreviewMetadata}
       />
       <Still
         id="StylePreview"

@@ -83,6 +83,24 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 - Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), bukan tiruan suara tokohnya; kutipan harus asli
   dan bersumber; foto harus boleh dipakai.
 
+## Standar Adriy.project (style `adriy`)
+
+Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **adegan** (karakter, objek,
+infografis, diagram, perbandingan, tipografi kinetik, sinematik, angka) dengan presenter ADRI, kamera
+dan parallax tiga lapis, teks bertahap, sorotan stabilo, dan transisi sesuai konteks. Aturan lengkapnya
+ada di `styles/ADRIY-STANDARD.md`.
+
+```bash
+python3 pipeline/pipeline.py naskah.json --name video --style adriy --until scenes   # rencana + cek standar
+python3 pipeline/pipeline.py --preview-scenes --name video                           # gambar diam tiap adegan
+```
+
+- Langkah `scenes` membuat `scenes.json` dan memeriksa standar: jenis adegan tidak berulang, ADRI minimal
+  tiap 3 adegan, durasi adegan 1,6-6,5 dtk, minimal 4 jenis adegan.
+- Isi `"scene"` per kalimat di naskah untuk hasil terbaik (contoh: `contoh/naskah-adriy.json`).
+- ADRI saat ini versi vector 2D. Untuk versi semi-realistis, isi `character.assets` di `styles/adriy.json`
+  dengan PNG transparan per pose.
+
 ## Latar dari gambar (Open Montage)
 
 Beri `"visual"` pada kalimat di naskah (gambar atau klip, relatif ke file naskah). Kalimat tanpa `"visual"`

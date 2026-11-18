@@ -1,0 +1,24 @@
+{
+  "title": "Kenapa Kaca Mobil Berkabut?",
+  "style": "adriy",
+  "lines": [
+    {"voice": "adriy", "text": "Pernah lagi nyetir, tiba-tiba kaca depan jadi buram?", "sfx": "style:lineStart",
+     "scene": {"type": "karakter", "pose": "sapa", "kicker": "Adri.project", "title": "Kenapa kaca mobil tiba-tiba berkabut?", "highlight": "berkabut", "points": ["mobil:", "drop:"]}},
+    {"voice": "adriy", "text": "Itu bukan kabut dari luar, tapi embun dari uap air di dalam mobil.",
+     "scene": {"type": "objek", "kicker": "Lihat lebih dekat", "title": "Embun di kaca depan", "highlight": "Embun", "points": ["drop:Titik air kecil", "suhu:Kaca lebih dingin", "angin:Udara lembap"]}},
+    {"voice": "adriy", "text": "Ada tiga penyebabnya: kaca lebih dingin, udara kabin lembap, dan sirkulasi kurang.",
+     "scene": {"type": "infografis", "kicker": "Penyebabnya", "title": "Tiga hal yang membuat kabut", "highlight": "kabut", "points": ["suhu:Kaca lebih dingin dari udara", "drop:Udara kabin lembap", "angin:Sirkulasi udara kurang"]}},
+    {"voice": "adriy", "text": "Saat kelembapan kabin mencapai delapan puluh lima persen, kaca mulai berkabut.", "sfx": "style:number",
+     "scene": {"type": "angka", "kicker": "Faktanya", "value": 85, "unit": "%", "max": 100, "label": "kelembapan saat kaca mulai berkabut", "pose": "kaget"}},
+    {"voice": "adriy", "text": "Dilap memang cepat, tapi kabutnya muncul lagi. Pakai AC jauh lebih tuntas.",
+     "scene": {"type": "perbandingan", "kicker": "Mana yang lebih baik?", "title": "Dilap vs dinyalakan AC", "highlight": "AC",
+               "left": {"label": "Dilap tangan", "value": "±10 dtk", "note": "kabut muncul lagi"}, "right": {"label": "AC + udara luar", "value": "±60 dtk", "note": "kabut hilang tuntas", "win": true}}},
+    {"voice": "adriy", "text": "Caranya, nyalakan AC, arahkan ke kaca depan, lalu pakai udara dari luar.",
+     "scene": {"type": "diagram", "kicker": "Cara mengatasi", "title": "Hilangkan kabut dalam 3 langkah", "highlight": "3 langkah", "steps": ["Nyalakan AC", "Arahkan ke kaca depan", "Pakai udara luar"]}},
+    {"voice": "adriy", "text": "Bukan dilap, tapi hilangkan penyebabnya.", "sfx": "style:highlight",
+     "scene": {"type": "tipografi", "text": "Bukan dilap, tapi hilangkan penyebabnya", "highlight": "penyebabnya"}},
+    {"voice": "adriy", "text": "Pandangan jelas, perjalanan pun aman.",
+     "scene": {"type": "sinematik", "kicker": "Ingat", "title": "Pandangan jelas, perjalanan aman", "highlight": "aman"}},
+    {"voice": "adriy", "text": "Inilah Adri.project. Explore more. Know more.", "sfx": {"file": "style:ending", "at": "end"}}
+  ]
+}

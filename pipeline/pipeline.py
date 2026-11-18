@@ -54,7 +54,7 @@ HYPERFRAMES = ROOT / "hyperframes"
 WHISPER_PY = os.environ.get("PIPELINE_PYTHON", "/root/voxcpm-venv/bin/python" if Path("/root/voxcpm-venv/bin/python").exists() else sys.executable)
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "openai/whisper-large-v3-turbo")
 
-STEPS = ["fetch", "prepare", "transcribe", "pages", "sfx", "montage", "remotion", "hyperframes", "finish"]
+STEPS = ["fetch", "prepare", "transcribe", "pages", "scenes", "sfx", "montage", "remotion", "hyperframes", "finish"]
 MONTAGE_TRANSITION = 0.4  # detik crossfade antar gambar
 VOICE_LEAD, LINE_GAP = 0.6, 0.5  # detik: hening sebelum kalimat pertama, dan di antara kalimat
 SR = 48000
@@ -513,6 +513,237 @@ def step_sfx(ctx):
     log("sfx", f"{len(cues)} sound effect dicampur -> audio.wav (lihat sfx-cues.json)")
 
 
+# ---------------------------------------------------------------- perencana adegan (style dengan "engine": "adriy")
+SCENE_KICKER = {"karakter": "Adri.project", "objek": "Lihat lebih dekat", "infografis": "Poin penting", "diagram": "Langkahnya",
+                "perbandingan": "Bandingkan", "tipografi": "", "sinematik": "Ingat", "angka": "Faktanya"}
+DATA_TYPES = {"angka", "diagram", "perbandingan", "infografis"}
+
+
+ICON_WORDS = [("mobil", r"mobil|kendaraan|berkendara|kaca depan"), ("drop", r"air|uap|embun|kabut|lembap|lembab|hujan|basah"),
+              ("suhu", r"suhu|dingin|panas|hangat|derajat"), ("angin", r"udara|angin|ac|sirkulasi|napas"),
+              ("waktu", r"detik|menit|jam|waktu|cepat|lama"), ("awas", r"bahaya|aman|hati-hati|ingat|jangan|berhenti"),
+              ("grafik", r"naik|turun|persen|data|angka|jumlah"), ("ide", r"cara|tips|solusi|efektif|ide|rahasia")]
+
+
+def guess_icon(text):
+    for icon, pat in ICON_WORDS:
+        if re.search(rf"\b({pat})\b", text, re.I):
+            return icon
+    return "bintang"
+
+
+def _clauses(text):
+    parts = [p.strip(" .!?") for p in re.split(r"[,;:]| lalu | kemudian | dan ", text) if p.strip(" .!?")]
+    return [p for p in parts if len(p.split()) >= 2][:4]
+
+
+def _short_title(text, n=7):
+    first = re.split(r"[.!?]", text)[0].strip() or text.strip()
+    words = first.split()
+    t = " ".join(words[:n]) + ("..." if len(words) > n else "")
+    return t[:1].upper() + t[1:]
+
+
+def plan_scenes(lines, duration, title, style):
+    """Ubah kalimat-kalimat jadi rencana adegan yang mengikuti standar Adriy.project."""
+    rules = style.get("scenes", {}).get("rules", {})
+    overlap = style.get("motion", {}).get("overlap", 0.35)
+    tones, cams = ["dark", "blue", "light"], ["push", "pan-right", "rise", "pan-left", "pull"]
+    plan = []
+    for i, ln in enumerate(lines):
+        text, given = ln["text"], dict(ln.get("scene") or {})
+        words = text.split()
+        num = re.search(r"(\d+(?:[.,]\d+)?)\s*(%|persen|derajat|°|kali|detik|menit|jam|tahun|juta|ribu)?", text)
+        has_visual = bool(ln.get("visual"))
+        outro = style.get("outro", {})
+        is_outro = bool(re.search(r"adri\.?\s*project|inilah adri|explore more|know more", text, re.I))
+        if is_outro and plan and plan[-1].get("outro"):
+            plan[-1]["end"] = round(lines[i + 1]["start"] + overlap if i + 1 < len(lines) else duration, 3)  # gabung penutup
+            continue
+        if given.get("type"):
+            kind = given["type"]
+        elif is_outro:
+            kind = "karakter"
+        elif i == 0:
+            kind = "karakter"
+        elif num and not re.search(r"\b(langkah|pertama|kedua)\b", text, re.I):
+            kind = "angka"
+        elif (re.search(r"\b(langkah|pertama|kedua|ketiga)\b", text, re.I) and len(_clauses(text)) >= 2) or (
+                re.search(r"\b(lalu|kemudian|setelah itu)\b", text, re.I) and len(_clauses(text)) >= 3):
+            kind = "diagram"
+        elif has_visual:
+            kind = "sinematik" if plan and plan[-1]["type"] == "objek" else "objek"
+        elif len(words) <= 7:
+            kind = "tipografi"
+        elif text.strip().endswith("?"):
+            kind = "karakter"
+        else:
+            kind = None
+        # Variasi: jenis yang muncul di 2 adegan terakhir, atau sudah > 30% dari rencana, tidak dipilih lagi.
+        recent = [p["type"] for p in plan[-2:]]
+        cap = max(2, round(0.3 * len(lines)))
+        used = lambda k: sum(1 for p in plan if p["type"] == k)  # noqa: E731
+        ok = lambda k: k not in recent and used(k) < cap  # noqa: E731
+        fits = {
+            "infografis": len(_clauses(text)) >= 2,
+            "karakter": True,
+            "tipografi": len(words) <= 12,
+            "objek": True,
+            "sinematik": bool(re.search(r"\b(ingat|penting|aman|jalan|perjalanan|akhirnya|karena)\b", text, re.I)),
+        }
+        if given.get("type") or is_outro:
+            pass
+        elif kind is None or not ok(kind):
+            pool = ["infografis", "karakter", "objek", "tipografi", "sinematik"]
+            pool = pool[i % len(pool):] + pool[:i % len(pool)]  # mulai dari tempat berbeda tiap adegan
+            kind = next((k for k in pool if fits[k] and ok(k)), next((k for k in pool if fits[k] and k not in recent[-1:]), "karakter"))
+        # aturan: ADRI muncul paling tidak tiap N adegan
+        every = rules.get("characterEvery", 3)
+        with_adri = {"karakter", "objek", "infografis", "angka", "diagram"}
+        if not given.get("type") and len(plan) >= every - 1 and all(p["type"] not in with_adri for p in plan[-(every - 1):]) and kind not in with_adri:
+            kind = "karakter"
+        sc = {"type": kind, "line": ln["index"], "text": text}
+        # isi adegan
+        if kind == "angka" and num:
+            v = float(num.group(1).replace(",", "."))
+            unit = {"persen": "%", "derajat": "°"}.get((num.group(2) or "").lower(), num.group(2) or "")
+            sc.update({"value": v, "unit": unit, "max": 100 if unit == "%" else max(v * 1.25, 1), "label": _short_title(text, 9), "pose": "kaget"})
+        elif kind == "diagram":
+            sc["steps"] = [c[:28] for c in _clauses(text)]
+        elif kind == "infografis":
+            sc["points"] = [f"{guess_icon(c)}:{c[:40]}" for c in _clauses(text)]
+        elif kind in ("objek", "sinematik"):
+            if has_visual:
+                sc["visual"] = ln["visual"]
+            cl = _clauses(text) or [text]
+            sc["points"] = [f"{guess_icon(text)}:"] + [f"{guess_icon(c)}:{c[:24]}" for c in cl[:3]] if kind == "objek" else []
+            if kind == "objek":
+                sc["points"] = sc["points"][1:] or [f"{guess_icon(text)}:"]
+                sc["icon"] = guess_icon(text)
+        elif kind == "tipografi":
+            sc["text"] = text.strip()
+            sc.setdefault("highlight", max(words, key=len).strip(".,!?"))
+        if kind == "karakter":
+            sc["points"] = [f"{guess_icon(text)}:", f"{guess_icon(' '.join(words[len(words)//2:]))}:"]
+            sc["pose"] = "sapa" if i == 0 else ("pikir" if text.strip().endswith("?") else ("senang" if text.strip().endswith("!") else "jelaskan"))
+            sc["side"] = "right" if sum(1 for p in plan if p["type"] == "karakter") % 2 == 0 else "left"
+        sc["title"] = title if i == 0 and kind == "karakter" else _short_title(text)
+        sc["kicker"] = SCENE_KICKER[kind] if i else (style.get("outro", {}).get("tagline", "Adri.project").replace("Inilah ", ""))
+        if is_outro and not given.get("type"):
+            # penutup brand: ADRI senang, tagline + slogan
+            sc.update({"outro": True, "pose": "senang", "kicker": outro.get("tagline", "Inilah Adri.project"),
+                       "title": outro.get("slogan", "Explore more. Know more."), "highlight": "Know more", "points": ["bintang:", "ide:"]})
+        hl = ln.get("highlight") or (num.group(0).strip() if num else None)
+        if hl:
+            sc["highlight"] = hl
+        # transisi menurut konteks
+        sc["transition"] = ("slide" if i == 0 or ln.get("topic") else "wipe" if kind in DATA_TYPES else
+                            "zoom" if (hl or text.strip().endswith("!")) else "fade")
+        sc["tone"] = tones[i % 3]
+        sc["camera"] = cams[i % len(cams)]
+        sc.update({k: v for k, v in given.items() if k != "type"})
+        # waktu: dari awal kalimat (dikurangi tumpang tindih transisi) sampai awal kalimat berikutnya
+        start = 0.0 if i == 0 else max(0.0, ln["start"] - overlap)
+        end = lines[i + 1]["start"] + overlap if i + 1 < len(lines) else duration
+        sc.update({"start": round(start, 3), "end": round(end, 3)})
+        plan.append(sc)
+    return plan
+
+
+def check_standard(plan, style):
+    """Periksa rencana adegan terhadap aturan standar. Kembalikan daftar pelanggaran."""
+    rules = style.get("scenes", {}).get("rules", {})
+    issues = []
+    for a, b in zip(plan, plan[1:]):
+        if rules.get("noRepeatType", True) and a["type"] == b["type"]:
+            issues.append(f"adegan {plan.index(b) + 1}: jenis '{b['type']}' sama dengan adegan sebelumnya")
+        if a["tone"] == b["tone"] and a["camera"] == b["camera"]:
+            issues.append(f"adegan {plan.index(b) + 1}: komposisi (latar + kamera) sama dengan sebelumnya")
+    every = rules.get("characterEvery", 3)
+    with_adri = {"karakter", "objek", "infografis", "angka", "diagram"}
+    run_ = 0
+    for i, sc in enumerate(plan):
+        run_ = 0 if sc["type"] in with_adri else run_ + 1
+        if run_ >= every:
+            issues.append(f"adegan {i + 1}: ADRI tidak muncul selama {run_} adegan")
+    for i, sc in enumerate(plan):
+        d = sc["end"] - sc["start"]
+        if d > rules.get("maxScene", 6.5) + 1:
+            issues.append(f"adegan {i + 1}: {d:.1f} dtk terlalu lama untuk satu komposisi; pecah kalimatnya atau beri adegan tambahan")
+        if d < rules.get("minScene", 1.6):
+            issues.append(f"adegan {i + 1}: {d:.1f} dtk terlalu singkat untuk dibaca")
+    if len({sc['type'] for sc in plan}) < min(4, len(plan)):
+        issues.append(f"variasi kurang: hanya {len({sc['type'] for sc in plan})} jenis adegan dari {len(plan)} adegan")
+    return issues
+
+
+def lines_from_pages(d, duration, max_len=6.0, min_len=1.6):
+    """Untuk rekaman tanpa naskah: pecah transkrip jadi kalimat (titik/tanya/seru). Kalimat yang lebih
+    panjang dari max_len dipecah di koma yang paling dekat ke tengahnya; potongan yang terlalu pendek
+    digabung ke sebelumnya."""
+    words = json.loads((d / "transcript.json").read_text())
+    sents, cur = [], []
+    for w in words:
+        cur.append(w)
+        if re.search(r"[.!?]$", w["text"].strip()):
+            sents.append(cur)
+            cur = []
+    if cur:
+        sents.append(cur)
+
+    def split(ws):
+        if (ws[-1]["endMs"] - ws[0]["startMs"]) / 1000 <= max_len or len(ws) < 6:
+            return [ws]
+        mid = (ws[0]["startMs"] + ws[-1]["endMs"]) / 2
+        commas = [i for i, w in enumerate(ws[:-1]) if w["text"].strip().endswith(",") and 2 <= i < len(ws) - 3]
+        cut = min(commas, key=lambda i: abs(ws[i]["endMs"] - mid)) + 1 if commas else min(range(3, len(ws) - 2), key=lambda i: abs(ws[i]["startMs"] - mid))
+        return split(ws[:cut]) + split(ws[cut:])
+
+    chunks = [c for s_ in sents for c in split(s_)]
+    merged = []
+    for c in chunks:
+        if merged and (c[-1]["endMs"] - c[0]["startMs"]) / 1000 < min_len:
+            merged[-1] = merged[-1] + c
+        else:
+            merged.append(c)
+    return [{"index": i, "text": "".join(w["text"] for w in c).strip(), "start": c[0]["startMs"] / 1000, "end": c[-1]["endMs"] / 1000}
+            for i, c in enumerate(merged)]
+
+
+def step_scenes(ctx):
+    d = ctx["dir"]
+    style, _ = choose_style(ctx)
+    if style.get("engine") != "adriy":
+        return log("scenes", f"style '{style['id']}' tidak memakai adegan: dilewati")
+    out = d / "scenes.json"
+    meta = json.loads((d / "meta.json").read_text())
+    if (d / "lines.json").exists():
+        lines = json.loads((d / "lines.json").read_text())
+        script = json.loads((d / "script.json").read_text(encoding="utf-8"))
+        for ln, src in zip(lines, script["lines"]):
+            ln.update({k: src[k] for k in ("scene", "highlight", "topic", "visual") if k in src})
+            if ln.get("visual") and not str(ln["visual"]).startswith("media/"):
+                ln.pop("visual")  # gambar naskah dipakai lewat montase; gambar untuk adegan harus di video/public/
+    else:
+        lines = lines_from_pages(d, meta["duration"])
+    plan = plan_scenes(lines, meta["duration"], ctx["title"], style)
+    issues = check_standard(plan, style)
+    plan_json = json.dumps(plan, ensure_ascii=False, indent=1)
+    if not out.exists() or out.read_text(encoding="utf-8") != plan_json:
+        out.write_text(plan_json, encoding="utf-8")
+    counts = {}
+    for sc in plan:
+        counts[sc["type"]] = counts.get(sc["type"], 0) + 1
+    log("scenes", f"{len(plan)} adegan: " + ", ".join(f"{k} {v}" for k, v in counts.items()))
+    for sc in plan:
+        log("scenes", f"  {sc['start']:6.2f}-{sc['end']:6.2f}  {sc['type']:12s} {sc['transition']:5s} {sc['tone']:5s} {sc['camera']:9s} {sc.get('title', '')[:44]}")
+    if issues:
+        for it in issues:
+            log("scenes", f"  ! {it}")
+    else:
+        log("scenes", "  standar Adriy.project terpenuhi")
+
+
 def step_remotion(ctx):
     d, name = ctx["dir"], ctx["name"]
     out = d / "remotion.mp4"
@@ -523,16 +754,17 @@ def step_remotion(ctx):
     if not style_f.exists() or style_f.read_text(encoding="utf-8") != style_json:
         style_f.write_text(style_json, encoding="utf-8")  # ditulis hanya kalau berubah, supaya render tidak diulang
     log("remotion", f"style: {style['id']} ({why})")
-    if not ctx["force"] and fresh(out, *inputs, style_f):
+    if not ctx["force"] and fresh(out, *inputs, style_f, d / "scenes.json"):
         return log("remotion", "sudah ada")
     pub = REMOTION / "public" / "media" / name
     pub.mkdir(parents=True, exist_ok=True)
-    for f in ["meta.json", "pages.json", "audio.wav", "video.mp4", "style.json"]:
+    for f in ["meta.json", "pages.json", "audio.wav", "video.mp4", "style.json", "scenes.json"]:
         if (d / f).exists():
             shutil.copy2(d / f, pub / f)
     log("remotion", "render komposisi Subtitle...")
     t = time.time()
-    run(["npx", "remotion", "render", "Subtitle", str(out), f"--props={json.dumps({'media': name})}"], cwd=REMOTION)
+    comp = "AdriyVideo" if style.get("engine") == "adriy" else "Subtitle"
+    run(["npx", "remotion", "render", comp, str(out), f"--props={json.dumps({'media': name})}"], cwd=REMOTION)
     log("remotion", f"-> {out.name} ({time.time() - t:.0f} dtk)")
 
 
@@ -668,6 +900,30 @@ def preview_styles(only=None):
         print(f"{sid:10s} -> {out.relative_to(ROOT)}")
 
 
+def preview_scenes(name, only=None):
+    """Gambar diam dari tengah tiap adegan di media/<name>/scenes.json (bukan video)."""
+    d = ROOT / "media" / name
+    if not (d / "scenes.json").exists():
+        raise SystemExit("Belum ada scenes.json: jalankan dulu dengan --style adriy --until scenes")
+    pub = REMOTION / "public" / "media" / name
+    pub.mkdir(parents=True, exist_ok=True)
+    style = load_styles()["adriy"]
+    (d / "style.json").write_text(json.dumps(style, ensure_ascii=False, indent=1), encoding="utf-8")
+    for f in ["meta.json", "pages.json", "audio.wav", "style.json", "scenes.json"]:
+        if (d / f).exists():
+            shutil.copy2(d / f, pub / f)
+    scenes = json.loads((d / "scenes.json").read_text())
+    out_dir = d / "scene-preview"
+    out_dir.mkdir(exist_ok=True)
+    for i, sc in enumerate(scenes):
+        if only and (i + 1) not in only:
+            continue
+        frame = int(((sc["start"] + sc["end"]) / 2) * 30)
+        out = out_dir / f"{i + 1:02d}-{sc['type']}.png"
+        run(["npx", "remotion", "still", "AdriyVideo", str(out), f"--frame={frame}", f"--props={json.dumps({'media': name})}"], cwd=REMOTION)
+        print(f"{i + 1:2d}. {sc['type']:12s} detik {frame / 30:6.2f} -> {out.relative_to(ROOT)}")
+
+
 def check():
     """Periksa semua alat dan sambungan antar-alat tanpa membuat video atau suara."""
     results = []
@@ -777,7 +1033,7 @@ def check():
     return bad
 
 
-FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_sfx, step_montage, step_remotion, step_hyperframes, step_finish]))
+FUNCS = dict(zip(STEPS, [step_fetch, step_prepare, step_transcribe, step_pages, step_scenes, step_sfx, step_montage, step_remotion, step_hyperframes, step_finish]))
 
 
 def main():
@@ -788,6 +1044,7 @@ def main():
     ap.add_argument("--style", default="auto", help="style visual: auto (bawaan, dari kata kunci topik) atau nama di pipeline/styles/")
     ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
     ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
+    ap.add_argument("--preview-scenes", action="store_true", help="gambar diam dari tengah tiap adegan (style adriy), bukan video")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
     ap.add_argument("--renderer", choices=["remotion", "hyperframes", "both"], default="remotion",
                     help="mesin render (bawaan: remotion; both = dua versi)")
@@ -804,6 +1061,10 @@ def main():
         return list_styles()
     if args.preview_styles is not None:
         return preview_styles(args.preview_styles or None)
+    if args.preview_scenes:
+        if not args.name:
+            ap.error("--preview-scenes butuh --name")
+        return preview_scenes(args.name)
     if not args.input or not args.name:
         ap.error("butuh input dan --name (atau pakai --check)")
 

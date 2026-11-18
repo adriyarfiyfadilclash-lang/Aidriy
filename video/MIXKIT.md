@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 723 sound effect: 559 suara manusia (`human` + 31 folder `human-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10) | Ya |
+| `public/mixkit/sfx-kategori/` | 723 sound effect: 559 suara manusia (`human` + 29 folder `human-<tag>`; tag girl dan yawn tidak punya folder karena isinya sudah ada di tempat lain), click (56), notification (41), transition (37), whoosh (20), pop (10) | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 

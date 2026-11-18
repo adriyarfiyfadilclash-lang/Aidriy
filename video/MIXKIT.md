@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 1104 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, dan race-car tidak punya folder karena isinya sudah ada di folder lain. | Ya |
+| `public/mixkit/sfx-kategori/` | 1335 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, dan wolf tidak punya folder karena isinya sudah ada di folder lain. | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -70,14 +70,16 @@ LIST
 
 ## Semua sound effect per kategori
 
-Daftar lengkap 1104 sound effect dari kategori whoosh, transition, pop, click, notification, human,
+Daftar lengkap 1335 sound effect dari kategori whoosh, transition, pop, click, notification, human,
 serta 31 tag suara manusia (applause, baby, blow, breathe, cartoon, cheer, children, clapping, cough,
 crowd, cry, drink, eat, fight, footsteps, gasp, girl, heartbeat, hurt, kiss, laugh, run, scream, sneeze,
 teeth, thank-you, voices, walk, whistle, wow, yawn, choir, fart, moan, punch, stomp, funny, happy, sad,
 cute, public-places). Sebagian isi tag tambahan ini bukan suara manusia (efek game, hewan, suasana kota).
 Transportasi: transport, airport, bike, boat, bus, car, car-horn, drone, emergency, engine, flying,
 helicopter, motorcycle, police, race-car, rocket, ship, siren, skateboard, tanks, tractor, traffic, train,
-tram, truck. Tiap file disimpan sekali, di kategori/tag pertama
+tram, truck.
+Hewan: animals, bird, cat, chicken, cow, crickets, dog, farm, horse, insect, jungle, lion, monkey, pig,
+roar, safari, wild, wolf. Tiap file disimpan sekali, di kategori/tag pertama
 tempat ia ditemukan,
 ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
 

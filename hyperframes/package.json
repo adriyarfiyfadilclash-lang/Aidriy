@@ -1,0 +1,13 @@
+{
+  "name": "aidriy-hyperframes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Video NotesByAdriy dibuat dengan HyperFrames (HTML ke MP4)",
+  "scripts": {
+    "preview": "hyperframes preview",
+    "render": "hyperframes render -o out/video.mp4"
+  },
+  "dependencies": {
+    "hyperframes": "0.9.31"
+  }
+}

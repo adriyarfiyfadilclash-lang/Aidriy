@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 237 sound effect: human (73), click (56), notification (41), transition (37), whoosh (20), pop (10) | Ya |
+| `public/mixkit/sfx-kategori/` | 723 sound effect: 559 suara manusia (`human` + 31 folder `human-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10) | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -70,7 +70,11 @@ LIST
 
 ## Semua sound effect per kategori
 
-Daftar lengkap 237 sound effect dari kategori whoosh, transition, pop, click, notification, dan human
+Daftar lengkap 723 sound effect dari kategori whoosh, transition, pop, click, notification, human,
+serta 31 tag suara manusia (applause, baby, blow, breathe, cartoon, cheer, children, clapping, cough,
+crowd, cry, drink, eat, fight, footsteps, gasp, girl, heartbeat, hurt, kiss, laugh, run, scream, sneeze,
+teeth, thank-you, voices, walk, whistle, wow, yawn). Tiap file disimpan sekali, di kategori/tag pertama
+tempat ia ditemukan,
 ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
 
 ```bash

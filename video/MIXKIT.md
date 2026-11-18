@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 2719 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), 305 alam (folder `nature` dan 22 folder `nature-<tag>`), 430 transisi (folder `transition` dan 18 folder `transition-<tag>`, ditambah `whoosh`), 362 teknologi (folder `technology` dan 31 folder `technology-<tag>`), 174 game (folder `game` dan 17 folder `game-<tag>`), 118 alat musik (folder `instrument` dan 13 folder `instrument-<tag>`), 32 perang (folder `warfare` dan 6 folder `warfare-<tag>`; 134 suara perang lain sudah ada di folder lain, misalnya human-fight dan transition-impact), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, wolf, morning, scary-woods, transition-whoosh, white-noise, tv, time-machine, goal, money, jump, guitar, bass, flute, violins, sleigh-bells, war, bomb, battle, battle-ambience, dan medieval-battle tidak punya folder karena isinya sudah ada di folder lain. | Ya |
+| `public/mixkit/sfx-kategori/` | 2998 sound effect dari semua 276 tag Mixkit, dikelompokkan per folder (lihat "Semua sound effect per kategori") | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -70,31 +70,34 @@ LIST
 
 ## Semua sound effect per kategori
 
-Daftar lengkap 2719 sound effect dari kategori whoosh, transition, pop, click, notification, human,
-serta 31 tag suara manusia (applause, baby, blow, breathe, cartoon, cheer, children, clapping, cough,
-crowd, cry, drink, eat, fight, footsteps, gasp, girl, heartbeat, hurt, kiss, laugh, run, scream, sneeze,
-teeth, thank-you, voices, walk, whistle, wow, yawn, choir, fart, moan, punch, stomp, funny, happy, sad,
-cute, public-places). Sebagian isi tag tambahan ini bukan suara manusia (efek game, hewan, suasana kota).
-Transportasi: transport, airport, bike, boat, bus, car, car-horn, drone, emergency, engine, flying,
-helicopter, motorcycle, police, race-car, rocket, ship, siren, skateboard, tanks, tractor, traffic, train,
-tram, truck.
-Hewan: animals, bird, cat, chicken, cow, crickets, dog, farm, horse, insect, jungle, lion, monkey, pig,
-roar, safari, wild, wolf.
-Alam: nature, beach, bubbles, desert, drop, fire, forest, garden, lightning, morning, mountain, night,
-ocean, rain, rivers, scary-woods, sea, splash, storm, thunder, volcano, water, waterfall, waves, wind.
-Transisi: transition, boom, cinematic, glitch, hit, impact, intro, movie, rewind, slide, spin, sweep,
-sweeping, swell, swish, swoosh, thud, whoosh, woosh, zoom.
-Teknologi: technology, high-tech, robot, sci-fi, interface, bleep, beep, tones, alerts, error, correct,
-countdown, buzzer, alarm, electricity, static, hum, white-noise, radio, tv, laptop, keyboard, mouse, phone,
-phone-ring, camera, type, typewriter, tape-machine, movie-projector, appliances, laser, light-saber,
-time-machine, space-shooter.
-Game: game, video-game, arcade, arcade-sport, goal, win, lose, player, game-show, game-over, casino,
-slot-machine, coin, money, jump, wrong, magic, spell, sparkle, fairy, toy.
-Alat musik: instrument, guitar, music, bass, brass, cymbal, drum, flute, orchestra, piano, synth, violins,
-chimes, bell, church-bell, sleigh-bells, horn, dj-record-scratch, suspense-music.
-Perang: warfare, war, explosion, gun, bomb, battle, battle-ambience, medieval-battle, shot, sword, whip, crash. Tiap file disimpan sekali, di kategori/tag pertama
-tempat ia ditemukan,
-ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
+Semua tag yang ditautkan dari halaman sound effect Mixkit (276 tag) sudah diambil: 2998 sound effect.
+Daftar lengkapnya (ID, judul, durasi, folder) ada di `scripts/mixkit-sfx.json`.
+Tiap file hanya disimpan sekali, di folder tag pertama tempat ia ditemukan, jadi satu suara bisa ada
+di folder yang tidak terduga (misalnya suara perang di `human-fight` atau `transition-impact`).
+
+| Kelompok | Jumlah | Folder |
+|---|---|---|
+| Awal | 164 | `click`, `notification`, `transition`, `whoosh`, `pop` |
+| Manusia | 654 | `human`, `human-<tag>` |
+| Transisi | 393 | `transition-<tag>` |
+| Teknologi | 362 | `technology`, `technology-<tag>` |
+| Alam | 305 | `nature`, `nature-<tag>` |
+| Transportasi | 286 | `transport`, `transport-<tag>` |
+| Hewan | 231 | `animals`, `animals-<tag>` |
+| Game | 174 | `game`, `game-<tag>` |
+| Alat musik | 118 | `instrument`, `instrument-<tag>` |
+| Rumah dan dapur | 106 | `rumah-<tag>` |
+| Pertukangan dan benda | 76 | `pertukangan-<tag>` |
+| Kantor dan sekolah | 57 | `kantor-<tag>` |
+| Perang | 32 | `warfare`, `warfare-<tag>` |
+| Lain-lain | 19 | `lainnya-<tag>` |
+| Pesta | 12 | `pesta-<tag>` |
+| Olahraga | 9 | `olahraga-<tag>` |
+
+Sebagian isi tag tidak persis sesuai kelompoknya (misalnya efek game di tag `cartoon`, atau air keran
+di tag `water`). Sound effect yang tidak diberi tag apa pun di Mixkit tidak ikut terambil.
+
+Unduh ulang semuanya dengan:
 
 ```bash
 python3 scripts/mixkit_sfx_download.py

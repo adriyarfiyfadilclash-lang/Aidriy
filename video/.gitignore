@@ -3,3 +3,5 @@ out/
 .remotion/
 .venv/
 __pycache__/
+public/mixkit/
+mixkit-templates/

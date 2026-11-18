@@ -9,6 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
+| `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
 ## Memakai light leak
@@ -33,3 +34,35 @@ Ekstrak zip Mixkit ke sini dengan nama file seperti di atas:
 - `mixkit-light-leak-motion-opener-728.zip` → `728/Solids/*.mp4` ke `public/mixkit/light-leaks/`
 - `mixkit-business-logo-lower-third-672.zip`, `mixkit-minimal-shape-logo-reveal-657.zip` → PNG ke `public/mixkit/images/`
 - Semua zip → `mixkit-templates/`
+
+## Sound effect dari situs Mixkit
+
+Diunduh dari `https://assets.mixkit.co/active_storage/sfx/<id>/<id>-preview.mp3`.
+Unduh ulang semuanya ke `public/mixkit/sfx/`:
+
+```bash
+mkdir -p public/mixkit/sfx && cd public/mixkit/sfx
+while IFS='|' read id name; do
+  curl -sSf -o "$name.mp3" "https://assets.mixkit.co/active_storage/sfx/$id/$id-preview.mp3"
+done <<'LIST'
+1490|transisi-whoosh-cepat
+166|transisi-sweep-kecil
+3120|transisi-teknologi-slide
+175|transisi-sweep-pendek
+3115|transisi-swoosh-cepat
+3005|pop-whoosh-ringan
+2358|pop-panjang
+2357|pop-gelembung-notifikasi
+2356|pop-kering-notifikasi
+2568|klik-antarmuka
+1120|klik-centang-kotak
+3124|klik-teknologi-modern
+2531|ketik-keyboard-laptop
+1133|jepret-kamera
+2350|ai-magic-sparkle-whoosh
+2344|ai-magic-notifikasi
+2870|sukses-jawaban-benar
+951|sukses-notifikasi-positif
+2867|sukses-konfirmasi
+LIST
+```

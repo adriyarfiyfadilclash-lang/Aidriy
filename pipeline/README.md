@@ -66,6 +66,8 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 - ffmpeg dan ffprobe
 - Python dengan `transformers` dan `torch` untuk Whisper, plus `voxcpm` untuk naskah (lihat `video/requirements-tts.txt`). Atur dengan `PIPELINE_PYTHON=/path/ke/python`.
   Model diatur dengan `WHISPER_MODEL` (default `openai/whisper-large-v3-turbo`).
+- OpenMontage (opsional, untuk merangkai gambar dan klip jadi montase): `pip install "open-montage[render]==0.4.0"`.
+  Belum dipakai langsung oleh pipeline, tapi ikut diperiksa `--check`.
 - yt-dlp, hanya kalau sumbernya URL. YouTube memblokir server cloud, jadi jalankan dari komputer sendiri.
 
 ## Data bersama

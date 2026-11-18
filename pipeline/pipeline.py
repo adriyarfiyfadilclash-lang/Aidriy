@@ -534,6 +534,10 @@ def check():
     code, out = cmd(["node", "-p", "require('remotion/package.json').version + ' (cli ' + require('@remotion/cli/package.json').version + ')'"],
                     cwd=REMOTION, stdout_only=True)
     item("Alat", "Remotion", code == 0, out if code == 0 else "tidak ada", "cd video && npm install")
+    om = os.environ.get("OPENMONTAGE_BIN") or shutil.which("open-montage") or "/root/openmontage-venv/bin/open-montage"
+    code, out = cmd([om, "--version"], stdout_only=True)
+    item("Alat", "OpenMontage (montase gambar/klip)", code == 0, out if code == 0 else "tidak ada",
+         'pip install "open-montage[render]==0.4.0" (lalu set OPENMONTAGE_BIN kalau tidak di PATH)')
     hf = HYPERFRAMES / "node_modules/.bin/hyperframes"
     code, out = cmd([str(hf), "--version"])
     item("Alat", "HyperFrames", code == 0, out.splitlines()[-1] if code == 0 else "tidak ada", "cd hyperframes && npm install")

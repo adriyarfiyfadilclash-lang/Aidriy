@@ -1,0 +1,84 @@
+{
+  "id": "wayang",
+  "label": "Wayang kulit (sejarah dan legenda)",
+  "description": "Layar kelir diterangi lampu blencong yang berkedip, siluet hitam, ornamen gunungan, warna sogan dan emas. Untuk sejarah Nusantara, kerajaan, legenda, dan cerita rakyat.",
+  "useFor": [
+    "sejarah",
+    "kerajaan",
+    "majapahit",
+    "sriwijaya",
+    "mataram",
+    "singhasari",
+    "kediri",
+    "legenda",
+    "cerita rakyat",
+    "mitos",
+    "wayang",
+    "pewayangan",
+    "ramayana",
+    "mahabharata",
+    "raja",
+    "prabu",
+    "patih",
+    "pahlawan",
+    "perang jawa",
+    "keraton",
+    "candi",
+    "babad"
+  ],
+  "font": {
+    "family": "Cinzel",
+    "file": "fonts/Cinzel-latin.woff2",
+    "weight": 700
+  },
+  "palette": {
+    "bg": "#120A04",
+    "bg2": "#7A4A1C",
+    "ink": "#F3D9A4",
+    "accent": "#F2B33D",
+    "muted": "#B8935E"
+  },
+  "background": {
+    "kind": "wayang",
+    "lamp": {
+      "x": 0.5,
+      "y": 0.38,
+      "flicker": 0.08
+    },
+    "gunungan": true,
+    "border": true
+  },
+  "visual": {
+    "filter": "grayscale(1) contrast(8) brightness(1.5)",
+    "blend": "multiply",
+    "frame": "kelir",
+    "note": "Gambar diubah jadi hitam pekat di atas putih, lalu ditumpuk (multiply) di atas layar kelir yang bercahaya: putihnya hilang, tinggal bayangan seperti wayang. Paling bagus untuk gambar tokoh atau benda dengan latar terang dan polos."
+  },
+  "overlays": [
+    "grain",
+    "vignette"
+  ],
+  "subtitle": {
+    "size": 76,
+    "case": "upper",
+    "box": "glow",
+    "position": 420,
+    "entrance": "flicker",
+    "letterSpacing": 2
+  },
+  "montage": {
+    "transition": 0.9,
+    "kenBurns": true
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/kantor-clock/1066-classic-clock-gong.mp3",
+    "accent": "mixkit/sfx-kategori/transition-cinematic/487-cinematic-ancient-drums-heartbeat.mp3",
+    "ambience": "mixkit/sfx-kategori/animals-jungle/2306-cinematic-tribal-flute.mp3",
+    "note": "Mixkit tidak punya gamelan. Gong jam klasik dan drum kuno adalah pengganti terdekat; ganti dengan rekaman gamelan sendiri kalau ada."
+  },
+  "preview": {
+    "title": "Runtuhnya Majapahit",
+    "caption": "Pada abad ke-15, kerajaan besar itu mulai goyah",
+    "active": 3
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "bersih",
+  "label": "Bersih (bawaan NotesByAdriy)",
+  "description": "Tampilan aplikasi: biru, modern, sans-serif. Untuk promo aplikasi, tutorial, dan topik umum.",
+  "useFor": [
+    "aplikasi",
+    "fitur",
+    "tutorial",
+    "promo",
+    "notesbyadriy",
+    "catatan"
+  ],
+  "font": {
+    "family": "Plus Jakarta Sans",
+    "file": "fonts/PlusJakartaSans-latin.woff2",
+    "weight": 800
+  },
+  "palette": {
+    "bg": "#0B2A6B",
+    "bg2": "#2563EB",
+    "ink": "#FFFFFF",
+    "accent": "#FFD25E",
+    "muted": "#DCE8FD"
+  },
+  "background": {
+    "kind": "gradient"
+  },
+  "visual": {
+    "filter": "none",
+    "blend": "normal",
+    "frame": "none"
+  },
+  "overlays": [],
+  "subtitle": {
+    "size": 84,
+    "case": "none",
+    "box": "none",
+    "position": 520,
+    "entrance": "pop",
+    "letterSpacing": -1
+  },
+  "montage": {
+    "transition": 0.4,
+    "kenBurns": true
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx/pop-kering-notifikasi.mp3",
+    "accent": "mixkit/sfx/sukses-konfirmasi.mp3",
+    "ending": "mixkit/sfx/sukses-jawaban-benar.mp3"
+  },
+  "preview": {
+    "title": "Fitur baru NotesByAdriy",
+    "caption": "Semua catatan rapi di satu tempat",
+    "active": 2
+  }
+}

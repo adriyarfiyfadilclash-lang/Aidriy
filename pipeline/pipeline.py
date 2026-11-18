@@ -7,6 +7,8 @@ Sumber bisa berupa URL (yt-dlp), file video/audio, atau naskah .json (suara dibu
   "visual" melanjutkan gambar sebelumnya. Untuk sumber biasa, pakai --visuals FOLDER (dibagi rata).
   Gambar dirangkai Open Montage jadi video latar (crossfade, zoom pelan), lalu Remotion dan HyperFrames
   menambahkan subtitle dan audio di atasnya.
+  "style" (opsional): nama style di pipeline/styles/ (wayang, koran, bersih, ...). Tanpa "style" atau --style,
+  style dipilih otomatis dari kata kunci topik (judul + isi). "sfx" boleh merujuk ke style: "style:lineStart".
 
 Contoh:
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --title "Kaca Mobil Berkabut"
@@ -15,6 +17,9 @@ Contoh:
   python3 pipeline/pipeline.py rekaman.mp3 --name kaca-mobil --only remotion  # satu langkah saja
   python3 pipeline/pipeline.py naskah.json --name iklan --until sfx            # buat suara dulu, belum render
   python3 pipeline/pipeline.py naskah.json --name iklan --renderer both        # Remotion + HyperFrames
+  python3 pipeline/pipeline.py naskah.json --name sejarah --style wayang       # pilih style
+  python3 pipeline/pipeline.py --list-styles                                   # daftar style
+  python3 pipeline/pipeline.py --preview-styles                                # gambar pratinjau style (bukan video)
 
 Semua hasil disimpan di media/<name>/ (tidak di-commit):
   source.*          file asli (dari yt-dlp, salinan file, atau gabungan voiceover dari naskah)
@@ -53,6 +58,43 @@ STEPS = ["fetch", "prepare", "transcribe", "pages", "sfx", "montage", "remotion"
 MONTAGE_TRANSITION = 0.4  # detik crossfade antar gambar
 VOICE_LEAD, LINE_GAP = 0.6, 0.5  # detik: hening sebelum kalimat pertama, dan di antara kalimat
 SR = 48000
+STYLES = ROOT / "pipeline" / "styles"
+
+
+def load_styles():
+    return {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(STYLES.glob("*.json"))}
+
+
+def choose_style(ctx):
+    """Style dari --style, lalu "style" di naskah, lalu otomatis dari kata kunci topik."""
+    styles = load_styles()
+    d = ctx["dir"]
+    want = ctx.get("style") or "auto"
+    if want == "auto" and (d / "script.json").exists():
+        want = json.loads((d / "script.json").read_text(encoding="utf-8")).get("style", "auto")
+    if want != "auto":
+        if want not in styles:
+            raise SystemExit(f"Style '{want}' tidak ada. Pilihan: {', '.join(styles)}")
+        return styles[want], "dipilih"
+    text = ctx["title"].lower()
+    if (d / "transcript.json").exists():
+        text += " " + "".join(w["text"] for w in json.loads((d / "transcript.json").read_text())).lower()
+    scores = {sid: sum(text.count(k) for k in st.get("useFor", [])) for sid, st in styles.items()}
+    best = max(scores, key=scores.get)
+    if scores[best] == 0:
+        return styles.get("bersih", next(iter(styles.values()))), "otomatis (tidak ada kata kunci cocok)"
+    return styles[best], f"otomatis ({scores[best]} kata kunci cocok)"
+
+
+def resolve_sfx_ref(value, style):
+    """"style:lineStart" -> path sound effect dari style yang dipakai."""
+    if isinstance(value, str) and value.startswith("style:"):
+        key = value.split(":", 1)[1]
+        path = style.get("sfx", {}).get(key)
+        if not path or key == "note":
+            raise SystemExit(f"Style '{style['id']}' tidak punya sound effect '{key}'")
+        return "public/" + path
+    return value
 
 
 def log(step, msg):
@@ -370,13 +412,16 @@ def step_montage(ctx):
     out = d / "video.mp4"
     if not plan:
         return log("montage", "tidak ada visual: dilewati (latar bawaan dipakai)")
+    mont = choose_style(ctx)[0].get("montage", {})
+    transition = mont.get("transition", MONTAGE_TRANSITION)
     # Crossfade memakan waktu dari klip berikutnya, jadi tiap klip (kecuali terakhir) dipanjangkan
     # sebesar durasi crossfade: gambar baru mulai muncul tepat saat kalimatnya dimulai.
     clips = []
     for i, (p, s0, e0) in enumerate(plan):
-        dur = (e0 - s0) + (MONTAGE_TRANSITION if i + 1 < len(plan) else 0)
+        dur = (e0 - s0) + (transition if i + 1 < len(plan) else 0)
         clips.append({"source": str(p), "duration": round(max(dur, 0.1), 3), "label": p.stem})
-    plan_json = json.dumps({"title": ctx["title"], "clips": clips}, ensure_ascii=False, indent=1)
+    plan_json = json.dumps({"title": ctx["title"], "clips": clips, "transition": transition,
+                            "kenBurns": mont.get("kenBurns", True)}, ensure_ascii=False, indent=1)
     old = (d / "montage.json").read_text() if (d / "montage.json").exists() else None
     # Render ulang hanya kalau rangkaiannya berubah atau salah satu gambar diganti
     # (meta.json tidak ikut dicek, karena langkah ini sendiri yang menulisnya).
@@ -385,7 +430,7 @@ def step_montage(ctx):
         log("montage", f"Open Montage merangkai {len(clips)} visual...")
         t = time.time()
         run([openmontage_bin(), "render", str(d / "montage.json"), "-o", str(d / "montage-raw.mp4"), "--fps", "30",
-             "--size", "1080x1920", "--fit", "cover", "--transition", str(MONTAGE_TRANSITION), "--ken-burns"])
+             "--size", "1080x1920", "--fit", "cover", "--transition", str(transition)] + (["--ken-burns"] if mont.get("kenBurns", True) else []))
         # Samakan format dengan latar video biasa: H.264, tanpa suara, durasi pas dengan audio.
         run(["ffmpeg", "-y", "-v", "error", "-i", str(d / "montage-raw.mp4"), "-an", "-t", str(meta["duration"]),
              "-vf", "tpad=stop_mode=clone:stop_duration=1", "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", str(out)])
@@ -411,9 +456,11 @@ def step_sfx(ctx):
     out, lines_f = d / "audio.wav", d / "lines.json"
     cue_files = []
     lines = json.loads(lines_f.read_text()) if lines_f.exists() else []
+    style = choose_style(ctx)[0] if any(ln.get("sfx") for ln in lines) else None
     for ln in lines:
         if ln.get("sfx"):
-            c = ln["sfx"] if isinstance(ln["sfx"], dict) else {"file": ln["sfx"]}
+            c = dict(ln["sfx"]) if isinstance(ln["sfx"], dict) else {"file": ln["sfx"]}
+            c["file"] = resolve_sfx_ref(c["file"], style)
             p = Path(c["file"])
             c["path"] = p if p.is_absolute() else REMOTION / p
             if not c["path"].exists():
@@ -462,11 +509,17 @@ def step_remotion(ctx):
     d, name = ctx["dir"], ctx["name"]
     out = d / "remotion.mp4"
     inputs = [d / "pages.json", d / "meta.json", d / "audio.wav", d / "video.mp4"]
-    if not ctx["force"] and fresh(out, *inputs):
+    style, why = choose_style(ctx)
+    style_f = d / "style.json"
+    style_json = json.dumps(style, ensure_ascii=False, indent=1)
+    if not style_f.exists() or style_f.read_text(encoding="utf-8") != style_json:
+        style_f.write_text(style_json, encoding="utf-8")  # ditulis hanya kalau berubah, supaya render tidak diulang
+    log("remotion", f"style: {style['id']} ({why})")
+    if not ctx["force"] and fresh(out, *inputs, style_f):
         return log("remotion", "sudah ada")
     pub = REMOTION / "public" / "media" / name
     pub.mkdir(parents=True, exist_ok=True)
-    for f in ["meta.json", "pages.json", "audio.wav", "video.mp4"]:
+    for f in ["meta.json", "pages.json", "audio.wav", "video.mp4", "style.json"]:
         if (d / f).exists():
             shutil.copy2(d / f, pub / f)
     log("remotion", "render komposisi Subtitle...")
@@ -502,6 +555,9 @@ def step_hyperframes(ctx):
     inputs = [d / "pages.json", d / "meta.json", d / "audio.wav", d / "video.mp4"]
     if not ctx["force"] and fresh(out, *inputs):
         return log("hyperframes", "sudah ada")
+    st = choose_style(ctx)[0]
+    if st["id"] != "bersih":
+        log("hyperframes", f"catatan: style '{st['id']}' baru tersedia di Remotion; versi HyperFrames memakai tampilan bersih")
     proj = d / "hyperframes"
     (proj / "assets").mkdir(parents=True, exist_ok=True)
     shutil.copy2(REMOTION / "public/fonts/PlusJakartaSans-latin.woff2", proj / "assets")
@@ -579,6 +635,31 @@ def step_finish(ctx):
         log("finish", "thumbnail.jpg")
 
 
+def list_styles():
+    for sid, st in load_styles().items():
+        print(f"{sid:10s} {st['label']}")
+        print(f"           {st['description']}")
+        print(f"           kata kunci: {', '.join(st.get('useFor', [])[:10])}{' ...' if len(st.get('useFor', [])) > 10 else ''}")
+
+
+def preview_styles(only=None):
+    """Gambar diam (PNG) tiap style dari komposisi StylePreview. Tidak membuat video."""
+    pub = REMOTION / "public" / "styles"
+    pub.mkdir(parents=True, exist_ok=True)
+    out_dir = ROOT / "media" / "style-preview"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for sid, st in load_styles().items():
+        if only and sid != only:
+            continue
+        (pub / f"{sid}.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        prev = st.get("preview", {})
+        props = {"styleId": sid, "style": None, "title": prev.get("title", st["label"]), "caption": prev.get("caption", "Contoh subtitle"),
+                 "active": prev.get("active", 0), "visual": "style-preview/tokoh.png"}
+        out = out_dir / f"{sid}.png"
+        run(["npx", "remotion", "still", "StylePreview", str(out), f"--props={json.dumps(props, ensure_ascii=False)}"], cwd=REMOTION)
+        print(f"{sid:10s} -> {out.relative_to(ROOT)}")
+
+
 def check():
     """Periksa semua alat dan sambungan antar-alat tanpa membuat video atau suara."""
     results = []
@@ -625,12 +706,19 @@ def check():
     mk = len(list((REMOTION / "public/mixkit").rglob("*.mp3"))) if (REMOTION / "public/mixkit").exists() else 0
     item("Model", "Sound effect Mixkit", mk > 0, f"{mk} file", "python3 video/scripts/mixkit_sfx_download.py")
 
+    # Style: font dan sound effect yang dirujuk harus ada
+    for sid, st in load_styles().items():
+        missing = [st["font"]["file"]] if not (REMOTION / "public" / st["font"]["file"]).exists() else []
+        missing += [v for k, v in st.get("sfx", {}).items() if k != "note" and not (REMOTION / "public" / v).exists()]
+        item("Style", f"{sid}: {st['label']}", not missing, "font dan sound effect lengkap" if not missing else "tidak ada: " + ", ".join(missing),
+             "unduh sound effect Mixkit (video/MIXKIT.md) atau perbaiki path di pipeline/styles/")
+
     # 3. Sambungan antar-alat
     code, out = cmd([sys.executable, "-c", f"import sys; sys.path.insert(0, {str(REMOTION / 'scripts')!r}); from sfx_analyze import analyze; print('ok')"])
     item("Sambungan", "pipeline -> sfx_analyze.py (ukur sound effect)", code == 0, "bisa diimpor" if code == 0 else out[-120:], "pip install numpy")
     item("Sambungan", "pipeline -> tts_batch.py (VoxCPM)", (REMOTION / "scripts/tts_batch.py").exists(), "video/scripts/tts_batch.py", "")
     code, out = cmd(["npx", "remotion", "compositions"], cwd=REMOTION, timeout=300)
-    comps = [c for c in ["Subtitle", "PromoSuara", "Promo"] if re.search(rf"^{c}\s", out, re.M)]
+    comps = [c for c in ["Subtitle", "StylePreview", "PromoSuara", "Promo"] if re.search(rf"^{c}\s", out, re.M)]
     item("Sambungan", "pipeline -> Remotion (komposisi Subtitle)", "Subtitle" in comps, "komposisi terdaftar: " + ", ".join(comps) if comps else out[-150:], "periksa video/src/Root.tsx")
     font = REMOTION / "public/fonts/PlusJakartaSans-latin.woff2"
     item("Sambungan", "Remotion -> HyperFrames (font bersama)", font.exists(), str(font.relative_to(ROOT)), "")
@@ -689,6 +777,9 @@ def main():
     ap.add_argument("input", nargs="?", help="URL video (yt-dlp), file video/audio, atau naskah .json")
     ap.add_argument("--name", help="nama folder di media/, misalnya kaca-mobil")
     ap.add_argument("--check", action="store_true", help="periksa semua alat dan sambungan, tanpa membuat apa pun")
+    ap.add_argument("--style", default="auto", help="style visual: auto (bawaan, dari kata kunci topik) atau nama di pipeline/styles/")
+    ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
+    ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
     ap.add_argument("--renderer", choices=["remotion", "hyperframes", "both"], default="remotion",
                     help="mesin render (bawaan: remotion; both = dua versi)")
@@ -701,11 +792,15 @@ def main():
     args = ap.parse_args()
     if args.check:
         raise SystemExit(1 if check() else 0)
+    if args.list_styles:
+        return list_styles()
+    if args.preview_styles is not None:
+        return preview_styles(args.preview_styles or None)
     if not args.input or not args.name:
         ap.error("butuh input dan --name (atau pakai --check)")
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False,
-           "visuals": args.visuals,
+           "visuals": args.visuals, "style": args.style,
            "renderers": ["remotion", "hyperframes"] if args.renderer == "both" else [args.renderer]}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)

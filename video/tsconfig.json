@@ -5,7 +5,7 @@
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
-    "lib": ["es2015", "DOM"],
+    "lib": ["es2020", "DOM"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

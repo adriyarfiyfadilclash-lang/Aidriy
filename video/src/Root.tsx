@@ -1,8 +1,8 @@
-import { Composition, Folder } from "remotion";
+import { Composition, Folder, Still } from "remotion";
 import { HelloWorld } from "./HelloWorld";
 import { PromoVideo } from "./promo/PromoVideo";
 import { calculatePromoVoiceMetadata, PromoVoice } from "./promo/PromoVoice";
-import { calculateSubtitleMetadata, SubtitleVideo } from "./pipeline/SubtitleVideo";
+import { calculateStylePreviewMetadata, calculateSubtitleMetadata, StylePreview, SubtitleVideo } from "./pipeline/SubtitleVideo";
 import { IntroScene } from "./promo/IntroScene";
 import { HookScene } from "./promo/HookScene";
 import { FeatureScene } from "./promo/FeatureScene";
@@ -36,8 +36,23 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{ media: "kaca-mobil", pages: [], meta: null }}
+        defaultProps={{ media: "kaca-mobil", pages: [], meta: null, style: null }}
         calculateMetadata={calculateSubtitleMetadata}
+      />
+      <Still
+        id="StylePreview"
+        component={StylePreview}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          styleId: "wayang",
+          style: null,
+          title: "Runtuhnya Majapahit",
+          caption: "Pada abad ke-15, kerajaan besar itu mulai goyah",
+          active: 3,
+          visual: "style-preview/tokoh.png",
+        }}
+        calculateMetadata={calculateStylePreviewMetadata}
       />
       <Folder name="Promo-Scenes">
         <Composition

@@ -1,0 +1,81 @@
+{
+  "id": "koran",
+  "label": "Kertas koran (penjelasan tokoh dan berita)",
+  "description": "Kertas koran lama dengan tekstur, kop surat kabar, foto hitam-putih bertitik (halftone) bertepi sobek, dan subtitle seperti potongan kertas yang ditempel. Untuk penjelasan tokoh publik, politik, peristiwa, dan berita.",
+  "useFor": [
+    "tokoh",
+    "politik",
+    "presiden",
+    "menteri",
+    "pemilu",
+    "berita",
+    "kabar",
+    "peristiwa",
+    "skandal",
+    "biografi",
+    "profil",
+    "siapa",
+    "trump",
+    "biden",
+    "prabowo",
+    "jokowi",
+    "ekonomi",
+    "kebijakan",
+    "kontroversi",
+    "wawancara"
+  ],
+  "font": {
+    "family": "Playfair Display",
+    "file": "fonts/PlayfairDisplay-latin.woff2",
+    "weight": 900
+  },
+  "palette": {
+    "bg": "#EDE4D0",
+    "bg2": "#D9CCAE",
+    "ink": "#16130E",
+    "accent": "#C8102E",
+    "muted": "#5E5546",
+    "strip": "#FBF7EC"
+  },
+  "background": {
+    "kind": "koran",
+    "masthead": "KABAR NUSANTARA",
+    "edition": "EDISI KHUSUS",
+    "columns": true
+  },
+  "visual": {
+    "filter": "grayscale(1) contrast(1.35) brightness(1.05)",
+    "blend": "multiply",
+    "frame": "torn",
+    "halftone": true,
+    "note": "Foto jadi hitam-putih, diberi pola titik cetak koran, tepinya sobek, dan sedikit miring seperti guntingan yang ditempel."
+  },
+  "overlays": [
+    "paper",
+    "grain"
+  ],
+  "subtitle": {
+    "size": 74,
+    "case": "none",
+    "box": "strip",
+    "position": 360,
+    "entrance": "stamp",
+    "letterSpacing": 0
+  },
+  "montage": {
+    "transition": 0.25,
+    "kenBurns": false
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/kantor-paper/1105-big-paper-page-turn.mp3",
+    "accent": "mixkit/sfx-kategori/transition-hit/1362-typewriter-hit.mp3",
+    "photo": "mixkit/sfx-kategori/technology-camera/1430-camera-shutter-hard-click.mp3",
+    "ambience": "mixkit/sfx-kategori/human-crowd/432-reporters-crowd-and-camera-flashes.mp3"
+  },
+  "guidelines": "Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), jangan meniru suara tokohnya. Kutipan harus kutipan asli dengan sumber. Pakai foto yang boleh dipakai (milik sendiri, domain publik, atau berlisensi).",
+  "preview": {
+    "title": "Siapa sebenarnya tokoh ini?",
+    "caption": "Ia memenangkan pemilu dengan selisih tipis",
+    "active": 1
+  }
+}

@@ -35,6 +35,34 @@ opsional. Lihat `contoh/naskah-notesbyadriy.json`.
   `sfx-only.wav` bisa diperiksa dengan `video/scripts/sfx_check.py voice.wav sfx-only.wav`.
 - `--until sfx` berhenti sebelum render, supaya suaranya bisa didengar dulu.
 
+## Style visual
+
+Setiap style adalah satu file di `styles/`: warna, font, latar, perlakuan gambar, tekstur, bentuk dan
+animasi subtitle, pengaturan montase, sound effect yang cocok, dan kata kunci topik (`useFor`).
+
+| Style | Untuk | Tampilan |
+|---|---|---|
+| `bersih` | promo aplikasi, tutorial, umum | biru NotesByAdriy, Plus Jakarta Sans |
+| `wayang` | sejarah, kerajaan, legenda, cerita rakyat | layar kelir dengan lampu blencong berkedip, siluet, gunungan, bingkai kawung, huruf Cinzel emas |
+| `koran` | tokoh publik, politik, berita, biografi | kertas koran, kop surat kabar, foto halftone bertepi sobek, subtitle potongan kertas |
+
+```bash
+python3 pipeline/pipeline.py --list-styles          # daftar style
+python3 pipeline/pipeline.py --preview-styles       # gambar pratinjau di media/style-preview/ (bukan video)
+python3 pipeline/pipeline.py naskah.json --name x --style wayang
+```
+
+- Tanpa `--style` atau `"style"` di naskah, style dipilih otomatis dari kata kunci di judul dan isi
+  (misalnya "Majapahit" -> wayang, "presiden" -> koran). Kalau tidak ada yang cocok, dipakai `bersih`.
+- Di naskah, `"sfx": "style:lineStart"` memakai sound effect dari style yang terpilih.
+- Membuat style baru: salin salah satu file di `styles/`, ubah isinya, lalu cek dengan `--preview-styles`.
+  Latar (`background.kind`) yang tersedia: `gradient`, `wayang`, `koran`; bingkai gambar (`visual.frame`):
+  `none`, `kelir`, `torn`.
+- Style baru tersedia di Remotion. Versi HyperFrames masih memakai tampilan bersih.
+- Semua tampilan memakai CSS dan SVG biasa (tanpa WebGL), jadi render tetap andal tanpa GPU.
+- Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), bukan tiruan suara tokohnya; kutipan harus asli
+  dan bersumber; foto harus boleh dipakai.
+
 ## Latar dari gambar (Open Montage)
 
 Beri `"visual"` pada kalimat di naskah (gambar atau klip, relatif ke file naskah). Kalimat tanpa `"visual"`

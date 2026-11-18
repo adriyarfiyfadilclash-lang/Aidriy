@@ -1,0 +1,21 @@
+{
+  "name": "aidriy-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Video NotesByAdriy dibuat dengan Remotion",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion render HelloWorld out/video.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.545"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,9 @@
+[
+  {"id": "01-hook", "voice": "ongky", "text": "Duh, ide aku kemarin ditulis di mana, ya? Catatan aku berserakan di mana-mana."},
+  {"id": "02-intro", "voice": "adriy", "text": "Coba pakai NotesByAdriy. Semua catatan, ide, dan journal kamu rapi di satu tempat."},
+  {"id": "03-catatan", "voice": "adriy", "text": "Tulis catatan pakai markdown, checklist, sampai gambar di antara teks."},
+  {"id": "04-scan", "voice": "ongky", "text": "Bisa scan dokumen juga? Teksnya langsung jadi catatan!"},
+  {"id": "05-ai", "voice": "adriy", "text": "Ada asisten AI buat merapikan format dan menjawab pertanyaan kamu."},
+  {"id": "06-sinkron", "voice": "ongky", "text": "Terus semuanya tersinkron antar HP. Ganti HP pun aman!"},
+  {"id": "07-outro", "voice": "adriy", "text": "NotesByAdriy. Satu tempat untuk semua pengetahuanmu. Unduh gratis sekarang!"}
+]

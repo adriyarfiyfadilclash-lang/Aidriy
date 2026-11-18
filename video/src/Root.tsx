@@ -1,6 +1,7 @@
 import { Composition, Folder } from "remotion";
 import { HelloWorld } from "./HelloWorld";
 import { PromoVideo } from "./promo/PromoVideo";
+import { calculatePromoVoiceMetadata, PromoVoice } from "./promo/PromoVoice";
 import { IntroScene } from "./promo/IntroScene";
 import { HookScene } from "./promo/HookScene";
 import { FeatureScene } from "./promo/FeatureScene";
@@ -16,6 +17,16 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="PromoSuara"
+        component={PromoVoice}
+        durationInFrames={900}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ sceneDurations: [120, 120, 120, 120, 120, 120, 150] }}
+        calculateMetadata={calculatePromoVoiceMetadata}
       />
       <Folder name="Promo-Scenes">
         <Composition

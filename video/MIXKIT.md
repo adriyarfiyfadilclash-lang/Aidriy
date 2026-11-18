@@ -9,6 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
+| `public/mixkit/sfx-kategori/` | 164 sound effect: click (56), notification (41), transition (37), whoosh (20), pop (10) | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -65,4 +66,13 @@ done <<'LIST'
 951|sukses-notifikasi-positif
 2867|sukses-konfirmasi
 LIST
+```
+
+## Semua sound effect per kategori
+
+Daftar lengkap 164 sound effect dari kategori whoosh, transition, pop, click, dan notification
+ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
+
+```bash
+python3 scripts/mixkit_sfx_download.py
 ```

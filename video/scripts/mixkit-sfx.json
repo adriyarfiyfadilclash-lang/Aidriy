@@ -1016,6 +1016,14 @@
   ]
  },
  {
+  "id": 162,
+  "title": "Sweeping the pavement",
+  "duration": "0:36",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
   "id": 163,
   "title": "Slow sweeping swoosh",
   "duration": "0:05",
@@ -1032,11 +1040,35 @@
   ]
  },
  {
+  "id": 165,
+  "title": "Sweeping the sidewalk",
+  "duration": "0:13",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
   "id": 166,
   "title": "Fast small sweep transition",
   "duration": "0:01",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 167,
+  "title": "Long sweeping air swoosh",
+  "duration": "0:04",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 168,
+  "title": "Fast air sweep transition",
+  "duration": "0:01",
+  "categories": [
+   "transition-sweep"
   ]
  },
  {
@@ -1056,6 +1088,30 @@
   ]
  },
  {
+  "id": 171,
+  "title": "Futuristic robotic fast sweep",
+  "duration": "0:02",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 172,
+  "title": "Sweeping glass debris",
+  "duration": "0:03",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 174,
+  "title": "Fast sweep transition",
+  "duration": "0:01",
+  "categories": [
+   "transition-movie"
+  ]
+ },
+ {
   "id": 175,
   "title": "Short transition sweep",
   "duration": "0:01",
@@ -1072,11 +1128,35 @@
   ]
  },
  {
+  "id": 188,
+  "title": "Wooden sliding door",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 191,
+  "title": "Wooden long sliding door",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
   "id": 200,
   "title": "Industrial metal sliding door",
   "duration": "0:02",
   "categories": [
    "transport-ship"
+  ]
+ },
+ {
+  "id": 201,
+  "title": "Prison metal door close",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
   ]
  },
  {
@@ -1120,6 +1200,22 @@
   ]
  },
  {
+  "id": 230,
+  "title": "Arcade explosion",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 231,
+  "title": "Arcade rising",
+  "duration": "0:04",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
   "id": 234,
   "title": "Video game mystery alert",
   "duration": "0:01",
@@ -1141,6 +1237,22 @@
   "duration": "0:03",
   "categories": [
    "human-voices"
+  ]
+ },
+ {
+  "id": 255,
+  "title": "Fantasy game sweep notification",
+  "duration": "0:03",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 257,
+  "title": "Magic sweep game trophy",
+  "duration": "0:03",
+  "categories": [
+   "transition-sweep"
   ]
  },
  {
@@ -1205,6 +1317,14 @@
   "duration": "0:04",
   "categories": [
    "human-voices"
+  ]
+ },
+ {
+  "id": 280,
+  "title": "Stuttering Sci Fi robotic voices",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -1968,6 +2088,22 @@
   ]
  },
  {
+  "id": 389,
+  "title": "Falling empty can",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 390,
+  "title": "Falling on undergrowth",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 391,
   "title": "Falling male scream",
   "duration": "0:03",
@@ -2616,6 +2752,14 @@
   ]
  },
  {
+  "id": 487,
+  "title": "Cinematic ancient drums heartbeat",
+  "duration": "0:39",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 488,
   "title": "Cinematic transition swoosh heartbeat trailer",
   "duration": "0:08",
@@ -2693,6 +2837,14 @@
   "duration": "0:05",
   "categories": [
    "human-heartbeat"
+  ]
+ },
+ {
+  "id": 498,
+  "title": "Deep heartbeat impact",
+  "duration": "0:03",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3032,11 +3184,75 @@
   ]
  },
  {
+  "id": 546,
+  "title": "Cinematic mystery trailer drum hit",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 549,
+  "title": "Deep cinematic subtle drum impact",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 551,
+  "title": "Metallic cinematic drum trailer sound",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 552,
+  "title": "Blockbuster trailer Sci-fi deep drum",
+  "duration": "0:14",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 557,
+  "title": "Deep dark horror drum",
+  "duration": "0:03",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 559,
   "title": "Horror deep drum heartbeat",
   "duration": "0:04",
   "categories": [
    "human-heartbeat"
+  ]
+ },
+ {
+  "id": 561,
+  "title": "Cinematic horror trailer long sweep",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 563,
+  "title": "Drum deep impact",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 564,
+  "title": "Soft horror hit drum",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -3048,11 +3264,35 @@
   ]
  },
  {
+  "id": 567,
+  "title": "Tribal ritual drums",
+  "duration": "0:20",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 569,
+  "title": "Atmospheric prelude drum roll",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 570,
   "title": "Drumming atmospheric",
   "duration": "0:47",
   "categories": [
    "human-stomp"
+  ]
+ },
+ {
+  "id": 572,
+  "title": "Tribal drumming ambience",
+  "duration": "0:40",
+  "categories": [
+   "transition-boom"
   ]
  },
  {
@@ -3069,6 +3309,14 @@
   "duration": "0:06",
   "categories": [
    "nature-wind"
+  ]
+ },
+ {
+  "id": 577,
+  "title": "Tension and suspense drum roll",
+  "duration": "0:14",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3224,6 +3472,14 @@
   ]
  },
  {
+  "id": 619,
+  "title": "Cinematic church bell hit",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 620,
   "title": "Suburb nightfall church bell and dog barking",
   "duration": "1:47",
@@ -3253,6 +3509,46 @@
   "duration": "0:31",
   "categories": [
    "human-choir"
+  ]
+ },
+ {
+  "id": 639,
+  "title": "Cinematic orchestra chaos",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 640,
+  "title": "Cinematic orchestra horror chaos",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 646,
+  "title": "Dark synth oscillator",
+  "duration": "0:09",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 651,
+  "title": "Glitchy synth intro",
+  "duration": "0:20",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 652,
+  "title": "Glitchy synth trailer",
+  "duration": "0:08",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -3352,6 +3648,14 @@
   ]
  },
  {
+  "id": 670,
+  "title": "Metallic sweep suspense",
+  "duration": "0:04",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
   "id": 674,
   "title": "Cartoon suspense",
   "duration": "0:03",
@@ -3376,11 +3680,51 @@
   ]
  },
  {
+  "id": 677,
+  "title": "Cinematic glass hit suspense",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 678,
+  "title": "Trailer cinematic suspense swell",
+  "duration": "0:12",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 679,
+  "title": "Glitchy cinematic suspense hit",
+  "duration": "0:13",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 682,
+  "title": "Cinematic deep drums suspense swell",
+  "duration": "0:31",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 683,
   "title": "Ritual synth suspense",
   "duration": "3:33",
   "categories": [
    "human-voices"
+  ]
+ },
+ {
+  "id": 686,
+  "title": "Glitchy Sci Fi bass suspense",
+  "duration": "1:34",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -3392,11 +3736,35 @@
   ]
  },
  {
+  "id": 688,
+  "title": "Cinematic action suspense",
+  "duration": "1:34",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 689,
   "title": "Game level music",
   "duration": "0:30",
   "categories": [
    "human-run"
+  ]
+ },
+ {
+  "id": 690,
+  "title": "Sci Fi alien music",
+  "duration": "0:05",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 691,
+  "title": "Rising harp music",
+  "duration": "0:08",
+  "categories": [
+   "transition-swell"
   ]
  },
  {
@@ -3421,6 +3789,22 @@
   "duration": "0:16",
   "categories": [
    "human-baby"
+  ]
+ },
+ {
+  "id": 709,
+  "title": "Swell vinyl record scratch",
+  "duration": "0:01",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 714,
+  "title": "Suspense alien horns",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3469,6 +3853,14 @@
   "duration": "0:01",
   "categories": [
    "human-cartoon"
+  ]
+ },
+ {
+  "id": 724,
+  "title": "Cinematic trailer apocalypse horn",
+  "duration": "0:17",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3656,6 +4048,46 @@
   ]
  },
  {
+  "id": 748,
+  "title": "Falling on foil",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 749,
+  "title": "Sci Fi fall",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 751,
+  "title": "Falling on tree leaves",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 752,
+  "title": "Falling on metal roof",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 753,
+  "title": "Heavy fall into mud",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
   "id": 754,
   "title": "Fall on foam splash",
   "duration": "0:01",
@@ -3664,11 +4096,139 @@
   ]
  },
  {
+  "id": 756,
+  "title": "Falling hit on gravel",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 757,
+  "title": "Falling hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 759,
+  "title": "Glass break with hammer thud",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 772,
+  "title": "Quick zoom impact",
+  "duration": "0:01",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 773,
+  "title": "Horror impact",
+  "duration": "0:02",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 774,
+  "title": "Space impact",
+  "duration": "0:04",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 775,
+  "title": "Metal sword impact",
+  "duration": "0:01",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 777,
+  "title": "Slow motion impact and explosion",
+  "duration": "0:02",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 778,
+  "title": "Tunnel impact echo",
+  "duration": "0:03",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 779,
+  "title": "Dungeon impact",
+  "duration": "0:03",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 780,
+  "title": "Cinematic impact echo",
+  "duration": "0:07",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
   "id": 781,
   "title": "Cinematic impact waves",
   "duration": "0:07",
   "categories": [
    "nature-waves"
+  ]
+ },
+ {
+  "id": 782,
+  "title": "Laser gun impact destruction",
+  "duration": "0:06",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 783,
+  "title": "Submarine metal impact",
+  "duration": "0:08",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 784,
+  "title": "Reverse cinematic impact trailer",
+  "duration": "0:10",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 785,
+  "title": "Cinematic metal cans impacts echo",
+  "duration": "0:04",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 786,
+  "title": "Cinematic suspense swell",
+  "duration": "0:11",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3688,11 +4248,51 @@
   ]
  },
  {
+  "id": 790,
+  "title": "Cinematic trailer riser",
+  "duration": "0:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 792,
+  "title": "Cinematic fast raiser",
+  "duration": "0:01",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 793,
+  "title": "Cinematic ghostly trailer raiser",
+  "duration": "0:21",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 794,
   "title": "Tech choir cinematic riser",
   "duration": "0:17",
   "categories": [
    "human-choir"
+  ]
+ },
+ {
+  "id": 795,
+  "title": "Cinematic drama anticipation",
+  "duration": "0:10",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 796,
+  "title": "Cutting trees with chainsaw ambiance and axe hits",
+  "duration": "0:34",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -3728,11 +4328,51 @@
   ]
  },
  {
+  "id": 818,
+  "title": "Metal medieval construction",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 819,
   "title": "Urban construction site ambiance",
   "duration": "1:02",
   "categories": [
    "transport-truck"
+  ]
+ },
+ {
+  "id": 820,
+  "title": "Metal tool falling",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 833,
+  "title": "Metal hammer hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 835,
+  "title": "Metal tool drop",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 836,
+  "title": "Hammer bounce in the forge",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -3749,6 +4389,22 @@
   "duration": "0:01",
   "categories": [
    "human-happy"
+  ]
+ },
+ {
+  "id": 868,
+  "title": "Fairy teleport",
+  "duration": "0:02",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 869,
+  "title": "Fairy sparkle whoosh",
+  "duration": "0:04",
+  "categories": [
+   "transition-swoosh"
   ]
  },
  {
@@ -3776,6 +4432,30 @@
   ]
  },
  {
+  "id": 881,
+  "title": "Icicles spell whoosh",
+  "duration": "0:02",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 888,
+  "title": "Small metallic sci fi drop",
+  "duration": "0:05",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 890,
+  "title": "Sci Fi interface zoom",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
   "id": 894,
   "title": "Horror sci-fi wind tunnel",
   "duration": "1:04",
@@ -3797,6 +4477,14 @@
   "duration": "0:03",
   "categories": [
    "notification"
+  ]
+ },
+ {
+  "id": 897,
+  "title": "Sci-Fi cinematic melodic horror transition",
+  "duration": "0:25",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -3846,6 +4534,22 @@
   "duration": "0:01",
   "categories": [
    "notification"
+  ]
+ },
+ {
+  "id": 912,
+  "title": "Sci Fi tube swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 913,
+  "title": "Interface sci fi expand or zoom",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
   ]
  },
  {
@@ -4097,11 +4801,99 @@
   ]
  },
  {
+  "id": 1021,
+  "title": "Cinematic glitch trailer",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1022,
+  "title": "Cinematic sci fi glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 1023,
   "title": "Monster glitch voice",
   "duration": "0:03",
   "categories": [
    "human-voices"
+  ]
+ },
+ {
+  "id": 1024,
+  "title": "Monster glitch growl",
+  "duration": "0:08",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1025,
+  "title": "Monster glitch talk",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1026,
+  "title": "Glitch radio vocals",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1027,
+  "title": "Glitch arcade explosion",
+  "duration": "0:08",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1028,
+  "title": "Alien glitch communication",
+  "duration": "0:06",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1029,
+  "title": "Fiction alien communication",
+  "duration": "0:04",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1030,
+  "title": "Small sci fi glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1031,
+  "title": "Glitch short",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1032,
+  "title": "Sci fi glitch confirmation",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -4121,11 +4913,75 @@
   ]
  },
  {
+  "id": 1035,
+  "title": "Robotic glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1036,
+  "title": "Game glitch",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1037,
+  "title": "Glitch eco",
+  "duration": "0:04",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1038,
+  "title": "Musical electronic glitch",
+  "duration": "4:00",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1039,
+  "title": "Futuristic glitch robot",
+  "duration": "0:04",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1040,
+  "title": "Glitch data noise",
+  "duration": "0:15",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
   "id": 1041,
   "title": "Radio waves glitch white noise",
   "duration": "0:40",
   "categories": [
    "nature-waves"
+  ]
+ },
+ {
+  "id": 1042,
+  "title": "Futuristic radio or radar",
+  "duration": "0:22",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1044,
+  "title": "Glitch crackles",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -4153,11 +5009,115 @@
   ]
  },
  {
+  "id": 1082,
+  "title": "Censorship beep",
+  "duration": "0:01",
+  "categories": [
+   "transition-movie"
+  ]
+ },
+ {
+  "id": 1083,
+  "title": "Censorship beep long",
+  "duration": "0:06",
+  "categories": [
+   "transition-movie"
+  ]
+ },
+ {
   "id": 1085,
   "title": "Rewind magic spell",
   "duration": "0:02",
   "categories": [
    "human-wow"
+  ]
+ },
+ {
+  "id": 1086,
+  "title": "Magic rewind transition",
+  "duration": "0:05",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1087,
+  "title": "Flashback echo rewind",
+  "duration": "0:11",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1088,
+  "title": "Tape rewind cinematic transition",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1089,
+  "title": "Slow tape rewind cinematic transition",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1090,
+  "title": "Horror tape rewind cinematic transition",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1091,
+  "title": "Tape rewind transition",
+  "duration": "0:05",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1092,
+  "title": "Fast tape rewind cinematic transition",
+  "duration": "0:01",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1093,
+  "title": "Glitch sci fi rewind transition",
+  "duration": "0:03",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1094,
+  "title": "Sci fi rewind woosh",
+  "duration": "0:04",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1095,
+  "title": "Reel to reel rewind",
+  "duration": "0:03",
+  "categories": [
+   "transition-rewind"
+  ]
+ },
+ {
+  "id": 1096,
+  "title": "Reel to reel fast forward",
+  "duration": "0:04",
+  "categories": [
+   "transition-rewind"
   ]
  },
  {
@@ -4385,11 +5345,83 @@
   ]
  },
  {
+  "id": 1143,
+  "title": "Cinematic whoosh deep impact",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1144,
+  "title": "Short space stutter intro riser",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1145,
+  "title": "Musical news presentation intro",
+  "duration": "0:07",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
   "id": 1146,
   "title": "Intro transition",
   "duration": "0:07",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 1147,
+  "title": "Magical intro presentation",
+  "duration": "0:12",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 1148,
+  "title": "Mystery intro transition",
+  "duration": "0:07",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 1149,
+  "title": "Podcast talk intro",
+  "duration": "0:21",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 1150,
+  "title": "Introduction bell sound",
+  "duration": "0:04",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1151,
+  "title": "Intro news sound",
+  "duration": "0:03",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1152,
+  "title": "Vibration hit transition",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -5905,6 +6937,38 @@
   ]
  },
  {
+  "id": 1362,
+  "title": "Typewriter hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 1364,
+  "title": "Hard typewriter hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 1365,
+  "title": "Mechanical typewriter hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 1384,
+  "title": "Typewriter single mechanical hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 1417,
   "title": "Robot step",
   "duration": "0:01",
@@ -5929,6 +6993,62 @@
   ]
  },
  {
+  "id": 1444,
+  "title": "Antique movie projector spinning",
+  "duration": "0:21",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 1445,
+  "title": "Cinematic static slow swell",
+  "duration": "0:10",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1454,
+  "title": "Static whoosh",
+  "duration": "0:04",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
+  "id": 1457,
+  "title": "Glitch static",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 1458,
+  "title": "Steam swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1459,
+  "title": "Swirling short swoosh",
+  "duration": "0:03",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1460,
+  "title": "Magic swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
   "id": 1461,
   "title": "Short wind swoosh",
   "duration": "0:01",
@@ -5937,11 +7057,51 @@
   ]
  },
  {
+  "id": 1462,
+  "title": "Quick swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1463,
+  "title": "Spellcaster fairy swoosh",
+  "duration": "0:02",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1464,
+  "title": "Quick swoosh accent",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
   "id": 1465,
   "title": "Vacuum swoosh transition",
   "duration": "0:02",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 1466,
+  "title": "Elevating swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1467,
+  "title": "Cinematic laser swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -5961,6 +7121,14 @@
   ]
  },
  {
+  "id": 1470,
+  "title": "Cinematic muddy swoosh",
+  "duration": "0:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 1471,
   "title": "Cinematic wind swoosh",
   "duration": "0:01",
@@ -5977,6 +7145,14 @@
   ]
  },
  {
+  "id": 1473,
+  "title": "Long hit swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 1474,
   "title": "Transition windy swoosh",
   "duration": "0:03",
@@ -5985,11 +7161,43 @@
   ]
  },
  {
+  "id": 1476,
+  "title": "Sword slash swoosh",
+  "duration": "0:02",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1478,
+  "title": "Karate hit whoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 1481,
+  "title": "Cinematic swoosh",
+  "duration": "0:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 1482,
   "title": "Ending wind swoosh",
   "duration": "0:02",
   "categories": [
    "nature-wind"
+  ]
+ },
+ {
+  "id": 1483,
+  "title": "Jetpack swoosh",
+  "duration": "0:03",
+  "categories": [
+   "transition-swoosh"
   ]
  },
  {
@@ -6015,6 +7223,14 @@
   "categories": [
    "whoosh",
    "transition"
+  ]
+ },
+ {
+  "id": 1487,
+  "title": "Dagger woosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
   ]
  },
  {
@@ -6068,6 +7284,30 @@
   ]
  },
  {
+  "id": 1494,
+  "title": "Sand swish",
+  "duration": "0:01",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1495,
+  "title": "Horror swish",
+  "duration": "0:02",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1496,
+  "title": "Magical swish",
+  "duration": "0:04",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
   "id": 1497,
   "title": "Fairy spell swish",
   "duration": "0:02",
@@ -6076,11 +7316,195 @@
   ]
  },
  {
+  "id": 1498,
+  "title": "Stardust swish",
+  "duration": "0:04",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1499,
+  "title": "Triple bouncing swish",
+  "duration": "0:01",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1500,
+  "title": "Spacey swish spin",
+  "duration": "0:01",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 1501,
+  "title": "Metal swish",
+  "duration": "0:01",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1505,
+  "title": "Metal tunnel swish",
+  "duration": "0:05",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
+  "id": 1506,
+  "title": "Sword blade swish",
+  "duration": "0:01",
+  "categories": [
+   "transition-swish"
+  ]
+ },
+ {
   "id": 1508,
   "title": "Lightning whip",
   "duration": "0:01",
   "categories": [
    "nature-lightning"
+  ]
+ },
+ {
+  "id": 1509,
+  "title": "Metal impact whip",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1516,
+  "title": "Magic whip swell",
+  "duration": "0:02",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 1518,
+  "title": "Futuristic cinematic noise whip",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1520,
+  "title": "Metallic impact with whip",
+  "duration": "0:09",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 1521,
+  "title": "Whip metallic impact",
+  "duration": "0:07",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 1522,
+  "title": "Sliding wooden light door",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1523,
+  "title": "Heavy sliding door",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1524,
+  "title": "Cabinet door slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1525,
+  "title": "Bathroom door slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1526,
+  "title": "Shower door slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1527,
+  "title": "Glass plate slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1528,
+  "title": "Magical stone slide",
+  "duration": "0:04",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1529,
+  "title": "Slide hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 1530,
+  "title": "Paper slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1531,
+  "title": "Warping slide",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1533,
+  "title": "Futuristic slide",
+  "duration": "0:01",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1534,
+  "title": "Metallic door sliding",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
   ]
  },
  {
@@ -6972,11 +8396,83 @@
   ]
  },
  {
+  "id": 1674,
+  "title": "Revolver chamber spin",
+  "duration": "0:01",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 1686,
+  "title": "Underground explosion impact echo",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1687,
+  "title": "Dramatic metal explosion impact",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 1688,
+  "title": "Fast game explosion",
+  "duration": "0:01",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1690,
+  "title": "Distant explosion",
+  "duration": "0:05",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1692,
+  "title": "Pixel chiptune explosion",
+  "duration": "0:02",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1694,
+  "title": "Short explosion",
+  "duration": "0:01",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
   "id": 1695,
   "title": "Whoosh transition explosion echo",
   "duration": "0:11",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 1698,
+  "title": "Arcade game explosion echo",
+  "duration": "0:03",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 1699,
+  "title": "Arcade game explosion",
+  "duration": "0:01",
+  "categories": [
+   "transition-boom"
   ]
  },
  {
@@ -6993,6 +8489,14 @@
   "duration": "0:02",
   "categories": [
    "nature-fire"
+  ]
+ },
+ {
+  "id": 1710,
+  "title": "Lightsaber sound swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
   ]
  },
  {
@@ -7613,6 +9117,14 @@
   ]
  },
  {
+  "id": 1842,
+  "title": "Metal bowl hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 1870,
   "title": "Shower water",
   "duration": "0:05",
@@ -7658,6 +9170,30 @@
   "duration": "0:04",
   "categories": [
    "nature-water"
+  ]
+ },
+ {
+  "id": 1901,
+  "title": "Bed pillow hit the mattress",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 1902,
+  "title": "Cupboard sliding door",
+  "duration": "0:03",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
+  "id": 1908,
+  "title": "Cupboard soft sliding door",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
   ]
  },
  {
@@ -7965,6 +9501,22 @@
   ]
  },
  {
+  "id": 2017,
+  "title": "Winning swoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 2046,
+  "title": "Gearbox working",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2047,
   "title": "Martial arts fast punch",
   "duration": "0:01",
@@ -7994,6 +9546,14 @@
   "duration": "0:01",
   "categories": [
    "human-punch"
+  ]
+ },
+ {
+  "id": 2051,
+  "title": "Boxing punch",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8029,6 +9589,14 @@
   ]
  },
  {
+  "id": 2056,
+  "title": "Effort of a hit given",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2057,
   "title": "Blow breaking the air",
   "duration": "0:01",
@@ -8053,11 +9621,27 @@
   ]
  },
  {
+  "id": 2070,
+  "title": "Light impact on the ground",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2072,
   "title": "Small hit in a game",
   "duration": "0:01",
   "categories": [
    "human-punch"
+  ]
+ },
+ {
+  "id": 2073,
+  "title": "Game ball tap",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8069,11 +9653,91 @@
   ]
  },
  {
+  "id": 2079,
+  "title": "Gym ball hitting the ground",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2080,
+  "title": "Hitting golf ball",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2082,
+  "title": "Sports ball hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2083,
+  "title": "Hitting the ball on the ground",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2085,
+  "title": "Basketball ball bouncing",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2087,
+  "title": "Quick hit of a basketball",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2089,
   "title": "Ball bouncing to a stop",
   "duration": "0:04",
   "categories": [
    "nature-drop"
+  ]
+ },
+ {
+  "id": 2090,
+  "title": "Hand receiving a basketball",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2091,
+  "title": "Basketball ball hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2092,
+  "title": "Basketball ball tap",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2093,
+  "title": "Basketball ball, hard hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8093,11 +9757,35 @@
   ]
  },
  {
+  "id": 2096,
+  "title": "Hitting the basketball ball",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2097,
   "title": "Ambient sports crowd sound",
   "duration": "1:16",
   "categories": [
    "human-scream"
+  ]
+ },
+ {
+  "id": 2099,
+  "title": "Soccer ball kick",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2100,
+  "title": "Striking jump rope",
+  "duration": "0:12",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8117,11 +9805,27 @@
   ]
  },
  {
+  "id": 2103,
+  "title": "Punching boxing gloves hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2104,
   "title": "Bicycle pedal accelerating",
   "duration": "0:06",
   "categories": [
    "transport-bike"
+  ]
+ },
+ {
+  "id": 2108,
+  "title": "Soccer ball quick kick",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8149,6 +9853,14 @@
   ]
  },
  {
+  "id": 2112,
+  "title": "Hitting soccer ball",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2113,
   "title": "Training with punching bag",
   "duration": "0:23",
@@ -8173,11 +9885,107 @@
   ]
  },
  {
+  "id": 2117,
+  "title": "Golf ball swing",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2118,
+  "title": "Golf shot with whistle",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2119,
+  "title": "Hard golf swing",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2120,
+  "title": "Golf ball hard hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2121,
+  "title": "Quick golf hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2122,
+  "title": "Sharp golf hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2123,
+  "title": "Golf metal shot",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2125,
+  "title": "Quick Shot Golf",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2126,
+  "title": "Powerful golf shot",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2127,
+  "title": "Short golf shot",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2135,
   "title": "Underwater transmitter hum",
   "duration": "0:13",
   "categories": [
    "nature-water"
+  ]
+ },
+ {
+  "id": 2136,
+  "title": "Space ship hum",
+  "duration": "0:46",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2137,
+  "title": "Sci fi machine deep hum",
+  "duration": "0:40",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -8317,6 +10125,14 @@
   ]
  },
  {
+  "id": 2160,
+  "title": "Metallic sword strike",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2161,
   "title": "Air in a hit",
   "duration": "0:01",
@@ -8357,11 +10173,27 @@
   ]
  },
  {
+  "id": 2166,
+  "title": "Swift Sword Strike",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2167,
   "title": "Short slap or clap",
   "duration": "0:03",
   "categories": [
    "human-clapping"
+  ]
+ },
+ {
+  "id": 2168,
+  "title": "Sword cutting and killing",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -8421,6 +10253,14 @@
   ]
  },
  {
+  "id": 2177,
+  "title": "Metal grill quick hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2180,
   "title": "Exciting fast hit",
   "duration": "0:02",
@@ -8429,11 +10269,59 @@
   ]
  },
  {
+  "id": 2181,
+  "title": "Microphone hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2182,
+  "title": "Wood hard hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2183,
+  "title": "Glass hitting a metal",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2184,
   "title": "Knife fast hit",
   "duration": "0:01",
   "categories": [
    "human-fight"
+  ]
+ },
+ {
+  "id": 2185,
+  "title": "Electronic retro block hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2186,
+  "title": "Blast hit with echo",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2187,
+  "title": "Low explosion indoors",
+  "duration": "0:05",
+  "categories": [
+   "transition-impact"
   ]
  },
  {
@@ -9117,6 +11005,54 @@
   ]
  },
  {
+  "id": 2283,
+  "title": "Cinematic mysterious riser brass",
+  "duration": "0:27",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2284,
+  "title": "Threatening orchestra trumpets",
+  "duration": "0:03",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2285,
+  "title": "Orchestra triumphant trumpets",
+  "duration": "0:04",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2286,
+  "title": "Trumpets and strings off beat",
+  "duration": "0:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2287,
+  "title": "Brass stick singing",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2288,
+  "title": "Brass stick",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 2289,
   "title": "Warfare horn",
   "duration": "0:04",
@@ -9141,6 +11077,22 @@
   ]
  },
  {
+  "id": 2292,
+  "title": "Orchestra trumpets ending",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2293,
+  "title": "Trumpet fanfare",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 2295,
   "title": "Pulsating bass transition",
   "duration": "0:07",
@@ -9149,11 +11101,59 @@
   ]
  },
  {
+  "id": 2296,
+  "title": "Synthetic power bass transition",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 2297,
   "title": "Bass rumble hum",
   "duration": "0:06",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 2299,
+  "title": "Short bass hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2300,
+  "title": "Knocking sub bass",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2301,
+  "title": "Quick bass switch",
+  "duration": "0:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2302,
+  "title": "Spring metal hit",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2303,
+  "title": "Futuristic bass hit",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -9181,6 +11181,14 @@
   ]
  },
  {
+  "id": 2314,
+  "title": "Uplifting flute",
+  "duration": "0:07",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
   "id": 2317,
   "title": "Uplifting flute notification",
   "duration": "0:03",
@@ -9194,6 +11202,14 @@
   "duration": "0:01",
   "categories": [
    "notification"
+  ]
+ },
+ {
+  "id": 2333,
+  "title": "Western guitar drum single",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -9226,6 +11242,22 @@
   "duration": "0:03",
   "categories": [
    "whoosh"
+  ]
+ },
+ {
+  "id": 2352,
+  "title": "Magic glitter or particles",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2353,
+  "title": "Magic glitter shot",
+  "duration": "0:04",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -9302,6 +11334,14 @@
   "duration": "0:01",
   "categories": [
    "pop"
+  ]
+ },
+ {
+  "id": 2366,
+  "title": "Writing on blackboard",
+  "duration": "0:13",
+  "categories": [
+   "transition-intro"
   ]
  },
  {
@@ -10226,6 +12266,14 @@
   ]
  },
  {
+  "id": 2510,
+  "title": "Cinematic suspense ambience",
+  "duration": "1:02",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
   "id": 2513,
   "title": "Waterfall ambience",
   "duration": "0:13",
@@ -10274,6 +12322,30 @@
   ]
  },
  {
+  "id": 2523,
+  "title": "Futuristic space intro",
+  "duration": "0:08",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2526,
+  "title": "High tech robot movement",
+  "duration": "0:03",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 2527,
+  "title": "Sci fi futuristic door open",
+  "duration": "0:04",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
   "id": 2531,
   "title": "Typing on a laptop keyboard",
   "duration": "0:19",
@@ -10282,11 +12354,107 @@
   ]
  },
  {
+  "id": 2543,
+  "title": "Cinematic long radio signal",
+  "duration": "0:17",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2548,
+  "title": "Digital signal interference",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
   "id": 2549,
   "title": "Astronaut radio communication from space",
   "duration": "0:02",
   "categories": [
    "human-voices"
+  ]
+ },
+ {
+  "id": 2550,
+  "title": "Alien radio frequency connection",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2551,
+  "title": "Terror radio frequency signal",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2552,
+  "title": "Bad radio frequency connection",
+  "duration": "0:10",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2553,
+  "title": "Weird radio frequency connection",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2554,
+  "title": "Radio frequency signal swell",
+  "duration": "0:06",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2558,
+  "title": "Creepy radio frequency",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2563,
+  "title": "Broken radio frequency signal",
+  "duration": "0:06",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2564,
+  "title": "Horror radio signal transmission",
+  "duration": "0:24",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2565,
+  "title": "Bad and creepy radio transmission",
+  "duration": "0:07",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2566,
+  "title": "Terror radio frequency",
+  "duration": "0:25",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -10378,6 +12546,22 @@
   ]
  },
  {
+  "id": 2586,
+  "title": "Magical light sweep",
+  "duration": "0:04",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 2589,
+  "title": "Shot light energy flowing",
+  "duration": "0:07",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
   "id": 2590,
   "title": "Fire match lighting",
   "duration": "0:06",
@@ -10386,11 +12570,51 @@
   ]
  },
  {
+  "id": 2592,
+  "title": "Static electricity presentation",
+  "duration": "0:03",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2594,
+  "title": "Electric buzz glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2595,
+  "title": "Small electric glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
   "id": 2596,
   "title": "Electric whoosh",
   "duration": "0:03",
   "categories": [
    "whoosh"
+  ]
+ },
+ {
+  "id": 2599,
+  "title": "Heavy electric shockwave impact",
+  "duration": "0:06",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2600,
+  "title": "Electricity static power up",
+  "duration": "0:02",
+  "categories": [
+   "transition-impact"
   ]
  },
  {
@@ -10442,6 +12666,14 @@
   ]
  },
  {
+  "id": 2609,
+  "title": "Whoosh resonating metallic hit",
+  "duration": "0:03",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
   "id": 2610,
   "title": "Wind magic whoosh",
   "duration": "0:04",
@@ -10455,6 +12687,14 @@
   "duration": "0:01",
   "categories": [
    "nature-wind"
+  ]
+ },
+ {
+  "id": 2612,
+  "title": "Terror whooshy hum",
+  "duration": "0:02",
+  "categories": [
+   "transition-woosh"
   ]
  },
  {
@@ -10482,11 +12722,75 @@
   ]
  },
  {
+  "id": 2616,
+  "title": "Interface classic zoom",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2617,
+  "title": "UI zoom in",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2618,
+  "title": "User interface zoom in",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2619,
+  "title": "UI zoom out",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2620,
+  "title": "User interface zoom out",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2621,
+  "title": "Ui zoom in, long sound",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2622,
+  "title": "In and out zoom sound",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
   "id": 2623,
   "title": "Ghostly whoosh passing",
   "duration": "0:03",
   "categories": [
    "whoosh"
+  ]
+ },
+ {
+  "id": 2624,
+  "title": "Funny magic zoom",
+  "duration": "0:01",
+  "categories": [
+   "transition-zoom"
   ]
  },
  {
@@ -10498,11 +12802,51 @@
   ]
  },
  {
+  "id": 2626,
+  "title": "Futuristic zoom move",
+  "duration": "0:02",
+  "categories": [
+   "transition-zoom"
+  ]
+ },
+ {
+  "id": 2627,
+  "title": "Fast swipe zoom",
+  "duration": "0:01",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
+  "id": 2628,
+  "title": "Relaxing harp sweep",
+  "duration": "0:06",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2629,
+  "title": "Magic astral sweep effect",
+  "duration": "0:04",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
   "id": 2630,
   "title": "Terror sweep of darkness",
   "duration": "0:07",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 2631,
+  "title": "Digital sweep effect",
+  "duration": "0:01",
+  "categories": [
+   "transition-sweep"
   ]
  },
  {
@@ -10514,11 +12858,43 @@
   ]
  },
  {
+  "id": 2633,
+  "title": "Sweeping sparkle presentation intro",
+  "duration": "0:02",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2634,
+  "title": "Futuristic transition sweep",
+  "duration": "0:02",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
+  "id": 2635,
+  "title": "Futuristic cinematic sweep",
+  "duration": "0:01",
+  "categories": [
+   "transition-sweep"
+  ]
+ },
+ {
   "id": 2636,
   "title": "Futuristic metal transition sweep",
   "duration": "0:01",
   "categories": [
    "transport-drone"
+  ]
+ },
+ {
+  "id": 2637,
+  "title": "Fast air transition sweep",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -10535,6 +12911,22 @@
   "duration": "0:01",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 2640,
+  "title": "Spinning fire fx",
+  "duration": "0:02",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 2641,
+  "title": "Lighter wheel spin",
+  "duration": "0:01",
+  "categories": [
+   "transition-spin"
   ]
  },
  {
@@ -10591,6 +12983,14 @@
   "duration": "0:01",
   "categories": [
    "human-cartoon"
+  ]
+ },
+ {
+  "id": 2649,
+  "title": "Spinning magic sound",
+  "duration": "0:01",
+  "categories": [
+   "transition-spin"
   ]
  },
  {
@@ -10719,6 +13119,86 @@
   "duration": "0:06",
   "categories": [
    "transport-engine"
+  ]
+ },
+ {
+  "id": 2666,
+  "title": "Bass double swell",
+  "duration": "0:08",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 2667,
+  "title": "Intense swell phasing spinning",
+  "duration": "0:06",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2668,
+  "title": "Simple swell bass",
+  "duration": "0:11",
+  "categories": [
+   "transition-spin"
+  ]
+ },
+ {
+  "id": 2669,
+  "title": "Short sci-fi swell",
+  "duration": "0:02",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 2670,
+  "title": "Electronic swell noise",
+  "duration": "0:08",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 2671,
+  "title": "Mysterious long swell",
+  "duration": "0:22",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 2672,
+  "title": "Angelic swell presentation",
+  "duration": "0:08",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2673,
+  "title": "Instrument echo swell",
+  "duration": "0:10",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
+  "id": 2674,
+  "title": "Heavenly swell",
+  "duration": "0:14",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2675,
+  "title": "Cinematic swell stark transition",
+  "duration": "0:07",
+  "categories": [
+   "transition-intro"
   ]
  },
  {
@@ -11490,6 +13970,14 @@
   ]
  },
  {
+  "id": 2774,
+  "title": "Axe hits to a plate",
+  "duration": "0:01",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
   "id": 2775,
   "title": "Hitting metal armor",
   "duration": "0:01",
@@ -11506,11 +13994,83 @@
   ]
  },
  {
+  "id": 2777,
+  "title": "Masive explosion in battle",
+  "duration": "0:08",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2778,
+  "title": "8-bit game shots",
+  "duration": "0:02",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 2779,
+  "title": "8-bit explosion gun",
+  "duration": "0:02",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
+  "id": 2780,
+  "title": "Drums of war call",
+  "duration": "0:04",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
   "id": 2781,
   "title": "Nasty criature roar",
   "duration": "0:01",
   "categories": [
    "human"
+  ]
+ },
+ {
+  "id": 2782,
+  "title": "Epic impact afar explosion",
+  "duration": "0:04",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2784,
+  "title": "Drums of war",
+  "duration": "0:04",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2785,
+  "title": "War horn ambience",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2786,
+  "title": "Far away war explosions",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2787,
+  "title": "Futuristic space war percussion",
+  "duration": "0:39",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -11554,6 +14114,14 @@
   ]
  },
  {
+  "id": 2794,
+  "title": "Heavy sword hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2795,
   "title": "Heavy sword smashes metal",
   "duration": "0:01",
@@ -11567,6 +14135,62 @@
   "duration": "0:01",
   "categories": [
    "human-fight"
+  ]
+ },
+ {
+  "id": 2797,
+  "title": "Sword hits heavy metal",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2799,
+  "title": "Metallic sword scrape",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2800,
+  "title": "Bomb explosion in battle",
+  "duration": "0:03",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2804,
+  "title": "Bomb drop impact",
+  "duration": "0:07",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2805,
+  "title": "Bomb drop exploding",
+  "duration": "0:08",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2806,
+  "title": "Bomb drop cold water explosion",
+  "duration": "0:08",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2807,
+  "title": "Vide game time bomb explosion",
+  "duration": "0:06",
+  "categories": [
+   "transition-impact"
   ]
  },
  {
@@ -12050,11 +14674,91 @@
   ]
  },
  {
+  "id": 2896,
+  "title": "Movie intro impact",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2897,
+  "title": "Movie logo presentation impact",
+  "duration": "0:07",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2898,
+  "title": "Suspense movie impact intro",
+  "duration": "0:09",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2899,
+  "title": "Movie presentation intro",
+  "duration": "0:09",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2900,
+  "title": "Movie logo intro impact",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2901,
+  "title": "Epic movie impact",
+  "duration": "0:05",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2902,
+  "title": "Movie impact intro presentation",
+  "duration": "0:05",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
   "id": 2903,
   "title": "Movie whoosh impact presentation",
   "duration": "0:03",
   "categories": [
    "whoosh"
+  ]
+ },
+ {
+  "id": 2904,
+  "title": "Epic movie transition",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2905,
+  "title": "Terror movie long impact",
+  "duration": "0:24",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2906,
+  "title": "Horror movie transition",
+  "duration": "0:09",
+  "categories": [
+   "transition-intro"
   ]
  },
  {
@@ -12079,6 +14783,70 @@
   "duration": "0:06",
   "categories": [
    "transition"
+  ]
+ },
+ {
+  "id": 2910,
+  "title": "Suspense movie transition sound",
+  "duration": "0:05",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2911,
+  "title": "Horror movie long transition",
+  "duration": "0:25",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2912,
+  "title": "Futuristic movie accent",
+  "duration": "0:02",
+  "categories": [
+   "transition-intro"
+  ]
+ },
+ {
+  "id": 2913,
+  "title": "Epic futuristic movie accent",
+  "duration": "0:03",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2914,
+  "title": "Thriller movie impact swell",
+  "duration": "0:27",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2915,
+  "title": "Blockbuster suspense movie impact",
+  "duration": "0:05",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2916,
+  "title": "Movie impact transition",
+  "duration": "0:08",
+  "categories": [
+   "transition-cinematic"
+  ]
+ },
+ {
+  "id": 2917,
+  "title": "Suspence cinematic impact",
+  "duration": "0:10",
+  "categories": [
+   "transition-cinematic"
   ]
  },
  {
@@ -12178,6 +14946,46 @@
   ]
  },
  {
+  "id": 2937,
+  "title": "Bone breaking with echo",
+  "duration": "0:01",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 2939,
+  "title": "Futuristic device fail",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2940,
+  "title": "Electronic glitch sound",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2941,
+  "title": "Futuristic electronic engine fail",
+  "duration": "0:06",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2942,
+  "title": "System break",
+  "duration": "0:01",
+  "categories": [
+   "transition-boom"
+  ]
+ },
+ {
   "id": 2944,
   "title": "Funny break engine",
   "duration": "0:01",
@@ -12186,11 +14994,51 @@
   ]
  },
  {
+  "id": 2946,
+  "title": "Virtual quick glitch",
+  "duration": "0:02",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2948,
+  "title": "Tech device glitch",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
   "id": 2949,
   "title": "Futuristic tech engine glitch",
   "duration": "0:01",
   "categories": [
    "transport-engine"
+  ]
+ },
+ {
+  "id": 2950,
+  "title": "Intro text glitch",
+  "duration": "0:04",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2951,
+  "title": "Digital glitch break",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
+  "id": 2952,
+  "title": "Break tech impact",
+  "duration": "0:01",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -12207,6 +15055,14 @@
   "duration": "0:01",
   "categories": [
    "human-funny"
+  ]
+ },
+ {
+  "id": 2957,
+  "title": "Radar system glitch",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
   ]
  },
  {
@@ -12298,11 +15154,35 @@
   ]
  },
  {
+  "id": 2980,
+  "title": "Factory metal hard hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 2981,
   "title": "People indoors ambience",
   "duration": "0:51",
   "categories": [
    "human"
+  ]
+ },
+ {
+  "id": 2982,
+  "title": "Industrial ambience hits",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 2983,
+  "title": "Factory hit with echo",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -12402,6 +15282,14 @@
   ]
  },
  {
+  "id": 3001,
+  "title": "Space shot whoosh",
+  "duration": "0:01",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
   "id": 3005,
   "title": "Explainer video pops whoosh light pop",
   "duration": "0:01",
@@ -12416,6 +15304,22 @@
   "duration": "0:01",
   "categories": [
    "human-sneeze"
+  ]
+ },
+ {
+  "id": 3012,
+  "title": "Explainer video foley projector  hybrid film antique fade pitch bend",
+  "duration": "0:03",
+  "categories": [
+   "transition-movie"
+  ]
+ },
+ {
+  "id": 3013,
+  "title": "Explainer video foley projector  film antique  bell and howell start stop",
+  "duration": "0:29",
+  "categories": [
+   "transition-movie"
   ]
  },
  {
@@ -12480,6 +15384,14 @@
   "duration": "0:15",
   "categories": [
    "human-crowd"
+  ]
+ },
+ {
+  "id": 3023,
+  "title": "Burning asteroide flyby",
+  "duration": "0:07",
+  "categories": [
+   "transition-woosh"
   ]
  },
  {
@@ -12699,6 +15611,14 @@
   ]
  },
  {
+  "id": 3066,
+  "title": "Arcade glitch touch",
+  "duration": "0:03",
+  "categories": [
+   "transition-glitch"
+  ]
+ },
+ {
   "id": 3072,
   "title": "Annoying ballon sounds",
   "duration": "0:01",
@@ -12760,6 +15680,38 @@
   "duration": "0:08",
   "categories": [
    "transport-boat"
+  ]
+ },
+ {
+  "id": 3082,
+  "title": "Magic sparkle poof hit",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3084,
+  "title": "Cleaning up glass debris",
+  "duration": "0:04",
+  "categories": [
+   "transition-sweeping"
+  ]
+ },
+ {
+  "id": 3086,
+  "title": "Sweeping wooden floor",
+  "duration": "0:06",
+  "categories": [
+   "transition-sweeping"
+  ]
+ },
+ {
+  "id": 3088,
+  "title": "Tv remote control or plastic toy drop",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
   ]
  },
  {
@@ -12867,6 +15819,14 @@
   ]
  },
  {
+  "id": 3113,
+  "title": "Sci fi warp slide",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
   "id": 3114,
   "title": "Fast sci fi transition sweep",
   "duration": "0:01",
@@ -12931,6 +15891,38 @@
   ]
  },
  {
+  "id": 3130,
+  "title": "Scary slam",
+  "duration": "0:05",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3131,
+  "title": "Short impact static",
+  "duration": "0:12",
+  "categories": [
+   "transition-impact"
+  ]
+ },
+ {
+  "id": 3133,
+  "title": "Short rising thud",
+  "duration": "0:06",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 3139,
+  "title": "Warehouse metal hit",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
   "id": 3140,
   "title": "Long giant water pour into vat",
   "duration": "0:27",
@@ -12955,6 +15947,14 @@
   ]
  },
  {
+  "id": 3151,
+  "title": "Positive game alert",
+  "duration": "0:01",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
   "id": 3153,
   "title": "Robot death",
   "duration": "0:10",
@@ -12971,11 +15971,27 @@
   ]
  },
  {
+  "id": 3157,
+  "title": "Creaky wooden scrap",
+  "duration": "0:02",
+  "categories": [
+   "transition-slide"
+  ]
+ },
+ {
   "id": 3158,
   "title": "Thin metal plate drop",
   "duration": "0:01",
   "categories": [
    "nature-drop"
+  ]
+ },
+ {
+  "id": 3159,
+  "title": "Wrong answer mech styled",
+  "duration": "0:02",
+  "categories": [
+   "transition-woosh"
   ]
  },
  {
@@ -12995,6 +16011,14 @@
   ]
  },
  {
+  "id": 3166,
+  "title": "Metal tools browsing",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
   "id": 3167,
   "title": "Squishing a soggy cloth shirt",
   "duration": "0:01",
@@ -13011,6 +16035,14 @@
   ]
  },
  {
+  "id": 3169,
+  "title": "Circular object touch",
+  "duration": "0:02",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
   "id": 3170,
   "title": "Aircraft flyby",
   "duration": "0:10",
@@ -13019,11 +16051,27 @@
   ]
  },
  {
+  "id": 3171,
+  "title": "Hi-tech touch with magnet",
+  "duration": "0:02",
+  "categories": [
+   "transition-woosh"
+  ]
+ },
+ {
   "id": 3172,
   "title": "Cartoon robot sound",
   "duration": "0:02",
   "categories": [
    "human-cartoon"
+  ]
+ },
+ {
+  "id": 3174,
+  "title": "Forceful impact item",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -13040,6 +16088,38 @@
   "duration": "0:13",
   "categories": [
    "human-drink"
+  ]
+ },
+ {
+  "id": 3182,
+  "title": "Electrical wire mech hit",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3186,
+  "title": "Opening a metal vault",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3187,
+  "title": "Bag of coins touch",
+  "duration": "0:01",
+  "categories": [
+   "transition-thud"
+  ]
+ },
+ {
+  "id": 3190,
+  "title": "Open special box",
+  "duration": "0:03",
+  "categories": [
+   "transition-hit"
   ]
  },
  {
@@ -13091,11 +16171,43 @@
   ]
  },
  {
+  "id": 3201,
+  "title": "Electric charge hum",
+  "duration": "0:02",
+  "categories": [
+   "transition-swell"
+  ]
+ },
+ {
   "id": 3202,
   "title": "Metal tools box browsing",
   "duration": "0:01",
   "categories": [
    "nature-drop"
+  ]
+ },
+ {
+  "id": 3203,
+  "title": "Electro hit",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3204,
+  "title": "Plastic hit",
+  "duration": "0:02",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3205,
+  "title": "Robot positive item acquired",
+  "duration": "0:01",
+  "categories": [
+   "transition-swoosh"
   ]
  },
  {
@@ -13115,6 +16227,22 @@
   ]
  },
  {
+  "id": 3210,
+  "title": "Bass mid junk pile hit",
+  "duration": "0:01",
+  "categories": [
+   "transition-hit"
+  ]
+ },
+ {
+  "id": 3214,
+  "title": "Chamber bot mech screech",
+  "duration": "0:04",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
   "id": 3215,
   "title": "Spray water or liquid",
   "duration": "0:02",
@@ -13128,6 +16256,22 @@
   "duration": "0:02",
   "categories": [
    "nature-water"
+  ]
+ },
+ {
+  "id": 3218,
+  "title": "Positive tech alert",
+  "duration": "0:02",
+  "categories": [
+   "transition-swoosh"
+  ]
+ },
+ {
+  "id": 3220,
+  "title": "Powerful air whooshes",
+  "duration": "0:01",
+  "categories": [
+   "transition-woosh"
   ]
  }
 ]

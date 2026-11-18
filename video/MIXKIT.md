@@ -9,7 +9,7 @@ melarang file aslinya disebarkan ulang. Memakainya di dalam video hasil render b
 |---|---|---|
 | `public/mixkit/light-leaks/` | 6 klip cahaya 1920×1080 (5 transisi 2 detik + 1 flare 5 detik) | Ya |
 | `public/mixkit/images/` | PNG logo contoh dan lower third | Ya |
-| `public/mixkit/sfx-kategori/` | 1640 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), 305 alam (folder `nature` dan 22 folder `nature-<tag>`), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, wolf, morning, dan scary-woods tidak punya folder karena isinya sudah ada di folder lain. | Ya |
+| `public/mixkit/sfx-kategori/` | 2033 sound effect: 654 terkait manusia (folder `human` dan 39 folder `human-<tag>`), 286 transportasi (folder `transport` dan 22 folder `transport-<tag>`), 231 hewan (folder `animals` dan 10 folder `animals-<tag>`), 305 alam (folder `nature` dan 22 folder `nature-<tag>`), 430 transisi (folder `transition` dan 18 folder `transition-<tag>`, ditambah `whoosh`), click (56), notification (41), transition (37), whoosh (20), pop (10). Tag girl, yawn, car-horn, motorcycle, race-car, cat, chicken, horse, lion, monkey, pig, wolf, morning, scary-woods, dan transition-whoosh tidak punya folder karena isinya sudah ada di folder lain. | Ya |
 | `public/mixkit/sfx/` | 19 sound effect (transisi, pop, klik, AI, sukses) | Ya |
 | `mixkit-templates/` | Template `.moti` asli | Tidak, hanya Apple Motion / Final Cut Pro (Mac) |
 
@@ -70,7 +70,7 @@ LIST
 
 ## Semua sound effect per kategori
 
-Daftar lengkap 1640 sound effect dari kategori whoosh, transition, pop, click, notification, human,
+Daftar lengkap 2033 sound effect dari kategori whoosh, transition, pop, click, notification, human,
 serta 31 tag suara manusia (applause, baby, blow, breathe, cartoon, cheer, children, clapping, cough,
 crowd, cry, drink, eat, fight, footsteps, gasp, girl, heartbeat, hurt, kiss, laugh, run, scream, sneeze,
 teeth, thank-you, voices, walk, whistle, wow, yawn, choir, fart, moan, punch, stomp, funny, happy, sad,
@@ -81,7 +81,9 @@ tram, truck.
 Hewan: animals, bird, cat, chicken, cow, crickets, dog, farm, horse, insect, jungle, lion, monkey, pig,
 roar, safari, wild, wolf.
 Alam: nature, beach, bubbles, desert, drop, fire, forest, garden, lightning, morning, mountain, night,
-ocean, rain, rivers, scary-woods, sea, splash, storm, thunder, volcano, water, waterfall, waves, wind. Tiap file disimpan sekali, di kategori/tag pertama
+ocean, rain, rivers, scary-woods, sea, splash, storm, thunder, volcano, water, waterfall, waves, wind.
+Transisi: transition, boom, cinematic, glitch, hit, impact, intro, movie, rewind, slide, spin, sweep,
+sweeping, swell, swish, swoosh, thud, whoosh, woosh, zoom. Tiap file disimpan sekali, di kategori/tag pertama
 tempat ia ditemukan,
 ada di `scripts/mixkit-sfx.json`. Unduh ulang dengan:
 

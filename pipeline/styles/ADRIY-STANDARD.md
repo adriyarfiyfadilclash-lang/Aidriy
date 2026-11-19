@@ -413,6 +413,27 @@ pilihan otomatis; `"sfx": false` membuat kalimat itu tanpa bunyi; `"sfxOtomatis"
 `--tanpa-sfx-otomatis` mematikan semuanya. Pilihan dan alasannya tercatat di log `[sfx]` dan `media/<nama>/sfx-cues.json`.
 Menambah atau memperbaiki aturan: edit `sfx-aturan.json` (lalu `--from sfx`).
 
+## 16. Durasi, pengenalan akun, dan ajakan (wajib)
+
+Setiap video Adriy.Project:
+
+1. **Durasi 2:34 sampai 2:56** (154-176 detik). Dengan tempo suara Adriy (±2,4 kata per detik termasuk jeda) itu
+   sekitar **355-400 kata** narasi, kira-kira 22-28 kalimat pendek.
+2. **Pengenalan akun** di 3 kalimat pertama, **setelah hook** (hook tetap kalimat pertama, tanpa salam):
+   mis. "Di Adriy Project, kita bongkar hal kecil yang ternyata punya cerita besar."
+3. **Ajakan di tengah** (sekitar 1/4 sampai 4/5 video), satu kalimat ringan yang tidak memotong alur:
+   simpan, bagikan ke teman, atau tulis jawaban di komentar.
+4. **CTA akun di akhir** (2 kalimat terakhir): sebut Adriy Project dan ajak follow, mis.
+   "Follow Adriy Project biar kamu makin sering bilang: oh, ternyata begitu."
+
+Di naskah, nama akun ditulis **"Adriy Project"** (tanpa titik) supaya dibaca wajar oleh suara Adriy.
+Kalimat yang menyebut akun di awal atau tengah menjadi adegan karakter (ADRIY menyapa/mengajak); hanya kalimat
+akun di **akhir** naskah yang menjadi penutup brand.
+
+Pipeline memeriksa semuanya **sebelum suara dibuat** (`cek_naskah`) dan berhenti dengan daftar pelanggaran;
+setelah suara jadi, durasi sebenarnya diperiksa lagi. Video uji (`_...`, `contoh...`) dikecualikan;
+`--bebas-aturan-naskah` untuk melewati dengan sengaja.
+
 ## Cara memakai
 
 ```bash

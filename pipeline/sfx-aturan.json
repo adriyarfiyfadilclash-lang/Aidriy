@@ -1,7 +1,7 @@
 {
  "note": "Aturan sound effect otomatis (pipeline/sfx_otomatis.py). 'kata' = regex kata di kalimat narasi (bahasa Indonesia); 'cari' = regex di nama file/kategori sound effect (umumnya bahasa Inggris). Urutan = prioritas. 'boleh_terlarang': true mengizinkan file yang biasanya dihindari (ledakan, senjata, horor). Naskah tetap bisa mengisi 'sfx' sendiri per kalimat; 'sfx': false mematikan sound effect kalimat itu; '\"sfxOtomatis\": false' di naskah mematikan semuanya. 'maks_per_aturan' = berapa kali satu aturan (jenis suara) boleh dipakai dalam satu video. Pola 'cari' dicocokkan di AWAL kata (\"cat\" cocok dengan \"cat\"/\"cats\", tidak dengan \"notification\"). 'utamakan' = regex kategori/nama yang didahulukan bila ada.",
- "jarak_min": 4,
- "kerapatan": 0.12,
+ "jarak_min": 3.5,
+ "kerapatan": 0.15,
  "terlarang": "gun|shot|rifle|pistol|weapon|war\\b|warfare|machine gun|bullet|scream|horror|zombie|monster|ghost|fart|blood|dead|death|kill|vomit|burp|sex|moan|creepy|demon|evil|human-fight|sword|flesh|stab|slash|punch|squish|slurp|gore|throw|catapult",
  "kata": [
   {

@@ -57,10 +57,15 @@ const AdriImage: React.FC<{ set: ImageSet; cues: PoseCue[]; size: number; talkin
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const lib = closeup ? set.dekat : set.penuh;
-  const idx = Math.max(0, cues.filter((c) => c.at * fps <= frame).length - 1);
+  // pose yang tampil kurang dari 0,4 dtk dibuang (mis. dua pose dijadwalkan hampir bersamaan setelah berjalan
+  // masuk): tanpa ini ada pose lain yang berkedip 1 frame dan karakter terlihat "berganti" sesaat
+  const MIN_HOLD = 0.4;
+  const sorted = [...cues].sort((p, q) => p.at - q.at);
+  cues = sorted.filter((c, i) => i === sorted.length - 1 || sorted[i + 1].at - c.at >= MIN_HOLD);
+  const idx = Math.max(0, cues.filter((c) => Math.round(c.at * fps) <= frame).length - 1);
   const cur = cues[idx];
   const prev = cues[Math.max(0, idx - 1)];
-  const fade = idx === 0 ? 1 : interpolate(frame, [cur.at * fps, cur.at * fps + 3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const fade = idx === 0 ? 1 : interpolate(frame, [Math.round(cur.at * fps), Math.round(cur.at * fps) + 3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const pickImg = (p: Pose): PoseImage | null => {
     // pose/ekspresi yang tidak ada di outfit ini -> pose netral outfit yang SAMA (outfit tidak pernah ditukar)
     const list = lib[p] ?? lib.netral;

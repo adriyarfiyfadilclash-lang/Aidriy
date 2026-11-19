@@ -15,7 +15,8 @@ Setiap skrip menjawab dua pertanyaan: **"Apa yang terjadi?"** dan **"Apa hubunga
 ## Alur (satu jawaban)
 
 0. **Cek judul yang sudah pernah dibuat** di `pipeline/judul-terpakai.json` (repo Aidriy). Topik yang sama atau mirip tidak dibuat lagi, juga dengan judul berbeda. Bila topik yang diminta sudah ada, katakan judul lamanya dan tawarkan sudut atau topik lain. Saat memberi ide, jangan usulkan topik dari daftar itu.
-1. **Jangan bertanya dulu.** Defaultnya: TikTok/Reels/Shorts, 45–60 detik, narasi voice over + visual/animasi. Tulis asumsi dalam satu baris.
+1. **Jangan bertanya dulu.** Defaultnya: TikTok/Reels/Shorts, **2:34–2:56 (±355–400 kata)**, narasi voice over + visual/animasi. Tulis asumsi dalam satu baris.
+   **Wajib di setiap skrip** (aturan Adriy.Project, dicek pipeline): hook di kalimat pertama → **pengenalan akun** di kalimat ke-2/3 ("Di Adriy Project, …") → **satu ajakan di tengah** (simpan / bagikan / jawab di komentar) → **CTA akun di akhir** (ajak follow Adriy Project). Nama akun di narasi ditulis "Adriy Project" (tanpa titik).
 2. **Tetapkan tujuan dan satu gagasan utama** (bagian 1). Kalau topiknya berisi beberapa ide, pilih satu dan tawarkan sisanya sebagai video lain.
 3. **Cek fakta sebelum menulis** (bagian 9). Untuk topik sains, psikologi, kesehatan, sejarah, atau angka, cari sumbernya dulu, jangan mengandalkan ingatan.
 4. **Saring fakta** dengan uji empat pertanyaan (bagian 10). Yang tidak lolos dibuang dari skrip.
@@ -28,7 +29,7 @@ Setiap skrip menjawab dua pertanyaan: **"Apa yang terjadi?"** dan **"Apa hubunga
    - **Catatan fakta:** setiap klaim penting + tingkat kepastian (fakta / teori / hipotesis / spekulasi) + sumber. Bagian ini untuk pengguna, tidak dibacakan.
    - **Bahan video lain:** fakta menarik yang dibuang saat penyaringan, satu baris masing-masing (lewati bila tidak ada).
    - **Caption** 1–2 kalimat + maks. 4 tagar.
-8. Patokan panjang narasi Indonesia: ±2,2–2,5 kata per detik, jadi 60 detik ≈ 130–150 kata. Potong bila lebih, mulai dari fakta yang paling lemah di uji bagian 10.
+8. Patokan panjang narasi: suara Adriy ±2,4 kata per detik termasuk jeda, jadi target 2:34–2:56 ≈ **355–400 kata**. Satu kalimat narasi ≈ 10–16 kata (satu adegan ±4–6 detik). Bila kurang, tambah lapisan cerita (pertanyaan baru, kejutan kedua, "apa hubungannya dengan aku"), bukan kalimat pengisi; bila lebih, potong fakta paling lemah di uji bagian 10.
 
 ## 1. Tujuan: pilih satu
 
@@ -56,13 +57,13 @@ Fakta yang sama bisa membosankan atau memikat, tergantung sudutnya. Pilih satu y
 
 Fondasi utama storytelling Adriy.Project. Tidak dipakai kaku di setiap konten, tapi menjadi default untuk tema yang dekat dengan kehidupan penonton. Sudut cerita (bagian 2) menentukan isi patahannya.
 
-**Relate (±0–10 dtk): "ini gue banget".** Mulai dari pengalaman yang hampir semua orang pernah rasakan, pikirkan, atau yakini: kebiasaan sehari-hari, ketakutan, keinginan, kesalahpahaman, pengalaman yang dianggap normal, atau sesuatu yang pernah mereka pertanyakan.
+**Relate (±0–20 dtk): "ini gue banget".** Mulai dari pengalaman yang hampir semua orang pernah rasakan, pikirkan, atau yakini: kebiasaan sehari-hari, ketakutan, keinginan, kesalahpahaman, pengalaman yang dianggap normal, atau sesuatu yang pernah mereka pertanyakan.
 Contoh: "Pernah nggak kamu merasa, makin lama tidur, makin segar badanmu pas bangun?"
 
-**Patahkan (±10–35 dtk): "loh, kok bisa?".** Berikan fakta yang bertentangan dengan pemahaman awal itu. Patahan tidak harus mengejutkan; bisa berupa perspektif yang berlawanan, kesalahan yang selama ini dilakukan, kenyataan yang tidak sesuai harapan, atau penjelasan ilmiah yang berbeda dari intuisi. Lalu jelaskan kenapa, memakai pola rasa penasaran berkelanjutan (bagian 5).
+**Patahkan (±20–110 dtk): "loh, kok bisa?".** Berikan fakta yang bertentangan dengan pemahaman awal itu. Patahan tidak harus mengejutkan; bisa berupa perspektif yang berlawanan, kesalahan yang selama ini dilakukan, kenyataan yang tidak sesuai harapan, atau penjelasan ilmiah yang berbeda dari intuisi. Lalu jelaskan kenapa, memakai pola rasa penasaran berkelanjutan (bagian 5).
 Contoh: "Tapi ternyata, tidur lebih lama belum tentu bikin lebih segar. Dalam kondisi tertentu, kebanyakan tidur justru bikin makin lelah."
 
-**Bawa kembali (±35–60 dtk): personal lagi, tapi dengan sudut pandang baru.** Jangan berhenti di fakta. Kembalikan ke pengalaman penonton, kali ini dengan pemahaman yang baru.
+**Bawa kembali (±110–165 dtk): personal lagi, tapi dengan sudut pandang baru.** Jangan berhenti di fakta. Kembalikan ke pengalaman penonton, kali ini dengan pemahaman yang baru.
 Contoh: "Jadi mungkin masalahnya bukan seberapa lama kamu tidur, tapi seberapa baik kualitasnya."
 Contoh lain (topik otak): "Kamu mungkin nggak ingat saat pertama belajar jalan. Tapi bukan berarti pengalaman itu nggak membentuk dirimu."
 Bagian ini sering sekaligus menjadi penutup (bagian 14), biasanya jenis pemikiran atau kesimpulan.
@@ -150,7 +151,7 @@ Bandingkan dengan hal sehari-hari: jarak dengan lama perjalanan naik motor atau 
 
 ## 13. Template lain
 
-Waktu untuk ±60 detik; skalakan.
+Waktu ditulis untuk ±60 detik; kalikan ±2,7 untuk durasi standar 2:34–2:56.
 
 **Fakta & edukasi-hiburan**
 1. **Fakta mustahil:** 0–3 fakta mengejutkan · 3–15 "kedengarannya fantasi, tapi…" + bukti awal · 15–40 pertanyaan baru → proses · 40–52 kejutan kedua · 52–60 penutup.
@@ -186,10 +187,12 @@ Penutup tidak harus ajakan follow. Pilih satu yang cocok:
 - **Kesimpulan:** "Yang kelihatan sederhana ternyata jauh lebih rumit dari bayangan kita."
 - **Pertanyaan:** "Kalau ini bisa terjadi di alam, apa lagi yang belum kita tahu?"
 - **Pemikiran:** sudut pandang baru yang membekas dan terasa personal.
-- **Ajakan:** "Kalau kamu suka fakta yang bikin kita melihat dunia dengan cara berbeda, ikuti Adriy.Project." Ajakan maksimal satu kalimat dan tidak dipakai di setiap video.
+- **CTA akun (wajib, setelah penutup di atas):** "Follow Adriy Project biar kamu makin sering bilang: oh, ternyata begitu." Satu–dua kalimat, di akhir skrip.
+
+Pengenalan akun dan ajakan tengah juga wajib (lihat langkah 1). Variasikan kalimatnya antarvideo supaya tidak terdengar template.
 
 ## Cek akhir (dalam kepala, tidak ditulis)
 
-Fakta punya perjalanan, bukan daftar · setiap fakta lolos uji empat pertanyaan · sudut cerita jelas dan didukung sumber · hook ≤5 detik dan tanpa salam · satu gagasan · ada minimal satu "pertanyaan baru" di tengah · patahan tidak clickbait · ada momen "apa hubungannya dengan aku" · tidak ada kalimat pengisi · setiap baris punya visual · setiap klaim punya tingkat kepastian dan sumber · panjang sesuai durasi.
+Fakta punya perjalanan, bukan daftar · setiap fakta lolos uji empat pertanyaan · sudut cerita jelas dan didukung sumber · hook ≤5 detik dan tanpa salam · pengenalan akun setelah hook · satu ajakan di tengah · CTA akun di akhir · durasi 2:34–2:56 · satu gagasan · ada minimal satu "pertanyaan baru" di tengah · patahan tidak clickbait · ada momen "apa hubungannya dengan aku" · tidak ada kalimat pengisi · setiap baris punya visual · setiap klaim punya tingkat kepastian dan sumber · panjang sesuai durasi.
 
 Bila diminta "beberapa ide", beri 3 ide dengan sudut berbeda (judul + sudut + hook satu baris + tingkat kepastian faktanya), lalu tulis skrip penuh hanya untuk yang dipilih.

@@ -67,6 +67,42 @@ def load_styles():
 
 _TEMA = None
 
+# ---------------------------------------------------------------- aturan naskah: durasi, pengenalan akun, ajakan
+DURASI_MIN, DURASI_MAKS = 154, 176          # 2:34 - 2:56
+KATA_PER_DETIK = 2.4                         # tempo suara Adriy (terukur: 135 kata = 59 dtk termasuk jeda)
+AKUN_RE = r"adriy?\.?\s*project"
+AJAKAN_RE = r"\b(follow|ikuti|ikutin|simpan|save|bagikan|share|kirim ke|tag|komen|komentar|kolom komentar|tulis di)\b"
+
+
+def perkiraan_durasi(lines):
+    kata = sum(len(ln["text"].split()) for ln in lines)
+    return kata / KATA_PER_DETIK + VOICE_LEAD + LINE_GAP * max(0, len(lines) - 1)
+
+
+def cek_naskah(script):
+    """Pelanggaran aturan naskah Adriy.Project (ADRIY-STANDARD.md bagian 16): daftar pesan, kosong = lolos."""
+    lines = script.get("lines", [])
+    if not lines:
+        return ["naskah kosong"]
+    msg = []
+    d = perkiraan_durasi(lines)
+    if not DURASI_MIN <= d <= DURASI_MAKS:
+        kata = sum(len(ln["text"].split()) for ln in lines)
+        msg.append(f"durasi perkiraan {d // 60:.0f}:{d % 60:02.0f} ({kata} kata); aturan 2:34-2:56 "
+                   f"(sekitar {int((DURASI_MIN - 6) * KATA_PER_DETIK)}-{int((DURASI_MAKS - 8) * KATA_PER_DETIK)} kata)")
+    n = len(lines)
+    awal = [ln["text"] for ln in lines[:3]]
+    if not any(re.search(AKUN_RE, t, re.I) for t in awal):
+        msg.append("tidak ada pengenalan akun di 3 kalimat pertama (sebut Adriy Project setelah hook)")
+    tengah = [ln["text"] for ln in lines[max(1, n // 4): max(2, n * 4 // 5)]]
+    if not any(re.search(AJAKAN_RE, t, re.I) for t in tengah):
+        msg.append("tidak ada ajakan di tengah video (mis. simpan/bagikan/komentar)")
+    akhir = " ".join(ln["text"] for ln in lines[-2:])
+    if not (re.search(AKUN_RE, akhir, re.I) and re.search(AJAKAN_RE, akhir, re.I)):
+        msg.append("tidak ada CTA akun di akhir (ajak follow Adriy Project di 2 kalimat terakhir)")
+    return msg
+
+
 # ---------------------------------------------------------------- judul yang sudah pernah dibuat
 JUDUL_TERPAKAI = ROOT / "pipeline" / "judul-terpakai.json"
 _STOP = set("""kenapa mengapa bagaimana apa apakah benarkah dan yang di ke dari itu ini bisa saat padahal kita tapi tetapi lebih
@@ -292,6 +328,10 @@ def step_tts(ctx):
     src = d / "source.wav"
     encode(np.concatenate(parts), src)
     (d / "lines.json").write_text(json.dumps(out_lines, ensure_ascii=False, indent=1))
+    if not ctx["name"].startswith(("_", "contoh")) and not ctx.get("bebas_aturan_naskah") and not DURASI_MIN <= t <= DURASI_MAKS:
+        log("fetch", f"! durasi suara {t // 60:.0f}:{t % 60:02.0f} di luar aturan 2:34-2:56: tambah/kurangi kalimat lalu jalankan lagi "
+                     "(suara kalimat yang tidak berubah dipakai ulang)")
+        raise SystemExit(1)
     ctx["source"] = src
     log("fetch", f"-> source.wav ({t:.1f} dtk, {len(lines)} kalimat)")
 
@@ -553,8 +593,9 @@ def step_montage(ctx):
         meta_f.write_text(json.dumps(meta, ensure_ascii=False, indent=1))
 
 
-TARGET_DB = {"accent": -24, "underVoice": -32}       # sama dengan video/src/promo/Sfx.tsx
-PEAK_LIMIT_DB = {"accent": -12, "underVoice": -26}
+# accent dinaikkan (dulu -24/-12: rata-rata 9 dB di bawah suara, tidak terdengar jelas). Suara Adriy ±-16 LUFS.
+TARGET_DB = {"accent": -17, "underVoice": -30}
+PEAK_LIMIT_DB = {"accent": -5, "underVoice": -22}
 
 
 def step_sfx(ctx):
@@ -611,7 +652,7 @@ def step_sfx(ctx):
         x = x * gain
         x[-fade:] *= np.linspace(1, 0, fade)
         if c.get("at", "start") == "start":  # di jeda sebelum kalimat: puncak 0,1 detik sebelum orang mulai bicara
-            t = ln["start"] - 0.1 - m["peak"]
+            t = ln["start"] - 0.25 - m["peak"]  # puncak di jeda, sebelum suara mulai (tidak tertutup kata pertama)
         else:                                 # setelah kalimat selesai
             t = ln["end"] + 0.05
         i = int(t * SR)
@@ -1095,7 +1136,12 @@ def plan_scenes(lines, duration, title, style):
     rules = style.get("scenes", {}).get("rules", {})
     overlap = style.get("motion", {}).get("overlap", 0.35)
     tones, cams = ["dark", "blue", "light"], ["push", "pan-right", "rise", "pan-left", "pull"]
-    outro_at = next((j for j, l in enumerate(lines) if re.search(r"adri\.?\s*project|inilah adri|explore more|know more", l["text"], re.I)), len(lines))
+    # penutup brand = kalimat-kalimat di AKHIR naskah yang menyebut akun. Sebutan akun di awal (pengenalan) atau
+    # di tengah (ajakan) bukan penutup: adegannya biasa (karakter menyapa / mengajak).
+    OUTRO_RE = r"adri\.?\s*project|adriy\.?\s*project|inilah adri|explore more|know more"
+    outro_at = len(lines)
+    while outro_at > 0 and re.search(OUTRO_RE, lines[outro_at - 1]["text"], re.I):
+        outro_at -= 1
     style = dict(style, _topic_env=topic_env(title + " " + " ".join(ln["text"] for ln in lines)))
     plan = []
     for i, ln in enumerate(lines):
@@ -1104,7 +1150,12 @@ def plan_scenes(lines, duration, title, style):
         num = re.search(r"(\d+(?:[.,]\d+)?)\s*(%|persen|derajat|°|kilometer per jam|km/jam|kilometer|km|meter|kg|liter|kali|detik|menit|jam|tahun|juta|ribu)?", text)
         has_visual = bool(ln.get("visual"))
         outro = style.get("outro", {})
-        is_outro = bool(re.search(r"adri\.?\s*project|inilah adri|explore more|know more", text, re.I))
+        is_outro = i >= outro_at
+        if not is_outro and not given.get("type") and (re.search(OUTRO_RE, text, re.I) or re.search(AJAKAN_RE, text, re.I)):
+            # pengenalan akun / ajakan (simpan, bagikan, komentar): ADRIY menyapa atau mengajak penonton
+            given = dict(given, type="karakter", pose=given.get("pose", "sapa" if i < 3 else "ajak"))
+            if plan and plan[-1]["type"] == "karakter" and plan[-1].get("layout") != "closeup":
+                given["layout"] = "closeup"  # beda komposisi dari adegan karakter sebelumnya
         if is_outro and plan and plan[-1].get("outro"):
             plan[-1]["end"] = round(lines[i + 1]["start"] + overlap if i + 1 < len(lines) else duration, 3)  # gabung penutup
             continue
@@ -1174,7 +1225,7 @@ def plan_scenes(lines, duration, title, style):
             kind = "karakter"
         # komposisi: jangan sekeluarga dengan adegan sebelumnya, kecuali isinya memang menuntut (data, proses, ...)
         lay = given.get("layout")
-        if not given.get("type") and plan and family(kind, lay) == plan[-1].get("family") and kind in ("objek", "karakter", "infografis", "tipografi", "sinematik"):
+        if not given.get("type") and not is_outro and plan and family(kind, lay) == plan[-1].get("family") and kind in ("objek", "karakter", "infografis", "tipografi", "sinematik"):
             if kind == "objek":
                 lay = "presenter" if lay == "full" else "full"
                 given["layout"] = lay
@@ -1841,6 +1892,7 @@ def main():
     ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
     ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
     ap.add_argument("--preview-scenes", action="store_true", help="gambar diam dari tengah tiap adegan (style adriy), bukan video")
+    ap.add_argument("--bebas-aturan-naskah", action="store_true", help="lewati cek durasi 2:34-2:56, pengenalan akun, dan ajakan")
     ap.add_argument("--tanpa-sfx-otomatis", action="store_true", help="jangan tambahkan sound effect otomatis (hanya yang ditulis di naskah)")
     ap.add_argument("--judul-boleh-sama", action="store_true", help="tetap buat walau judulnya mirip judul yang sudah pernah dibuat (pipeline/judul-terpakai.json)")
     ap.add_argument("--qa", action="store_true", help="periksa tabrakan, teks terpotong, subtitle, blur, sisa adegan, latar (gambar diam). Dengan --name: video itu; tanpa: contoh semua adegan")
@@ -1870,7 +1922,7 @@ def main():
         ap.error("butuh input dan --name (atau pakai --check)")
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False,
-           "visuals": args.visuals, "style": args.style, "tanpa_sfx_otomatis": args.tanpa_sfx_otomatis,
+           "visuals": args.visuals, "style": args.style, "tanpa_sfx_otomatis": args.tanpa_sfx_otomatis, "bebas_aturan_naskah": args.bebas_aturan_naskah,
            "renderers": ["remotion", "hyperframes"] if args.renderer == "both" else [args.renderer]}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)
@@ -1887,6 +1939,13 @@ def main():
             ctx["title"] = json.loads(Path(args.input).read_text(encoding="utf-8")).get("title") or ctx["title"]
         except ValueError:
             pass
+    # aturan naskah (durasi, pengenalan akun, ajakan): dicek SEBELUM suara dibuat; video uji/contoh dikecualikan
+    if str(args.input).endswith(".json") and Path(args.input).exists() and not args.name.startswith(("_", "contoh")) \
+            and not args.bebas_aturan_naskah and (args.start in (None, "fetch") and not args.only):
+        langgar = cek_naskah(json.loads(Path(args.input).read_text(encoding="utf-8")))
+        if langgar:
+            raise SystemExit("Naskah belum sesuai aturan Adriy.Project:\n- " + "\n- ".join(langgar) +
+                             "\nPerbaiki naskahnya, atau pakai --bebas-aturan-naskah bila memang sengaja.")
     # judul yang sudah pernah dibuat tidak dibuat lagi (kecuali video itu sendiri dibuat ulang)
     sama = judul_mirip(ctx["title"]) if ctx["title"] != args.name else None
     if sama and sama.get("sumber") != f"media/{args.name}" and not args.judul_boleh_sama:

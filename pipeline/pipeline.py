@@ -307,6 +307,12 @@ def step_tts(ctx):
     lines = script["lines"]
     for ln in lines:  # nama file dari isi kalimat: kalimat yang tidak berubah tidak dibuat ulang
         ln["id"] = hashlib.sha1(f'{ln["voice"]}|{ln["text"]}'.encode()).hexdigest()[:12]
+    # perpustakaan suara (pipeline/perpustakaan_suara.py): kalimat yang pernah dibuat dipakai ulang lintas video
+    sys.path.insert(0, str(ROOT / "pipeline"))
+    import perpustakaan_suara as pustaka
+    dari_pustaka = sum(1 for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists() and pustaka.ambil(ln["voice"], ln["text"], vo_dir / f'{ln["id"]}.wav'))
+    if dari_pustaka:
+        log("fetch", f"{dari_pustaka} kalimat diambil dari perpustakaan suara")
     todo = [{"id": ln["id"], "voice": ln["voice"], "text": ln["text"]} for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists()]
     if todo:
         log("fetch", f"VoxCPM membuat {len(todo)} dari {len(lines)} kalimat...")
@@ -316,6 +322,8 @@ def step_tts(ctx):
         run([WHISPER_PY, str(REMOTION / "scripts/tts_batch.py"), str(job), str(vo_dir)], env=dict(os.environ, HF_HUB_OFFLINE=os.environ.get("HF_HUB_OFFLINE", "0")))
         job.unlink()
         log("fetch", f"selesai dalam {time.time() - t:.0f} dtk")
+        for j in todo:  # kalimat baru masuk perpustakaan, supaya video lain bisa memakainya
+            pustaka.simpan(j["voice"], j["text"], vo_dir / f'{j["id"]}.wav', sumber=f"media/{ctx['name']}")
     else:
         log("fetch", "semua kalimat sudah ada suaranya")
     parts, t, out_lines = [np.zeros(int(VOICE_LEAD * SR), np.float32)], VOICE_LEAD, []

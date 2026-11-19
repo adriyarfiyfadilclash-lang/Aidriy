@@ -1,6 +1,7 @@
 import { Audio } from "@remotion/media";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Icon } from "../promo/icons";
+import { StyleCharacter } from "../adriy/StyleCharacter";
 import { Caption, DEFAULT_STYLE, type Style, StyledFrame, type Token, Visual } from "./styles";
 
 // Data dibuat oleh ../pipeline/pipeline.py di public/media/<media>/:
@@ -54,7 +55,8 @@ export const SubtitleVideo: React.FC<SubtitleVideoProps> = ({ media, pages, meta
   return (
     <AbsoluteFill>
       <StyledFrame style={st} title={showTitle ? meta.title : undefined}>
-        {meta.hasVideo ? <Visual style={st} src={`${base}/${meta.source}`} kind="video" /> : st.id === "bersih" ? <AppBrand title={meta.title} /> : null}
+        {/* gambar/klip asli memakai bingkai style; tanpa gambar, ADRI tampil dengan penyelesaian khas style itu */}
+        {meta.hasVideo ? <Visual style={st} src={`${base}/${meta.source}`} kind="video" /> : st.id === "bersih" ? <AppBrand title={meta.title} /> : <StyleCharacter styleId={st.id} captionBottom={st.subtitle.position} />}
       </StyledFrame>
       <Audio name="Audio" src={staticFile(`${base}/audio.wav`)} />
       {pages.map((p, i) => (
@@ -73,7 +75,7 @@ export type StylePreviewProps = {
   title: string;
   caption: string;
   active: number; // indeks kata yang menyala
-  visual: string; // gambar contoh di public/
+  visual: string; // gambar contoh di public/; kosong = ADRI dengan penyelesaian khas style
 };
 
 export const calculateStylePreviewMetadata: CalculateMetadataFunction<StylePreviewProps> = async ({ props }) => {
@@ -90,7 +92,7 @@ export const StylePreview: React.FC<StylePreviewProps> = ({ style: loaded, title
       {/* latar diambil dari detik ke-2, saat animasinya (grafik, rute, uap, dll.) sudah berjalan */}
       <Sequence from={-60} layout="none">
         <StyledFrame style={style} title={title}>
-          <Visual style={style} src={visual} kind="image" />
+          {visual ? <Visual style={style} src={visual} kind="image" /> : <StyleCharacter styleId={style.id} captionBottom={style.subtitle.position} />}
         </StyledFrame>
       </Sequence>
       <Caption style={style} tokens={tokens} nowMs={500} index={0} settled />

@@ -1335,7 +1335,7 @@ def preview_styles(only=None):
         (pub / f"{sid}.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
         prev = st.get("preview", {})
         props = {"styleId": sid, "style": None, "title": prev.get("title", st["label"]), "caption": prev.get("caption", "Contoh subtitle"),
-                 "active": prev.get("active", 0), "visual": "style-preview/tokoh.png"}
+                 "active": prev.get("active", 0), "visual": ""}  # kosong = ADRI dengan penyelesaian khas style
         out = out_dir / f"{sid}.png"
         run(["npx", "remotion", "still", "StylePreview", str(out), f"--props={json.dumps(props, ensure_ascii=False)}"], cwd=REMOTION)
         print(f"{sid:10s} -> {out.relative_to(ROOT)}")

@@ -42,6 +42,16 @@ type Props = {
   holding?: React.ReactNode; // elemen SVG yang dipegang (koordinat lokal, titik 0,0 = di antara tangan)
   aim?: [number, number] | null; // titik yang ditunjuk, dalam koordinat lokal ADRI (viewBox 500x1180, sebelum dicerminkan)
   seed?: number;
+  outfit?: Outfit; // kostum tambahan sesuai style video; identitas (wajah, rambut, kacamata, hoodie) tetap
+  rods?: boolean; // tongkat wayang (tuding) dari tiap tangan, untuk style wayang
+};
+
+// Kostum per style. Hanya menambah aksesori di atas ADRI, tidak mengganti wajah, rambut, atau hoodie.
+export type Outfit = "koki" | "pelancong" | "atlet" | "peci" | "bisnis";
+
+// Warna ADRI bawaan (sama dengan character.colors di pipeline/styles/adriy.json), untuk style lain
+export const ADRI_SPEC: CharacterSpec = {
+  colors: { skin: "#C68A62", skinShade: "#A9714D", hair: "#1B1716", hoodie: "#1E2A55", hoodieAccent: "#2F6BFF", shirt: "#F5F7FB", glasses: "#1B1716" },
 };
 
 // Sudut lengan supaya lurus mengarah ke titik (dx, dy) dari bahu: lengan turun = 0 derajat.
@@ -116,7 +126,7 @@ const HandShape: React.FC<{ hand: Hand; c: CharacterSpec["colors"]; thumb: 1 | -
 
 // Lengan satu kesatuan: bahu -> siku -> pergelangan digambar sebagai satu garis tebal dengan sambungan bulat,
 // jadi tidak ada celah di siku; tangan ditempel tepat di ujung lengan dan sedikit masuk ke manset.
-const Arm: React.FC<{ x: number; y: number; a1: number; a2: number; c: CharacterSpec["colors"]; hand: Hand; thumb: 1 | -1 }> = ({ x, y, a1, a2, c, hand, thumb }) => {
+const Arm: React.FC<{ x: number; y: number; a1: number; a2: number; c: CharacterSpec["colors"]; hand: Hand; thumb: 1 | -1; rod?: boolean }> = ({ x, y, a1, a2, c, hand, thumb, rod }) => {
   const U = 104;
   const F = 100;
   const [d1x, d1y] = dir(a1);
@@ -127,6 +137,8 @@ const Arm: React.FC<{ x: number; y: number; a1: number; a2: number; c: Character
   const cuff = `${wx - 18 * d2x},${wy - 18 * d2y} ${wx},${wy}`;
   return (
     <g>
+      {/* tuding wayang: tongkat lurus dari tangan ke bawah */}
+      {rod && <line x1={wx} y1={wy} x2={wx + 20} y2={wy + 560} stroke="#111" strokeWidth={7} strokeLinecap="round" />}
       <polyline points={pts} fill="none" stroke={RIM} strokeWidth={50} strokeLinecap="round" strokeLinejoin="round" />
       <polyline points={pts} fill="none" stroke={LINE} strokeWidth={46} strokeLinecap="round" strokeLinejoin="round" />
       <polyline points={pts} fill="none" stroke={c.hoodie} strokeWidth={38} strokeLinecap="round" strokeLinejoin="round" />
@@ -149,7 +161,7 @@ const Leg: React.FC<{ x: number; a: number; c: CharacterSpec["colors"] }> = ({ x
   </g>
 );
 
-export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, aim, seed = 0 }) => {
+export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, aim, seed = 0, outfit, rods }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const cues: PoseCue[] = typeof pose === "string" ? [{ at: 0, pose }] : [...pose].sort((a, b) => a.at - b.at);
@@ -242,6 +254,7 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
         <Leg x={212} a={legs[0]} c={c} />
         <Leg x={288} a={legs[1]} c={c} />
         <g transform={`rotate(${lean + startle} 250 840) translate(250 840) scale(${breathe}) translate(-250 -840)`}>
+          {outfit === "pelancong" && <rect x={96} y={520} width={308} height={300} rx={60} fill="#B5835A" stroke={LINE} strokeWidth={4} />}
           {/* badan */}
           <path d="M120 840 C116 600 150 470 250 470 C350 470 384 600 380 840 Z" fill={c.hoodie} stroke={LINE} strokeWidth={4} />
           <rect x={118} y={812} width={264} height={30} rx={14} fill={c.hoodieAccent} opacity={0.9} />
@@ -249,7 +262,37 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
           <path d="M342 820 C348 620 328 530 298 495" stroke={c.hoodieAccent} strokeWidth={10} fill="none" strokeLinecap="round" />
           <circle cx={250} cy={650} r={30} fill={c.hoodieAccent} />
           <text x={250} y={662} textAnchor="middle" fontFamily="Plus Jakarta Sans" fontWeight={800} fontSize={34} fill="#fff">A</text>
-          <Arm x={146} y={505} a1={lA[0]} a2={lA[1]} c={c} hand={face.lh} thumb={-1} />
+          {outfit === "koki" && (
+            // celemek putih dengan tali leher dan saku
+            <g>
+              <path d="M200 488 L214 560 M300 488 L286 560" stroke="#FFFFFF" strokeWidth={8} strokeLinecap="round" />
+              <path d="M180 560 H320 Q334 700 344 836 H156 Q166 700 180 560 Z" fill="#FFFFFF" stroke={LINE} strokeWidth={4} strokeLinejoin="round" />
+              <rect x={214} y={690} width={72} height={56} rx={10} fill="none" stroke="#D9480F" strokeWidth={4} />
+            </g>
+          )}
+          {outfit === "pelancong" && (
+            // tali ransel di kedua bahu
+            <g>
+              <path d="M178 500 Q170 650 186 790" stroke="#8A5A36" strokeWidth={22} fill="none" strokeLinecap="round" />
+              <path d="M322 500 Q330 650 314 790" stroke="#8A5A36" strokeWidth={22} fill="none" strokeLinecap="round" />
+              <rect x={170} y={640} width={30} height={14} rx={4} fill="#E9C46A" /><rect x={300} y={640} width={30} height={14} rx={4} fill="#E9C46A" />
+            </g>
+          )}
+          {outfit === "bisnis" && (
+            // dasi dan kartu identitas bertali
+            <g>
+              <path d="M240 486 L260 486 L266 512 L256 600 L250 612 L244 600 L234 512 Z" fill="#B91C1C" stroke={LINE} strokeWidth={3} strokeLinejoin="round" />
+              <path d="M212 488 Q206 600 214 700 M288 488 Q296 600 286 700" stroke="#2ED47A" strokeWidth={5} fill="none" />
+              <rect x={196} y={694} width={108} height={70} rx={10} fill="#FFFFFF" stroke={LINE} strokeWidth={3} />
+              <rect x={196} y={694} width={108} height={20} rx={8} fill="#2F6BFF" />
+              <circle cx={222} cy={738} r={12} fill="#C68A62" /><rect x={242} y={730} width={50} height={8} rx={4} fill="#9AA6BF" />
+            </g>
+          )}
+          {outfit === "atlet" && (
+            // nomor punggung di dada
+            <text x={250} y={790} textAnchor="middle" fontFamily="Plus Jakarta Sans" fontWeight={800} fontSize={86} fill="#FFE600" stroke={LINE} strokeWidth={4}>10</text>
+          )}
+          <Arm x={146} y={505} a1={lA[0]} a2={lA[1]} c={c} hand={face.lh} thumb={-1} rod={rods} />
           {/* leher: masuk ke kerah di bawah dan tertutup rahang di atas */}
           <rect x={220} y={392} width={60} height={96} rx={24} fill={c.skin} stroke={c.skinShade} strokeWidth={3} />
           <path d="M222 420 Q250 436 278 420" stroke={c.skinShade} strokeWidth={8} fill="none" opacity={0.5} />
@@ -268,6 +311,32 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
             {/* jambul menyamping ke kanan, menyatu dengan rambut (bukan sanggul di atas kepala) */}
             <path d="M196 140 C228 108 296 96 350 116 C380 128 392 152 380 182 C360 162 322 152 280 156 C246 158 218 154 196 140 Z" fill={c.hair} />
             <path d="M236 132 C270 114 318 114 350 128" stroke="#FFFFFF" strokeOpacity={0.16} strokeWidth={6} fill="none" strokeLinecap="round" />
+            {outfit === "peci" && (
+              // peci hitam duduk di atas rambut
+              <g>
+                <path d="M160 206 L170 128 Q250 104 330 128 L340 206 Q250 190 160 206 Z" fill="#141414" stroke={LINE} strokeWidth={4} strokeLinejoin="round" />
+                <path d="M168 190 Q250 176 332 190" stroke="#3A3A3A" strokeWidth={4} fill="none" />
+              </g>
+            )}
+            {outfit === "koki" && (
+              // topi koki: pita bawah + kembungan atas
+              <g>
+                {[[190, 96, 56], [250, 72, 66], [312, 96, 56]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill="#FFFFFF" stroke={LINE} strokeWidth={4} />)}
+                <rect x={172} y={120} width={156} height={78} rx={14} fill="#FFFFFF" stroke={LINE} strokeWidth={4} />
+              </g>
+            )}
+            {outfit === "pelancong" && (
+              // topi bucket: mahkota + pinggiran lebar
+              <g>
+                <ellipse cx={250} cy={196} rx={150} ry={30} fill="#C9A26B" stroke={LINE} strokeWidth={4} />
+                <path d="M170 196 Q176 112 250 108 Q324 112 330 196 Z" fill="#D9B47A" stroke={LINE} strokeWidth={4} strokeLinejoin="round" />
+                <path d="M172 176 Q250 162 328 176" stroke="#8A5A36" strokeWidth={10} fill="none" />
+              </g>
+            )}
+            {outfit === "atlet" && (
+              // ikat kepala melingkar di dahi
+              <path d="M146 200 Q250 176 356 200 L360 226 Q250 202 142 228 Z" fill="#E11D48" stroke={LINE} strokeWidth={3} />
+            )}
             {/* fitur wajah bergeser ke arah pandang */}
             <g transform={`translate(${turn} 0)`}>
               <path d={`M190 ${252 - brow} Q212 ${242 - brow} 232 ${252 - brow}`} stroke={c.hair} strokeWidth={10} fill="none" strokeLinecap="round" />
@@ -290,7 +359,7 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
             </g>
           </g>
           {holding && <g transform={`translate(250 ${interpolate(w, [0, 1], [700, 640])})`}>{holding}</g>}
-          <Arm x={354} y={505} a1={rA[0] + wave} a2={rA[1]} c={c} hand={face.rh} thumb={1} />
+          <Arm x={354} y={505} a1={rA[0] + wave} a2={rA[1]} c={c} hand={face.rh} thumb={1} rod={rods} />
         </g>
       </g>
     </svg>

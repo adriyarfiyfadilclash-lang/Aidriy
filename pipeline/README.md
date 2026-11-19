@@ -83,6 +83,30 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 - Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), bukan tiruan suara tokohnya; kutipan harus asli
   dan bersumber; foto harus boleh dipakai.
 
+## ADRI di style lain
+
+Video dengan style lain (wayang, koran, horor, anak, sains, teknologi, bisnis, kuliner, travel, olahraga, religi)
+juga menampilkan ADRI bila naskah tidak memberi gambar atau klip. Identitasnya tetap (wajah, rambut, kacamata, hoodie
+berlogo A); yang menyesuaikan adalah penyelesaian gambar dan kostumnya (`video/src/adriy/StyleCharacter.tsx`):
+
+| Style | ADRI |
+|---|---|
+| wayang | siluet hitam di kelir, disinari lampu, dengan tuding |
+| koran | hitam-putih seperti cetakan koran, digunting dengan pinggiran kertas |
+| horor | pucat, disinari bulan, terkejut |
+| anak | stiker berpinggiran putih, bergoyang |
+| sains | gambar garis putih cetak biru dengan garis ukur |
+| teknologi | hologram cyan berkedip |
+| bisnis | dasi dan kartu identitas |
+| kuliner | topi koki dan celemek, memegang piring |
+| travel | topi dan ransel |
+| olahraga | ikat kepala, nomor 10, garis tepi komik |
+| religi | peci, pendar keemasan |
+| bersih | ADRI biasa |
+
+Gambar atau klip dari naskah tetap memakai bingkai khas style (kartu pos, piring, HUD, guntingan koran, ...).
+Kaki ADRI selalu berpijak di atas blok subtitle, jadi subtitle tidak menutupinya.
+
 ## Standar Adriy.project (style `adriy`)
 
 Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **16 jenis adegan** (karakter, objek,

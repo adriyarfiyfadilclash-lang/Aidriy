@@ -1,0 +1,299 @@
+{
+ "note": "Judul video yang SUDAH PERNAH dibuat. Jangan dibuat lagi, juga versi yang mirip (topik sama dengan kata berbeda). Pipeline menolak judul yang mirip (lihat judul_terpakai di pipeline.py); --judul-boleh-sama untuk membuat ulang dengan sengaja. Video baru yang selesai dirender ditambahkan otomatis. 'inti' = pola kata (regex) yang SEMUANYA harus ada di judul baru supaya dianggap topik yang sama.",
+ "judul": [
+  {
+   "judul": "Alap-alap (Peregrine Falcon), Hewan Tercepat",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "alap|peregrine|falcon"
+   ]
+  },
+  {
+   "judul": "Gajah dan Melompat",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "gajah",
+    "lompat"
+   ]
+  },
+  {
+   "judul": "Gurita dan Tiga Jantungnya",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "gurita",
+    "jantung"
+   ]
+  },
+  {
+   "judul": "Gurita vs Cumi-cumi",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "gurita",
+    "cumi"
+   ]
+  },
+  {
+   "judul": "Hiu Lebih Tua dari Pohon?",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "hiu",
+    "pohon"
+   ]
+  },
+  {
+   "judul": "Kenapa Kucing Hampir Selalu Mendarat dengan Kaki?",
+   "kategori": "hewan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "kucing",
+    "mendarat|jatuh"
+   ]
+  },
+  {
+   "judul": "Kenapa Astronot Melayang Padahal Gravitasi Masih Ada?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "astronot|antariksawan",
+    "melayang|mengambang|gravitasi"
+   ]
+  },
+  {
+   "judul": "Bola Air Seluruh Bumi",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "(semua|seluruh) air",
+    "bola|dikumpulkan"
+   ]
+  },
+  {
+   "judul": "Kenapa Bunga Matahari Mengikuti Matahari?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "bunga matahari",
+    "mengikuti|menghadap|matahari"
+   ]
+  },
+  {
+   "judul": "Matahari 8 Menit yang Lalu",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "matahari",
+    "8 menit|delapan menit"
+   ]
+  },
+  {
+   "judul": "Mengapa Langit Senja Berwarna Jingga",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "langit",
+    "senja|sore|jingga|oranye"
+   ]
+  },
+  {
+   "judul": "Kenapa Air Laut Asin Tapi Air Sungai Tawar?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "laut",
+    "asin"
+   ]
+  },
+  {
+   "judul": "Kenapa Madu Tidak Pernah Basi?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "madu",
+    "basi|awet|kedaluwarsa|busuk"
+   ]
+  },
+  {
+   "judul": "Pelangi Sebenarnya Berbentuk Lingkaran Penuh",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "pelangi",
+    "lingkaran|bulat"
+   ]
+  },
+  {
+   "judul": "Kenapa Kilat Terlihat Dulu, Petir Terdengar Belakangan?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "kilat|petir",
+    "suara|terdengar|duluan|dulu|belakangan"
+   ]
+  },
+  {
+   "judul": "Siang dan Malam di Bumi",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "siang",
+    "malam"
+   ]
+  },
+  {
+   "judul": "Sinar-X dan Wilhelm Röntgen",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "sinar.?x|rontgen|röntgen"
+   ]
+  },
+  {
+   "judul": "Penemuan Microwave",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "microwave|gelombang mikro",
+    "temu|sejarah|asal|pertama|cipta"
+   ]
+  },
+  {
+   "judul": "Pisau Tumpul Lebih Berbahaya?",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "pisau",
+    "tumpul"
+   ]
+  },
+  {
+   "judul": "Mitos Membunyikan Jari",
+   "kategori": "sains dan alam",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "jari",
+    "bunyi|kretek|krek|retak"
+   ]
+  },
+  {
+   "judul": "Doorway Effect, Lupa Setelah Melewati Pintu",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "doorway|lupa.*pintu|pintu.*lupa"
+   ]
+  },
+  {
+   "judul": "Merinding Karena Musik / Frisson",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "frisson|merinding"
+   ]
+  },
+  {
+   "judul": "Kenapa Kita Tidak Bisa Menggelitik Diri Sendiri?",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "gelitik|geli"
+   ]
+  },
+  {
+   "judul": "Kenapa Tubuh Tersentak Saat Hampir Tidur?",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "tersentak|kaget|jatuh",
+    "tidur"
+   ]
+  },
+  {
+   "judul": "Kenapa Kata Sering Macet di Ujung Lidah?",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "ujung lidah"
+   ]
+  },
+  {
+   "judul": "Kenapa Menguap Bisa Menular?",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "menguap",
+    "menular|tular"
+   ]
+  },
+  {
+   "judul": "Merasa Diperhatikan Saat Sendirian",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "diperhatikan|diawasi|memperhatikan|mengawasi"
+   ]
+  },
+  {
+   "judul": "Bukan Kurang Bersyukur, Ini Alasan Kita Gampang Iri",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "\\biri\\b|dengki|cemburu sosial"
+   ]
+  },
+  {
+   "judul": "Kebiasaan Cek HP Tanpa Alasan",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "(cek|buka|lihat|pegang) (hp|ponsel|handphone)"
+   ]
+  },
+  {
+   "judul": "Kenapa \"Lima Menit Lagi\" Terasa Seenak Itu? (Tunda Alarm)",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "alarm|lima menit lagi|5 menit lagi|snooze"
+   ]
+  },
+  {
+   "judul": "Lima Menit Setiap Hari",
+   "kategori": "tubuh, pikiran, dan kebiasaan",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "(lima|5) menit",
+    "(setiap|tiap|per|sehari|sehari-hari)"
+   ]
+  },
+  {
+   "judul": "Kenapa Uang Seratus Ribu Terasa Makin Kecil? (inflasi dan daya beli)",
+   "kategori": "uang",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "inflasi|daya beli|(uang|seratus ribu|100 ?ribu|100\\.000).*(kecil|turun|berkurang|murah)"
+   ]
+  },
+  {
+   "judul": "Menabung Rp10.000 Per Hari",
+   "kategori": "uang",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "menabung|nabung",
+    "10\\.?000|10 ?ribu|sepuluh ribu|10rb"
+   ]
+  },
+  {
+   "judul": "Kenapa Kita Mengucap Halo Saat Mengangkat Telepon",
+   "kategori": "teknologi dan bahasa",
+   "sumber": "daftar pemilik",
+   "inti": [
+    "\\bhalo\\b|\\bhallo\\b"
+   ]
+  }
+ ]
+}

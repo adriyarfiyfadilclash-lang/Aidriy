@@ -339,6 +339,26 @@ Catatan:
 - Menambah tema: tambah satu objek di `tema-konten.json`. Pola kata ditulis sebagai regex dengan `\b` di
   batas kata (di JSON ditulis `\\b`), lalu dicoba dengan beberapa judul supaya tidak menangkap tema lain.
 
+## 13. Judul yang sudah pernah dibuat
+
+**Judul (dan topik) yang sudah pernah dibuat tidak boleh dibuat lagi.** Daftarnya ada di
+`pipeline/judul-terpakai.json`: 34 judul dari pemilik channel ditambah setiap video baru yang selesai dirender
+(dicatat otomatis setelah langkah `finish`, kecuali folder `_...` dan `contoh...`).
+
+Sebelum langkah pertama, pipeline membandingkan judul naskah dengan daftar itu dan **berhenti** bila sama atau
+mirip, misalnya "Kenapa Gurita Punya Tiga Jantung?" ditolak karena sudah ada "Gurita dan Tiga Jantungnya".
+Pemeriksaannya:
+- kata inti judul (tanpa kata umum seperti kenapa/yang/bisa, imbuhan dipotong, angka disamakan:
+  Rp10.000 = 10 ribu, sinonim sehari = per hari) hampir sama, atau
+- judul baru memuat semua pola `inti` milik judul lama (mis. `gurita` + `jantung`, `madu` + `basi|awet`).
+
+Pemeriksaannya sengaja ketat: lebih baik sesekali menolak topik yang sebenarnya beda daripada membuat ulang
+topik yang sama. Bila memang sengaja membuat ulang (atau salah tolak), tambahkan `--judul-boleh-sama`.
+Membuat ulang video yang sama (`--name` yang sama, misalnya `--from scenes`) tidak ditolak.
+
+Saat mengusulkan topik atau menulis naskah baru, cek daftar ini dulu. Judul baru yang dibuat di luar pipeline
+bisa ditambahkan manual ke `judul-terpakai.json` (kolom `judul`, `kategori`, `sumber`, dan `inti` bila perlu).
+
 ## Cara memakai
 
 ```bash

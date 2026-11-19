@@ -198,3 +198,9 @@ Langkah yang hasilnya sudah ada dan masih baru dilewati otomatis.
 `pages.json` dibuat sekali, lalu dibaca oleh Remotion (`video/src/pipeline/SubtitleVideo.tsx`) dan
 HyperFrames (HTML yang dibuat `pipeline.py`), sehingga subtitle kedua versi sama persis.
 Setiap halaman berisi paling banyak 4 kata atau 24 karakter, dan dipecah di jeda bicara atau tanda baca.
+
+## Judul yang sudah pernah dibuat
+
+`pipeline/judul-terpakai.json` berisi judul video yang sudah dibuat. Pipeline menolak judul yang sama atau mirip
+(lihat bagian 13 di `styles/ADRIY-STANDARD.md`); `--judul-boleh-sama` untuk membuat ulang dengan sengaja. Video baru
+yang selesai dirender dicatat otomatis.

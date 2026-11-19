@@ -67,6 +67,85 @@ def load_styles():
 
 _TEMA = None
 
+# ---------------------------------------------------------------- judul yang sudah pernah dibuat
+JUDUL_TERPAKAI = ROOT / "pipeline" / "judul-terpakai.json"
+_STOP = set("""kenapa mengapa bagaimana apa apakah benarkah dan yang di ke dari itu ini bisa saat padahal kita tapi tetapi lebih
+dengan setelah karena hampir selalu sering terasa versi baru ada adalah sebenarnya tidak pernah masih seluruh vs versus
+punya jadi atau untuk pada para sih kok ternyata begitu seenak cara""".split())
+
+
+_SINONIM = {"sehari": "hari", "harian": "hari", "perhari": "hari", "bilang": "ucap", "mengucap": "ucap", "mengucapkan": "ucap",
+            "berwarna": "warna", "melayang": "layang", "mengapung": "apung", "hp": "ponsel", "handphone": "ponsel", "smartphone": "ponsel",
+            "uang": "uang", "duit": "uang", "nabung": "menabung", "tabung": "menabung"}
+
+
+def _dasar(w):
+    """Pemotong imbuhan sederhana: membunyikan -> bunyi, berbentuk -> bentuk, melayang -> layang."""
+    if len(w) <= 5 or w.isdigit():
+        return w
+    w2 = re.sub(r"(kan|an|i)$", "", w) if len(w) > 7 else w
+    for pre, ganti in (("meng", ""), ("meny", "s"), ("mem", ""), ("men", ""), ("me", ""), ("ber", ""), ("ter", ""), ("di", ""), ("pe", "")):
+        if w2.startswith(pre) and len(w2) - len(pre) >= 4:
+            return ganti + w2[len(pre):]
+    return w2
+
+
+def _kata_judul(t):
+    t = re.sub(r"\(.*?\)", " ", t.lower())
+    # angka disamakan: "Rp10.000", "10 ribu", "10rb" -> 10000; "seratus ribu" -> 100000
+    t = re.sub(r"rp\s*", "", t).replace("seratus ribu", "100000").replace("sepuluh ribu", "10000")
+    t = re.sub(r"(\d+)[.,]000\b", r"\g<1>000", t)
+    t = re.sub(r"(\d+)\s*(ribu|rb|k)\b", lambda m: str(int(m.group(1)) * 1000), t)
+    t = re.sub(r"(\d+)\s*(juta|jt)\b", lambda m: str(int(m.group(1)) * 1000000), t)
+    ws = re.findall(r"[a-z0-9]+", t.replace("-", ""))
+    out = set()
+    for w in ws:
+        w = re.sub(r"(nya|lah|kah)$", "", w) if len(w) > 5 else w
+        w = _SINONIM.get(w, w)
+        w = _dasar(w)
+        if w not in _STOP and w != "per" and len(w) > 1:
+            out.add(w)
+    return out
+
+
+def judul_mirip(title):
+    """Judul terpakai yang sama atau mirip dengan title (kata inti hampir sama), atau None."""
+    try:
+        daftar = json.loads(JUDUL_TERPAKAI.read_text(encoding="utf-8"))["judul"]
+    except (OSError, ValueError, KeyError):
+        return None
+    import difflib
+    a = _kata_judul(title)
+    low = title.lower()
+    for e in daftar:
+        if e.get("inti") and all(re.search(pat, low) for pat in e["inti"]):
+            return e
+        b = _kata_judul(e["judul"])
+        if not a or not b:
+            continue
+        overlap = len(a & b) / min(len(a), len(b))
+        rasio = difflib.SequenceMatcher(None, " ".join(sorted(a)), " ".join(sorted(b))).ratio()
+        sama = len(a & b)
+        # sengaja ketat: lebih baik sesekali salah menolak (ada --judul-boleh-sama) daripada membuat ulang topik
+        if (overlap >= 0.66 and sama >= 2) or rasio >= 0.85 or a == b:
+            return e
+    return None
+
+
+def catat_judul(title, name):
+    """Tambahkan judul video yang selesai ke daftar judul terpakai (kecuali video uji/contoh)."""
+    if not title or name.startswith(("_", "contoh")) or title == name:
+        return
+    try:
+        d = json.loads(JUDUL_TERPAKAI.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        d = {"judul": []}
+    if any(e["judul"].strip().lower() == title.strip().lower() for e in d["judul"]):
+        return
+    d["judul"].append({"judul": title, "kategori": (tema_konten(title) or {}).get("nama", ""), "sumber": f"media/{name}"})
+    JUDUL_TERPAKAI.write_text(json.dumps(d, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    log("finish", f"judul dicatat di {JUDUL_TERPAKAI.relative_to(ROOT)}")
+
 
 def tema_konten(title):
     """Tema konten (pipeline/tema-konten.json) dari judul: tema pertama yang polanya cocok, atau None."""
@@ -1659,6 +1738,7 @@ def main():
     ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
     ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
     ap.add_argument("--preview-scenes", action="store_true", help="gambar diam dari tengah tiap adegan (style adriy), bukan video")
+    ap.add_argument("--judul-boleh-sama", action="store_true", help="tetap buat walau judulnya mirip judul yang sudah pernah dibuat (pipeline/judul-terpakai.json)")
     ap.add_argument("--qa", action="store_true", help="periksa tabrakan, teks terpotong, subtitle, blur, sisa adegan, latar (gambar diam). Dengan --name: video itu; tanpa: contoh semua adegan")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
     ap.add_argument("--renderer", choices=["remotion", "hyperframes", "both"], default="remotion",
@@ -1698,6 +1778,16 @@ def main():
                 break
             except (OSError, ValueError, KeyError):
                 pass
+    if ctx["title"] == args.name and str(args.input).endswith(".json") and Path(args.input).exists():
+        try:
+            ctx["title"] = json.loads(Path(args.input).read_text(encoding="utf-8")).get("title") or ctx["title"]
+        except ValueError:
+            pass
+    # judul yang sudah pernah dibuat tidak dibuat lagi (kecuali video itu sendiri dibuat ulang)
+    sama = judul_mirip(ctx["title"]) if ctx["title"] != args.name else None
+    if sama and sama.get("sumber") != f"media/{args.name}" and not args.judul_boleh_sama:
+        raise SystemExit(f'Judul "{ctx["title"]}" sudah pernah dibuat: "{sama["judul"]}" ({sama.get("sumber", "")}).\n'
+                         "Pilih topik lain, atau pakai --judul-boleh-sama bila memang sengaja membuat ulang.")
     steps = [args.only] if args.only else STEPS[: STEPS.index(args.until) + 1] if args.until else STEPS
     t0 = time.time()
     for s in steps:
@@ -1713,6 +1803,8 @@ def main():
                 raise SystemExit("Belum ada source.*: jalankan langkah fetch dulu")
             ctx["source"] = found[0]
         FUNCS[s](ctx)
+    if "finish" in steps and "finish" not in args.skip:
+        catat_judul(ctx["title"], args.name)
     print(f"Selesai dalam {time.time() - t0:.0f} dtk. Hasil: {ctx['dir'].relative_to(ROOT)}/")
 
 

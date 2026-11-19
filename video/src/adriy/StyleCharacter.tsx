@@ -125,7 +125,8 @@ export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; 
         data-qa="adri"
         style={{ position: "absolute", left: 540 - w / 2 + jx, top: floor - size * (1162 / 1180) + bob, width: w, height: size, rotate: `${rot}deg`, opacity: op, filter: FILTER[look.finish], transformOrigin: "50% 100%" }}
       >
-        {imageSet ? (
+        {/* gambar semi-realistis kecuali style yang butuh kostum (dasi, koki, pelancong, peci): kostum hanya ada di versi vector */}
+        {imageSet && !(look.outfit && look.outfit !== "atlet") ? (
           <Adri spec={{ ...ADRI_SPEC, imageSet }} pose={look.pose} size={size} talking seed={seed} />
         ) : (
           <Adri spec={ADRI_SPEC} pose={look.pose} size={size} talking facing={look.facing ?? "right"} seed={seed} outfit={look.outfit} rods={look.finish === "siluet"} holding={look.holding === "piring" ? <Piring /> : undefined} />

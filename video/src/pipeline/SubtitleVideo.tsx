@@ -20,6 +20,7 @@ export type SubtitleVideoProps = {
   pages: Page[];
   meta: Meta | null;
   style: Style | null;
+  imageSet?: ImageSet | null;
 };
 
 export const calculateSubtitleMetadata: CalculateMetadataFunction<SubtitleVideoProps> = async ({ props }) => {
@@ -29,7 +30,8 @@ export const calculateSubtitleMetadata: CalculateMetadataFunction<SubtitleVideoP
     fetch(staticFile(`${base}/pages.json`)).then((r) => r.json() as Promise<Page[]>),
     fetch(staticFile(`${base}/style.json`)).then((r) => (r.ok ? (r.json() as Promise<Style>) : null)).catch(() => null),
   ]);
-  return { durationInFrames: Math.ceil(meta.duration * 30), props: { ...props, meta, pages, style } };
+  const imageSet = await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
+  return { durationInFrames: Math.ceil(meta.duration * 30), props: { ...props, meta, pages, style, imageSet } };
 };
 
 const CaptionPage: React.FC<{ page: Page; style: Style; index: number }> = ({ page, style, index }) => {
@@ -47,7 +49,7 @@ const AppBrand: React.FC<{ title: string }> = ({ title }) => (
   </AbsoluteFill>
 );
 
-export const SubtitleVideo: React.FC<SubtitleVideoProps> = ({ media, pages, meta, style }) => {
+export const SubtitleVideo: React.FC<SubtitleVideoProps> = ({ media, pages, meta, style, imageSet }) => {
   const { fps } = useVideoConfig();
   if (!meta) return null;
   const st = style ?? DEFAULT_STYLE;
@@ -57,7 +59,7 @@ export const SubtitleVideo: React.FC<SubtitleVideoProps> = ({ media, pages, meta
     <AbsoluteFill>
       <StyledFrame style={st} title={showTitle ? meta.title : undefined}>
         {/* gambar/klip asli memakai bingkai style; tanpa gambar, ADRI tampil dengan penyelesaian khas style itu */}
-        {meta.hasVideo ? <Visual style={st} src={`${base}/${meta.source}`} kind="video" /> : st.id === "bersih" ? <AppBrand title={meta.title} /> : <StyleCharacter styleId={st.id} captionBottom={st.subtitle.position} />}
+        {meta.hasVideo ? <Visual style={st} src={`${base}/${meta.source}`} kind="video" /> : st.id === "bersih" ? <AppBrand title={meta.title} /> : <StyleCharacter styleId={st.id} captionBottom={st.subtitle.position} imageSet={imageSet} />}
       </StyledFrame>
       <Audio name="Audio" src={staticFile(`${base}/audio.wav`)} />
       {pages.map((p, i) => (
@@ -77,13 +79,13 @@ export type StylePreviewProps = {
   caption: string;
   active: number; // indeks kata yang menyala
   visual: string; // gambar contoh di public/; kosong = ADRI dengan penyelesaian khas style
-  real?: boolean; // ADRI dari gambar semi-realistis (public/adri/santai/peta.json) bila ada
+  real?: boolean; // false = paksa ADRI vector; bawaan: gambar semi-realistis bila public/adri/santai/peta.json ada
   imageSet?: ImageSet | null;
 };
 
 export const calculateStylePreviewMetadata: CalculateMetadataFunction<StylePreviewProps> = async ({ props }) => {
   const style = await fetch(staticFile(`styles/${props.styleId}.json`)).then((r) => (r.ok ? (r.json() as Promise<Style>) : null)).catch(() => null);
-  const imageSet = props.real ? await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null) : null;
+  const imageSet = props.real !== false ? await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null) : null;
   return { props: { ...props, style, imageSet } };
 };
 

@@ -83,6 +83,19 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 - Untuk tokoh nyata: pakai suara narator (Adriy/Ongky), bukan tiruan suara tokohnya; kutipan harus asli
   dan bersumber; foto harus boleh dipakai.
 
+## Aset ADRIY semi-realistis
+
+Gambar ADRIY (wajah, pose, close-up, bentuk mulut) disimpan di repo privat
+`adriyarfiyfadilclash-lang/adriy-karakter-aset`, tidak di repo ini. Ambil sebelum membuat video:
+
+```bash
+bash video/scripts/ambil_aset.sh
+```
+
+Dengan aset: style `adriy` dan style tanpa kostum (wayang, koran, horor, anak, sains, teknologi, olahraga, bersih)
+memakai ADRIY semi-realistis; bisnis, kuliner, travel, dan religi tetap memakai ADRI vector berkostum.
+Tanpa aset: semua memakai ADRI vector. Aset baru: lihat `video/scripts/adri_aset.py`.
+
 ## ADRI di style lain
 
 Video dengan style lain (wayang, koran, horor, anak, sains, teknologi, bisnis, kuliner, travel, olahraga, religi)

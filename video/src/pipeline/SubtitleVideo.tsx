@@ -2,7 +2,7 @@ import { Audio } from "@remotion/media";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Icon } from "../promo/icons";
 import type { ImageSet } from "../adriy/Adri";
-import { StyleCharacter } from "../adriy/StyleCharacter";
+import { imageSetPath, StyleCharacter } from "../adriy/StyleCharacter";
 import { Caption, DEFAULT_STYLE, type Style, StyledFrame, type Token, Visual } from "./styles";
 
 // Data dibuat oleh ../pipeline/pipeline.py di public/media/<media>/:
@@ -30,7 +30,7 @@ export const calculateSubtitleMetadata: CalculateMetadataFunction<SubtitleVideoP
     fetch(staticFile(`${base}/pages.json`)).then((r) => r.json() as Promise<Page[]>),
     fetch(staticFile(`${base}/style.json`)).then((r) => (r.ok ? (r.json() as Promise<Style>) : null)).catch(() => null),
   ]);
-  const imageSet = await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
+  const imageSet = await fetch(staticFile(imageSetPath(style?.id ?? ""))).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
   return { durationInFrames: Math.ceil(meta.duration * 30), props: { ...props, meta, pages, style, imageSet } };
 };
 
@@ -85,7 +85,7 @@ export type StylePreviewProps = {
 
 export const calculateStylePreviewMetadata: CalculateMetadataFunction<StylePreviewProps> = async ({ props }) => {
   const style = await fetch(staticFile(`styles/${props.styleId}.json`)).then((r) => (r.ok ? (r.json() as Promise<Style>) : null)).catch(() => null);
-  const imageSet = props.real !== false ? await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null) : null;
+  const imageSet = props.real !== false ? await fetch(staticFile(imageSetPath(props.styleId))).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null) : null;
   return { props: { ...props, style, imageSet } };
 };
 

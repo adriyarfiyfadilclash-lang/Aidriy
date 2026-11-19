@@ -40,18 +40,30 @@ def background_mask(rgb):
     corner = np.concatenate([rgb[:40, :40].reshape(-1, 3), rgb[:40, -40:].reshape(-1, 3)]).min(1)
     thr = int(min(226, max(205, np.percentile(corner, 2) - 5)))
     cand = (mn >= thr) & ((mx - mn) <= 14)
+    # bila latarnya kotak-kotak (variasi terang-gelap tinggi di sudut), isian hanya boleh lewat area yang
+    # bermotif: bidang putih rata (sepatu, kaos) tidak ikut terhapus walau garis tepinya tidak tertutup
+    lum0 = rgb.mean(2)
+    var21 = ndi.uniform_filter(lum0 * lum0, 21) - ndi.uniform_filter(lum0, 21) ** 2
+    if np.median(np.concatenate([var21[:40, :40].ravel(), var21[:40, -40:].ravel()])) > 25:
+        cand &= ndi.binary_dilation(var21 > 12, iterations=3)
     lab, n = ndi.label(cand)
     border = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
     bg = np.isin(lab, list(border))
-    # kantong terkurung: campuran abu-abu 236-247 dan 250-255 dalam jumlah seimbang
+    # kantong terkurung (di antara kaki, lengan dan badan): dikenali dari pola kotak-kotak itu sendiri, yaitu
+    # variasi terang-gelap lokal yang tinggi. Bidang putih rata (sepatu, kaos) variasinya rendah.
     lum = rgb.mean(2)
-    sizes = ndi.sum(np.ones_like(lum), lab, index=np.arange(1, n + 1))
-    for k in range(1, n + 1):
-        if k in border or sizes[k - 1] < 1500:
+    var = ndi.uniform_filter(lum * lum, 9) - ndi.uniform_filter(lum, 9) ** 2
+    idx = np.arange(1, n + 1)
+    sizes = ndi.sum(np.ones_like(lum), lab, index=idx)
+    mvar = ndi.mean(var, lab, index=idx)
+    for k in idx:
+        if k in border or sizes[k - 1] < 300:
+            continue
+        if mvar[k - 1] <= 25:
             continue
         v = lum[lab == k]
-        lo, hi = ((v >= 236) & (v <= 247)).mean(), (v >= 250).mean()
-        if lo > 0.25 and hi > 0.25:
+        lo, hi = ((v >= thr) & (v <= 247)).mean(), (v >= 250).mean()
+        if lo > 0.2 and hi > 0.2:  # dua abu-abu kotak-kotak sama-sama banyak (sepatu putih: hampir semua >= 250)
             bg |= lab == k
     return bg
 
@@ -179,11 +191,22 @@ DEKAT = {"sapa": "dekat-08-1", "jelaskan": "dekat-12-1", "tunjuk": "dekat-02-1",
 BICARA = ["dekat-09-1", "dekat-09-4", "dekat-09-2", "dekat-09-3", "dekat-09-5"]  # A, setengah, E, U, O
 KEDIP = "dekat-12-3"
 
+# Outfit lain: folder punya tata.json sendiri {"layout": {file: [baris]}, "penuh": {...}, "dekat": {...},
+# "bicara": [...], "kedip": ...}. Kunci yang tidak ada memakai bawaan outfit santai di atas.
+_TATA = SRC / "tata.json"
+if _TATA.exists():
+    _t = json.loads(_TATA.read_text())
+    LAYOUT = _t.get("layout", LAYOUT)
+    PENUH = _t.get("penuh", PENUH)
+    DEKAT = _t.get("dekat", {})
+    BICARA = _t.get("bicara", [])
+    KEDIP = _t.get("kedip")
+
 
 def write_map():
     index = json.loads((OUT / "index.json").read_text())
     info = {Path(it["file"]).stem: it for items in index.values() for it in items}
-    base = SRC.relative_to(ROOT / "public").as_posix()
+    base = f"adri/{SRC.name}"  # dibaca video dari public/adri/<outfit>/ (salinan repo aset)
     ent = lambda k: {**{x: info[k][x] for x in ("w", "h", "rowH")}, "file": f"{base}/{info[k]['file']}"}  # noqa: E731
     pick = lambda v: [ent(k) for k in v] if isinstance(v, list) else [ent(v)]  # noqa: E731
     peta = {"penuh": {p: pick(v) for p, v in PENUH.items() if all(k in info for k in (v if isinstance(v, list) else [v]))},

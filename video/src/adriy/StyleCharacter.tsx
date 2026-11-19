@@ -18,6 +18,10 @@ import { Adri, ADRI_SPEC, type ImageSet, type Outfit, type Pose } from "./Adri";
 type Finish = "siluet" | "cetak" | "suram" | "stiker" | "garis" | "hologram" | "komik" | "cahaya" | "biasa" | "hangat";
 type Look = { finish: Finish; pose: Pose; outfit?: Outfit; size: number; facing?: "left" | "right"; tilt?: number; holding?: "piring" };
 
+// Style yang punya set gambar berkostum sendiri (folder di repo aset). Style lain memakai "santai".
+export const IMAGE_SET: Record<string, string> = { travel: "travel" };
+export const imageSetPath = (styleId: string) => `adri/${IMAGE_SET[styleId] ?? "santai"}/peta.json`;
+
 export const STYLE_CHARACTER: Record<string, Look> = {
   wayang: { finish: "siluet", pose: "banding", size: 900 },
   koran: { finish: "cetak", pose: "pikir", size: 820, tilt: -2 },
@@ -126,7 +130,7 @@ export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; 
         style={{ position: "absolute", left: 540 - w / 2 + jx, top: floor - size * (1162 / 1180) + bob, width: w, height: size, rotate: `${rot}deg`, opacity: op, filter: FILTER[look.finish], transformOrigin: "50% 100%" }}
       >
         {/* gambar semi-realistis kecuali style yang butuh kostum (dasi, koki, pelancong, peci): kostum hanya ada di versi vector */}
-        {imageSet && !(look.outfit && look.outfit !== "atlet") ? (
+        {imageSet && (!(look.outfit && look.outfit !== "atlet") || IMAGE_SET[styleId]) ? (
           <Adri spec={{ ...ADRI_SPEC, imageSet }} pose={look.pose} size={size} talking seed={seed} />
         ) : (
           <Adri spec={ADRI_SPEC} pose={look.pose} size={size} talking facing={look.facing ?? "right"} seed={seed} outfit={look.outfit} rods={look.finish === "siluet"} holding={look.holding === "piring" ? <Piring /> : undefined} />

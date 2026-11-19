@@ -1,5 +1,5 @@
 import { useCurrentFrame } from "remotion";
-import { Adri, ADRI_SPEC, type Outfit, type Pose } from "./Adri";
+import { Adri, ADRI_SPEC, type ImageSet, type Outfit, type Pose } from "./Adri";
 
 // ADRI di style lain (wayang, koran, horor, anak, ...). Identitasnya tetap (wajah, rambut, kacamata,
 // hoodie berlogo A); yang berubah adalah "penyelesaian" gambar dan kostumnya supaya menyatu dengan style:
@@ -104,7 +104,8 @@ const Piring: React.FC = () => (
   </g>
 );
 
-export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; seed?: number }> = ({ styleId, captionBottom, seed = 0 }) => {
+// imageSet: pakai gambar ADRIY semi-realistis (kostum tidak bisa ditambahkan ke gambar, jadi tanpa kostum)
+export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; seed?: number; imageSet?: ImageSet | null }> = ({ styleId, captionBottom, seed = 0, imageSet }) => {
   const frame = useCurrentFrame();
   const look = STYLE_CHARACTER[styleId] ?? STYLE_CHARACTER.bersih;
   // kaki ADRI berpijak di atas seluruh blok subtitle style itu (posisi = jarak tepi bawah subtitle dari bawah
@@ -124,7 +125,11 @@ export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; 
         data-qa="adri"
         style={{ position: "absolute", left: 540 - w / 2 + jx, top: floor - size * (1162 / 1180) + bob, width: w, height: size, rotate: `${rot}deg`, opacity: op, filter: FILTER[look.finish], transformOrigin: "50% 100%" }}
       >
-        <Adri spec={ADRI_SPEC} pose={look.pose} size={size} talking facing={look.facing ?? "right"} seed={seed} outfit={look.outfit} rods={look.finish === "siluet"} holding={look.holding === "piring" ? <Piring /> : undefined} />
+        {imageSet ? (
+          <Adri spec={{ ...ADRI_SPEC, imageSet }} pose={look.pose} size={size} talking seed={seed} />
+        ) : (
+          <Adri spec={ADRI_SPEC} pose={look.pose} size={size} talking facing={look.facing ?? "right"} seed={seed} outfit={look.outfit} rods={look.finish === "siluet"} holding={look.holding === "piring" ? <Piring /> : undefined} />
+        )}
       </div>
       {look.finish === "garis" && (
         // garis ukur tinggi seperti gambar teknik

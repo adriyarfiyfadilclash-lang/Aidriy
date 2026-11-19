@@ -1,6 +1,7 @@
 import { Audio } from "@remotion/media";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Icon } from "../promo/icons";
+import type { ImageSet } from "../adriy/Adri";
 import { StyleCharacter } from "../adriy/StyleCharacter";
 import { Caption, DEFAULT_STYLE, type Style, StyledFrame, type Token, Visual } from "./styles";
 
@@ -76,14 +77,17 @@ export type StylePreviewProps = {
   caption: string;
   active: number; // indeks kata yang menyala
   visual: string; // gambar contoh di public/; kosong = ADRI dengan penyelesaian khas style
+  real?: boolean; // ADRI dari gambar semi-realistis (public/adri/santai/peta.json) bila ada
+  imageSet?: ImageSet | null;
 };
 
 export const calculateStylePreviewMetadata: CalculateMetadataFunction<StylePreviewProps> = async ({ props }) => {
   const style = await fetch(staticFile(`styles/${props.styleId}.json`)).then((r) => (r.ok ? (r.json() as Promise<Style>) : null)).catch(() => null);
-  return { props: { ...props, style } };
+  const imageSet = props.real ? await fetch(staticFile("adri/santai/peta.json")).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null) : null;
+  return { props: { ...props, style, imageSet } };
 };
 
-export const StylePreview: React.FC<StylePreviewProps> = ({ style: loaded, title, caption, active, visual }) => {
+export const StylePreview: React.FC<StylePreviewProps> = ({ style: loaded, title, caption, active, visual, imageSet }) => {
   const style = loaded ?? DEFAULT_STYLE;
   const words = caption.split(" ");
   const tokens = words.map((w, i) => ({ text: (i ? " " : "") + w, fromMs: i === active ? 0 : -2, toMs: i === active ? 10_000 : -1 }));
@@ -92,7 +96,7 @@ export const StylePreview: React.FC<StylePreviewProps> = ({ style: loaded, title
       {/* latar diambil dari detik ke-2, saat animasinya (grafik, rute, uap, dll.) sudah berjalan */}
       <Sequence from={-60} layout="none">
         <StyledFrame style={style} title={title}>
-          {visual ? <Visual style={style} src={visual} kind="image" /> : <StyleCharacter styleId={style.id} captionBottom={style.subtitle.position} />}
+          {visual ? <Visual style={style} src={visual} kind="image" /> : <StyleCharacter styleId={style.id} captionBottom={style.subtitle.position} imageSet={imageSet} />}
         </StyledFrame>
       </Sequence>
       <Caption style={style} tokens={tokens} nowMs={500} index={0} settled />

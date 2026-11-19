@@ -12,3 +12,6 @@
 *.jks
 media/
 __pycache__/
+
+# hasil render (berisi wajah ADRIY; repo publik)
+out/

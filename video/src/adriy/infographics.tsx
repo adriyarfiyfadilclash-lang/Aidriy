@@ -204,7 +204,8 @@ export const MapView: React.FC<{ pins: Pin[]; x: number; y: number; w: number; a
               <path d="M0 0 C-30 -40 -34 -58 -34 -70 A34 34 0 1 1 34 -70 C34 -58 30 -40 0 0 Z" fill={k.accent} stroke={k.bg} strokeWidth={4} />
               <circle cx={0} cy={-70} r={13} fill={k.bg} />
             </g>
-            <text x={px} y={py + 56} textAnchor="middle" fontFamily={k.font} fontWeight={800} fontSize={36} fill={k.ink} stroke={k.bg} strokeWidth={8} paintOrder="stroke">
+            {/* label di bawah pin, atau di atas bila pin sebelumnya terlalu dekat (tidak bertumpuk) */}
+            <text x={px} y={i > 0 && Math.hypot(px - pts[i - 1][0], py - pts[i - 1][1]) < 160 ? py - 100 : py + 56} textAnchor="middle" fontFamily={k.font} fontWeight={800} fontSize={36} fill={k.ink} stroke={k.bg} strokeWidth={8} paintOrder="stroke">
               {p.label}
             </text>
           </g>

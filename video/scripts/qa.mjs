@@ -66,6 +66,8 @@ for (const j of jobs) {
   process.stdout.write(".");
 }
 await browser.close({ silent: true });
+// bundle sementara besar (menyalin public/): hapus setelah selesai kalau dibuat di sini
+if (!args.bundle) fs.rmSync(serveUrl, { recursive: true, force: true });
 process.stdout.write("\n");
 
 // ---------------------------------------------------------------- analisis
@@ -114,6 +116,12 @@ for (const j of results) {
         if (f > 0.12) add(j, "masalah", `teks tertutup/bertabrakan dengan ADRI: "${t.text}" (${Math.round(f * 100)}%)`);
       }
     }
+    // teks ditimpa objek utama (bukan objek lebar/sengaja terpotong)
+    for (const t of texts)
+      for (const o of mine.filter((e) => e.kind === "object" && !e.wide)) {
+        const f = inter(t, o) / Math.max(1, area(t));
+        if (f > 0.2 && !o.text.includes(t.text)) add(j, "masalah", `teks bertumpuk dengan objek: "${t.text}" (${Math.round(f * 100)}%)`);
+      }
     for (let a = 0; a < texts.length; a++)
       for (let b = a + 1; b < texts.length; b++) {
         const f = inter(texts[a], texts[b]) / Math.max(1, Math.min(area(texts[a]), area(texts[b])));

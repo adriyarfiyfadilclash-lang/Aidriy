@@ -26,6 +26,46 @@ diterapkan:
 | `qa.tsx` + `video/scripts/qa.mjs` | Pemeriksa visual dan teknis (bagian 11) |
 | `PoseSheet.tsx` | Gambar diam semua pose ADRI (komposisi `PoseSheet`) |
 
+## 0. Art direction dan alur cerita
+
+Prioritas: storytelling di atas dekorasi, visual yang relevan di atas efek, variasi suasana di atas satu latar,
+kejelasan di atas keramaian, gerak bertujuan di atas animasi acak. Perencana (`art_direct` di `pipeline.py`)
+memberi tiap adegan babak cerita, suasana, dan latar:
+
+| Babak | Isi | Suasana | Latar | Komposisi khas |
+|---|---|---|---|---|
+| pembuka | memancing rasa penasaran, langsung menunjukkan situasi | penasaran | tema video | close-up ADRI bertanya, atau wide shot lingkungan (berganti antarvideo) |
+| eksplorasi | membawa penonton masuk ke topik | eksploratif | topik kalimat / tema | wide shot lingkungan, close-up objek, peta |
+| penjelasan | membantu memahami | tenang | putih-biru muda atau tema, berselang | diagram, infografis, potongan |
+| menarik | kejutan, angka, perbandingan, penemuan | energik | oranye-kuning, data putih, atau dua kondisi | objek penuh layar, angka, perbandingan |
+| kesimpulan | menutup cerita secara visual | elegan | minimal putih | adegan minimalis, atau close-up ADRI menyimpulkan (berganti antarvideo) |
+| penutup | brand | cerah | biru brand | ADRI merayakan |
+
+Tema video diambil terutama dari judul. Latar gelap paling banyak 35% adegan (malam, teknologi, brand).
+
+### Latar adaptif
+
+| Latar | Warna | Untuk | Ilustrasi |
+|---|---|---|---|
+| `cerah` | putih, biru muda | penjelasan ringan, fakta sehari-hari | hampir kosong |
+| `arsip` | krem, cokelat, kertas | sejarah, penemuan, masa lalu | tekstur kertas, cap, peta lama |
+| `alam` | hijau, turquoise | alam, lingkungan | bukit, pohon, matahari, daun melayang |
+| `sains` | cyan | eksperimen, sains | meja lab, labu, tabung, gelembung |
+| `hangat` | oranye, kuning | penemuan, kejutan, momen penting | sinar dari bawah |
+| `pastel` | ungu, pink | psikologi, kreativitas | profil kepala, gumpalan pikiran |
+| `langit` | biru langit | langit, cuaca, atmosfer | matahari, awan berjalan, cakrawala |
+| `dapur` | krem hangat | makanan | rak stoples, meja, uap |
+| `kota` | biru muda siang | kota, kendaraan | gedung di kejauhan |
+| `data` | putih | angka sebagai fokus | titik halus |
+| `banding` | sejuk / hangat | perbandingan | dua bidang |
+| `bahaya` | merah muda + merah | peringatan saja | garis peringatan |
+| `minimal` | putih elegan | kesimpulan | satu busur |
+| `brand` | biru brand | pembuka/penutup brand | logo A samar |
+| `malam`, `teknologi` | biru gelap | malam, angkasa, teknologi, dramatis | bintang; perangkat dan antarmuka |
+
+Nama lama (`umum`, `terang`, `sejarah`, `psikologi`, `fakta`) tetap diterima. Kuning brand tetap jadi stabilo di
+semua latar; di latar terang, kata aktif subtitle memakai biru brand supaya terbaca.
+
 ## 1. Identitas visual
 
 | Standar | Penerapan | Status |
@@ -56,6 +96,18 @@ Ukuran ADRI mengikuti fungsinya, bukan angka bebas per adegan:
 | `kecil` | 500 px | pendamping infografis, diagram, peta, linimasa, perbandingan, kesimpulan |
 | `sedang` | 800 px | presenter objek, angka, grafik, persentase, infografis |
 | `besar` | 1150 px | pembuka, ekspresi, penekanan, penutup |
+| `jauh` | 320 px | sosok kecil di wide shot lingkungan (jarak kamera, bukan ukuran berbeda) |
+| close-up | 1900 px, kaki di bawah layar | karakter sebagai fokus (bertanya, menyimpulkan) |
+
+ADRI tidak dipaksakan di semua adegan: close-up objek selalu tanpa ADRI, dan grafik, lingkaran, peta, linimasa,
+potongan, serta wide shot bergantian tanpa ADRI supaya visualnya jadi fokus (`adri: false`). ADRI tetap muncul
+paling tidak tiap 3 adegan.
+
+Pose tambahan: `tanya` (bertanya), `banding` (dua telapak naik-turun seperti timbangan), `rayakan` (tinju ke atas,
+melompat), `simpulkan` (jari ke atas), `tunjukkan` (mempersembahkan objek). Perencana memilih pose dari narasi:
+pertanyaan -> tanya, peringatan -> angkat, fakta -> kaget, penemuan -> rayakan, kesimpulan -> simpulkan,
+penutup -> rayakan. ADRI juga berpindah posisi di tengah adegan (`moveTo`), misalnya berjalan ke sisi pemenang
+perbandingan sebelum menunjuknya.
 
 | Pose | Kegunaan |
 |---|---|
@@ -128,6 +180,7 @@ terbelah dan lapisan dalamnya muncul berurutan.
 | Tidak menutupi objek atau karakter | Judul di lapisan 5 (tidak ikut kamera), di area atas |
 | Subtitle sinkron dan aman | Kata yang diucapkan berwarna aksen. Kata kunci ditebalkan dan digaris bawah. Posisi selalu di pita y 1480-1760 |
 | Tanpa pengulangan | Subtitle disembunyikan bila 80% isinya sudah tampil sebagai judul; adegan tipografi tidak menampilkan subtitle |
+| Posisi bervariasi | Subtitle di atas (`subtitleZone: "atas"`) bila komposisinya menaruh judul atau karakter di bawah (wide shot, close-up karakter); judul juga bisa di bawah atau di tengah kiri |
 
 Mode subtitle (kolom `subtitle`, atau bawaan per jenis adegan):
 
@@ -155,6 +208,13 @@ Mode subtitle (kolom `subtitle`, atau bawaan per jenis adegan):
 | `smooth` | larut cepat dengan sedikit gerak naik | lanjutan, kesimpulan |
 | `cover` | bentuk aksen brand menutup layar dari objek fokus, lalu membuka adegan baru (transisi objek) | fakta, kesimpulan |
 | `fade` | larut | hanya jika diminta di naskah |
+| `cut` | potongan langsung tepat di batas kalimat | lanjutan dalam satu babak |
+| `match` | adegan lama mendorong masuk ke objeknya, adegan baru menyambung dari skala yang sama | pergantian babak, objek |
+| `color` | layar dibanjiri warna latar adegan berikutnya, lalu adegan baru muncul | pergantian suasana |
+| `envshift` | lingkungan baru naik dari bawah seperti cakrawala | pergantian lingkungan/babak |
+
+Transisi dipilih dari alur cerita: pergantian babak memakai `color`, `envshift`, atau `match`; di dalam babak memakai
+potongan langsung atau gerak ringan. Tiap jenis paling banyak 25% dari transisi video.
 
 Transisi tidak pernah sama dengan transisi sebelumnya (Dicek). Lama transisi sama dengan tumpang tindih
 nyata dua adegan (0,6 dtk, `motion.overlap` 0,3 di tiap sisi), dan adegan lama berhenti tepat saat adegan baru
@@ -179,6 +239,9 @@ utuh. Blur hanya muncul selama sapuan whip yang cepat; transisi lain tetap tajam
 | `alur` | diagram alir dengan percabangan | "jika ... lalu/maka ..." |
 | `potongan` | cangkang terbelah memperlihatkan lapisan dalam | "terdiri dari", "lapisan", "bagian dalam" |
 | `persentase` | waffle 10x10 dan angka persen; ADRI mengangkat tangan | satu angka persen |
+| `objek` (`layout: "closeup"`) | objek sangat besar terpotong di tepi kanan, judul di tengah kiri, tanpa ADRI | eksplorasi |
+| `karakter` (`layout: "closeup"`) | ADRI dari pinggang ke atas, kalimat di gelembung bicara, subtitle di atas | pembuka (pertanyaan), kesimpulan |
+| `lingkungan` | wide shot: ilustrasi lingkungan sesuai topik memenuhi layar (matahari, pohon, jalan dan mobil, panci, labu lab, peta gulung, dua kepala, ponsel, bulan), judul di bawah, subtitle di atas, ADRI kecil atau tanpa ADRI | pembuka atau eksplorasi |
 | `objek` (`layout: "full"`) | objek memenuhi layar, dibuka dengan zoom reveal; latar kontras; ADRI kecil terkejut | fakta ("ternyata", "tahukah", "faktanya") |
 | `minimalis` | ruang kosong luas, satu kalimat inti, satu garis aksen; ADRI kecil mengajak penonton | kesimpulan ("jadi", "intinya"), atau kalimat sebelum penutup |
 
@@ -186,12 +249,6 @@ Urutan pemilihan menurut jenis narasi: pertanyaan pembuka -> `karakter`; kesimpu
 perbandingan ("sedangkan", "dibanding", "vs") -> `perbandingan` dengan kiri/kanan diambil dari kalimat;
 sejarah -> `timeline` atau `peta`; angka -> `grafik`, `lingkaran`, `persentase`, `angka`; fakta -> objek penuh
 layar; cara melakukan atau proses -> `diagram` langkah demi langkah.
-
-Latar mengikuti topik kalimat (atau topik video, berselang): sejarah (tekstur kertas, vinyet hangat), sains
-(ruang eksperimen, heksagon, atom), teknologi (grid digital, sirkuit), alam, kota (gedung, hanya untuk topik
-kota), psikologi (simbolik, minimalis). Komposisi juga punya latarnya: perbandingan `banding` (terbagi), fakta
-`fakta` (kuning kontras), kesimpulan `minimal`, data `data`. Partikel hanya ada di sains, alam, dan teknologi.
-Latar yang sama tidak dipakai dua kali berturut-turut, kecuali untuk linimasa.
 
 Aturan variasi: jenis yang sama tidak muncul lagi dalam 2 adegan terakhir, tiap jenis paling banyak sekitar 30%,
 minimal 4 jenis per video, dan ADRI muncul paling tidak tiap 3 adegan (Dicek).
@@ -222,6 +279,7 @@ kamera, opacity, blur, nomor adegan). Yang diperiksa:
 | Teks terpotong di dalam kotaknya | `scrollWidth > clientWidth` |
 | Subtitle bertabrakan | kotak subtitle beririsan dengan karakter, objek, atau teks |
 | Teks tertutup karakter, teks saling bertabrakan | irisan kotak |
+| Teks bertumpuk dengan objek utama | irisan teks dengan objek (bukan objek yang sengaja terpotong) |
 | Elemen adegan sebelumnya tertinggal | elemen dari adegan lain masih terlihat setelah transisi selesai |
 | Blur tidak sengaja | filter blur pada teks di tengah adegan |
 | Urutan lapisan | titik tengah subtitle harus mengenai subtitle itu sendiri |
@@ -229,6 +287,7 @@ kamera, opacity, blur, nomor adegan). Yang diperiksa:
 | Latar terputus | tepi tegak tajam di bawah pita subtitle (mis. lantai habis saat kamera bergeser) |
 | Gambar buram | variasi tepi sangat rendah di tengah adegan |
 | Transisi terlalu panjang, komposisi atau kamera berulang | dari `scenes.json` |
+| Latar gelap terlalu banyak, satu transisi mendominasi, ADRI di semua adegan | cek standar rencana (`--until scenes`) |
 
 Hasil: gambar dan `laporan.json` di `media/<nama>/qa/`. Gambar titik tengah transisi disimpan untuk diperiksa
 dengan mata.

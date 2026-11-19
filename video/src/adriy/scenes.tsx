@@ -1,12 +1,13 @@
+import { createContext, useContext } from "react";
 import { AbsoluteFill, Img, interpolate, staticFile } from "remotion";
 import "../promo/fonts"; // Plus Jakarta Sans
 import { Adri, type CharacterSpec, type Look, type Pose, type PoseCue } from "./Adri";
 import { Camera, Layer, pathAt, type Shot } from "./camera";
-import { type Env, Environment, envLook } from "./environments";
+import { canonEnv, type Env, Environment, envLook } from "./environments";
 import { BarChart, barGeometry, Callout, CountUp, Cutaway, cutawayLayers, type Datum, Donut, type Event, FlowChart, type Ink, MapView, type Pin, Timeline, timelineX, Waffle } from "./infographics";
 import { ap, clamp, EASE, FLOOR, H, rand, SceneLength, sp, useScene, W } from "./motion";
 import { SceneFrame, type Transition } from "./transitions";
-import { Kicker, KineticTitle, Marker, SceneCaption, type SubtitleMode } from "./typography";
+import { Kicker, KineticTitle, Marker, SceneCaption, type SubtitleMode, type SubtitleZone } from "./typography";
 
 // Pustaka adegan Adriy.project (lihat pipeline/styles/ADRIY-STANDARD.md).
 // Tiap adegan = SceneFrame (transisi masuk/keluar) > Camera (shot bertujuan) > Environment (latar topik)
@@ -27,7 +28,7 @@ export type Token = { text: string; fromMs: number; toMs: number };
 
 export type SceneType =
   | "karakter" | "objek" | "infografis" | "diagram" | "perbandingan" | "tipografi" | "sinematik" | "angka"
-  | "grafik" | "lingkaran" | "timeline" | "peta" | "alur" | "potongan" | "persentase" | "minimalis";
+  | "grafik" | "lingkaran" | "timeline" | "peta" | "alur" | "potongan" | "persentase" | "minimalis" | "lingkungan";
 
 export type SceneData = {
   type: SceneType;
@@ -53,16 +54,21 @@ export type SceneData = {
   label?: string;
   max?: number;
   visual?: string; // gambar di public/
+  icon?: string; // ikon objek utama (dari isi seluruh kalimat), dipakai bila tidak ada gambar
   data?: Datum[]; // grafik, lingkaran
   events?: Event[]; // timeline
   pins?: Pin[]; // peta
   decision?: string; // alur: pertanyaan percabangan
   layers?: string[]; // potongan: lapisan dari luar ke dalam
   outro?: boolean;
-  layout?: "full" | "presenter"; // objek: objek memenuhi layar, atau presenter + objek
+  layout?: "full" | "presenter" | "closeup"; // objek: penuh layar / presenter + objek / close-up terpotong; karakter: closeup
   altShot?: boolean; // pakai kamera pengganti (adegan sebelumnya berkamera sama)
   subtitle?: SubtitleMode; // gaya subtitle untuk adegan ini
   adriExit?: "left" | "right"; // ADRI berjalan keluar di akhir adegan
+  adri?: boolean; // false = adegan tanpa ADRI (objek/lingkungan/grafik jadi fokus)
+  subtitleZone?: SubtitleZone; // posisi subtitle: bawah (pita) atau atas
+  phase?: "pembuka" | "eksplorasi" | "penjelasan" | "menarik" | "kesimpulan" | "penutup"; // babak cerita
+  mood?: string; // suasana adegan (dari perencana)
 };
 
 // ---------------------------------------------------------------- ikon (Material Icons, 24x24)
@@ -77,6 +83,9 @@ const GLYPHS: Record<string, string> = {
   waktu: "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z",
   awas: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
   bintang: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
+  matahari: "M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z",
+  kereta: "M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm2 0V6h5v4h-5zm3.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z",
+  makan: "M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z",
 };
 export const Glyph: React.FC<{ name: string; size: number; color: string }> = ({ name, size, color }) => (
   <svg width={size} height={size} viewBox="0 0 24 24">
@@ -89,14 +98,19 @@ const splitPoint = (p: string) => (p.includes(":") ? { icon: p.split(":")[0], la
 export const SUBTITLE_DEFAULT: Record<SceneType, SubtitleMode> = {
   karakter: "kinetik", objek: "standar", infografis: "standar", diagram: "minimalis", perbandingan: "standar", tipografi: "minimalis",
   sinematik: "tanpa", angka: "kata", grafik: "minimalis", lingkaran: "minimalis", timeline: "minimalis", peta: "minimalis",
-  alur: "minimalis", potongan: "standar", persentase: "kata", minimalis: "minimalis",
+  alur: "minimalis", potongan: "standar", persentase: "kata", minimalis: "minimalis", lingkungan: "standar",
 };
+// Subtitle di atas bila komposisinya menaruh judul/karakter di bawah (wide shot, close-up karakter)
+export const subtitleZoneOf = (s: SceneData): SubtitleZone =>
+  s.subtitleZone ?? (s.type === "lingkungan" || (s.type === "karakter" && s.layout === "closeup") ? "atas" : "bawah");
 export const subtitleOf = (s: SceneData): SubtitleMode => s.subtitle ?? (s.type === "objek" && s.layout === "full" ? "tanpa" : SUBTITLE_DEFAULT[s.type]);
 
 // ---------------------------------------------------------------- dasar adegan
 type SP = { s: SceneData; brand: Brand; caption: React.ReactNode };
 
-export const envOf = (s: SceneData): Env => s.env ?? ({ dark: "umum", blue: "kota", light: "terang" } as const)[s.tone];
+// latar bawaan per jenis (dipakai juga oleh subtitle, supaya warna teks mengikuti latar sebenarnya)
+const TYPE_ENV: Partial<Record<SceneType, Env>> = { timeline: "arsip", potongan: "sains", minimalis: "minimal", perbandingan: "banding" };
+export const envOf = (s: SceneData): Env => s.env ?? TYPE_ENV[s.type] ?? ({ dark: "malam", blue: "brand", light: "cerah" } as const)[s.tone];
 export const isLight = (s: SceneData, b: Brand) => envLook(envOf(s), b).light;
 const inkOf = (s: SceneData, b: Brand): Ink => {
   const lk = envLook(envOf(s), b);
@@ -110,13 +124,15 @@ const inkOf = (s: SceneData, b: Brand): Ink => {
 //   5 teks, subtitle, penekanan (tidak ikut kamera)
 // `alt` = kamera pengganti bila adegan sebelumnya memakai jenis kamera yang sama (diisi perencana: altShot).
 const Stage: React.FC<{ s: SceneData; brand: Brand; shot: Shot; alt?: Shot; focus?: [number, number]; caption: React.ReactNode; children: React.ReactNode; front?: React.ReactNode; hud?: React.ReactNode; floor?: boolean }> = ({ s, brand, shot, alt, focus, caption, children, front, hud, floor }) => (
-  <SceneFrame enter={s.transition} focus={focus} accent={envLook(envOf(s), brand).accent} seed={Math.round(s.start * 7)}>
+  <SceneFrame enter={s.transition} focus={focus} accent={envLook(envOf(s), brand).accent} tint={envLook(envOf(s), brand).sky[1]} seed={Math.round(s.start * 7)}>
+    <AdriVisible.Provider value={s.adri !== false}>
     <Camera shot={s.shot ?? (s.altShot && alt ? alt : shot)}>
       <Environment env={envOf(s)} brand={brand} floor={floor} />
       <Layer depth={1}>{children}</Layer>
       {front && <Layer depth={1.06}>{front}</Layer>}
     </Camera>
     {hud && <AbsoluteFill style={{ fontFamily: brand.typography.family }}>{hud}</AbsoluteFill>}
+    </AdriVisible.Provider>
     {caption}
   </SceneFrame>
 );
@@ -126,7 +142,10 @@ const Stage: React.FC<{ s: SceneData; brand: Brand; shot: Shot; alt?: Shot; focu
 //   kecil  = pendamping infografis/diagram/peta/linimasa
 //   sedang = presenter yang menjelaskan objek/angka/grafik
 //   besar  = adegan utama: pembuka, ekspresi, penekanan, penutup
-export const ADRI_SIZE = { kecil: 500, sedang: 800, besar: 1150 } as const;
+//   jauh   = sosok kecil di wide shot lingkungan atau sinematik (jarak kamera, bukan ukuran berbeda)
+export const ADRI_SIZE = { jauh: 320, kecil: 500, sedang: 800, besar: 1150 } as const;
+// Adegan bisa tanpa ADRI (objek, lingkungan, atau grafik jadi fokus): Stage mengisi context ini dari s.adri.
+const AdriVisible = createContext(true);
 export type AdriRole = keyof typeof ADRI_SIZE;
 const ADRI_W = 500 / 1180;
 const Presenter: React.FC<{
@@ -134,9 +153,14 @@ const Presenter: React.FC<{
   walkFrom?: number; walkLen?: number; at?: number; seed: number; talking?: boolean; floor?: number;
   pointAt?: [number, number] | null; // titik di layar yang ditunjuk (koordinat lapisan isi)
   exitTo?: "left" | "right"; // berjalan keluar di akhir adegan
-}> = ({ brand, x, role, pose, facing, look, holding, walkFrom, walkLen = 0.9, at = 0, seed, talking = true, floor = FLOOR, pointAt, exitTo }) => {
+  moveTo?: { at: number; x: number; len?: number }; // berpindah posisi di tengah adegan (berjalan)
+  closeup?: boolean; // bingkai dekat: ADRI besar dari pinggang ke atas (kaki di bawah layar, sengaja)
+}> = ({ brand, x, role, pose, facing, look, holding, walkFrom, walkLen = 0.9, at = 0, seed, talking = true, floor: floor0 = FLOOR, pointAt, exitTo, moveTo, closeup }) => {
   const { frame, fps, len } = useScene();
-  const size = ADRI_SIZE[role];
+  const visible = useContext(AdriVisible);
+  const size = closeup ? 1900 : ADRI_SIZE[role];
+  const floor = closeup ? floor0 + 760 : floor0;
+  if (!visible) return null;
   const cues: PoseCue[] = typeof pose === "string" ? [{ at: 0, pose }] : pose;
   const top = floor - size * (1162 / 1180);
   const scale = size / 1180;
@@ -158,6 +182,23 @@ const Presenter: React.FC<{
     opacity = Math.min(1, p * 1.5);
     rise = (1 - Math.min(p, 1)) * 60;
   }
+  if (moveTo) {
+    // berpindah: berjalan ke x baru (menghadap arah jalan), lalu melanjutkan pose
+    const L = moveTo.len ?? 0.9;
+    const end = moveTo.at + L;
+    const k = interpolate(frame / fps, [moveTo.at, end], [0, 1], { ...clamp, easing: EASE.inOut });
+    if (k > 0) {
+      cx += (moveTo.x - x) * k;
+      const before = allCues.filter((c) => c.at < moveTo.at);
+      const after = allCues.filter((c) => c.at >= end);
+      const resume: PoseCue[] = after[0]?.at === end ? [] : [{ at: end, pose: before[before.length - 1]?.pose ?? "jelaskan" }];
+      allCues = [...before, { at: moveTo.at, pose: "jalan" }, ...resume, ...after];
+      if (k < 1) {
+        face = moveTo.x > x ? "right" : "left";
+        talk = false;
+      }
+    }
+  }
   if (exitTo) {
     // keluar: 0,9 dtk terakhir berbalik dan berjalan ke luar layar
     const t0 = len / fps - 0.9;
@@ -178,7 +219,7 @@ const Presenter: React.FC<{
     aim = [face === "left" ? 500 - lx : lx, ly];
   }
   return (
-    <div data-qa="adri" style={{ position: "absolute", left, top, width: size * ADRI_W, height: size, opacity, translate: `0px ${rise}px` }}>
+    <div data-qa="adri" {...(closeup ? { "data-qa-wide": "1" } : {})} style={{ position: "absolute", left, top, width: size * ADRI_W, height: size, opacity, translate: `0px ${rise}px` }}>
       <Adri spec={brand.character} pose={allCues} size={size} talking={talk} facing={face} look={look} holding={holding} aim={aim} seed={seed} />
     </div>
   );
@@ -207,14 +248,15 @@ const Visual: React.FC<{ s: SceneData; k: Ink; size: number }> = ({ s, k, size }
     <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
   ) : (
     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${k.primary}, ${k.secondary})` }}>
-      <Glyph name={splitPoint(s.points?.[0] ?? "ide:").icon} size={size} color="#FFFFFF" />
+      <Glyph name={s.icon ?? splitPoint(s.points?.[0] ?? "ide:").icon} size={size} color="#FFFFFF" />
     </div>
   );
 
 const seedOf = (s: SceneData, n = 0) => Math.round(s.start * 10) + n;
 
-const Head: React.FC<{ s: SceneData; brand: Brand; k: Ink; size?: number; top?: number; maxWidth?: number }> = ({ s, brand, k, size = 64, top = 150, maxWidth }) => (
-  <div style={{ position: "absolute", left: 80, right: 80, top, fontFamily: brand.typography.family }}>
+// Judul tidak selalu di atas: pos "bawah" = di atas lantai (wide shot), "kiri" = tengah kiri (close-up objek)
+const Head: React.FC<{ s: SceneData; brand: Brand; k: Ink; size?: number; top?: number; maxWidth?: number; pos?: "atas" | "bawah" | "kiri" }> = ({ s, brand, k, size = 64, top = 150, maxWidth, pos = "atas" }) => (
+  <div style={{ position: "absolute", left: 80, right: pos === "kiri" ? 560 : 80, top: pos === "bawah" ? undefined : pos === "kiri" ? 560 : top, bottom: pos === "bawah" ? H - FLOOR + 40 : undefined, fontFamily: brand.typography.family }}>
     <Kicker text={s.kicker} at={0.1} color={k.accent} />
     <div style={{ height: 16 }} />
     <KineticTitle text={s.title} highlight={s.highlight} at={0.2} brand={brand} size={size} color={k.ink} maxWidth={maxWidth} />
@@ -223,7 +265,8 @@ const Head: React.FC<{ s: SceneData; brand: Brand; k: Ink; size?: number; top?: 
 
 // ================================================================ 1. Karakter
 // ADRI berjalan masuk dan berbicara langsung ke penonton; judul besar di sisi berlawanan; kamera menekankan karakter.
-export const SceneKarakter: React.FC<SP> = ({ s, brand, caption }) => {
+export const SceneKarakter: React.FC<SP> = (props) => (props.s.layout === "closeup" ? <SceneKarakterDekat {...props} /> : <SceneKarakterPresenter {...props} />);
+const SceneKarakterPresenter: React.FC<SP> = ({ s, brand, caption }) => {
   const { frame, fps } = useScene();
   const k = inkOf(s, brand);
   const side = s.side ?? "right";
@@ -231,7 +274,7 @@ export const SceneKarakter: React.FC<SP> = ({ s, brand, caption }) => {
   const pose = s.pose ?? "jelaskan";
   const cues: PoseCue[] = [{ at: 0, pose }, ...(pose === "sapa" ? [{ at: 2.6, pose: "ajak" as Pose }] : pose === "jelaskan" ? [{ at: 2.8, pose: "angkat" as Pose }] : [])];
   const textX = side === "right" ? 80 : 560;
-  const pts = (s.points ?? []).slice(0, 2);
+  const pts = (s.points ?? []).slice(0, 1); // satu ikon pendamping saja: fokus tetap pada ADRI dan judul
   return (
     <Stage s={s} brand={brand} shot={{ kind: "emphasis", x: ax, y: 520 }} alt={{ kind: "reveal", x: ax, y: 520, from: 1.35 }} focus={[ax, 600]} caption={caption}
       hud={<>
@@ -266,7 +309,8 @@ export const SceneKarakter: React.FC<SP> = ({ s, brand, caption }) => {
 
 // ================================================================ 2. Objek
 // Objek besar dengan label penunjuk ke bagian-bagiannya; ADRI menyentuh objek; kamera mendekat ke objek.
-export const SceneObjek: React.FC<SP> = (props) => (props.s.layout === "full" ? <SceneObjekFull {...props} /> : <SceneObjekPresenter {...props} />);
+export const SceneObjek: React.FC<SP> = (props) =>
+  props.s.layout === "full" ? <SceneObjekFull {...props} /> : props.s.layout === "closeup" ? <SceneObjekDekat {...props} /> : <SceneObjekPresenter {...props} />;
 const SceneObjekPresenter: React.FC<SP> = ({ s, brand, caption }) => {
   const { frame, fps } = useScene();
   const k = inkOf(s, brand);
@@ -418,7 +462,7 @@ export const ScenePerbandingan: React.FC<SP> = ({ s, brand, caption }) => {
   };
   return (
     <Stage s={s} brand={brand} shot={{ kind: "perspective", from: winRight ? "right" : "left" }} alt={{ kind: "rack", from: winRight ? "left" : "right" }} focus={[540, 900]} caption={caption} hud={<Head s={s} brand={brand} k={k} maxWidth={760} />}
-      front={<Presenter brand={brand} x={540} role="kecil" pose={[{ at: 0, pose: "pikir" }, { at: 1.8, pose: "tunjuk" }]} facing={winRight ? "right" : "left"} look="maju" at={0.5} seed={seedOf(s, 6)} pointAt={winRight ? [800, 760] : [280, 600]} />}
+      front={<Presenter brand={brand} x={540} role="kecil" pose={[{ at: 0, pose: "banding" }, { at: 2.4, pose: "tunjuk" }]} facing={winRight ? "right" : "left"} look="penonton" at={0.5} seed={seedOf(s, 6)} moveTo={s.left?.win || s.right?.win ? { at: 1.5, x: winRight ? 640 : 440 } : undefined} pointAt={winRight ? [800, 760] : [280, 600]} />}
     >
       <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
         <polygon points={`0,0 ${620 * split},0 ${460 * split},${FLOOR} 0,${FLOOR}`} fill={s.left?.win ? k.secondary : k.negative} opacity={0.14} />
@@ -539,11 +583,12 @@ export const SceneAngka: React.FC<SP> = ({ s, brand, caption }) => {
         })}
       </svg>
       <div style={{ position: "absolute", left: 70, top: 320 }}>
-        <CountUp value={v} at={0.4} unit={s.unit} size={v >= 1000 ? 200 : 280} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
+        <CountUp value={v} at={0.4} unit={s.unit} size={v >= 1000 || (s.unit ?? "").length > 3 ? 190 : 280} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
       </div>
       <div style={{ position: "absolute", left: 80, top: 620, width: 500, fontFamily: brand.typography.family }}>
         <KineticTitle text={s.label} highlight={s.highlight} at={1.1} brand={brand} size={50} color={k.ink} marker={false} />
       </div>
+      {s.max !== undefined && (
       <div style={{ position: "absolute", left: 80, top: 920, width: 500 }}>
         <div style={{ height: 34, borderRadius: 17, background: `${k.ink}1F`, overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${g * 100}%`, borderRadius: 17, background: `linear-gradient(90deg, ${k.primary}, ${k.accent})` }} />
@@ -553,6 +598,7 @@ export const SceneAngka: React.FC<SP> = ({ s, brand, caption }) => {
           <span>{max.toLocaleString("id-ID", { maximumFractionDigits: 1 })}{s.unit}</span>
         </div>
       </div>
+      )}
     </Stage>
   );
 };
@@ -780,9 +826,190 @@ export const SceneMinimalis: React.FC<SP> = ({ s, brand, caption }) => {
           <div style={{ margin: "48px auto 0", width: 260 * line, height: 6, borderRadius: 3, background: k.accent }} />
         </div>
       }
-      front={<Presenter brand={brand} x={540} role="kecil" pose={[{ at: 0, pose: "jelaskan" }, { at: 1.6, pose: "ajak" }]} facing="right" look="penonton" at={0.8} seed={seedOf(s, 16)} />}
+      front={<Presenter brand={brand} x={540} role="kecil" pose={[{ at: 0, pose: "jelaskan" }, { at: 1.6, pose: s.pose ?? "simpulkan" }]} facing="right" look="penonton" at={0.8} seed={seedOf(s, 16)} />}
     >
       {null}
+    </Stage>
+  );
+};
+
+// ================================================================ 1b. Karakter close-up
+// ADRI jadi fokus: bingkai dekat dari pinggang ke atas, kalimatnya muncul di gelembung bicara.
+const SceneKarakterDekat: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const bub = sp(frame, fps, 0.5, { damping: 14 });
+  const pose = s.pose ?? "tanya";
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "emphasis", x: 380, y: 700 }} alt={{ kind: "reveal", x: 380, y: 700, from: 1.25 }} focus={[380, 700]} caption={caption}
+      hud={
+        <div style={{ position: "absolute", left: 520, right: 60, top: 470, scale: `${Math.min(1, bub)}`, transformOrigin: "0% 100%" }}>
+          {/* gelembung bicara dengan ekor ke arah kepala ADRI */}
+          <div style={{ position: "relative", background: k.bg, borderRadius: 44, padding: "36px 38px", boxShadow: "0 24px 60px rgba(11,21,48,0.18)" }}>
+            <Kicker text={s.kicker} at={0.6} color={k.accent} />
+            <div style={{ height: 12 }} />
+            <KineticTitle text={s.title} highlight={s.highlight} at={0.7} brand={brand} size={s.title && s.title.length > 36 ? 58 : 68} color={brand.palette.bg} />
+            <svg width={80} height={60} style={{ position: "absolute", left: -46, bottom: 60 }}><path d="M80 0 L0 40 L80 60 Z" fill={k.bg} /></svg>
+          </div>
+        </div>
+      }
+      front={<Presenter brand={brand} x={300} role="besar" closeup pose={[{ at: 0, pose: "lihat" }, { at: 0.4, pose }, ...(pose === "tanya" ? [{ at: 2.4, pose: "pikir" as Pose }] : [])]} facing="right" look="penonton" at={0} seed={seedOf(s, 17)} exitTo={s.adriExit} />}
+    >
+      {null}
+    </Stage>
+  );
+};
+
+// ================================================================ 2c. Objek close-up
+// Objek sangat besar dan sengaja terpotong di tepi kanan; teks minimal di kiri. Tanpa ADRI.
+const SceneObjekDekat: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const pop = sp(frame, fps, 0.05, { damping: 18 });
+  const O = { x: 980, y: 760, r: 520 };
+  const lab = (s.points ?? []).map((p) => splitPoint(p).label).filter(Boolean)[0];
+  return (
+    <Stage s={{ ...s, adri: false }} brand={brand} shot={{ kind: "focus", x: O.x, y: O.y, at: 0.6, zoom: 1.06 }} alt={{ kind: "rack", from: "right" }} focus={[O.x, O.y]} caption={caption}
+      hud={<Head s={s} brand={brand} k={k} pos="kiri" size={72} />}
+    >
+      <div data-qa="object" data-qa-wide="1" style={{ position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "48% 52% 50% 50%", overflow: "hidden", translate: `${(1 - Math.min(pop, 1)) * 300}px 0px`, rotate: `${Math.sin(frame / 50) * 1.5}deg`, boxShadow: "0 50px 100px rgba(11,21,48,0.25)" }}>
+        <Visual s={s} k={k} size={420} />
+      </div>
+      {lab && (
+        <div data-qa="text" style={{ position: "absolute", left: 80, top: 1060, width: 380, fontFamily: brand.typography.family, fontWeight: 700, fontSize: 38, lineHeight: 1.2, color: k.ink, opacity: ap(frame, fps, 1.2, 0.5) }}>
+          <span style={{ borderLeft: `6px solid ${k.accent}`, paddingLeft: 16, display: "inline-block" }}>{lab}</span>
+        </div>
+      )}
+    </Stage>
+  );
+};
+
+// ================================================================ 17. Lingkungan (wide shot)
+// Ilustrasi lingkungan memenuhi layar dan jadi fokus; judul di bawah, subtitle di atas; ADRI kecil di kejauhan
+// (atau tidak ada). Untuk membuka cerita atau membawa penonton masuk ke topik.
+const Hero: React.FC<{ env: Env; k: Ink; frame: number; s: SceneData }> = ({ env, k, frame, s }) => {
+  const e = canonEnv(env);
+  const t = frame / 30;
+  switch (e) {
+    case "langit":
+      return (
+        <g>
+          {Array.from({ length: 16 }, (_, i) => {
+            const a = (i / 16) * Math.PI * 2 + t * 0.15;
+            return <line key={i} x1={540 + Math.cos(a) * 200} y1={700 + Math.sin(a) * 200} x2={540 + Math.cos(a) * 280} y2={700 + Math.sin(a) * 280} stroke="#FFD15C" strokeWidth={16} strokeLinecap="round" />;
+          })}
+          <circle cx={540} cy={700} r={170} fill="#FFD15C" />
+          <g transform={`translate(${-260 + ((t * 60) % 1600)} 860) scale(1.6)`}><ellipse rx={90} ry={46} fill="#FFFFFF" /><ellipse cx={-70} cy={14} rx={60} ry={34} fill="#FFFFFF" /><ellipse cx={74} cy={12} rx={66} ry={36} fill="#FFFFFF" /></g>
+        </g>
+      );
+    case "alam":
+      return (
+        <g transform={`rotate(${Math.sin(t * 1.2) * 1.2} 540 1300)`}>
+          <rect x={510} y={820} width={60} height={480} rx={20} fill="#7A5230" />
+          {[[540, 700, 230], [400, 820, 150], [690, 810, 160], [540, 560, 150]].map(([x, y, r], i) => (
+            <circle key={i} cx={x + Math.sin(t * 1.5 + i) * 6} cy={y} r={r} fill={["#2F9E6E", "#3DB37D", "#279160", "#4CC48A"][i]} />
+          ))}
+        </g>
+      );
+    case "kota":
+      return (
+        <g>
+          <rect x={-100} y={1180} width={1280} height={120} fill="#5C6B85" />
+          {Array.from({ length: 8 }, (_, i) => <rect key={i} x={i * 160 - ((t * 80) % 160)} y={1234} width={80} height={12} rx={6} fill="#FFFFFF" />)}
+          <g transform={`translate(${-300 + ((t * 260) % 1700)} 1120)`}>
+            <rect x={0} y={0} width={300} height={90} rx={30} fill={k.primary} />
+            <path d="M50 0 L90 -60 H220 L260 0 Z" fill={k.primary} />
+            <path d="M100 -48 H170 V-4 H80 Z M180 -48 H212 L240 -4 H180 Z" fill="#CFE3FF" />
+            <circle cx={70} cy={92} r={34} fill={k.ink} /><circle cx={230} cy={92} r={34} fill={k.ink} />
+          </g>
+        </g>
+      );
+    case "dapur":
+      return (
+        <g>
+          <rect x={240} y={1060} width={600} height={60} rx={14} fill="#5B4636" />
+          <path d="M300 820 H780 V1040 Q780 1070 750 1070 H330 Q300 1070 300 1040 Z" fill="#E76F51" />
+          <rect x={280} y={800} width={520} height={40} rx={20} fill="#C2571A" />
+          {[0, 1, 2].map((i) => {
+            const p = (t * 0.6 + i / 3) % 1;
+            return <path key={i} d={`M${440 + i * 80} ${780 - p * 260} q30 -40 0 -80 q-30 -40 0 -80`} stroke="#FFFFFF" strokeWidth={14} fill="none" strokeLinecap="round" opacity={0.6 * (1 - p)} />;
+          })}
+        </g>
+      );
+    case "sains":
+      return (
+        <g>
+          <path d="M470 520 V720 L300 1080 Q280 1140 340 1140 H740 Q800 1140 780 1080 L610 720 V520 Z" fill="#FFFFFF" stroke={k.accent} strokeWidth={12} strokeLinejoin="round" />
+          <path d="M360 980 H720 L780 1080 Q800 1140 740 1140 H340 Q280 1140 300 1080 Z" fill={k.accent} opacity={0.7} />
+          <rect x={440} y={490} width={200} height={40} rx={18} fill={k.accent} />
+          {[0, 1, 2, 3].map((i) => {
+            const p = (t * 0.5 + i / 4) % 1;
+            return <circle key={i} cx={480 + i * 40 + Math.sin(t * 3 + i) * 10} cy={1080 - p * 520} r={12 + i * 3} fill="none" stroke={k.accent} strokeWidth={4} opacity={1 - p} />;
+          })}
+        </g>
+      );
+    case "arsip":
+      return (
+        <g transform="rotate(-4 540 800)">
+          <rect x={180} y={520} width={720} height={560} rx={12} fill="#F7E7C4" stroke="#A5581C" strokeWidth={6} />
+          <rect x={150} y={500} width={60} height={600} rx={30} fill="#C98A4B" /><rect x={870} y={500} width={60} height={600} rx={30} fill="#C98A4B" />
+          <path d="M280 620 C380 600 400 700 500 680 S640 600 700 720 S760 900 820 940" stroke="#3A2A18" strokeWidth={6} fill="none" strokeDasharray="18 14" pathLength={1} strokeDashoffset={0} style={{ clipPath: `inset(0 ${100 - Math.min(100, t * 60)}% 0 0)` }} />
+          <path d="M800 920 l20 20 m0 -20 l-20 20" stroke="#D63A3F" strokeWidth={8} />
+        </g>
+      );
+    case "pastel":
+      return (
+        <g>
+          <path d="M260 1200 C200 1120 200 1010 250 940 C190 900 210 840 260 830 C250 700 330 600 460 600 C560 600 600 700 600 800 V1200 Z" fill="#7B4FE0" opacity={0.85} />
+          <path d="M820 1200 C880 1120 880 1010 830 940 C890 900 870 840 820 830 C830 700 750 600 620 600 C520 600 480 700 480 800 V1200 Z" fill="#F08BC0" opacity={0.85} transform="translate(80 40)" />
+          <circle cx={540} cy={460 + Math.sin(t * 2) * 10} r={70} fill="#FFFFFF" />
+          <circle cx={460} cy={560} r={20} fill="#FFFFFF" /><circle cx={620} cy={570} r={14} fill="#FFFFFF" />
+        </g>
+      );
+    case "malam":
+      return (
+        <g>
+          <circle cx={600} cy={700} r={200} fill="#FFE9A0" />
+          <circle cx={680} cy={640} r={180} fill={k.bg === "#FFFFFF" ? "#0B1530" : "#0B1530"} />
+          <ellipse cx={380} cy={1040} rx={180} ry={40} fill="none" stroke={k.accent} strokeWidth={8} transform={`rotate(-14 380 1040)`} />
+          <circle cx={380} cy={1040} r={90} fill={k.primary} />
+        </g>
+      );
+    case "teknologi":
+      return (
+        <g>
+          <rect x={360} y={480} width={360} height={720} rx={56} fill="#0B1530" stroke={k.accent} strokeWidth={8} />
+          {[0, 1, 2].map((i) => {
+            const p = sp(frame, 30, 0.5 + i * 0.35, { damping: 14 });
+            return <rect key={i} x={400} y={580 + i * 170} width={280} height={130} rx={22} fill={[k.primary, k.secondary, k.accent][i]} opacity={0.85} transform={`translate(${(1 - Math.min(1, p)) * 300} 0)`} />;
+          })}
+        </g>
+      );
+    default:
+      // lingkungan umum: objek utama dari ikon kalimat dalam bentuk besar
+      return (
+        <foreignObject x={290} y={480} width={500} height={500}>
+          <ShapeBadge i={seedOf(s)} size={500} color={k.primary} icon={splitPoint(s.points?.[0] ?? "ide:").icon} />
+        </foreignObject>
+      );
+  }
+};
+
+export const SceneLingkungan: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const e = envOf(s);
+  const rise = sp(frame, fps, 0.1, { damping: 18 });
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "establish" }} alt={{ kind: "pan", distance: 80, zoom: 1.04 }} focus={[540, 800]} caption={caption}
+      hud={<Head s={s} brand={brand} k={k} pos="bawah" size={70} maxWidth={760} />}
+      front={<Presenter brand={brand} x={880} role="jauh" pose={[{ at: 0, pose: "lihat" }, { at: 1.8, pose: s.pose ?? "tunjukkan" }]} facing="left" look="atas" walkFrom={1150} walkLen={1.2} at={0.6} seed={seedOf(s, 18)} talking={false} />}
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible", translate: `0px ${(1 - Math.min(rise, 1)) * 120}px`, opacity: Math.min(1, rise * 1.4) }}>
+        {/* ilustrasi digeser ke atas: bagian bawah layar milik judul */}
+        {/* ilustrasi diskalakan ke ruang di antara subtitle (atas) dan judul (bawah) */}
+        <g data-qa="object" transform="translate(540 724) scale(0.85) translate(-540 -800)"><Hero env={e} k={k} frame={frame} s={s} /></g>
+      </svg>
     </Stage>
   );
 };
@@ -804,4 +1031,5 @@ export const SCENES: Record<SceneType, React.FC<SP>> = {
   potongan: ScenePotongan,
   persentase: ScenePersentase,
   minimalis: SceneMinimalis,
+  lingkungan: SceneLingkungan,
 };

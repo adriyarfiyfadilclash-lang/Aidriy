@@ -15,10 +15,14 @@ import { clamp, EASE, H, NextTransition, OVERLAP, SceneIndex, speedBlur, Transit
 //   smooth = larut cepat dengan sedikit gerak naik (lanjutan yang halus)
 //   cover  = bentuk aksen brand menutup layar dari objek fokus lalu membuka adegan baru (transisi objek)
 //   fade   = larut biasa (hanya bila diminta naskah)
+//   cut    = potongan langsung tepat di batas kalimat (tanpa efek)
+//   match  = match cut: adegan lama mendorong masuk ke objeknya, adegan baru menyambung dari skala yang sama
+//   color  = layar dibanjiri warna latar adegan berikutnya, lalu adegan baru muncul (pergantian suasana)
+//   envshift = lingkungan baru naik dari bawah seperti cakrawala (pergantian lingkungan)
 // Blur hanya dipakai saat whip pan bergerak cepat; transisi lain tajam supaya teks tetap terbaca.
 
-export type Transition = "iris" | "shape" | "morph" | "wipe" | "zoom" | "whip" | "push" | "slide" | "smooth" | "cover" | "fade";
-export const TRANSITIONS: Transition[] = ["iris", "shape", "morph", "wipe", "zoom", "whip", "push", "slide", "smooth", "cover", "fade"];
+export type Transition = "iris" | "shape" | "morph" | "wipe" | "zoom" | "whip" | "push" | "slide" | "smooth" | "cover" | "fade" | "cut" | "match" | "color" | "envshift";
+export const TRANSITIONS: Transition[] = ["iris", "shape", "morph", "wipe", "zoom", "whip", "push", "slide", "smooth", "cover", "fade", "cut", "match", "color", "envshift"];
 
 const blob = (p: number, cx: number, cy: number, seed: number) => {
   // poligon 24 titik; jari-jari bergelombang, makin besar sampai menutup layar
@@ -31,7 +35,7 @@ const blob = (p: number, cx: number, cy: number, seed: number) => {
   return `polygon(${pts.join(",")})`;
 };
 
-export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; accent: string; children: React.ReactNode; seed?: number }> = ({ enter, focus = [W / 2, H / 2], accent, children, seed = 0 }) => {
+export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; accent: string; tint?: string; children: React.ReactNode; seed?: number }> = ({ enter, focus = [W / 2, H / 2], accent, tint, children, seed = 0 }) => {
   const { frame, fps, len } = useScene();
   const next = useContext(NextTransition);
   const timing = useContext(TransitionTiming);
@@ -88,6 +92,33 @@ export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; acc
         st.opacity = Math.min(1, e * 1.4);
         tf.push(`translateY(${(1 - e) * 40}px)`);
         break;
+      case "cut":
+        // tampil penuh tepat di tengah tumpang tindih (= batas kalimat)
+        if (e < 0.5) st.clipPath = "inset(0 0 0 100%)";
+        break;
+      case "match": {
+        // menyambung dari skala dorongan adegan lama, lalu mengendap ke ukuran normal
+        if (e < 0.5) st.clipPath = "inset(0 0 0 100%)";
+        else tf.push(`scale(${1.25 - 0.25 * ((e - 0.5) / 0.5)})`);
+        st.transformOrigin = `${fx}px ${fy}px`;
+        break;
+      }
+      case "color": {
+        // paruh pertama: warna latar adegan baru membanjiri layar; paruh kedua: warnanya memudar, adegan baru terlihat
+        const col = tint ?? accent;
+        if (e < 0.5) {
+          st.clipPath = "inset(0 0 0 100%)";
+          stripe = <AbsoluteFill style={{ background: col, opacity: e / 0.5 }} />;
+        } else stripe = <AbsoluteFill style={{ background: col, opacity: 1 - (e - 0.5) / 0.5 }} />;
+        break;
+      }
+      case "envshift": {
+        // lingkungan baru naik dari bawah dengan tepi lengkung seperti cakrawala
+        const y = (1 - e) * (H + 300);
+        st.clipPath = `ellipse(${W * 1.4}px ${H}px at ${W / 2}px ${y + H}px)`;
+        tf.push(`translateY(${(1 - e) * 120}px)`);
+        break;
+      }
       case "cover": {
         // paruh pertama: bentuk aksen membesar dari fokus menutup layar; paruh kedua: bentuk mengecil ke arah
         // berlawanan dan adegan baru terlihat
@@ -128,6 +159,17 @@ export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; acc
         break;
       case "cover":
       case "smooth":
+      case "cut":
+      case "color":
+        break;
+      case "match":
+        // dorong masuk ke objek fokus adegan ini sampai dipotong ke adegan berikutnya
+        tf.push(`scale(${1 + 0.25 * Math.min(1, x / 0.5)})`);
+        st.transformOrigin = `${fx}px ${fy}px`;
+        break;
+      case "envshift":
+        tf.push(`translateY(${-x * 160}px)`);
+        dim = x * 0.25;
         break;
       case "whip": {
         const v = (x - xPrev) * W;

@@ -1,7 +1,7 @@
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile } from "remotion";
 import { NextTransition, OVERLAP, SceneIndex } from "./motion";
 import { QAProbe } from "./qa";
-import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, type SceneType, subtitleOf } from "./scenes";
+import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, type SceneType, subtitleOf, subtitleZoneOf } from "./scenes";
 
 // Gambar pratinjau satu jenis adegan (bukan video). Contoh isi memakai topik "Kenapa kaca mobil
 // berkabut?" supaya semua jenis adegan bisa dibandingkan. Dengan `prev`, yang digambar adalah titik
@@ -21,6 +21,7 @@ export const SAMPLES: Record<SceneType, Omit<SceneData, "start" | "end">> = {
   peta: { type: "peta", transition: "iris", tone: "dark", env: "alam", kicker: "Paling sering berkabut", title: "Kota dengan udara paling lembap", highlight: "lembap", pins: [{ u: 0.18, v: 0.42, label: "Medan" }, { u: 0.38, v: 0.74, label: "Jakarta" }, { u: 0.5, v: 0.4, label: "Pontianak" }, { u: 0.67, v: 0.48, label: "Palu" }] },
   alur: { type: "alur", transition: "push", tone: "light", env: "terang", kicker: "Cek cepat", title: "Kaca masih berkabut?", highlight: "berkabut", steps: ["Nyalakan AC", "Buka sirkulasi luar", "Kaca jernih"], decision: "Sudah jernih?" },
   potongan: { type: "potongan", transition: "morph", tone: "dark", env: "sains", kicker: "Di dalam kaca", title: "Lapisan kaca mobil", highlight: "Lapisan", layers: ["Kaca luar", "Lapisan PVB", "Kaca dalam", "Embun"] },
+  lingkungan: { type: "lingkungan", transition: "envshift", tone: "light", env: "kota", kicker: "Pagi hari, hujan", title: "Kaca depan tiba-tiba buram", highlight: "buram" },
   minimalis: { type: "minimalis", transition: "smooth", tone: "dark", kicker: "Jadi intinya", title: "Hilangkan penyebabnya, bukan embunnya", highlight: "penyebabnya" },
   persentase: { type: "persentase", transition: "shape", tone: "dark", env: "umum", kicker: "Fakta", value: 72, label: "pengemudi menyalakan AC tanpa udara luar", highlight: "udara luar", pose: "angkat" },
 };
@@ -40,7 +41,7 @@ const One: React.FC<{ type: SceneType; brand: Brand; caption: string; next?: str
   const Comp = SCENES[type];
   const words = caption.split(" ");
   const tokens = words.map((w, i) => ({ text: (i ? " " : "") + w, fromMs: i === 2 ? 0 : -2, toMs: i === 2 ? 99_000 : -1 }));
-  const cap = type === "tipografi" ? null : <SceneCaption tokens={tokens} nowMs={1} brand={brand} tone={isLight(s, brand) ? "light" : "dark"} highlight={s.highlight} mode={subtitleOf(s)} />;
+  const cap = type === "tipografi" ? null : <SceneCaption tokens={tokens} nowMs={1} brand={brand} tone={isLight(s, brand) ? "light" : "dark"} highlight={s.highlight} mode={subtitleOf(s)} zone={subtitleZoneOf(s)} />;
   return (
     <NextTransition.Provider value={next ?? null}>
       <SceneIndex.Provider value={index}>

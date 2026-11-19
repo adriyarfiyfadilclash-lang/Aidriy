@@ -90,7 +90,9 @@ export const KineticTitle: React.FC<{
 // Kalau isi halaman sama dengan teks yang sudah tampil di layar (judul), subtitle disembunyikan.
 export type SubtitleMode = "standar" | "kata" | "kinetik" | "minimalis" | "latar" | "tanpa";
 
-export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Brand; tone: "dark" | "blue" | "light"; highlight?: string; onScreen?: string; mode?: SubtitleMode }> = ({ tokens, nowMs, brand, tone, highlight, onScreen, mode = "standar" }) => {
+export type SubtitleZone = "bawah" | "atas";
+
+export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Brand; tone: "dark" | "blue" | "light"; highlight?: string; onScreen?: string; mode?: SubtitleMode; zone?: SubtitleZone }> = ({ tokens, nowMs, brand, tone, highlight, onScreen, mode = "standar", zone = "bawah" }) => {
   if (!tokens.length) return null;
   const said = tokens.map((t) => norm(t.text)).filter(Boolean);
   if (onScreen) {
@@ -99,6 +101,9 @@ export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Bra
   }
   const keys = new Set((highlight ?? "").split(" ").map(norm).filter(Boolean));
   const light = tone === "light";
+  // kuning di atas latar terang tidak terbaca: di latar terang tanpa plat gelap, aksen kata memakai biru brand
+  const onLightText = light && mode !== "latar";
+  const hot = onLightText ? brand.palette.primary : brand.palette.accent;
   const base = brand.typography.caption.size;
   const size = mode === "minimalis" ? Math.round(base * 0.78) : base;
   const ink = light && mode !== "latar" ? brand.palette.bg : "#FFFFFF";
@@ -111,7 +116,7 @@ export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Bra
   // kinetik tanpa plat: kata yang belum diucapkan disembunyikan, plat akan tampak kosong
   const shadow = mode === "tanpa" || (mode === "kinetik" && !light) ? "0 3px 0 rgba(0,0,0,0.55), 0 0 18px rgba(0,0,0,0.6)" : mode === "minimalis" && !light ? "0 2px 10px rgba(0,0,0,0.5)" : undefined;
   return (
-    <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, top: CAPTION_BAND.top, height: CAPTION_BAND.bottom - CAPTION_BAND.top, display: "flex", alignItems: mode === "minimalis" ? "center" : "flex-start", justifyContent: "center", textAlign: "center" }}>
+    <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, top: zone === "atas" ? 150 : CAPTION_BAND.top, height: zone === "atas" ? 230 : CAPTION_BAND.bottom - CAPTION_BAND.top, display: "flex", alignItems: zone === "atas" ? "flex-start" : mode === "minimalis" ? "center" : "flex-start", justifyContent: "center", textAlign: "center" }}>
       <span
         data-qa="caption"
         style={{
@@ -131,16 +136,16 @@ export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Bra
           const active = nowMs >= t.fromMs && nowMs < t.toMs;
           const spoken = nowMs >= t.fromMs;
           const key = keys.has(norm(t.text));
-          const st: React.CSSProperties = { whiteSpace: "pre-wrap", color: active ? brand.palette.accent : undefined };
+          const st: React.CSSProperties = { whiteSpace: "pre-wrap", color: active ? hot : undefined };
           if (mode === "kata") {
-            Object.assign(st, key ? { color: brand.palette.accent, fontWeight: 800, fontSize: size * 1.18 } : { opacity: 0.75, fontSize: size * 0.9 });
+            Object.assign(st, key ? { color: hot, fontWeight: 800, fontSize: size * 1.18 } : { opacity: 0.75, fontSize: size * 0.9 });
           } else if (mode === "kinetik") {
             // kata yang belum diucapkan disembunyikan (tetap memakan tempat supaya baris tidak melompat)
             // kata aktif sedikit terangkat (bukan diperbesar: perbesaran menutupi spasi di sebelahnya)
             Object.assign(st, { opacity: spoken ? 1 : 0, display: "inline-block", translate: active ? "0px -6px" : "0px 0px" });
-            if (key) Object.assign(st, { color: brand.palette.accent, fontWeight: 800 });
+            if (key) Object.assign(st, { color: hot, fontWeight: 800 });
           } else if (key) {
-            Object.assign(st, { fontWeight: 800, textDecoration: `underline ${brand.palette.accent} 5px`, textUnderlineOffset: 10 });
+            Object.assign(st, { fontWeight: 800, textDecoration: `underline ${hot} 5px`, textUnderlineOffset: 10 });
           }
           if (mode === "latar" && active) st.color = brand.palette.accent;
           if (mode === "kinetik") {

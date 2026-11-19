@@ -17,7 +17,12 @@ export type Pose =
   | "sentuh" // berinteraksi dengan diagram
   | "lihat" // melihat ke arah informasi
   | "ajak" // bicara kepada penonton
-  | "senang";
+  | "senang"
+  | "tanya" // bertanya: telapak terbuka ke depan, alis naik, kepala miring
+  | "banding" // membandingkan: dua telapak terbuka naik-turun seperti timbangan
+  | "rayakan" // merayakan penemuan: tinju ke atas, melompat kecil
+  | "simpulkan" // memberikan kesimpulan: satu jari ke atas, mengangguk
+  | "tunjukkan"; // menunjukkan sesuatu: telapak terbuka mempersembahkan objek
 
 export type Look = "maju" | "penonton" | "atas" | "bawah"; // maju = ke arah yang dihadap
 export type PoseCue = { at: number; pose: Pose; look?: Look };
@@ -59,6 +64,11 @@ const POSES: Record<Pose, PoseDef> = {
   lihat: { l: [10, -6], r: [-10, 6], lh: "open", rh: "open", brow: 1, mouth: "smile", eyes: "normal", tilt: 4, look: "maju", legs: [3, -3] },
   ajak: { l: [12, -8], r: [-58, -68], lh: "open", rh: "open", brow: 0, mouth: "smile", eyes: "normal", tilt: -1, look: "penonton", legs: [4, -4] },
   senang: { l: [150, 30], r: [-150, -30], lh: "fist", rh: "fist", brow: 2, mouth: "grin", eyes: "happy", tilt: 3, look: "penonton", legs: [6, -6] },
+  tanya: { l: [12, -8], r: [-62, -52], lh: "open", rh: "open", brow: 8, mouth: "flat", eyes: "normal", tilt: -7, look: "penonton", legs: [3, -5] },
+  banding: { l: [62, -40], r: [-62, 40], lh: "open", rh: "open", brow: 3, mouth: "smile", eyes: "normal", tilt: 0, look: "penonton", legs: [6, -6] },
+  rayakan: { l: [30, -70], r: [-168, -12], lh: "fist", rh: "fist", brow: 4, mouth: "grin", eyes: "happy", tilt: -4, look: "penonton", legs: [8, -8] },
+  simpulkan: { l: [14, -10], r: [-150, -30], lh: "open", rh: "point", brow: 1, mouth: "smile", eyes: "normal", tilt: 2, look: "penonton", legs: [4, -4] },
+  tunjukkan: { l: [12, -8], r: [-82, -8], lh: "open", rh: "open", brow: 2, mouth: "smile", eyes: "normal", tilt: 3, look: "maju", legs: [3, -6] },
 };
 
 const lerp = (a: number, b: number, w: number) => a + (b - a) * w;
@@ -123,8 +133,10 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
   const step = Math.sin((frame + seed) * 0.32);
   const sway = walking ? 0 : Math.sin((frame + seed * 7) / 30) * 3; // lengan bergoyang halus saat diam
   const explain = cur.pose === "jelaskan" ? Math.sin((frame + seed) / 9) * 8 : 0; // tangan bergerak saat menjelaskan
-  const lA: [number, number] = walking ? [-step * 22, -12] : [lerp(A.l[0], B.l[0], w) + sway, lerp(A.l[1], B.l[1], w) + explain];
-  let rA: [number, number] = walking ? [step * 22, 12] : [lerp(A.r[0], B.r[0], w) - sway, lerp(A.r[1], B.r[1], w) - explain];
+  // membandingkan: kedua tangan naik-turun bergantian seperti timbangan
+  const scales = cur.pose === "banding" ? Math.sin((frame + seed) / 14) * 16 * w : 0;
+  const lA: [number, number] = walking ? [-step * 22, -12] : [lerp(A.l[0], B.l[0], w) + sway + scales, lerp(A.l[1], B.l[1], w) + explain];
+  let rA: [number, number] = walking ? [step * 22, 12] : [lerp(A.r[0], B.r[0], w) - sway + scales, lerp(A.r[1], B.r[1], w) - explain];
   // menunjuk/menyentuh: tangan kanan diarahkan tepat ke target, tubuh condong ke sana
   const pointing = !!aim && (cur.pose === "tunjuk" || cur.pose === "sentuh");
   const aimW = pointing ? w : 0;
@@ -140,7 +152,9 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
   const headY = talking ? Math.abs(Math.sin((frame + seed) * 0.21)) * -3 : 0;
   const wave = cur.pose === "sapa" ? Math.sin(frame / 5) * 14 * w : 0;
   const legs: [number, number] = walking ? [step * 20, -step * 20] : [lerp(A.legs[0], B.legs[0], w), lerp(A.legs[1], B.legs[1], w)];
-  const bob = walking ? -Math.abs(step) * 10 : 0;
+  // merayakan: dua lompatan kecil setelah pose dimulai
+  const hop = cur.pose === "rayakan" ? -Math.abs(Math.sin(Math.min(frame - cur.at * fps, fps * 1.2) / (fps * 0.6) * Math.PI)) * 40 : 0;
+  const bob = walking ? -Math.abs(step) * 10 : hop;
   const breathe = 1 + Math.sin((frame + seed * 17) / 24) * 0.01;
   const blink = (frame + seed * 31) % 110 < 4;
   const mouthOpen = talking ? Math.abs(Math.sin((frame + seed) * 0.55)) * (0.6 + 0.4 * Math.abs(Math.sin(frame * 0.17))) : 0;

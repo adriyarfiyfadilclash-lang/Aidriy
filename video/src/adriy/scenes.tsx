@@ -54,6 +54,7 @@ export type SceneData = {
   label?: string;
   max?: number;
   visual?: string; // gambar di public/
+  cutout?: boolean; // visual berlatar transparan (hewan, benda): tampil utuh tanpa bingkai
   icon?: string; // ikon objek utama (dari isi seluruh kalimat), dipakai bila tidak ada gambar
   data?: Datum[]; // grafik, lingkaran
   events?: Event[]; // timeline
@@ -251,9 +252,12 @@ const ShapeBadge: React.FC<{ i: number; size: number; color: string; icon: strin
   </div>
 );
 
+// Gambar potongan (cutout, latar transparan): utuh, tidak dipotong bentuk; bayangan mengikuti siluetnya.
+const cutoutWrap = (s: SceneData, st: React.CSSProperties): React.CSSProperties =>
+  s.cutout ? { ...st, borderRadius: 0, overflow: "visible", boxShadow: "none", filter: "drop-shadow(0 30px 34px rgba(11,21,48,0.28))" } : st;
 const Visual: React.FC<{ s: SceneData; k: Ink; size: number }> = ({ s, k, size }) =>
   s.visual ? (
-    <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: s.cutout ? "contain" : "cover" }} />
   ) : (
     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${k.primary}, ${k.secondary})` }}>
       <Glyph name={s.icon ?? splitPoint(s.points?.[0] ?? "ide:").icon} size={size} color="#FFFFFF" />
@@ -323,7 +327,7 @@ const SceneObjekPresenter: React.FC<SP> = ({ s, brand, caption }) => {
   const { frame, fps } = useScene();
   const k = inkOf(s, brand);
   const pop = sp(frame, fps, 0.15, { damping: 13 });
-  const pts = (s.points ?? []).slice(0, 3);
+  const pts = (s.points ?? []).filter((x) => splitPoint(x).label).slice(0, 3); // penunjuk tanpa teks tidak ditampilkan
   const O = { x: 650, y: 720, r: 250 };
   const spots: [number, number][] = [[560, 600], [800, 700], [640, 880]];
   return (
@@ -333,7 +337,7 @@ const SceneObjekPresenter: React.FC<SP> = ({ s, brand, caption }) => {
       <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
         <ellipse cx={O.x} cy={O.y} rx={O.r + 70} ry={O.r * 0.5} fill="none" stroke={k.accent} strokeWidth={4} strokeDasharray="10 16" transform={`rotate(${-18 + frame * 0.2} ${O.x} ${O.y})`} opacity={0.5 * Math.min(1, pop)} />
       </svg>
-      <div data-qa="object" style={{ position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%", overflow: "hidden", scale: `${0.6 + 0.4 * Math.min(pop, 1.05)}`, rotate: `${Math.sin(frame / 40) * 2}deg`, translate: `0px ${Math.sin(frame / 30) * 10}px`, boxShadow: "0 40px 80px rgba(0,0,0,0.35)" }}>
+      <div data-qa="object" style={cutoutWrap(s, { position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%", overflow: "hidden", scale: `${0.6 + 0.4 * Math.min(pop, 1.05)}`, rotate: `${Math.sin(frame / 40) * 2}deg`, translate: `0px ${Math.sin(frame / 30) * 10}px`, boxShadow: "0 40px 80px rgba(0,0,0,0.35)" })}>
         <Visual s={s} k={k} size={260} />
       </div>
       {pts.map((pt, i) => (
@@ -792,7 +796,7 @@ const SceneObjekFull: React.FC<SP> = ({ s, brand, caption }) => {
   const { frame, fps } = useScene();
   const k = inkOf(s, brand);
   const pop = sp(frame, fps, 0.1, { damping: 16 });
-  const pts = (s.points ?? []).slice(0, 3);
+  const pts = (s.points ?? []).filter((x) => splitPoint(x).label).slice(0, 3);
   const O = { x: 540, y: 700, r: 370 };
   const spots: [number, number][] = [[400, 560], [700, 640], [520, 900]];
   return (
@@ -806,7 +810,7 @@ const SceneObjekFull: React.FC<SP> = ({ s, brand, caption }) => {
           return <path key={i} d={`M${O.x} ${O.y} L${O.x + Math.cos(a) * 700} ${O.y + Math.sin(a) * 700} L${O.x + Math.cos(a + 0.16) * 700} ${O.y + Math.sin(a + 0.16) * 700} Z`} fill={k.accent} opacity={0.06 * Math.min(1, pop)} />;
         })}
       </svg>
-      <div data-qa="object" style={{ position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "46% 54% 50% 50% / 52% 46% 54% 48%", overflow: "hidden", scale: `${0.85 + 0.15 * Math.min(pop, 1)}`, boxShadow: "0 50px 100px rgba(0,0,0,0.4)" }}>
+      <div data-qa="object" style={cutoutWrap(s, { position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "46% 54% 50% 50% / 52% 46% 54% 48%", overflow: "hidden", scale: `${0.85 + 0.15 * Math.min(pop, 1)}`, boxShadow: "0 50px 100px rgba(0,0,0,0.4)" })}>
         <Visual s={s} k={k} size={360} />
       </div>
       {pts.map((pt, i) => (
@@ -880,7 +884,7 @@ const SceneObjekDekat: React.FC<SP> = ({ s, brand, caption }) => {
     <Stage s={{ ...s, adri: false }} brand={brand} shot={{ kind: "focus", x: O.x, y: O.y, at: 0.6, zoom: 1.06 }} alt={{ kind: "rack", from: "right" }} focus={[O.x, O.y]} caption={caption}
       hud={<Head s={s} brand={brand} k={k} pos="kiri" size={72} />}
     >
-      <div data-qa="object" data-qa-wide="1" style={{ position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "48% 52% 50% 50%", overflow: "hidden", translate: `${(1 - Math.min(pop, 1)) * 300}px 0px`, rotate: `${Math.sin(frame / 50) * 1.5}deg`, boxShadow: "0 50px 100px rgba(11,21,48,0.25)" }}>
+      <div data-qa="object" data-qa-wide="1" style={cutoutWrap(s, { position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "48% 52% 50% 50%", overflow: "hidden", translate: `${(1 - Math.min(pop, 1)) * 300}px 0px`, rotate: `${Math.sin(frame / 50) * 1.5}deg`, boxShadow: "0 50px 100px rgba(11,21,48,0.25)" })}>
         <Visual s={s} k={k} size={420} />
       </div>
       {lab && (

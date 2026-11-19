@@ -531,6 +531,29 @@ BAHAYA = r"\b(bahaya|berbahaya|awas|hati-hati|jangan|risiko|peringatan|beracun|k
 PENEMUAN = r"\b(ditemukan|menemukan|penemuan|berhasil|akhirnya|lahirlah|diciptakan)\b"
 
 
+_KATALOG = None
+
+
+def find_object(text):
+    """Gambar objek (hewan, ...) dari katalog aset ADRIY yang disebut di kalimat. Frasa terpanjang menang;
+    gambar realistis didahulukan dari versi kartun. None bila tidak ada katalog atau tidak ada yang cocok."""
+    global _KATALOG
+    if _KATALOG is None:
+        f = REMOTION / "public" / "adri" / "objek" / "katalog.json"
+        _KATALOG = json.loads(f.read_text())["objek"] if f.exists() else []
+    best = None
+    for it in _KATALOG:
+        for kata in it.get("kata", []):
+            m = re.search(rf"\b{re.escape(kata)}\b", text, re.I)
+            if m:
+                # yang paling dulu disebut (biasanya subjek) menang, lalu frasa terpanjang, lalu versi realistis
+                score = (-m.start(), len(kata.split()), "kartun" not in it["nama"], not re.search(r"_[bc]$", it["nama"]))
+                if best is None or score > best[0]:
+                    best = (score, it)
+                break
+    return best[1] if best else None
+
+
 def art_direct(plan, title):
     """Atur babak cerita, suasana, latar, pose, kehadiran ADRI, dan transisi berdasarkan alur cerita,
     bukan rotasi acak. Dipanggil di akhir plan_scenes."""
@@ -681,6 +704,22 @@ def art_direct(plan, title):
         ("travel", r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b"),
     ]
     outfit = next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
+    # objek dari katalog (hewan yang disebut di kalimat): adegan ditampilkan sebagai objek dengan gambarnya
+    for i, p in enumerate(plan):
+        g = p.get("_given", {})
+        if p.get("visual") or "visual" in g or p.get("outro") or p["type"] in ("grafik", "lingkaran", "timeline", "peta", "perbandingan", "diagram", "alur", "angka", "persentase"):
+            continue
+        obj = find_object(p["text"])
+        if not obj:
+            continue
+        p.update({"visual": obj["file"], "cutout": obj["transparan"]})
+        if not p.get("_given_type") and p["type"] not in ("objek", "potongan"):
+            prev_full = i > 0 and plan[i - 1]["type"] == "objek"
+            p["type"] = "objek"
+            p["layout"] = "presenter" if prev_full else ("full" if p.get("phase") == "menarik" or i == 0 else "presenter")
+            p["family"] = family("objek", p["layout"])
+        if p.get("layout") == "closeup" or not any(":" in x and x.split(":", 1)[1].strip() for x in p.get("points", [])):
+            p["points"] = [f"bintang:{' '.join(obj['base'].split('_')[:2]).capitalize()}"]
     for p in plan:
         if outfit and "outfit" not in p.get("_given", {}):
             p["outfit"] = outfit

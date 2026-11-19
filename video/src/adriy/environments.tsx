@@ -26,6 +26,8 @@ import type { Brand } from "./scenes";
 export type Env =
   | "cerah" | "arsip" | "alam" | "sains" | "hangat" | "pastel" | "langit" | "dapur" | "kota" | "data" | "banding" | "bahaya"
   | "minimal" | "brand" | "malam" | "teknologi"
+  // latar style tematik
+  | "bawahlaut" | "antariksa" | "sabana" | "jurnal" | "lab"
   // nama lama (tetap diterima)
   | "umum" | "terang" | "sejarah" | "psikologi" | "fakta";
 
@@ -54,6 +56,11 @@ export const envLook = (env: Env, b: Brand): Look => {
     brand: { sky: ["#4D84FF", "#2F6BFF", "#1F3FB8"], ink: "#FFFFFF", accent: p.accent, glow: "#FFFFFF", floor: "#1C3AA8", light: false },
     malam: { sky: [p.bg2, p.bg, "#050A1C"], ink: p.ink, accent: p.accent, glow: p.primary, floor: "#0E1B42", light: false },
     teknologi: { sky: ["#1B2C8F", "#0C1450", "#050A2A"], ink: p.ink, accent: "#5CE1FF", glow: "#7A5CFF", floor: "#0A1240", light: false },
+    bawahlaut: { sky: ["#2BB3D9", "#0E6E9E", "#063A5C"], ink: "#FFFFFF", accent: "#FFD166", glow: "#B8F1FF", floor: "#E8D3A2", light: false },
+    antariksa: { sky: ["#241A5C", "#0D0B2E", "#03020F"], ink: "#FFFFFF", accent: p.accent, glow: "#8E7BFF", floor: "#5E5A6E", light: false },
+    sabana: { sky: ["#FFE8B8", "#F9D48A", "#E8B464"], ink: "#3A2A10", accent: "#B5541C", glow: "#FFF4D6", floor: "#C9A15A", light: true },
+    jurnal: { sky: ["#F6EBD3", "#EBDCB9", "#D9C397"], ink: "#33240F", accent: "#8C3B12", glow: "#FFF3D6", floor: "#C8A877", light: true },
+    lab: { sky: ["#FFFFFF", "#EAF7FB", "#D4EEF5"], ink: "#0A2E3D", accent: "#0A9DB5", glow: "#E9FBFF", floor: "#CFE3EA", light: true },
   };
   return L[canonEnv(env)] ?? L.cerah;
 };
@@ -212,6 +219,105 @@ const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame 
           ))}
         </g>
       );
+    case "bawahlaut":
+      // berkas cahaya matahari dari permukaan, rumput laut bergoyang, terumbu di dasar
+      return (
+        <g>
+          {Array.from({ length: 6 }, (_, i) => {
+            const x = 120 + i * 170 + Math.sin(frame / 70 + i) * 30;
+            return <path key={i} d={`M${x} -40 L${x + 70} -40 L${x + 260} 1500 L${x + 120} 1500 Z`} fill="#E6FBFF" opacity={0.07 + 0.04 * Math.sin(frame / 50 + i * 2)} />;
+          })}
+          {[60, 150, 930, 1020].map((x, i) => (
+            <path key={i} d={`M${x} 1450 C${x - 30 + Math.sin(frame / 25 + i) * 25} 1300 ${x + 30 + Math.sin(frame / 30 + i) * 25} 1200 ${x + Math.sin(frame / 20 + i) * 35} ${1080 - i * 30}`} stroke={i % 2 ? "#2E8B57" : "#3DAA6B"} strokeWidth={18} fill="none" strokeLinecap="round" opacity={0.85} />
+          ))}
+          {[[230, 1430, 90, "#FF7F6E"], [340, 1440, 60, "#FFB36B"], [780, 1430, 100, "#E85D9A"], [880, 1445, 55, "#FF7F6E"]].map(([x, y, r, col], i) => (
+            <g key={i}>
+              {[0, 1, 2, 3].map((j) => <path key={j} d={`M${x} ${y} q${-40 + j * 27} ${-(r as number) * 0.7} ${-30 + j * 20} ${-(r as number)}`} stroke={col as string} strokeWidth={14} fill="none" strokeLinecap="round" />)}
+            </g>
+          ))}
+        </g>
+      );
+    case "antariksa":
+      // bintang berkelip, planet bercincin, nebula samar
+      return (
+        <g>
+          <ellipse cx={300} cy={420} rx={420} ry={180} fill="#8E7BFF" opacity={0.12} transform="rotate(-20 300 420)" />
+          {Array.from({ length: 70 }, (_, i) => (
+            <circle key={i} cx={rand(i) * 1080} cy={rand(i + 70) * 1440} r={1 + rand(i + 140) * 2.6} fill="#FFFFFF" opacity={0.3 + 0.6 * Math.abs(Math.sin(frame / 40 + i))} />
+          ))}
+          <g transform={`translate(890 300) rotate(${frame * 0.05})`}>
+            <circle r={95} fill="#E8A35C" />
+            <path d="M-95 -10 Q0 -30 95 -10 M-90 25 Q0 5 90 25" stroke="#C7783A" strokeWidth={12} fill="none" opacity={0.6} />
+            <ellipse rx={170} ry={36} fill="none" stroke="#F6D7A7" strokeWidth={10} transform="rotate(-18)" />
+          </g>
+          <circle cx={140} cy={1180} r={46} fill="#7FB3FF" opacity={0.85} />
+        </g>
+      );
+    case "sabana":
+      // matahari rendah, pohon akasia, rumput tinggi, bukit di kejauhan
+      return (
+        <g>
+          <circle cx={760} cy={720} r={170} fill="#FFF1C9" opacity={0.85} />
+          <path d="M-100 1150 C200 1080 420 1120 640 1100 C860 1080 980 1110 1180 1090 V1500 H-100 Z" fill="#D9B26A" opacity={0.8} />
+          {[[200, 1130, 1], [880, 1100, 0.75]].map(([x, y, sc], i) => (
+            <g key={i} transform={`translate(${x} ${y}) scale(${sc})`}>
+              <path d="M0 0 L-6 -170 M-6 -120 L-70 -190 M-4 -140 L60 -200" stroke="#5A3B1C" strokeWidth={12} strokeLinecap="round" />
+              <ellipse cx={-10} cy={-215} rx={170} ry={42} fill="#6B7F3A" />
+            </g>
+          ))}
+          {Array.from({ length: 26 }, (_, i) => {
+            const x = i * 44 - 20;
+            return <path key={i} d={`M${x} 1440 q${8 + Math.sin(frame / 20 + i) * 8} -60 ${4 + Math.sin(frame / 22 + i) * 14} ${-110 - (i % 3) * 25}`} stroke={i % 2 ? "#B8923F" : "#A47E33"} strokeWidth={5} fill="none" />;
+          })}
+        </g>
+      );
+    case "jurnal":
+      // halaman jurnal lapangan: garis buku, sketsa denah, catatan tangan, cap
+      return (
+        <g opacity={0.55}>
+          <path d="M540 120 V1420" stroke={lk.accent} strokeOpacity={0.25} strokeWidth={4} />
+          {Array.from({ length: 24 }, (_, i) => (
+            <line key={i} x1={60} x2={1020} y1={200 + i * 52} y2={200 + i * 52} stroke="#6B8CB0" strokeOpacity={0.18} strokeWidth={2} />
+          ))}
+          <g transform="translate(700 170) rotate(6)" stroke={c} strokeOpacity={0.35} strokeWidth={3} fill="none">
+            <rect width={260} height={180} strokeDasharray="10 8" />
+            <path d="M30 140 L90 60 L150 110 L220 40" />
+            <circle cx={90} cy={60} r={10} />
+            <path d="M200 150 l14 -14 m0 14 l-14 -14" stroke="#B33A2A" strokeOpacity={0.6} />
+          </g>
+          <circle cx={170} cy={1290} r={64} fill="none" stroke={lk.accent} strokeWidth={5} strokeOpacity={0.4} />
+          <text x={170} y={1300} textAnchor="middle" fontFamily="Georgia, serif" fontSize={26} fill={lk.accent} opacity={0.5}>EKSPEDISI</text>
+        </g>
+      );
+    case "lab":
+      // meja lab, rak tabung warna-warni, labu mendidih, rumus di papan
+      return (
+        <g opacity={0.6}>
+          <rect x={-40} y={1330} width={1160} height={26} rx={6} fill={lk.accent} opacity={0.4} />
+          <g transform="translate(40 1180)">
+            <rect width={260} height={18} rx={4} fill="#9AB3BD" />
+            {[0, 1, 2, 3, 4].map((i) => (
+              <g key={i}>
+                <rect x={18 + i * 48} y={-120} width={28} height={140} rx={14} fill="#FFFFFF" stroke="#7BA5B3" strokeWidth={4} />
+                <rect x={21 + i * 48} y={-50} width={22} height={66} rx={10} fill={["#FF6B6B", "#FFD166", "#33D1A1", "#5C9DFF", "#B07BFF"][i]} opacity={0.8} />
+              </g>
+            ))}
+          </g>
+          <g transform="translate(820 1150)">
+            <path d="M40 0 V60 L-10 170 Q-18 190 6 190 H134 Q158 190 150 170 L100 60 V0 Z" fill="#FFFFFF" stroke="#7BA5B3" strokeWidth={5} />
+            <path d="M-2 140 H142 L150 170 Q158 190 134 190 H6 Q-18 190 -10 170 Z" fill="#33D1A1" opacity={0.75} />
+            {[0, 1, 2].map((i) => {
+              const p = ((frame / 40 + i / 3) % 1);
+              return <circle key={i} cx={60 + i * 12} cy={160 - p * 140} r={6 + i * 2} fill="none" stroke="#33D1A1" strokeWidth={3} opacity={1 - p} />;
+            })}
+          </g>
+          {/* rumus di bawah, jauh dari area judul */}
+          <g fontFamily="Georgia, serif" fill={c} opacity={0.22} fontSize={30}>
+            <text x={360} y={1250}>2H₂ + O₂ → 2H₂O</text>
+            <text x={420} y={1300}>pH = 7</text>
+          </g>
+        </g>
+      );
     case "teknologi":
       // perangkat dan antarmuka: jendela aplikasi, ponsel, jalur sirkuit
       return (
@@ -239,11 +345,11 @@ const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame 
 // Tekstur per lingkungan
 const Texture: React.FC<{ env: Env; lk: Look }> = ({ env, lk }) => {
   const e = canonEnv(env);
-  if (e === "arsip" || e === "dapur")
+  if (e === "arsip" || e === "dapur" || e === "jurnal")
     // butiran kertas + vinyet hangat
     return (
       <>
-        <svg width={W} height={H} style={{ position: "absolute", inset: 0, opacity: e === "arsip" ? 0.22 : 0.1, mixBlendMode: "multiply" }}>
+        <svg width={W} height={H} style={{ position: "absolute", inset: 0, opacity: e === "arsip" || e === "jurnal" ? 0.22 : 0.1, mixBlendMode: "multiply" }}>
           <filter id={`kertas-${e}`}><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={2} seed={4} /><feColorMatrix type="saturate" values="0" /></filter>
           <rect width={W} height={H} filter={`url(#kertas-${e})`} />
         </svg>
@@ -270,7 +376,7 @@ const Texture: React.FC<{ env: Env; lk: Look }> = ({ env, lk }) => {
 
 // Partikel yang menggambarkan fenomena, hanya untuk lingkungan yang membutuhkannya
 const MOTE: Partial<Record<Env, { n: number; kind: "bubble" | "leaf" | "bit" | "steam"; dir: -1 | 1 }>> = {
-  sains: { n: 9, kind: "bubble", dir: -1 }, alam: { n: 7, kind: "leaf", dir: 1 }, teknologi: { n: 9, kind: "bit", dir: -1 }, dapur: { n: 5, kind: "steam", dir: -1 },
+  sains: { n: 9, kind: "bubble", dir: -1 }, bawahlaut: { n: 14, kind: "bubble", dir: -1 }, sabana: { n: 5, kind: "leaf", dir: 1 }, lab: { n: 6, kind: "bubble", dir: -1 }, alam: { n: 7, kind: "leaf", dir: 1 }, teknologi: { n: 9, kind: "bit", dir: -1 }, dapur: { n: 5, kind: "steam", dir: -1 },
 };
 
 export const Environment: React.FC<{ env: Env; brand: Brand; floor?: boolean }> = ({ env, brand, floor = true }) => {
@@ -308,7 +414,7 @@ export const Environment: React.FC<{ env: Env; brand: Brand; floor?: boolean }> 
             m.kind === "steam" ? (
               <div key={i} style={{ position: "absolute", left: 700 + (i % 3) * 60 + Math.sin(frame / 25 + i) * 20, top: 300 - ((frame * 0.8 + i * 60) % 200), width: 30, height: 60, borderRadius: 30, background: "#FFFFFF", opacity: 0.3 * (1 - ((frame * 0.8 + i * 60) % 200) / 200), filter: "blur(6px)" }} />
             ) : (
-              <div key={i} style={{ position: "absolute", left: d.x, top: d.y, width: d.s, height: m.kind === "leaf" ? d.s * 0.6 : d.s, borderRadius: m.kind === "bit" ? 2 : m.kind === "leaf" ? "50% 0" : "50%", background: m.kind === "bubble" ? "transparent" : m.kind === "leaf" ? "#4DB894" : lk.accent, border: m.kind === "bubble" ? `2px solid ${lk.accent}` : undefined, opacity: d.o, rotate: m.kind === "leaf" ? `${frame * 2 + i * 40}deg` : undefined }} />
+              <div key={i} style={{ position: "absolute", left: d.x, top: d.y, width: d.s, height: m.kind === "leaf" ? d.s * 0.6 : d.s, borderRadius: m.kind === "bit" ? 2 : m.kind === "leaf" ? "50% 0" : "50%", background: m.kind === "bubble" ? "transparent" : m.kind === "leaf" ? "#4DB894" : lk.accent, border: m.kind === "bubble" ? `2px solid ${e === "bawahlaut" ? "#E6FBFF" : lk.accent}` : undefined, opacity: d.o, rotate: m.kind === "leaf" ? `${frame * 2 + i * 40}deg` : undefined }} />
             ),
           )}
         </Layer>

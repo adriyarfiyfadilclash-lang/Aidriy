@@ -525,8 +525,8 @@ SCENE_KICKER["lingkungan"] = ""
 # ---------------------------------------------------------------- art direction: babak cerita, suasana, latar
 # Babak: pembuka (memancing rasa penasaran) -> eksplorasi (membawa masuk ke topik) -> penjelasan ->
 # bagian menarik (kejutan, angka, perbandingan) -> kesimpulan -> penutup brand. Suasana tiap babak memilih latar.
-HERO_ENVS = {"langit", "alam", "kota", "dapur", "sains", "arsip", "pastel", "malam", "teknologi"}
-DARK_ENVS = {"malam", "teknologi", "brand"}
+HERO_ENVS = {"langit", "alam", "kota", "dapur", "sains", "arsip", "pastel", "malam", "teknologi", "bawahlaut", "antariksa", "sabana", "jurnal", "lab"}
+DARK_ENVS = {"malam", "teknologi", "brand", "antariksa", "bawahlaut"}
 BAHAYA = r"\b(bahaya|berbahaya|awas|hati-hati|jangan|risiko|peringatan|beracun|kecelakaan)\b"
 PENEMUAN = r"\b(ditemukan|menemukan|penemuan|berhasil|akhirnya|lahirlah|diciptakan)\b"
 
@@ -554,7 +554,7 @@ def find_object(text):
     return best[1] if best else None
 
 
-def art_direct(plan, title):
+def art_direct(plan, title, style=None):
     """Atur babak cerita, suasana, latar, pose, kehadiran ADRI, dan transisi berdasarkan alur cerita,
     bukan rotasi acak. Dipanggil di akhir plan_scenes."""
     if not plan:
@@ -562,6 +562,10 @@ def art_direct(plan, title):
     text_all = title + " " + " ".join(p["text"] for p in plan)
     # judul paling menentukan tema video; isi kalimat hanya cadangan
     theme = topic_env(title) or topic_env(text_all) or "cerah"
+    # style tematik (bawah laut, antariksa, ...): satu lingkungan dan satu outfit untuk seluruh video
+    tema = (style or {}).get("tema")
+    if tema:
+        theme = tema["env"]
     theme = {"sejarah": "arsip", "psikologi": "pastel"}.get(theme, theme)
     variant = sum(map(ord, title)) % 2  # dua gaya pembuka berbeda antarvideo
     n = len(plan)
@@ -593,6 +597,7 @@ def art_direct(plan, title):
                 p["type"] = "lingkungan"
             elif p["type"] == "objek" and not p.get("layout"):
                 p["layout"] = "closeup"
+                p["title"] = _short_title(p["text"], 5).rstrip(".,")  # close-up: judul pendek di samping objek
         # kesimpulan berbeda antarvideo: adegan minimalis, atau close-up ADRI yang menyimpulkan di gelembung bicara
         if phase == "kesimpulan" and variant == 1 and not p.get("_given_type"):
             p.update({"type": "karakter", "layout": "closeup", "pose": "simpulkan"})
@@ -620,6 +625,8 @@ def art_direct(plan, title):
             env = "data"
         if "env" in p.get("_given", {}):
             env = p["_given"]["env"]
+        if tema and "env" not in p.get("_given", {}):
+            env = "brand" if phase == "penutup" else tema["env"]
         p["env"], p["mood"] = env, mood
         p["tone"] = "dark" if env in DARK_ENVS else "light"
         # pose sesuai narasi
@@ -664,7 +671,7 @@ def art_direct(plan, title):
             p["adri"] = True
             run_ = 0
     # adegan gelap dibatasi: paling banyak 35% (kecuali naskah memintanya)
-    dark = [p for p in plan if p["env"] in DARK_ENVS and not p.get("outro")]
+    dark = [] if tema else [p for p in plan if p["env"] in DARK_ENVS and not p.get("outro")]
     for p in dark[max(1, round(0.35 * n)):]:
         if "env" not in p.get("_given", {}):
             p["env"], p["tone"] = "cerah", "light"
@@ -703,7 +710,7 @@ def art_direct(plan, title):
         ("formal", r"\b(investasi|saham|ekonomi|bisnis|keuangan|uang|inflasi|bank|pajak|berita|politik|perusahaan|startup|karier)\b"),
         ("travel", r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b"),
     ]
-    outfit = next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
+    outfit = (tema or {}).get("outfit") or next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
     # objek dari katalog (hewan yang disebut di kalimat): adegan ditampilkan sebagai objek dengan gambarnya
     for i, p in enumerate(plan):
         g = p.get("_given", {})
@@ -711,6 +718,10 @@ def art_direct(plan, title):
             continue
         obj = find_object(p["text"])
         if not obj:
+            continue
+        # tidak monoton: bukan di pembuka/kesimpulan, gambar yang sama tidak berurutan, maks. 2 kali per video
+        used_n = sum(1 for q in plan[:i] if q.get("visual") == obj["file"])
+        if "type" not in g and (p.get("phase") in ("pembuka", "kesimpulan", "penutup") or used_n >= 2 or (i > 0 and plan[i - 1].get("visual") == obj["file"])):
             continue
         p.update({"visual": obj["file"], "cutout": obj["transparan"]})
         if not p.get("_given_type") and p["type"] not in ("objek", "potongan"):
@@ -720,6 +731,13 @@ def art_direct(plan, title):
             p["family"] = family("objek", p["layout"])
         if p.get("layout") == "closeup" or not any(":" in x and x.split(":", 1)[1].strip() for x in p.get("points", [])):
             p["points"] = [f"bintang:{' '.join(obj['base'].split('_')[:2]).capitalize()}"]
+    # objek tanpa gambar tepat setelah adegan objek: jadi wide shot lingkungan (tanpa ADRIY) supaya tidak berulang
+    for i, p in enumerate(plan[1:], 1):
+        if p["type"] == "objek" and not p.get("visual") and plan[i - 1]["type"] == "objek" and not p.get("_given_type") and p["env"] in HERO_ENVS:
+            p.update({"type": "lingkungan", "layout": None, "adri": False, "kicker": ""})
+            p["family"] = family("lingkungan")
+            first = re.split(r"[,;]", p["text"])[0].strip()
+            p["title"] = first if len(first.split()) <= 9 else _short_title(first, 8)
     for p in plan:
         if outfit and "outfit" not in p.get("_given", {}):
             p["outfit"] = outfit
@@ -847,7 +865,7 @@ def find_numbers(text):
         label = re.sub(r"^(dan|lalu|serta|sedangkan|sementara|yaitu|adalah|sebesar|hanya|ada|dari)\s+", "", m.group(1).strip(), flags=re.I)
         label = re.sub(r"(\s+(butuh|perlu|selama|sekitar|sebesar|hanya|mencapai|sampai|hingga|cuma|dari))+$", "", label, flags=re.I)
         label = " ".join(label.split()[-2:])
-        label = re.sub(r"^(dari|dan|di|ke|yang|oleh)\s+", "", label, flags=re.I)
+        label = re.sub(r"^(dari|dan|di|ke|yang|oleh|menghasilkan|mengandung|berisi|terdiri)\s+", "", label, flags=re.I)
         label = label[:1].upper() + label[1:]
         data.append({"label": label, "value": float(m.group(2).replace(",", ".")), "unit": m.group(3) or ""})
     return data[:5]
@@ -1107,7 +1125,7 @@ def plan_scenes(lines, duration, title, style):
     for a, b in zip(plan, plan[1:]):
         if a["type"] == "karakter" and b["type"] != "karakter" and not a.get("outro"):
             a.setdefault("adriExit", "left" if a.get("side", "right") == "right" else "right")
-    plan = art_direct(plan, title)
+    plan = art_direct(plan, title, style)
     # kamera dihitung ulang setelah art direction (tata letak/jenis bisa berubah)
     prev_shot = None
     for sc in plan:
@@ -1156,7 +1174,7 @@ def check_standard(plan, style):
     # art direction: latar gelap tidak mendominasi, transisi bervariasi, ADRI tidak dipaksakan di semua adegan
     n = len(plan)
     dark = sum(1 for sc in plan if sc.get("tone") == "dark")
-    if n >= 4 and dark / n > 0.4:
+    if n >= 4 and dark / n > 0.4 and not style.get("tema"):  # style tematik gelap (antariksa) memang sengaja
         issues.append(f"latar gelap {dark} dari {n} adegan: terlalu banyak (maks. 40%)")
     trs = [sc["transition"] for sc in plan[1:]]
     for t in set(trs):
@@ -1389,7 +1407,16 @@ def preview_styles(only=None):
         props = {"styleId": sid, "style": None, "title": prev.get("title", st["label"]), "caption": prev.get("caption", "Contoh subtitle"),
                  "active": prev.get("active", 0), "visual": ""}  # kosong = ADRI dengan penyelesaian khas style
         out = out_dir / f"{sid}.png"
-        run(["npx", "remotion", "still", "StylePreview", str(out), f"--props={json.dumps(props, ensure_ascii=False)}"], cwd=REMOTION)
+        if st.get("engine") == "adriy":
+            # style beradegan: pratinjau adegan pembuka (close-up ADRIY bertanya) di lingkungan dan outfit style itu
+            tema = st.get("tema", {})
+            extra = {"layout": "closeup", "pose": "tanya", "title": prev.get("title", st["label"]), "kicker": "Adri.project"}
+            if tema:
+                extra.update({"env": tema["env"], "outfit": tema["outfit"]})
+            props = {"type": "karakter", "styleId": sid, "at": 3.0, "caption": prev.get("caption", "Contoh subtitle"), "extra": extra}
+            run(["npx", "remotion", "still", "ScenePreview", str(out), f"--props={json.dumps(props, ensure_ascii=False)}"], cwd=REMOTION)
+        else:
+            run(["npx", "remotion", "still", "StylePreview", str(out), f"--props={json.dumps(props, ensure_ascii=False)}"], cwd=REMOTION)
         print(f"{sid:10s} -> {out.relative_to(ROOT)}")
 
 
@@ -1412,7 +1439,8 @@ def pixel_checks(folder, skip=()):
             return {x for x in range(3, w) if sum(abs(a - b) for a, b in zip(row[x], row[x - 3])) > t}
         # tepi harus memanjang tegak (3 baris berjarak 30 px), jadi partikel kecil tidak terhitung
         r1, r2, r3 = edges(h - 120, 9), edges(h - 90, 6), edges(h - 60, 6)
-        hit = sorted(x for x in r1 if any(abs(x - x2) <= 4 for x2 in r2) and any(abs(x - x3) <= 4 for x3 in r3))
+        # 20 px tepi layar diabaikan (vinyet tekstur kertas berubah tajam di tepi)
+        hit = sorted(x for x in r1 if 20 < x < w - 20 and any(abs(x - x2) <= 4 for x2 in r2) and any(abs(x - x3) <= 4 for x3 in r3))
         if hit and "transisi" not in f.name:
             found.append((f.name, f"latar terputus di bawah layar (x={hit[0]})"))
         # ketajaman: variasi tepi sangat rendah di tengah adegan = buram
@@ -1433,7 +1461,8 @@ def qa_scenes(name=None):
             raise SystemExit("Belum ada scenes.json: jalankan dulu dengan --style adriy --until scenes")
         pub = REMOTION / "public" / "media" / name
         pub.mkdir(parents=True, exist_ok=True)
-        (d / "style.json").write_text(json.dumps(load_styles()["adriy"], ensure_ascii=False, indent=1), encoding="utf-8")
+        if not (d / "style.json").exists():
+            (d / "style.json").write_text(json.dumps(load_styles()["adriy"], ensure_ascii=False, indent=1), encoding="utf-8")
         for f in ["meta.json", "pages.json", "audio.wav", "style.json", "scenes.json"]:
             if (d / f).exists():
                 shutil.copy2(d / f, pub / f)
@@ -1444,7 +1473,9 @@ def qa_scenes(name=None):
     skip = ()
     if name:
         plan = json.loads((ROOT / "media" / name / "scenes.json").read_text())
-        skip = tuple(f"{i + 1:02d}-karakter" for i, sc in enumerate(plan) if sc["type"] == "karakter" and sc.get("layout") == "closeup")
+        # close-up karakter sengaja memotong bingkai; latar bertekstur kertas (butiran acak) mengecoh deteksi tepi
+        skip = tuple(f"{i + 1:02d}-{sc['type']}" for i, sc in enumerate(plan)
+                     if (sc["type"] == "karakter" and sc.get("layout") == "closeup") or sc.get("env") in ("arsip", "jurnal", "dapur", "sejarah"))
     px = pixel_checks(out, skip)
     rep = json.loads((out / "laporan.json").read_text())
     rep["issues"] += [{"frame": f, "level": "masalah", "msg": m} for f, m in px]
@@ -1463,8 +1494,8 @@ def preview_scenes(name, only=None):
         raise SystemExit("Belum ada scenes.json: jalankan dulu dengan --style adriy --until scenes")
     pub = REMOTION / "public" / "media" / name
     pub.mkdir(parents=True, exist_ok=True)
-    style = load_styles()["adriy"]
-    (d / "style.json").write_text(json.dumps(style, ensure_ascii=False, indent=1), encoding="utf-8")
+    if not (d / "style.json").exists():  # style yang dipilih saat --until scenes tetap dipakai
+        (d / "style.json").write_text(json.dumps(load_styles()["adriy"], ensure_ascii=False, indent=1), encoding="utf-8")
     for f in ["meta.json", "pages.json", "audio.wav", "style.json", "scenes.json"]:
         if (d / f).exists():
             shutil.copy2(d / f, pub / f)

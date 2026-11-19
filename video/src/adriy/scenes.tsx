@@ -888,7 +888,7 @@ const SceneObjekDekat: React.FC<SP> = ({ s, brand, caption }) => {
         <Visual s={s} k={k} size={420} />
       </div>
       {lab && (
-        <div data-qa="text" style={{ position: "absolute", left: 80, top: 1060, width: 380, fontFamily: brand.typography.family, fontWeight: 700, fontSize: 38, lineHeight: 1.2, color: k.ink, opacity: ap(frame, fps, 1.2, 0.5) }}>
+        <div data-qa="text" style={{ position: "absolute", left: 80, top: 1200, width: 380, fontFamily: brand.typography.family, fontWeight: 700, fontSize: 38, lineHeight: 1.2, color: k.ink, opacity: ap(frame, fps, 1.2, 0.5) }}>
           <span style={{ borderLeft: `6px solid ${k.accent}`, paddingLeft: 16, display: "inline-block" }}>{lab}</span>
         </div>
       )}
@@ -978,6 +978,72 @@ const Hero: React.FC<{ env: Env; k: Ink; frame: number; s: SceneData }> = ({ env
           <circle cx={460} cy={560} r={20} fill="#FFFFFF" /><circle cx={620} cy={570} r={14} fill="#FFFFFF" />
         </g>
       );
+    case "bawahlaut":
+      // ikan-ikan berenang melintas di depan terumbu
+      return (
+        <g>
+          {[0, 1, 2, 3, 4].map((i) => {
+            const x = ((t * (60 + i * 15) + i * 260) % 1400) - 200;
+            const y = 560 + i * 110 + Math.sin(t * 2 + i) * 20;
+            const col = ["#FF8C42", "#FFD166", "#5C9DFF", "#FF6B9E", "#33D1A1"][i];
+            return (
+              <g key={i} transform={`translate(${x} ${y}) scale(${1.4 - i * 0.12})`}>
+                <ellipse rx={70} ry={38} fill={col} />
+                <path d="M-60 0 L-110 -34 L-110 34 Z" fill={col} />
+                <circle cx={38} cy={-8} r={8} fill="#FFFFFF" /><circle cx={40} cy={-8} r={4} fill="#0B1530" />
+                {i % 2 === 0 && <path d="M-10 -36 V36 M18 -32 V32" stroke="#FFFFFF" strokeWidth={10} />}
+              </g>
+            );
+          })}
+        </g>
+      );
+    case "antariksa":
+      return (
+        <g>
+          <circle cx={540} cy={760} r={250} fill="#3F7BFF" />
+          <path d="M380 620 C460 580 520 660 600 620 S720 700 760 660 M330 800 C420 760 500 840 600 800 S740 880 780 840" stroke="#33D1A1" strokeWidth={46} fill="none" strokeLinecap="round" opacity={0.85} />
+          <circle cx={540} cy={760} r={250} fill="none" stroke="#B8D4FF" strokeWidth={14} opacity={0.6} />
+          <g transform={`rotate(${t * 20} 540 760)`}><circle cx={540} cy={420} r={34} fill="#D9D9D9" /></g>
+          <path d={`M${200 + t * 40} ${1150 - t * 30} l120 -60`} stroke="#FFFFFF" strokeWidth={6} strokeLinecap="round" opacity={0.6} />
+        </g>
+      );
+    case "sabana":
+      return (
+        <g>
+          <path d="M320 1140 L310 760 M310 860 L200 710 M312 820 L440 700" stroke="#5A3B1C" strokeWidth={30} strokeLinecap="round" />
+          <ellipse cx={315} cy={655} rx={250} ry={80} fill="#6B7F3A" />
+          {[0, 1, 2].map((i) => (
+            <g key={i} transform={`translate(${((t * 50 + i * 380) % 1400) - 200} ${1080 - i * 30})`}>
+              <ellipse rx={70} ry={30} fill="#8A6A3A" /><circle cx={70} cy={-20} r={22} fill="#8A6A3A" />
+              <path d="M-40 20 V70 M40 20 V70" stroke="#5A3B1C" strokeWidth={10} />
+            </g>
+          ))}
+        </g>
+      );
+    case "jurnal":
+      return (
+        <g transform="rotate(-3 540 800)">
+          <path d="M150 520 Q345 470 540 540 Q735 470 930 520 V1100 Q735 1050 540 1120 Q345 1050 150 1100 Z" fill="#FBF3E2" stroke="#8C3B12" strokeWidth={6} />
+          <path d="M540 540 V1120" stroke="#8C3B12" strokeWidth={4} />
+          {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M200 ${600 + i * 55} Q345 ${585 + i * 55} 500 ${600 + i * 55}`} stroke="#33240F" strokeWidth={4} opacity={0.35} fill="none" strokeDasharray={i % 2 ? "0" : "14 8"} />)}
+          <g stroke="#33240F" strokeWidth={5} fill="none" opacity={0.7} style={{ clipPath: `inset(0 ${100 - Math.min(100, t * 55)}% 0 0)` }}>
+            <path d="M600 980 L640 700 L700 640 L760 640 L820 700 L860 980 Z" />
+            <path d="M680 980 V820 H780 V980 M660 700 H800" />
+          </g>
+        </g>
+      );
+    case "lab":
+      return (
+        <g>
+          <path d="M470 520 V720 L300 1080 Q280 1140 340 1140 H740 Q800 1140 780 1080 L610 720 V520 Z" fill="#FFFFFF" stroke={k.accent} strokeWidth={12} strokeLinejoin="round" />
+          <path d="M340 960 H740 L780 1080 Q800 1140 740 1140 H340 Q280 1140 300 1080 Z" fill="#B07BFF" opacity={0.75} />
+          <rect x={440} y={490} width={200} height={40} rx={18} fill={k.accent} />
+          {[0, 1, 2, 3, 4].map((i) => {
+            const p = (t * 0.6 + i / 5) % 1;
+            return <circle key={i} cx={470 + i * 35 + Math.sin(t * 3 + i) * 12} cy={1080 - p * 600} r={14 + (i % 3) * 5} fill="#B07BFF" opacity={0.6 * (1 - p)} />;
+          })}
+        </g>
+      );
     case "malam":
       return (
         <g>
@@ -1020,7 +1086,7 @@ export const SceneLingkungan: React.FC<SP> = ({ s, brand, caption }) => {
       <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible", translate: `0px ${(1 - Math.min(rise, 1)) * 120}px`, opacity: Math.min(1, rise * 1.4) }}>
         {/* ilustrasi digeser ke atas: bagian bawah layar milik judul */}
         {/* ilustrasi diskalakan ke ruang di antara subtitle (atas) dan judul (bawah) */}
-        <g data-qa="object" transform="translate(540 724) scale(0.85) translate(-540 -800)"><Hero env={e} k={k} frame={frame} s={s} /></g>
+        <g data-qa="object" data-qa-wide="1" transform="translate(540 724) scale(0.85) translate(-540 -800)"><Hero env={e} k={k} frame={frame} s={s} /></g>
       </svg>
     </Stage>
   );

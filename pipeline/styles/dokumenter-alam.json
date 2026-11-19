@@ -1,0 +1,294 @@
+{
+  "id": "dokumenter-alam",
+  "label": "Dokumenter Alam (hewan darat dan alam liar)",
+  "description": "Gaya dokumenter alam liar: sabana keemasan saat matahari rendah, pohon akasia, rumput tinggi yang bergoyang, kawanan hewan melintas. Hewan darat dari katalog aset jadi fokus utama; ADRIY sebagai pemandu berpakaian travel.",
+  "engine": "adriy",
+  "useFor": [
+    "hewan",
+    "satwa",
+    "binatang",
+    "alam liar",
+    "hutan",
+    "sabana",
+    "savana",
+    "harimau",
+    "gajah",
+    "singa",
+    "komodo",
+    "orangutan",
+    "badak",
+    "jerapah",
+    "zebra",
+    "predator",
+    "mamalia",
+    "reptil",
+    "hewan langka",
+    "kebun binatang"
+  ],
+  "font": {
+    "family": "Plus Jakarta Sans",
+    "file": "fonts/PlusJakartaSans-latin.woff2",
+    "weight": 800
+  },
+  "palette": {
+    "bg": "#0B1530",
+    "bg2": "#132457",
+    "ink": "#F5F7FB",
+    "accent": "#FFB547",
+    "muted": "#8A94A8",
+    "primary": "#2F6BFF",
+    "secondary": "#33D1A1",
+    "negative": "#FF6B6B",
+    "paper": "#FFFFFF"
+  },
+  "typography": {
+    "family": "Plus Jakarta Sans",
+    "display": {
+      "weight": 800,
+      "size": 96,
+      "letterSpacing": -2
+    },
+    "heading": {
+      "weight": 800,
+      "size": 72,
+      "letterSpacing": -1.5
+    },
+    "body": {
+      "weight": 600,
+      "size": 48,
+      "letterSpacing": -0.5
+    },
+    "caption": {
+      "weight": 700,
+      "size": 58,
+      "letterSpacing": -0.5,
+      "maxLines": 2
+    },
+    "label": {
+      "weight": 700,
+      "size": 34,
+      "letterSpacing": 2
+    },
+    "minSizeOnPhone": 34
+  },
+  "character": {
+    "name": "ADRI",
+    "role": "presenter utama",
+    "identity": {
+      "face": "wajah oval, kulit sawo matang, alis tebal, mata ramah, senyum tipis",
+      "hair": "rambut hitam pendek dengan jambul ke kanan",
+      "outfit": "hoodie biru tua dengan garis biru terang dan logo A di dada, kaos putih di dalam",
+      "accessory": "kacamata bulat tipis"
+    },
+    "colors": {
+      "skin": "#C68A62",
+      "skinShade": "#A9714D",
+      "hair": "#1B1716",
+      "hoodie": "#1E2A55",
+      "hoodieAccent": "#2F6BFF",
+      "shirt": "#F5F7FB",
+      "glasses": "#1B1716"
+    },
+    "poses": [
+      "sapa",
+      "jelaskan",
+      "tunjuk",
+      "pikir",
+      "kaget",
+      "senang"
+    ],
+    "assets": {},
+    "imageSetPath": "adri/santai/peta.json",
+    "imageSets": {
+      "santai": "adri/santai/peta.json",
+      "travel": "adri/travel/peta.json",
+      "arkeolog": "adri/arkeolog/peta.json",
+      "formal": "adri/formal/peta.json",
+      "angkasa": "adri/angkasa/peta.json",
+      "penyelam": "adri/penyelam/peta.json",
+      "lab": "adri/lab/peta.json"
+    },
+    "assetsNote": "Isi dengan gambar PNG transparan per pose dari ilustrator untuk versi semi-realistis, misalnya {\"sapa\": \"adri/sapa.png\"} (relatif ke video/public/). Kalau kosong, dipakai ADRI versi vector."
+  },
+  "motion": {
+    "enter": 0.5,
+    "exit": 0.35,
+    "overlap": 0.3,
+    "easeIn": [
+      0.16,
+      1,
+      0.3,
+      1
+    ],
+    "easeOut": [
+      0.7,
+      0,
+      0.84,
+      0
+    ],
+    "stagger": 0.08,
+    "cameraZoom": [
+      1.0,
+      1.07
+    ],
+    "parallax": {
+      "back": 0.25,
+      "mid": 0.6,
+      "front": 1.25
+    },
+    "idle": {
+      "breathe": 0.012,
+      "float": 8
+    }
+  },
+  "transitions": {
+    "topik": [
+      "slide",
+      "whip"
+    ],
+    "lanjutan": [
+      "morph",
+      "smooth",
+      "push",
+      "shape",
+      "wipe"
+    ],
+    "fakta": [
+      "cover",
+      "iris"
+    ],
+    "kesimpulan": [
+      "smooth",
+      "cover"
+    ],
+    "penekanan": [
+      "zoom",
+      "iris"
+    ],
+    "objek": [
+      "iris",
+      "shape"
+    ],
+    "data": [
+      "wipe",
+      "shape",
+      "push"
+    ],
+    "note": "Adegan bertumpuk 0,7 dtk: adegan baru masuk di atas adegan lama, adegan lama keluar dengan gerak yang melengkapinya. Transisi tidak pernah sama dengan sebelumnya; fade hanya bila diminta di naskah."
+  },
+  "scenes": {
+    "types": [
+      "karakter",
+      "objek",
+      "infografis",
+      "diagram",
+      "perbandingan",
+      "tipografi",
+      "sinematik",
+      "angka",
+      "grafik",
+      "lingkaran",
+      "timeline",
+      "peta",
+      "alur",
+      "potongan",
+      "persentase",
+      "minimalis"
+    ],
+    "environments": [
+      "umum",
+      "sains",
+      "sejarah",
+      "teknologi",
+      "alam",
+      "kota",
+      "data",
+      "terang",
+      "psikologi",
+      "fakta",
+      "banding",
+      "minimal"
+    ],
+    "families": [
+      "objek-penuh",
+      "presenter-objek",
+      "presenter",
+      "tipografi",
+      "infografis",
+      "linimasa",
+      "proses",
+      "perbandingan",
+      "sinematik",
+      "minimalis"
+    ],
+    "adriSize": {
+      "kecil": 500,
+      "sedang": 800,
+      "besar": 1150
+    },
+    "subtitleModes": [
+      "standar",
+      "kata",
+      "kinetik",
+      "minimalis",
+      "latar",
+      "tanpa"
+    ],
+    "rules": {
+      "noRepeatType": true,
+      "noRepeatLayout": true,
+      "characterEvery": 3,
+      "maxCaptionWords": 9,
+      "maxTextArea": 0.28,
+      "maxScene": 6.5,
+      "minScene": 1.6
+    }
+  },
+  "highlight": {
+    "kind": "marker",
+    "color": "#FFB547",
+    "textColor": "#0B1530"
+  },
+  "subtitle": {
+    "size": 58,
+    "case": "none",
+    "box": "none",
+    "position": 230,
+    "entrance": "fade",
+    "letterSpacing": -0.5
+  },
+  "background": {
+    "kind": "gradient"
+  },
+  "visual": {
+    "filter": "none",
+    "blend": "normal",
+    "frame": "none"
+  },
+  "overlays": [],
+  "montage": {
+    "transition": 0.4,
+    "kenBurns": false
+  },
+  "sfx": {
+    "lineStart": "mixkit/sfx-kategori/transition-sweep/168-fast-air-sweep-transition.mp3",
+    "pop": "mixkit/sfx/pop-kering-notifikasi.mp3",
+    "highlight": "mixkit/sfx-kategori/click/221-positive-interface-beep.mp3",
+    "number": "mixkit/sfx-kategori/game-win/600-achievement-bell.mp3",
+    "ending": "mixkit/sfx/sukses-jawaban-benar.mp3"
+  },
+  "outro": {
+    "tagline": "Inilah Adri.project",
+    "slogan": "Explore more. Know more."
+  },
+  "guidelines": "Lihat ADRIY-STANDARD.md. Setiap adegan harus punya satu fokus visual dan tujuan yang jelas; kejelasan informasi lebih penting dari efek.",
+  "preview": {
+    "title": "Raja Hutan dari Afrika",
+    "caption": "Singa hidup berkelompok di padang sabana"
+  },
+  "tema": {
+    "env": "sabana",
+    "outfit": "travel",
+    "nama": "dokumenter alam"
+  }
+}

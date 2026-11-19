@@ -104,7 +104,7 @@ export const Donut: React.FC<{ data: Datum[]; cx: number; cy: number; r: number;
         return (
           <g key={i}>
             <circle cx={cx} cy={cy} r={r} fill="none" stroke={cols[i % cols.length]} strokeWidth={sw * (i === 0 ? 1.12 : 1)} strokeDasharray={`${C * f * p} ${C}`} strokeDashoffset={-C * start} transform={`rotate(-90 ${cx} ${cy})`} />
-            <g opacity={skipFirst && i === 0 ? 0 : lp}>
+            {!(skipFirst && i === 0) && <g opacity={lp}>
               <polyline points={`${cx + Math.cos(mid) * (r + sw / 2 - 4)},${cy + Math.sin(mid) * (r + sw / 2 - 4)} ${ex},${ey} ${lx},${ey}`} fill="none" stroke={k.ink} strokeWidth={3} />
               <circle cx={lx} cy={ey} r={7} fill={cols[i % cols.length]} />
               <text x={lx + (right ? 16 : -16)} y={ey - 6} textAnchor={right ? "start" : "end"} fontFamily={k.font} fontWeight={800} fontSize={48} fill={cols[i % cols.length]}>
@@ -114,7 +114,7 @@ export const Donut: React.FC<{ data: Datum[]; cx: number; cy: number; r: number;
               <text x={lx + (right ? 16 : -16)} y={ey + 34} textAnchor={right ? "start" : "end"} fontFamily={k.font} fontWeight={700} fontSize={30} fill={k.ink}>
                 {d.label}
               </text>
-            </g>
+            </g>}
           </g>
         );
       })}

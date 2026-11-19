@@ -38,7 +38,7 @@
     "poses": ["sapa", "jelaskan", "tunjuk", "pikir", "kaget", "senang"],
     "assets": {},
     "imageSetPath": "adri/santai/peta.json",
-    "imageSets": {"santai": "adri/santai/peta.json", "travel": "adri/travel/peta.json", "arkeolog": "adri/arkeolog/peta.json"},
+    "imageSets": {"santai": "adri/santai/peta.json", "travel": "adri/travel/peta.json", "arkeolog": "adri/arkeolog/peta.json", "formal": "adri/formal/peta.json", "angkasa": "adri/angkasa/peta.json", "penyelam": "adri/penyelam/peta.json", "lab": "adri/lab/peta.json"},
     "assetsNote": "Isi dengan gambar PNG transparan per pose dari ilustrator untuk versi semi-realistis, misalnya {\"sapa\": \"adri/sapa.png\"} (relatif ke video/public/). Kalau kosong, dipakai ADRI versi vector."
   },
   "motion": {

@@ -19,7 +19,7 @@ type Finish = "siluet" | "cetak" | "suram" | "stiker" | "garis" | "hologram" | "
 type Look = { finish: Finish; pose: Pose; outfit?: Outfit; size: number; facing?: "left" | "right"; tilt?: number; holding?: "piring" };
 
 // Style yang punya set gambar berkostum sendiri (folder di repo aset). Style lain memakai "santai".
-export const IMAGE_SET: Record<string, string> = { travel: "travel" };
+export const IMAGE_SET: Record<string, string> = { travel: "travel", bisnis: "formal", sains: "lab" };
 export const imageSetPath = (styleId: string) => `adri/${IMAGE_SET[styleId] ?? "santai"}/peta.json`;
 
 export const STYLE_CHARACTER: Record<string, Look> = {

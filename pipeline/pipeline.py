@@ -671,9 +671,16 @@ def art_direct(plan, title):
         p["transition"] = pick
         used[pick] = used.get(pick, 0) + 1
     # outfit ADRIY satu untuk seluruh video (tidak berganti kostum di tengah cerita), dari topik
-    outfit = ("arkeolog" if theme == "arsip" or re.search(r"\b(arkeolog\w*|fosil|situs|candi|prasasti|artefak|purbakala|ekspedisi)\b", text_all, re.I)
-              else "travel" if re.search(r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b", text_all, re.I)
-              else None)
+    # urutan = prioritas; judul diperiksa dulu, baru seluruh naskah
+    OUTFITS = [
+        ("angkasa", r"\b(luar angkasa|antariksa|astronot|planet|galaksi|roket|satelit|tata surya|mars|bulan|asteroid|orbit|nasa)\b"),
+        ("penyelam", r"\b(laut|lautan|samudra|terumbu|karang|menyelam|penyelam|ikan|hiu|paus|gurita|ubur-ubur|bawah air)\b"),
+        ("arkeolog", r"\b(arkeolog\w*|fosil|situs|candi|prasasti|artefak|purbakala|ekspedisi|sejarah|kerajaan|kuno|zaman)\b"),
+        ("lab", r"\b(sains|ilmuwan|kimia|biologi|fisika|sel|virus|bakteri|dna|vaksin|obat|kedokteran|eksperimen|laboratorium|molekul|atom|penemuan)\b"),
+        ("formal", r"\b(investasi|saham|ekonomi|bisnis|keuangan|uang|inflasi|bank|pajak|berita|politik|perusahaan|startup|karier)\b"),
+        ("travel", r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b"),
+    ]
+    outfit = next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
     for p in plan:
         if outfit and "outfit" not in p.get("_given", {}):
             p["outfit"] = outfit

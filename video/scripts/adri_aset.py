@@ -206,6 +206,7 @@ DEKAT = {"sapa": "dekat-08-1", "jelaskan": "dekat-12-1", "tunjuk": "dekat-02-1",
          "sentuh": "dekat-07-1", "jalan": "dekat-12-1", "netral": "dekat-12-1"}
 BICARA = ["dekat-09-1", "dekat-09-4", "dekat-09-2", "dekat-09-3", "dekat-09-5"]  # A, setengah, E, U, O
 KEDIP = "dekat-12-3"
+BICARA_PENUH = []  # bentuk mulut versi badan penuh (pose tubuh sama), untuk bicara di adegan biasa
 
 # Outfit lain: folder punya tata.json sendiri {"layout": {file: [baris]}, "penuh": {...}, "dekat": {...},
 # "bicara": [...], "kedip": ...}. Kunci yang tidak ada memakai bawaan outfit santai di atas.
@@ -217,6 +218,7 @@ if _TATA.exists():
     DEKAT = _t.get("dekat", {})
     BICARA = _t.get("bicara", [])
     KEDIP = _t.get("kedip")
+    BICARA_PENUH = _t.get("bicaraPenuh", [])
 
 
 def write_map():
@@ -227,7 +229,8 @@ def write_map():
     pick = lambda v: [ent(k) for k in v] if isinstance(v, list) else [ent(v)]  # noqa: E731
     peta = {"penuh": {p: pick(v) for p, v in PENUH.items() if all(k in info for k in (v if isinstance(v, list) else [v]))},
             "dekat": {p: pick(v) for p, v in DEKAT.items() if v in info},
-            "bicara": [ent(k) for k in BICARA if k in info], "kedip": ent(KEDIP) if KEDIP in info else None}
+            "bicara": [ent(k) for k in BICARA if k in info], "kedip": ent(KEDIP) if KEDIP in info else None,
+            "bicaraPenuh": [ent(k) for k in BICARA_PENUH if k in info]}
     (SRC / "peta.json").write_text(json.dumps(peta, indent=1))
     print("peta.json:", len(peta["penuh"]), "pose badan penuh,", len(peta["dekat"]), "pose dekat")
 

@@ -65,10 +65,11 @@ const AdriImage: React.FC<{ set: ImageSet; cues: PoseCue[]; size: number; talkin
     const list = lib[p] ?? lib.netral;
     if (!list?.length) return null;
     if (p === "jalan") return list[Math.floor((frame + seed) / 7) % list.length];
-    if (closeup && talking && p === "jelaskan" && set.bicara.length) {
+    const mouths = closeup ? set.bicara : set.bicaraPenuh ?? [];
+    if (talking && p === "jelaskan" && mouths.length) {
       // sinkron bibir sederhana: bentuk mulut berganti tiap 3-4 frame, pola tetap (deterministik)
       const k = Math.floor((frame + seed) / 3.5);
-      return set.bicara[Math.floor(Math.abs(Math.sin(k * 12.9898 + 3.1)) * 43758.5) % set.bicara.length];
+      return mouths[Math.floor(Math.abs(Math.sin(k * 12.9898 + 3.1)) * 43758.5) % mouths.length];
     }
     if (closeup && set.kedip && p === "jelaskan" && (frame + seed * 31) % 110 < 4) return set.kedip;
     return list[0];
@@ -114,7 +115,7 @@ export const withImageSet = async <T extends { character: CharacterSpec & { imag
 };
 
 export type PoseImage = { file: string; w: number; h: number; rowH: number };
-export type ImageSet = { penuh: Partial<Record<Pose | "netral", PoseImage[]>>; dekat: Partial<Record<Pose | "netral", PoseImage[]>>; bicara: PoseImage[]; kedip: PoseImage | null };
+export type ImageSet = { penuh: Partial<Record<Pose | "netral", PoseImage[]>>; dekat: Partial<Record<Pose | "netral", PoseImage[]>>; bicara: PoseImage[]; kedip: PoseImage | null; bicaraPenuh?: PoseImage[] };
 
 // Kostum per style. Hanya menambah aksesori di atas ADRI, tidak mengganti wajah, rambut, atau hoodie.
 export type Outfit = "koki" | "pelancong" | "atlet" | "peci" | "bisnis";

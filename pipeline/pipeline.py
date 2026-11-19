@@ -65,6 +65,18 @@ def load_styles():
     return {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(STYLES.glob("*.json"))}
 
 
+_TEMA = None
+
+
+def tema_konten(title):
+    """Tema konten (pipeline/tema-konten.json) dari judul: tema pertama yang polanya cocok, atau None."""
+    global _TEMA
+    if _TEMA is None:
+        f = ROOT / "pipeline" / "tema-konten.json"
+        _TEMA = json.loads(f.read_text(encoding="utf-8"))["tema"] if f.exists() else []
+    return next((t for t in _TEMA if title and re.search(t["kata"], title, re.I)), None)
+
+
 def choose_style(ctx):
     """Style dari --style, lalu "style" di naskah, lalu otomatis dari kata kunci topik."""
     styles = load_styles()
@@ -88,6 +100,9 @@ def choose_style(ctx):
     first = {sid: min(v, default=10**9) for sid, v in found.items()}
     best = min(scores, key=lambda sid: (-scores[sid], first[sid]))
     if scores[best] == 0:
+        tk = tema_konten(ctx["title"])
+        if tk and tk.get("style") in styles:
+            return styles[tk["style"]], f"otomatis dari tema konten '{tk['nama']}'"
         return styles.get("bersih", next(iter(styles.values()))), "otomatis (tidak ada kata kunci cocok)"
     ties = [sid for sid in scores if scores[sid] == scores[best] and sid != best]
     note = f"; seri dengan {', '.join(ties)}, dipilih yang disebut lebih dulu. Pakai --style untuk memastikan" if ties else ""
@@ -561,7 +576,9 @@ def art_direct(plan, title, style=None):
         return plan
     text_all = title + " " + " ".join(p["text"] for p in plan)
     # judul paling menentukan tema video; isi kalimat hanya cadangan
-    theme = topic_env(title) or topic_env(text_all) or "cerah"
+    # tema konten (mitos vs fakta, rekor dunia, ...) memberi latar cadangan bila judul tidak menyebut topik latar
+    tk = tema_konten(title)
+    theme = topic_env(title) or (tk or {}).get("env") or topic_env(text_all) or "cerah"
     # style tematik (bawah laut, antariksa, ...): satu lingkungan dan satu outfit untuk seluruh video
     tema = (style or {}).get("tema")
     if tema:
@@ -744,6 +761,9 @@ def art_direct(plan, title, style=None):
             p["family"] = family("lingkungan")
             first = re.split(r"[,;]", p["text"])[0].strip()
             p["title"] = first if len(first.split()) <= 9 else _short_title(first, 8)
+    # kicker pembuka menyebut tema konten ("Mitos atau fakta?", "Rekor dunia", ...) bila adegannya punya kicker
+    if tk and plan[0].get("kicker") and not plan[0].get("_given", {}).get("kicker") and not plan[0].get("outro"):
+        plan[0]["kicker"] = tk["kicker"]
     for p in plan:
         if outfit and "outfit" not in p.get("_given", {}):
             p["outfit"] = outfit
@@ -1244,6 +1264,8 @@ def step_scenes(ctx):
     else:
         lines = lines_from_pages(d, meta["duration"])
     plan = plan_scenes(lines, meta["duration"], ctx["title"], style)
+    tk = tema_konten(ctx["title"])
+    log("scenes", f"tema konten: {tk['nama']}" if tk else "tema konten: tidak dikenali dari judul (lihat pipeline/tema-konten.json)")
     issues = check_standard(plan, style)
     plan_json = json.dumps(plan, ensure_ascii=False, indent=1)
     if not out.exists() or out.read_text(encoding="utf-8") != plan_json:

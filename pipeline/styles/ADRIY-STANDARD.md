@@ -292,6 +292,50 @@ kamera, opacity, blur, nomor adegan). Yang diperiksa:
 Hasil: gambar dan `laporan.json` di `media/<nama>/qa/`. Gambar titik tengah transisi disimpan untuk diperiksa
 dengan mata.
 
+## 12. Tema konten
+
+Setiap video Adriy.project masuk ke salah satu dari 16 tema konten di bawah. Aturannya ada di
+`pipeline/tema-konten.json`: pola kata di judul, style, latar, kicker pembuka, alur cerita, adegan, dan sound effect.
+
+Pipeline mengenali tema dari **judul** dan memeriksa tema dari atas ke bawah. Tema pertama yang cocok yang
+dipakai, jadi tema yang paling spesifik diletakkan di atas, dan "Fakta unik: kok bisa?" menjadi cadangan untuk
+judul "kenapa ...". Hasilnya:
+
+- **Style**: dipakai bila `--style auto` dan tidak ada kata kunci style yang cocok. `--style` dan `"style"` di
+  naskah tetap menang.
+- **Latar**: dipakai bila judul tidak menyebut topik latar (sejarah, teknologi, sains, ...).
+- **Kicker pembuka**: label di adegan pertama ("Mitos atau fakta?", "Rekor dunia", ...).
+- Log `[scenes] tema konten: ...` menunjukkan tema yang terdeteksi.
+
+Kolom alur, adegan, dan sound effect adalah panduan menulis naskah. Sound effect belum dipilih otomatis: isi
+`"sfx"` per kalimat di naskah dengan file dari kategori yang disarankan (`video/public/mixkit/sfx-kategori/<kategori>/`).
+
+| # | Tema | Style | Latar | Kicker | Alur cerita | Adegan yang cocok | Kategori sound effect |
+|---|---|---|---|---|---|---|---|
+| 1 | Mitos versus fakta | adriy | banding | Mitos atau fakta? | sebut mitosnya → kenapa banyak yang percaya → faktanya + bukti/angka → kesimpulan: benar/salah/sebagian | karakter tanya, perbandingan mitos | fakta (beri angka supaya jadi VS), angka/persentase bukti, minimalis kesimpulan | game-wrong, technology-correct, transition-hit |
+| 2 | Perbandingan skala | adriy | data | Seberapa besar? | benda yang dikenal penonton sebagai patokan → naik/turun skala bertahap → angka pembanding (berapa kali lipat) → penutup yang bikin takjub | objek patokan, grafik/perbandingan berangka, angka besar, lingkungan wide shot | transition-swell, transition-zoom, transition-boom |
+| 3 | Perbandingan A versus B | adriy | banding | Mana yang menang? | perkenalkan A dan B → bandingkan 2-3 aspek dengan angka → pemenang tiap aspek → pemenang akhir / tergantung kebutuhan | perbandingan VS (kalimat pakai 'sedangkan'/'dibanding' + angka), grafik, karakter simpulkan | transition-hit, transition-impact, human-crowd, game-win |
+| 4 | Rekor dunia | adriy | kota | Rekor dunia | tebak dulu (pancing penonton) → pemegang rekor + angkanya → pembanding agar terasa besarnya → fakta tambahan / siapa yang mendekati | angka besar, perbandingan berangka, objek/foto pemegang rekor | instrument-drum, human-applause, game-win, transition-boom |
+| 5 | Hitung-hitungan sehari-hari | adriy | data | Coba hitung | situasi sehari-hari → angka per hari → dikali seminggu/sebulan/setahun → hasil akhir yang mengejutkan + saran | angka, alur (langkah hitungan), grafik naik, persentase | game-coin, kantor-write, technology-countdown, notification |
+| 6 | Tips praktis | bersih | cerah | Tips praktis | masalah yang sering dialami → tips 1-3 (satu kalimat satu tips) → kenapa berhasil → ajak coba | karakter tanya, diagram/alur langkah, karakter tunjukkan, minimalis | pop, click, notification, technology-correct |
+| 7 | Bongkar cara kerja | sains | sains | Bongkar cara kerja | benda yang dipakai setiap hari → bagian-bagiannya → proses langkah demi langkah → kenapa dirancang begitu | objek close-up, potongan (bagian dalam), diagram/alur proses, karakter jelaskan | pertukangan-tools, pertukangan-metal, technology-appliances, click |
+| 8 | Luar angkasa | antariksa | antariksa | Luar angkasa | pertanyaan besar → fakta dengan skala/angka → perbandingan dengan Bumi → apa artinya bagi kita | lingkungan antariksa, angka besar, perbandingan skala, karakter astronot | technology-sci-fi, transport-rocket, lainnya-asteroid, transition-swell |
+| 9 | Fisika simpel | laboratorium | lab | Fisika simpel | kejadian sehari-hari → konsep fisikanya dalam satu kalimat → percobaan sederhana → contoh lain di sekitar kita | karakter tunjukkan, diagram gaya/arah, objek percobaan, minimalis rumus singkat | nature-drop, nature-splash, transition-swoosh, technology-high-tech |
+| 10 | Penemuan dan penemu | ekspedisi-sejarah | jurnal | Kisah penemuan | masalah sebelum ada penemuan → siapa penemunya dan kapan → momen kunci / kegagalan → dampaknya sekarang | timeline, karakter arkeolog/jurnal, objek penemuan, angka tahun | kantor-paper, kantor-write, instrument-bell, transition-cinematic |
+| 11 | Psikologi sehari-hari | adriy | pastel | Psikologi sehari-hari | situasi yang relate → nama fenomenanya → apa yang terjadi di otak → cara menghadapinya | karakter pikir/tanya, diagram dua kepala/proses, persentase survei, karakter simpulkan | human-heartbeat, human-breathe, human-gasp, transition-swell |
+| 12 | Kebiasaan kecil | adriy | hangat | Kebiasaan kecil | kebiasaan yang sering dianggap sepele → efeknya ke tubuh/pikiran → angka setelah seminggu/sebulan → ajak mulai hari ini | karakter senang/sapa, timeline (hari 1 - minggu 4), grafik naik, minimalis ajakan | kantor-clock, rumah-bedroom, pop, notification |
+| 13 | Sains sehari-hari | laboratorium | lab | Sains sehari-hari | benda/kejadian di rumah → pertanyaan 'kenapa' → penjelasan sains singkat → fakta bonus | karakter tanya, objek close-up, diagram proses, karakter jelaskan | nature-bubbles, rumah-kitchen, nature-water, nature-fire |
+| 14 | Hal yang jarang disadari | adriy | cerah | Jarang disadari | benda/kejadian biasa → detail yang terlewat → alasannya → ajak cek sendiri | objek close-up (detail), karakter kaget, potongan, minimalis | human-gasp, pop, transition-zoom, game-sparkle |
+| 15 | Fakta mengejutkan | adriy | malam | Fakta mengejutkan | pancing dengan fakta paling mengejutkan → konteks → bukti/angka → fakta penutup yang lebih mengejutkan | karakter kaget, angka besar, lingkungan, objek | transition-boom, transition-impact, human-gasp, instrument-suspense-music |
+| 16 | Fakta unik: kok bisa? | adriy | dari topik | Kok bisa? | fakta unik dalam satu kalimat → kok bisa? (pertanyaan) → penjelasan → kesimpulan singkat | karakter tanya, objek, diagram/potongan, minimalis | human-cartoon, pop, game-magic, transition-swoosh |
+
+Catatan:
+- Adegan perbandingan (VS) baru terbentuk bila kalimatnya memakai "sedangkan"/"dibanding"/"vs" **dan** ada angka.
+  Untuk mitos versus fakta dan A versus B, tulis kalimat seperti "Mitosnya 8 jam, sedangkan faktanya 7 jam".
+- Judul pendek berbentuk pertanyaan paling mudah dikenali ("Benarkah ...?", "Seberapa besar ...?", "Cara kerja ...").
+- Menambah tema: tambah satu objek di `tema-konten.json`. Pola kata ditulis sebagai regex dengan `\b` di
+  batas kata (di JSON ditulis `\\b`), lalu dicoba dengan beberapa judul supaya tidak menangkap tema lain.
+
 ## Cara memakai
 
 ```bash

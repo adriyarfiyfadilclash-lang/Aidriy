@@ -565,7 +565,6 @@ def find_object(text):
                 score = (-m.start(), len(kata.split()), "kartun" not in it["nama"], not re.search(r"_[bc]$", it["nama"]))
                 if best is None or score > best[0]:
                     best = (score, it)
-                break
     return best[1] if best else None
 
 

@@ -238,14 +238,14 @@ const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame 
         </g>
       );
     case "antariksa":
-      // bintang berkelip, planet bercincin, nebula samar
+      // bintang berkelip, planet bercincin (di pojok atas, di atas area judul), nebula samar
       return (
         <g>
           <ellipse cx={300} cy={420} rx={420} ry={180} fill="#8E7BFF" opacity={0.12} transform="rotate(-20 300 420)" />
           {Array.from({ length: 70 }, (_, i) => (
             <circle key={i} cx={rand(i) * 1080} cy={rand(i + 70) * 1440} r={1 + rand(i + 140) * 2.6} fill="#FFFFFF" opacity={0.3 + 0.6 * Math.abs(Math.sin(frame / 40 + i))} />
           ))}
-          <g transform={`translate(890 300) rotate(${frame * 0.05})`}>
+          <g transform={`translate(975 60) rotate(${frame * 0.05})`}>
             <circle r={95} fill="#E8A35C" />
             <path d="M-95 -10 Q0 -30 95 -10 M-90 25 Q0 5 90 25" stroke="#C7783A" strokeWidth={12} fill="none" opacity={0.6} />
             <ellipse rx={170} ry={36} fill="none" stroke="#F6D7A7" strokeWidth={10} transform="rotate(-18)" />

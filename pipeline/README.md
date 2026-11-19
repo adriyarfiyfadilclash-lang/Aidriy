@@ -85,18 +85,21 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 
 ## Standar Adriy.project (style `adriy`)
 
-Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **adegan** (karakter, objek,
-infografis, diagram, perbandingan, tipografi kinetik, sinematik, angka) dengan presenter ADRI, kamera
-dan parallax tiga lapis, teks bertahap, sorotan stabilo, dan transisi sesuai konteks. Aturan lengkapnya
-ada di `styles/ADRIY-STANDARD.md`.
+Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **15 jenis adegan** (karakter, objek,
+infografis, diagram proses, perbandingan, tipografi kinetik, sinematik, angka, grafik batang, diagram
+lingkaran, linimasa, peta, diagram alir, potongan bagian dalam, persentase) dengan presenter ADRI berbadan
+penuh (12 pose, berjalan, memegang objek), kamera bertujuan, latar sesuai topik, dan transisi yang
+menyambung antaradegan. Aturan lengkapnya ada di `styles/ADRIY-STANDARD.md`.
 
 ```bash
 python3 pipeline/pipeline.py naskah.json --name video --style adriy --until scenes   # rencana + cek standar
 python3 pipeline/pipeline.py --preview-scenes --name video                           # gambar diam tiap adegan
 ```
 
-- Langkah `scenes` membuat `scenes.json` dan memeriksa standar: jenis adegan tidak berulang, ADRI minimal
-  tiap 3 adegan, durasi adegan 1,6-6,5 dtk, minimal 4 jenis adegan.
+- Langkah `scenes` membuat `scenes.json` dan memeriksa standar: jenis adegan dan transisi tidak berulang
+  berturut-turut, ADRI minimal tiap 3 adegan, durasi adegan 1,6-6,5 dtk, minimal 4 jenis adegan.
+- Perencana mengenali isi kalimat: dua tahun atau lebih jadi linimasa, nama kota jadi peta, beberapa angka
+  jadi grafik atau diagram lingkaran, "terdiri dari" jadi potongan, "jika ... lalu" jadi diagram alir.
 - Isi `"scene"` per kalimat di naskah untuk hasil terbaik (contoh: `contoh/naskah-adriy.json`).
 - ADRI saat ini versi vector 2D. Untuk versi semi-realistis, isi `character.assets` di `styles/adriy.json`
   dengan PNG transparan per pose.

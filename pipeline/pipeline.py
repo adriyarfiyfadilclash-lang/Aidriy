@@ -515,8 +515,71 @@ def step_sfx(ctx):
 
 # ---------------------------------------------------------------- perencana adegan (style dengan "engine": "adriy")
 SCENE_KICKER = {"karakter": "Adri.project", "objek": "Lihat lebih dekat", "infografis": "Poin penting", "diagram": "Langkahnya",
-                "perbandingan": "Bandingkan", "tipografi": "", "sinematik": "Ingat", "angka": "Faktanya"}
-DATA_TYPES = {"angka", "diagram", "perbandingan", "infografis"}
+                "perbandingan": "Bandingkan", "tipografi": "", "sinematik": "Ingat", "angka": "Faktanya",
+                "grafik": "Datanya", "lingkaran": "Porsinya", "timeline": "Lini masa", "peta": "Di mana?", "alur": "Alurnya",
+                "potongan": "Di dalamnya", "persentase": "Faktanya"}
+DATA_TYPES = {"angka", "diagram", "perbandingan", "infografis", "grafik", "lingkaran", "persentase", "alur"}
+# ADRI tampil di semua jenis adegan kecuali tipografi (sinematik: ADRI kecil berjalan melintas)
+WITH_ADRI = set(SCENE_KICKER) - {"tipografi"}
+
+# ---------------------------------------------------------------- topik -> latar (env)
+# Latar tetap berbasis navy brand, tapi aksennya mengikuti topik: tidak selalu biru yang sama.
+TOPIC_ENV = [
+    ("sejarah", r"\b(sejarah|abad|kerajaan|raja|perang|zaman|kuno|kolonial|merdeka|kemerdekaan|candi|prasasti|tahun 1\d{3})\b"),
+    ("teknologi", r"\b(teknologi|ai|aplikasi|internet|komputer|chip|robot|digital|software|data center|ponsel|hp|kode)\b"),
+    ("sains", r"\b(sel|atom|molekul|suhu|uap|reaksi|energi|kimia|fisika|biologi|ilmuwan|embun|tekanan|oksigen|virus|bakteri)\b"),
+    ("alam", r"\b(hutan|laut|gunung|hewan|cuaca|sungai|pohon|pantai|iklim|bumi|tanaman)\b"),
+    ("kota", r"\b(kota|jalan|mobil|gedung|macet|transportasi|kendaraan|motor|kereta)\b"),
+]
+
+def topic_env(text):
+    """Pilih latar dari kata kunci; None kalau tidak ada yang cocok."""
+    best = None
+    for env, pat in TOPIC_ENV:
+        n = len(re.findall(pat, text, re.I))
+        if n and (best is None or n > best[1]):
+            best = (env, n)
+    return best[0] if best else None
+
+# Koordinat kasar kota/pulau Indonesia di peta Adriy (u: barat-timur 0..1, v: utara-selatan 0..1)
+PLACES = {"aceh": (0.07, 0.22), "medan": (0.16, 0.36), "padang": (0.2, 0.55), "palembang": (0.3, 0.66), "lampung": (0.32, 0.72),
+          "jakarta": (0.36, 0.75), "bandung": (0.39, 0.78), "semarang": (0.45, 0.76), "yogyakarta": (0.45, 0.8), "jogja": (0.45, 0.8),
+          "surabaya": (0.52, 0.77), "bali": (0.6, 0.81), "lombok": (0.64, 0.81), "pontianak": (0.42, 0.45), "banjarmasin": (0.5, 0.6),
+          "balikpapan": (0.55, 0.5), "samarinda": (0.56, 0.45), "makassar": (0.66, 0.67), "palu": (0.66, 0.45), "manado": (0.72, 0.3),
+          "ambon": (0.78, 0.55), "ternate": (0.77, 0.35), "jayapura": (0.97, 0.52), "sumatra": (0.2, 0.5), "jawa": (0.45, 0.76),
+          "kalimantan": (0.48, 0.4), "sulawesi": (0.68, 0.45), "papua": (0.9, 0.55), "kupang": (0.72, 0.86), "nusa tenggara": (0.68, 0.82)}
+
+def find_places(text):
+    found = []
+    for name, (u, v) in PLACES.items():
+        m = re.search(rf"\b{name}\b", text, re.I)
+        if m and not any(f[0] == (u, v) for f in found):
+            found.append(((u, v), m.start(), name))
+    found.sort(key=lambda f: f[1])
+    return [{"u": uv[0], "v": uv[1], "label": n.title()} for uv, _, n in found][:5]
+
+def find_years(text):
+    """Pasangan (tahun, keterangan singkat) dari kalimat seperti 'Tahun 1920 ..., 1939 ...'."""
+    out = []
+    parts = re.split(r"(?=\b(?:1[5-9]\d{2}|20\d{2})\b)", text)
+    for part in parts:
+        m = re.match(r"(1[5-9]\d{2}|20\d{2})\b[\s,:-]*(.*)", part.strip())
+        if m:
+            label = re.sub(r"^(tahun|pada|di)\s+", "", m.group(2).strip(" ,.;"), flags=re.I)
+            out.append({"year": m.group(1), "label": _short_title(label, 5) if label else ""})
+    return out[:5]
+
+def find_numbers(text):
+    """Daftar angka berlabel ('napas 55 persen, baju basah 25 persen') untuk grafik/lingkaran."""
+    data = []
+    for m in re.finditer(r"([A-Za-zÀ-ÿ][\w\s-]{1,24}?)\s+(?:sekitar\s+|kira-kira\s+|±\s*)?(\d+(?:[.,]\d+)?)\s*(%|persen|detik|menit|jam|kali|juta|ribu)?", text):
+        label = re.sub(r"^(dan|lalu|serta|sedangkan|sementara|yaitu|adalah|sebesar|hanya|ada|dari)\s+", "", m.group(1).strip(), flags=re.I)
+        label = re.sub(r"(\s+(butuh|perlu|selama|sekitar|sebesar|hanya|mencapai|sampai|hingga|cuma|dari))+$", "", label, flags=re.I)
+        label = " ".join(label.split()[-2:])
+        label = re.sub(r"^(dari|dan|di|ke|yang|oleh)\s+", "", label, flags=re.I)
+        label = label[:1].upper() + label[1:]
+        data.append({"label": label, "value": float(m.group(2).replace(",", ".")), "unit": m.group(3) or ""})
+    return data[:5]
 
 
 ICON_WORDS = [("mobil", r"mobil|kendaraan|berkendara|kaca depan"), ("drop", r"air|uap|embun|kabut|lembap|lembab|hujan|basah"),
@@ -549,6 +612,7 @@ def plan_scenes(lines, duration, title, style):
     rules = style.get("scenes", {}).get("rules", {})
     overlap = style.get("motion", {}).get("overlap", 0.35)
     tones, cams = ["dark", "blue", "light"], ["push", "pan-right", "rise", "pan-left", "pull"]
+    style = dict(style, _topic_env=topic_env(title + " " + " ".join(ln["text"] for ln in lines)))
     plan = []
     for i, ln in enumerate(lines):
         text, given = ln["text"], dict(ln.get("scene") or {})
@@ -566,6 +630,19 @@ def plan_scenes(lines, duration, title, style):
             kind = "karakter"
         elif i == 0:
             kind = "karakter"
+        elif len(find_years(text)) >= 2:
+            kind = "timeline"  # sejarah: dua tahun atau lebih
+        elif len(find_places(text)) >= 2:
+            kind = "peta"
+        elif len(find_numbers(text)) >= 2:
+            nums = find_numbers(text)
+            kind = "lingkaran" if all(n["unit"] in ("%", "persen") for n in nums) and 80 <= sum(n["value"] for n in nums) <= 120 else "grafik"
+        elif re.search(r"\b(lapisan|terdiri dari|bagian dalam|di dalamnya|isi dari)\b", text, re.I) and len(_clauses(text)) >= 2:
+            kind = "potongan"
+        elif re.search(r"\b(jika|kalau|apabila)\b.*\b(maka|lakukan|ulangi)\b", text, re.I):
+            kind = "alur"
+        elif num and (num.group(2) or "").lower() in ("%", "persen") and not (plan and plan[-1]["type"] == "persentase"):
+            kind = "persentase" if sum(1 for p in plan if p["type"] == "angka") >= sum(1 for p in plan if p["type"] == "persentase") else "angka"
         elif num and not re.search(r"\b(langkah|pertama|kedua)\b", text, re.I):
             kind = "angka"
         elif (re.search(r"\b(langkah|pertama|kedua|ketiga)\b", text, re.I) and len(_clauses(text)) >= 2) or (
@@ -599,7 +676,7 @@ def plan_scenes(lines, duration, title, style):
             kind = next((k for k in pool if fits[k] and ok(k)), next((k for k in pool if fits[k] and k not in recent[-1:]), "karakter"))
         # aturan: ADRI muncul paling tidak tiap N adegan
         every = rules.get("characterEvery", 3)
-        with_adri = {"karakter", "objek", "infografis", "angka", "diagram"}
+        with_adri = WITH_ADRI
         if not given.get("type") and len(plan) >= every - 1 and all(p["type"] not in with_adri for p in plan[-(every - 1):]) and kind not in with_adri:
             kind = "karakter"
         sc = {"type": kind, "line": ln["index"], "text": text}
@@ -608,6 +685,32 @@ def plan_scenes(lines, duration, title, style):
             v = float(num.group(1).replace(",", "."))
             unit = {"persen": "%", "derajat": "°"}.get((num.group(2) or "").lower(), num.group(2) or "")
             sc.update({"value": v, "unit": unit, "max": 100 if unit == "%" else max(v * 1.25, 1), "label": _short_title(text, 9), "pose": "kaget"})
+        elif kind == "persentase" and num:
+            sc.update({"value": float(num.group(1).replace(",", ".")), "label": _short_title(text, 9), "pose": "angkat"})
+        elif kind == "timeline":
+            sc["events"] = find_years(text)
+        elif kind == "peta":
+            sc["pins"] = find_places(text)
+        elif kind in ("grafik", "lingkaran"):
+            nums = find_numbers(text)
+            sc["data"] = [{"label": n["label"], "value": n["value"]} for n in nums]
+            u = nums[0]["unit"] if nums else ""
+            sc["unit"] = {"persen": "%", "detik": "s"}.get(u, u)
+        elif kind == "potongan":
+            # "X terdiri dari A, B, dan C" -> lapisan A, B, C
+            m = re.search(r"\b(?:terdiri dari|lapisan(?:nya)?|bagian dalam(?:nya)?|di dalamnya ada|isi dari)\b[:\s]*(.*)", text, re.I)
+            body = m.group(1) if m else text
+            parts = [p.strip(" .") for p in re.split(r",|\bdan\b|\bserta\b", body) if p.strip(" .")]
+            sc["layers"] = [_short_title(p, 3) for p in parts][:4]
+        elif kind == "alur":
+            # "Jika <kondisi>, <aksi> lalu <aksi>" -> langkah aksi + percabangan "<kondisi>?"
+            m = re.search(r"\b(?:jika|kalau|apabila)\s+([^,]+),?\s*(.*)", text, re.I)
+            cond, rest = (m.group(1), m.group(2)) if m else ("Berhasil", text)
+            acts = [a.strip(" .") for a in re.split(r"\blalu\b|\bkemudian\b|\bdan\b|,", rest) if a.strip(" .")]
+            acts = [a for a in acts if not re.match(r"(ulangi|maka)$", a, re.I)] or ["Coba lagi"]
+            sc["steps"] = [_short_title(a, 3) for a in acts][:2] + ["Selesai"]
+            c = _short_title(cond, 3).rstrip(".?")
+            sc["decision"] = c[:1].upper() + c[1:] + "?"
         elif kind == "diagram":
             sc["steps"] = [c[:28] for c in _clauses(text)]
         elif kind == "infografis":
@@ -637,10 +740,29 @@ def plan_scenes(lines, duration, title, style):
         if hl:
             sc["highlight"] = hl
         # transisi menurut konteks
-        sc["transition"] = ("slide" if i == 0 or ln.get("topic") else "wipe" if kind in DATA_TYPES else
-                            "zoom" if (hl or text.strip().endswith("!")) else "fade")
+        # pindah topik = sapuan kamera, data = sapuan diagonal, penekanan = zoom, objek = iris dari objeknya,
+        # lanjutan = bentuk/gumpalan/dorong. Tidak pernah sama dengan transisi sebelumnya.
+        prev_tr = plan[-1]["transition"] if plan else None
+        wants = (["slide"] if i == 0 else ["whip", "slide"] if ln.get("topic") else
+                 ["iris", "shape"] if kind in ("objek", "potongan", "peta") else
+                 ["wipe", "shape", "push"] if kind in DATA_TYPES else
+                 ["zoom", "iris"] if (hl or text.strip().endswith("!")) else ["morph", "push", "shape", "wipe"])
+        rot = wants[i % len(wants):] + wants[:i % len(wants)]
+        sc["transition"] = next((t for t in rot if t != prev_tr), "push" if prev_tr != "push" else "morph")
         sc["tone"] = tones[i % 3]
         sc["camera"] = cams[i % len(cams)]
+        # latar: topik kalimat, atau topik video; data memakai latar data; diselingi umum/terang supaya bervariasi
+        env = topic_env(text) or style.get("_topic_env")
+        if kind in ("grafik", "angka", "persentase", "lingkaran") and not env:
+            env = "data"
+        if kind == "timeline":
+            env = "sejarah"
+        last_env = plan[-1].get("env") if plan else None
+        if not env or (env == last_env and kind != "timeline"):
+            pool = ["umum", "terang", "kota", "data"]
+            env = next(e for e in pool[i % 4:] + pool[:i % 4] if e != last_env)
+        sc["env"] = env
+        sc["tone"] = "light" if env == "terang" else ("blue" if env == "kota" else "dark")
         sc.update({k: v for k, v in given.items() if k != "type"})
         # waktu: dari awal kalimat (dikurangi tumpang tindih transisi) sampai awal kalimat berikutnya
         start = 0.0 if i == 0 else max(0.0, ln["start"] - overlap)
@@ -657,10 +779,12 @@ def check_standard(plan, style):
     for a, b in zip(plan, plan[1:]):
         if rules.get("noRepeatType", True) and a["type"] == b["type"]:
             issues.append(f"adegan {plan.index(b) + 1}: jenis '{b['type']}' sama dengan adegan sebelumnya")
-        if a["tone"] == b["tone"] and a["camera"] == b["camera"]:
-            issues.append(f"adegan {plan.index(b) + 1}: komposisi (latar + kamera) sama dengan sebelumnya")
+        if a.get("env", a["tone"]) == b.get("env", b["tone"]) and a["type"] == b["type"]:
+            issues.append(f"adegan {plan.index(b) + 1}: komposisi (latar + jenis) sama dengan sebelumnya")
+        if a["transition"] == b["transition"]:
+            issues.append(f"adegan {plan.index(b) + 1}: transisi '{b['transition']}' sama dengan sebelumnya")
     every = rules.get("characterEvery", 3)
-    with_adri = {"karakter", "objek", "infografis", "angka", "diagram"}
+    with_adri = WITH_ADRI
     run_ = 0
     for i, sc in enumerate(plan):
         run_ = 0 if sc["type"] in with_adri else run_ + 1

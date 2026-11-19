@@ -1,13 +1,19 @@
-import { createContext, useContext } from "react";
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, interpolate, staticFile } from "remotion";
 import "../promo/fonts"; // Plus Jakarta Sans
-import { Adri, type CharacterSpec, type Pose } from "./Adri";
+import { Adri, type CharacterSpec, type Look, type Pose, type PoseCue } from "./Adri";
+import { Camera, Layer, pathAt, type Shot } from "./camera";
+import { type Env, Environment, envLook } from "./environments";
+import { BarChart, barGeometry, Callout, CountUp, Cutaway, cutawayLayers, type Datum, Donut, type Event, FlowChart, type Ink, MapView, type Pin, Timeline, timelineX, Waffle } from "./infographics";
+import { ap, clamp, EASE, FLOOR, H, rand, SceneLength, sp, useScene, W } from "./motion";
+import { SceneFrame, type Transition } from "./transitions";
+import { Kicker, KineticTitle, Marker, SceneCaption } from "./typography";
 
-// Pustaka adegan Adriy.project. Aturan yang diterapkan di sini (lihat pipeline/styles/ADRIY-STANDARD.md):
-// - satu fokus visual per adegan, tiga lapis (belakang, tengah, depan) dengan parallax
-// - kamera selalu bergerak pelan (zoom/geser), masuk dan keluar halus, transisi sesuai konteks
-// - teks muncul bertahap, informasi penting disorot stabilo, subtitle maksimal 2 baris
-// - tiap jenis adegan punya komposisi sendiri, jadi tidak ada "bingkai" yang dipakai berulang
+// Pustaka adegan Adriy.project (lihat pipeline/styles/ADRIY-STANDARD.md).
+// Tiap adegan = SceneFrame (transisi masuk/keluar) > Camera (shot bertujuan) > Environment (latar topik)
+// > lapisan isi + ADRI berbadan penuh yang berdiri di lantai (FLOOR). Konten tidak pernah masuk ke
+// pita subtitle (CAPTION_BAND), dan tiap jenis adegan punya komposisi sendiri.
+
+export { Marker, SceneCaption, SceneLength };
 
 export type Brand = {
   palette: { bg: string; bg2: string; ink: string; accent: string; muted: string; primary: string; secondary: string; negative: string; paper: string };
@@ -19,13 +25,19 @@ export type Brand = {
 
 export type Token = { text: string; fromMs: number; toMs: number };
 
+export type SceneType =
+  | "karakter" | "objek" | "infografis" | "diagram" | "perbandingan" | "tipografi" | "sinematik" | "angka"
+  | "grafik" | "lingkaran" | "timeline" | "peta" | "alur" | "potongan" | "persentase";
+
 export type SceneData = {
-  type: "karakter" | "objek" | "infografis" | "diagram" | "perbandingan" | "tipografi" | "sinematik" | "angka";
+  type: SceneType;
   start: number; // detik, waktu film
   end: number;
-  transition: "slide" | "fade" | "zoom" | "wipe";
-  camera: "push" | "pull" | "pan-left" | "pan-right" | "rise";
+  transition: Transition | string;
+  camera?: string; // lama; kamera sekarang dipilih per jenis adegan, atau lewat `shot`
   tone: "dark" | "blue" | "light";
+  env?: Env; // latar topik; tanpa ini dipilih dari tone
+  shot?: Shot; // mengganti kamera bawaan adegan
   side?: "left" | "right";
   pose?: Pose;
   kicker?: string;
@@ -41,6 +53,12 @@ export type SceneData = {
   label?: string;
   max?: number;
   visual?: string; // gambar di public/
+  data?: Datum[]; // grafik, lingkaran
+  events?: Event[]; // timeline
+  pins?: Pin[]; // peta
+  decision?: string; // alur: pertanyaan percabangan
+  layers?: string[]; // potongan: lapisan dari luar ke dalam
+  outro?: boolean;
 };
 
 // ---------------------------------------------------------------- ikon (Material Icons, 24x24)
@@ -63,547 +81,597 @@ export const Glyph: React.FC<{ name: string; size: number; color: string }> = ({
 );
 const splitPoint = (p: string) => (p.includes(":") ? { icon: p.split(":")[0], label: p.slice(p.indexOf(":") + 1) } : { icon: "cek", label: p });
 
-// ---------------------------------------------------------------- helper waktu
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const EASE_IN = Easing.bezier(0.16, 1, 0.3, 1);
-const EASE_OUT = Easing.bezier(0.7, 0, 0.84, 0);
-// Durasi adegan (frame). useVideoConfig() memberi durasi seluruh video, bukan adegan, jadi
-// durasi adegan dikirim lewat context oleh AdriyVideo / pratinjau.
-export const SceneLength = createContext<number | null>(null);
-const useLocal = () => {
-  const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
-  const len = useContext(SceneLength);
-  return { frame, fps, dur: len ?? durationInFrames, t: frame / fps };
-};
-// progres masuk elemen yang muncul pada detik `at` di dalam adegan
-const useIn = (at: number, len = 0.5) => {
-  const { frame, fps } = useLocal();
-  return interpolate(frame, [at * fps, (at + len) * fps], [0, 1], { ...clamp, easing: EASE_IN });
+// ---------------------------------------------------------------- dasar adegan
+type SP = { s: SceneData; brand: Brand; caption: React.ReactNode };
+
+export const envOf = (s: SceneData): Env => s.env ?? ({ dark: "umum", blue: "kota", light: "terang" } as const)[s.tone];
+export const isLight = (s: SceneData, b: Brand) => envLook(envOf(s), b).light;
+const inkOf = (s: SceneData, b: Brand): Ink => {
+  const lk = envLook(envOf(s), b);
+  return { ink: lk.ink, accent: lk.accent, primary: b.palette.primary, secondary: b.palette.secondary, negative: b.palette.negative, bg: lk.light ? "#FFFFFF" : b.palette.bg, font: b.typography.family };
 };
 
-// ---------------------------------------------------------------- sorotan stabilo
-export const Marker: React.FC<{ children: React.ReactNode; at: number; brand: Brand }> = ({ children, at, brand }) => {
-  const p = useIn(at, 0.45);
-  return (
-    <span style={{ position: "relative", whiteSpace: "nowrap", color: p > 0.5 ? brand.palette.bg : undefined }}>
-      <span
-        style={{
-          position: "absolute",
-          left: -10,
-          right: -10,
-          top: "12%",
-          bottom: "4%",
-          background: brand.palette.accent,
-          borderRadius: 10,
-          transformOrigin: "left center",
-          scale: `${p} 1`,
-          zIndex: -1,
-          rotate: "-1deg",
-        }}
-      />
-      {children}
-    </span>
-  );
-};
-// teks dengan kata/frasa tertentu disorot
-const WithHighlight: React.FC<{ text: string; highlight?: string; at: number; brand: Brand }> = ({ text, highlight, at, brand }) => {
-  if (!highlight || !text.toLowerCase().includes(highlight.toLowerCase())) return <>{text}</>;
-  const i = text.toLowerCase().indexOf(highlight.toLowerCase());
-  return (
-    <>
-      {text.slice(0, i)}
-      <Marker at={at} brand={brand}>
-        {text.slice(i, i + highlight.length)}
-      </Marker>
-      {text.slice(i + highlight.length)}
-    </>
-  );
-};
+// Stage: transisi + kamera + latar + isi. `hud` tidak ikut kamera (judul pada adegan yang kameranya berpindah jauh).
+const Stage: React.FC<{ s: SceneData; brand: Brand; shot: Shot; focus?: [number, number]; caption: React.ReactNode; children: React.ReactNode; front?: React.ReactNode; hud?: React.ReactNode; floor?: boolean }> = ({ s, brand, shot, focus, caption, children, front, hud, floor }) => (
+  <SceneFrame enter={s.transition} focus={focus} accent={envLook(envOf(s), brand).accent} seed={Math.round(s.start * 7)}>
+    <Camera shot={s.shot ?? shot}>
+      <Environment env={envOf(s)} brand={brand} floor={floor} />
+      <Layer depth={1}>{children}</Layer>
+      {front && <Layer depth={1.12}>{front}</Layer>}
+    </Camera>
+    {hud && <AbsoluteFill style={{ fontFamily: brand.typography.family }}>{hud}</AbsoluteFill>}
+    {caption}
+  </SceneFrame>
+);
 
-// ---------------------------------------------------------------- lapisan + kamera + transisi
-const TONES = (b: Brand) => ({
-  dark: { bg: `radial-gradient(ellipse at 30% 20%, ${b.palette.bg2} 0%, ${b.palette.bg} 70%)`, ink: b.palette.ink, soft: b.palette.primary },
-  blue: { bg: `radial-gradient(ellipse at 70% 25%, #4D84FF 0%, ${b.palette.primary} 45%, #1F3FB8 100%)`, ink: "#FFFFFF", soft: "#FFFFFF" },
-  light: { bg: `radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, #EAF0FB 75%)`, ink: b.palette.bg, soft: b.palette.primary },
-});
-
-const Shell: React.FC<{ s: SceneData; brand: Brand; mid: React.ReactNode; front?: React.ReactNode; caption?: React.ReactNode }> = ({ s, brand, mid, front, caption }) => {
-  const { frame, fps, dur } = useLocal();
-  const m = brand.motion;
-  const tone = TONES(brand)[s.tone];
-  // kamera: bergerak pelan sepanjang adegan
-  const k = interpolate(frame, [0, dur], [0, 1], clamp);
-  const [z0, z1] = m.cameraZoom;
-  const cam = {
-    push: { z: z0 + (z1 - z0) * k, x: 0, y: 0 },
-    pull: { z: z1 - (z1 - z0) * k, x: 0, y: 0 },
-    "pan-left": { z: (z0 + z1) / 2, x: 40 - 80 * k, y: 0 },
-    "pan-right": { z: (z0 + z1) / 2, x: -40 + 80 * k, y: 0 },
-    rise: { z: (z0 + z1) / 2, x: 0, y: 30 - 60 * k },
-  }[s.camera];
-  const layer = (f: number): React.CSSProperties => ({
-    position: "absolute",
-    inset: 0,
-    scale: `${1 + (cam.z - 1) * f}`,
-    translate: `${cam.x * f}px ${cam.y * f}px`,
-  });
-  // transisi masuk/keluar menurut konteks
-  const e = interpolate(frame, [0, m.enter * fps], [0, 1], { ...clamp, easing: EASE_IN });
-  const x = interpolate(frame, [dur - m.exit * fps, dur], [0, 1], { ...clamp, easing: EASE_OUT });
-  const tr: React.CSSProperties =
-    s.transition === "slide"
-      ? { translate: `${(1 - e) * 100 - x * 25}% 0px`, opacity: 1 - x }
-      : s.transition === "zoom"
-        ? { scale: `${1.25 - 0.25 * e - 0.08 * x}`, opacity: Math.min(e * 1.4, 1) * (1 - x) }
-        : s.transition === "wipe"
-          ? { clipPath: `inset(0 ${(1 - e) * 100}% 0 0)`, opacity: 1 - x }
-          : { opacity: e * (1 - x) };
-  // partikel depan: titik-titik kecil yang melayang
-  const dots = Array.from({ length: 10 }, (_, i) => {
-    const r = Math.sin(i * 91.7) * 0.5 + 0.5;
-    return { x: (i * 113) % 1000 + 40, y: ((i * 197 + frame * (0.6 + r)) % 2000) - 40, s: 6 + r * 10, o: 0.15 + r * 0.25 };
-  });
-  return (
-    <AbsoluteFill style={{ ...tr, overflow: "hidden" }}>
-      <AbsoluteFill style={{ background: tone.bg }} />
-      {/* belakang: lingkaran lembut + grid titik */}
-      <div style={layer(brand.motion.parallax.back)}>
-        <div style={{ position: "absolute", width: 900, height: 900, left: -300, top: -200, borderRadius: "50%", background: `${tone.soft}22`, filter: "blur(40px)" }} />
-        <div style={{ position: "absolute", width: 700, height: 700, right: -260, bottom: 200, borderRadius: "50%", background: `${brand.palette.accent}1C`, filter: "blur(50px)" }} />
-        <AbsoluteFill style={{ backgroundImage: `radial-gradient(${tone.ink}1A 2px, transparent 2.5px)`, backgroundSize: "48px 48px" }} />
+// ADRI berbadan penuh, kaki di FLOOR. `walkFrom`: ADRI berjalan masuk dari x itu sebelum berpose.
+const ADRI_W = 500 / 1180;
+const Presenter: React.FC<{
+  brand: Brand; x: number; size: number; pose: Pose | PoseCue[]; facing: "left" | "right"; look?: Look; holding?: React.ReactNode;
+  walkFrom?: number; walkLen?: number; at?: number; seed: number; talking?: boolean; floor?: number;
+}> = ({ brand, x, size, pose, facing, look, holding, walkFrom, walkLen = 0.9, at = 0, seed, talking = true, floor = FLOOR }) => {
+  const { frame, fps } = useScene();
+  const cues: PoseCue[] = typeof pose === "string" ? [{ at: 0, pose }] : pose;
+  const top = floor - size * (1162 / 1180);
+  if (walkFrom !== undefined) {
+    const k = interpolate(frame, [at * fps, (at + walkLen) * fps], [0, 1], { ...clamp, easing: EASE.soft });
+    const cx = walkFrom + (x - walkFrom) * k;
+    const walkCues: PoseCue[] = [{ at: 0, pose: "jalan" }, ...cues.map((c) => ({ ...c, at: Math.max(c.at, at + walkLen) }))];
+    return (
+      <div style={{ position: "absolute", left: cx - (size * ADRI_W) / 2, top }}>
+        <Adri spec={brand.character} pose={walkCues} size={size} talking={talking && frame > (at + walkLen) * fps} facing={facing} look={look} holding={holding} seed={seed} />
       </div>
-      {/* tengah: isi adegan */}
-      <div style={layer(brand.motion.parallax.mid)}>{mid}</div>
-      {/* depan: partikel + elemen depan */}
-      <div style={layer(brand.motion.parallax.front)}>
-        {dots.map((d, i) => (
-          <div key={i} style={{ position: "absolute", left: d.x, top: d.y, width: d.s, height: d.s, borderRadius: "50%", background: tone.ink, opacity: d.o }} />
-        ))}
-        {front}
-      </div>
-      {caption}
-    </AbsoluteFill>
-  );
-};
-
-// ---------------------------------------------------------------- subtitle (maks. 2 baris, plat gelap tipis supaya terbaca di HP)
-export const SceneCaption: React.FC<{ tokens: Token[]; nowMs: number; brand: Brand; tone: SceneData["tone"] }> = ({ tokens, nowMs, brand, tone }) => {
-  if (!tokens.length) return null;
-  const light = tone === "light";
+    );
+  }
+  // muncul dengan spring (naik sedikit dari lantai)
+  const p = sp(frame, fps, at, { damping: 15 });
   return (
-    <div style={{ position: "absolute", left: 80, right: 80, bottom: 200, textAlign: "center" }}>
-      <span
-        style={{
-          fontFamily: brand.typography.family,
-          fontWeight: brand.typography.caption.weight,
-          fontSize: brand.typography.caption.size,
-          lineHeight: 1.45,
-          letterSpacing: -0.5,
-          color: light ? brand.palette.bg : "#FFFFFF",
-          background: light ? "rgba(255,255,255,0.86)" : "rgba(8,14,32,0.55)",
-          padding: "6px 22px",
-          borderRadius: 18,
-          boxDecorationBreak: "clone",
-          WebkitBoxDecorationBreak: "clone",
-        }}
-      >
-        {tokens.map((t, i) => {
-          const active = nowMs >= t.fromMs && nowMs < t.toMs;
-          return (
-            <span key={i} style={{ whiteSpace: "pre-wrap", color: active ? brand.palette.accent : undefined }}>
-              {t.text}
-            </span>
-          );
-        })}
-      </span>
+    <div style={{ position: "absolute", left: x - (size * ADRI_W) / 2, top, opacity: Math.min(1, p * 1.5), translate: `0px ${(1 - Math.min(p, 1)) * 60}px` }}>
+      <Adri spec={brand.character} pose={cues} size={size} talking={talking} facing={facing} look={look} holding={holding} seed={seed} />
     </div>
   );
 };
 
-// ---------------------------------------------------------------- teks judul bertahap
-const Kicker: React.FC<{ text?: string; at: number; color: string }> = ({ text, at, color }) => {
-  const p = useIn(at, 0.4);
-  if (!text) return null;
-  return <div style={{ fontWeight: 700, fontSize: 34, letterSpacing: 4, color, opacity: p, translate: `${(1 - p) * -30}px 0px`, textTransform: "uppercase" }}>{text}</div>;
-};
-const Heading: React.FC<{ s: SceneData; brand: Brand; at: number; size?: number; color: string; align?: "left" | "center" }> = ({ s, brand, at, size = 76, color, align = "left" }) => {
-  const p = useIn(at, 0.55);
-  if (!s.title) return null;
-  return (
-    <div style={{ fontWeight: 800, fontSize: size, lineHeight: 1.08, letterSpacing: -1.5, color, opacity: p, translate: `0px ${(1 - p) * 40}px`, textAlign: align }}>
-      <WithHighlight text={s.title} highlight={s.highlight} at={at + 0.5} brand={brand} />
+// Bentuk bukan-kartu untuk ikon: heksagon, belah ketupat, tetes, segitiga membulat (berganti-ganti).
+const SHAPES = [
+  "M50 2 L93 26 L93 74 L50 98 L7 74 L7 26 Z",
+  "M50 0 L100 50 L50 100 L0 50 Z",
+  "M50 0 C80 30 96 52 96 66 A46 34 0 0 1 4 66 C4 52 20 30 50 0 Z",
+  "M50 6 Q58 6 62 14 L96 80 Q100 92 88 94 L12 94 Q0 92 4 80 L38 14 Q42 6 50 6 Z",
+];
+const ShapeBadge: React.FC<{ i: number; size: number; color: string; icon: string; rot?: number }> = ({ i, size, color, icon, rot = 0 }) => (
+  <div style={{ position: "relative", width: size, height: size, rotate: `${rot}deg` }}>
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ position: "absolute", inset: 0, overflow: "visible", filter: "drop-shadow(0 14px 22px rgba(0,0,0,0.28))" }}>
+      <path d={SHAPES[i % SHAPES.length]} fill={color} />
+    </svg>
+    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", rotate: `${-rot}deg`, paddingTop: i % 4 >= 2 ? size * 0.16 : 0 }}>
+      <Glyph name={icon} size={size * 0.5} color="#FFFFFF" />
     </div>
-  );
-};
+  </div>
+);
 
-const VisualOrGlyph: React.FC<{ s: SceneData; brand: Brand; size: number; fallback?: string }> = ({ s, brand, size, fallback = "ide" }) =>
+const Visual: React.FC<{ s: SceneData; k: Ink; size: number }> = ({ s, k, size }) =>
   s.visual ? (
     <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
   ) : (
-    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${brand.palette.primary}, ${brand.palette.secondary})` }}>
-      <Glyph name={splitPoint(s.points?.[0] ?? `${fallback}:`).icon} size={size} color="#FFFFFF" />
+    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${k.primary}, ${k.secondary})` }}>
+      <Glyph name={splitPoint(s.points?.[0] ?? "ide:").icon} size={size} color="#FFFFFF" />
     </div>
   );
 
-// ================================================================ 8 jenis adegan
-type SP = { s: SceneData; brand: Brand; caption: React.ReactNode };
+const seedOf = (s: SceneData, n = 0) => Math.round(s.start * 10) + n;
 
-// 1. Karakter: ADRI besar di satu sisi, kartu topik di sisi lain
+const Head: React.FC<{ s: SceneData; brand: Brand; k: Ink; size?: number; top?: number; maxWidth?: number }> = ({ s, brand, k, size = 64, top = 150, maxWidth }) => (
+  <div style={{ position: "absolute", left: 80, right: 80, top, fontFamily: brand.typography.family }}>
+    <Kicker text={s.kicker} at={0.1} color={k.accent} />
+    <div style={{ height: 16 }} />
+    <KineticTitle text={s.title} highlight={s.highlight} at={0.2} brand={brand} size={size} color={k.ink} maxWidth={maxWidth} />
+  </div>
+);
+
+// ================================================================ 1. Karakter
+// ADRI berjalan masuk dan berbicara langsung ke penonton; judul besar di sisi berlawanan; kamera menekankan karakter.
 export const SceneKarakter: React.FC<SP> = ({ s, brand, caption }) => {
-  const { frame } = useLocal();
-  const tone = TONES(brand)[s.tone];
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
   const side = s.side ?? "right";
-  const enter = useIn(0.05, 0.7);
-  const card = useIn(0.35, 0.6);
+  const ax = side === "right" ? 770 : 310;
+  const pose = s.pose ?? "jelaskan";
+  const cues: PoseCue[] = [{ at: 0, pose }, ...(pose === "sapa" ? [{ at: 2.6, pose: "ajak" as Pose }] : pose === "jelaskan" ? [{ at: 2.8, pose: "angkat" as Pose }] : [])];
+  const textX = side === "right" ? 80 : 560;
+  const pts = (s.points ?? []).slice(0, 2);
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <>
-          <div style={{ position: "absolute", [side === "right" ? "left" : "right"]: 80, top: 260, width: 620, padding: 44, borderRadius: 40, background: s.tone === "light" ? "#FFFFFF" : "rgba(255,255,255,0.08)", border: `2px solid ${tone.ink}22`, opacity: card, translate: `0px ${(1 - card) * 60}px`, fontFamily: brand.typography.family }}>
-            <Kicker text={s.kicker} at={0.45} color={brand.palette.accent} />
-            <div style={{ height: 14 }} />
-            <Heading s={s} brand={brand} at={0.6} size={70} color={tone.ink} />
+    <Stage s={s} brand={brand} shot={{ kind: "emphasis", x: ax, y: 520 }} focus={[ax, 600]} caption={caption}
+      hud={<>
+      <div style={{ position: "absolute", left: textX, top: 260, width: 440, fontFamily: brand.typography.family }}>
+        <Kicker text={s.kicker} at={0.35} color={k.accent} />
+        <div style={{ height: 22 }} />
+        <KineticTitle text={s.title} highlight={s.highlight} at={0.5} brand={brand} size={s.title && s.title.length > 40 ? 70 : 84} color={k.ink} />
+        {s.outro && (
+          <div style={{ marginTop: 40, fontWeight: 800, fontSize: 40, letterSpacing: 6, color: k.ink, clipPath: `inset(0 ${(1 - ap(frame, fps, 1.4, 0.6)) * 100}% 0 0)` }}>
+            ADRIY<span style={{ color: k.accent }}>.</span>PROJECT
           </div>
-          {/* gelembung ikon kecil di sekitar ADRI: lingkungan yang "diajak bicara" */}
-          {(s.points ?? []).slice(0, 2).map((pt, i) => {
-            const pin = useIn(0.9 + i * 0.2, 0.5);
-            const { icon } = splitPoint(pt);
-            return (
-              <div key={i} style={{ position: "absolute", [side]: 560 + i * 60, top: 900 + i * 200, width: 130, height: 130, borderRadius: 40, background: i ? brand.palette.secondary : brand.palette.primary, display: "flex", alignItems: "center", justifyContent: "center", scale: `${pin}`, rotate: `${Math.sin(frame / 25 + i) * 6}deg`, boxShadow: "0 20px 40px rgba(0,0,0,0.25)" }}>
-                <Glyph name={icon} size={76} color="#FFFFFF" />
-              </div>
-            );
-          })}
-        </>
-      }
-      front={
-        <div style={{ position: "absolute", [side]: -40, bottom: 330, translate: `${(1 - enter) * (side === "right" ? 300 : -300)}px 0px` }}>
-          <Adri spec={brand.character} pose={s.pose ?? "jelaskan"} size={1050} talking facing={side === "right" ? "left" : "right"} seed={Math.round(s.start)} />
-        </div>
-      }
-    />
+        )}
+      </div>
+      </>}
+      front={<Presenter brand={brand} x={ax} size={1150} pose={cues} facing={side === "right" ? "left" : "right"} look="penonton" walkFrom={side === "right" ? 1350 : -270} walkLen={0.9} seed={seedOf(s)} />}
+    >
+      {/* pita diagonal di belakang judul */}
+      <div style={{ position: "absolute", left: side === "right" ? -120 : 480, top: 520, width: 760, height: 120, background: k.accent, opacity: 0.12, rotate: "-8deg", transformOrigin: "left", scale: `${ap(frame, fps, 0.3, 0.7)} 1` }} />
+      {/* ikon melayang, bukan kartu */}
+      {pts.map((pt, i) => {
+        const p = sp(frame, fps, 1.1 + i * 0.25, { damping: 12 });
+        const x = side === "right" ? 110 + i * 220 : 640 + i * 200;
+        return (
+          <div key={i} style={{ position: "absolute", left: x, top: 1000 + i * 130 + Math.sin(frame / 22 + i) * 12, scale: `${Math.min(1, p)}` }}>
+            <ShapeBadge i={i + seedOf(s)} size={150} color={i ? k.secondary : k.primary} icon={splitPoint(pt).icon} rot={Math.sin(frame / 30 + i) * 6} />
+          </div>
+        );
+      })}
+    </Stage>
   );
 };
 
-// 2. Objek: satu objek mengambang dengan label penunjuk; ADRI kecil menunjuk ke arahnya
+// ================================================================ 2. Objek
+// Objek besar dengan label penunjuk ke bagian-bagiannya; ADRI menyentuh objek; kamera mendekat ke objek.
 export const SceneObjek: React.FC<SP> = ({ s, brand, caption }) => {
-  const { frame } = useLocal();
-  const tone = TONES(brand)[s.tone];
-  const pop = useIn(0.1, 0.7);
-  const points = (s.points ?? []).slice(0, 3);
-  // titik pada objek -> label; label diletakkan di luar objek dan tidak di sudut kanan bawah (tempat ADRI)
-  const spots = [
-    { x: 380, y: 600, lx: 80, ly: 400, ax: 280, ay: 470 },
-    { x: 720, y: 640, lx: 600, ly: 380, ax: 800, ay: 450 },
-    { x: 400, y: 1020, lx: 80, ly: 1230, ax: 280, ay: 1230 },
-  ];
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const pop = sp(frame, fps, 0.15, { damping: 13 });
+  const pts = (s.points ?? []).slice(0, 3);
+  const O = { x: 650, y: 720, r: 250 };
+  const spots: [number, number][] = [[560, 600], [800, 700], [640, 880]];
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <>
-          <div style={{ position: "absolute", left: 80, right: 80, top: 130, fontFamily: brand.typography.family }}>
-            <Kicker text={s.kicker} at={0.2} color={brand.palette.accent} />
-            <Heading s={s} brand={brand} at={0.35} size={66} color={tone.ink} />
-          </div>
-          <div style={{ position: "absolute", left: 190, top: 470, width: 700, height: 700, borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%", overflow: "hidden", scale: `${0.7 + 0.3 * pop}`, opacity: pop, rotate: `${Math.sin(frame / 40) * 2}deg`, translate: `0px ${Math.sin(frame / 30) * 10}px`, boxShadow: "0 40px 80px rgba(0,0,0,0.35)" }}>
-            <VisualOrGlyph s={s} brand={brand} size={320} />
-          </div>
-          <svg width="1080" height="1920" style={{ position: "absolute", inset: 0, overflow: "visible" }}>
-            {points.map((_, i) => {
-              const p = useIn(0.8 + i * 0.35, 0.5);
-              const sp = spots[i];
-              return (
-                <g key={i} opacity={p}>
-                  <circle cx={sp.x} cy={sp.y} r={18 + 8 * Math.sin(frame / 8 + i)} fill="none" stroke={brand.palette.accent} strokeWidth={5} />
-                  <circle cx={sp.x} cy={sp.y} r={9} fill={brand.palette.accent} />
-                  <path d={`M${sp.x} ${sp.y} L${sp.ax} ${sp.ay}`} stroke={brand.palette.accent} strokeWidth={4} strokeDasharray="600" strokeDashoffset={600 * (1 - p)} />
-                </g>
-              );
-            })}
-          </svg>
-          {points.map((pt, i) => {
-            const p = useIn(1.0 + i * 0.35, 0.45);
-            const sp = spots[i];
-            return (
-              <div key={i} style={{ position: "absolute", left: sp.lx, top: sp.ly, width: 400, textAlign: "center", padding: "16px 24px", borderRadius: 20, background: s.tone === "light" ? "#FFFFFF" : brand.palette.paper, color: brand.palette.bg, fontFamily: brand.typography.family, fontWeight: 700, fontSize: 38, opacity: p, translate: `0px ${(1 - p) * 20}px`, boxShadow: "0 12px 30px rgba(0,0,0,0.25)" }}>
-                {splitPoint(pt).label}
-              </div>
-            );
-          })}
-        </>
-      }
-      front={
-        <div style={{ position: "absolute", right: -40, bottom: 330, opacity: useIn(0.5, 0.5) }}>
-          <Adri spec={brand.character} pose="tunjuk" size={500} talking facing="left" seed={Math.round(s.start)} />
-        </div>
-      }
-    />
+    <Stage s={s} brand={brand} shot={{ kind: "focus", x: O.x, y: O.y, at: 1.6, zoom: 1.08 }} focus={[O.x, O.y]} caption={caption} hud={<Head s={s} brand={brand} k={k} size={66} />}
+      front={<Presenter brand={brand} x={200} size={700} pose={[{ at: 0, pose: "lihat" }, { at: 1.0, pose: "sentuh" }]} facing="right" look="atas" at={0.4} seed={seedOf(s, 1)} />}
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
+        <ellipse cx={O.x} cy={O.y} rx={O.r + 70} ry={O.r * 0.5} fill="none" stroke={k.accent} strokeWidth={4} strokeDasharray="10 16" transform={`rotate(${-18 + frame * 0.2} ${O.x} ${O.y})`} opacity={0.5 * Math.min(1, pop)} />
+      </svg>
+      <div style={{ position: "absolute", left: O.x - O.r, top: O.y - O.r, width: O.r * 2, height: O.r * 2, borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%", overflow: "hidden", scale: `${0.6 + 0.4 * Math.min(pop, 1.05)}`, rotate: `${Math.sin(frame / 40) * 2}deg`, translate: `0px ${Math.sin(frame / 30) * 10}px`, boxShadow: "0 40px 80px rgba(0,0,0,0.35)" }}>
+        <Visual s={s} k={k} size={260} />
+      </div>
+      {pts.map((pt, i) => (
+        <Callout key={i} from={spots[i]} to={[460, 1110 + i * 100]} label={splitPoint(pt).label || splitPoint(pt).icon} at={1.0 + i * 0.4} k={k} width={540} align="right" />
+      ))}
+    </Stage>
   );
 };
 
-// 3. Infografis: poin-poin dengan ikon yang muncul bertahap, dihubungkan garis
+// ================================================================ 3. Infografis
+// Poin-poin naik di sepanjang jalur melengkung; ADRI melihat ke atas mengikuti; kamera naik.
 export const SceneInfografis: React.FC<SP> = ({ s, brand, caption }) => {
-  const tone = TONES(brand)[s.tone];
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
   const pts = (s.points ?? []).slice(0, 4);
-  const colors = [brand.palette.primary, brand.palette.secondary, brand.palette.accent, brand.palette.negative];
-  const line = useIn(0.6, 0.4 + pts.length * 0.3);
+  const n = Math.max(pts.length, 1);
+  const nodes = pts.map((_, i) => ({ x: 470 + Math.sin(i * 1.3) * 50, y: 1260 - i * (700 / Math.max(n - 1, 1)) }));
+  const cols = [k.primary, k.secondary, k.accent, k.negative];
+  const d = nodes.map((p, i) => (i ? `S${p.x - 120} ${p.y + 110} ${p.x} ${p.y}` : `M${p.x} ${p.y}`)).join(" ");
+  const draw = ap(frame, fps, 0.6, 0.4 + n * 0.35, EASE.inOut);
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <div style={{ position: "absolute", left: 80, right: 80, top: 150, fontFamily: brand.typography.family }}>
-          <Kicker text={s.kicker} at={0.15} color={brand.palette.accent} />
-          <Heading s={s} brand={brand} at={0.3} size={70} color={tone.ink} />
-          <div style={{ position: "relative", marginTop: 140 }}>
-            <div style={{ position: "absolute", left: 76, top: 80, width: 6, height: `${(pts.length - 1) * 250 * line}px`, background: `${tone.ink}33`, borderRadius: 3 }} />
-            {pts.map((pt, i) => {
-              const p = useIn(0.7 + i * 0.32, 0.5);
-              const { icon, label } = splitPoint(pt);
-              return (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 40, height: 250, opacity: p, translate: `${(1 - p) * 80}px 0px` }}>
-                  <div style={{ width: 158, height: 158, flex: "none", borderRadius: 46, background: colors[i % colors.length], display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 16px 30px rgba(0,0,0,0.22)" }}>
-                    <Glyph name={icon} size={92} color="#FFFFFF" />
-                  </div>
-                  <div style={{ fontWeight: 700, fontSize: 54, lineHeight: 1.15, color: tone.ink, maxWidth: 520 }}>{label}</div>
-                </div>
-              );
-            })}
+    <Stage s={s} brand={brand} shot={{ kind: "track", from: [540, 1100], to: [540, 760], zoom: 1.05 }} focus={[200, 1100]} caption={caption} hud={<Head s={s} brand={brand} k={k} size={68} />}
+      front={<Presenter brand={brand} x={180} size={760} pose={[{ at: 0, pose: "lihat" }, { at: 0.7 + n * 0.35, pose: "jelaskan" }]} facing="right" look="atas" at={0.3} seed={seedOf(s, 3)} />}
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
+        <path d={d} fill="none" stroke={k.ink} strokeOpacity={0.35} strokeWidth={6} strokeLinecap="round" pathLength={1} strokeDasharray={`${draw} 1`} />
+      </svg>
+      {pts.map((pt, i) => {
+        const p = sp(frame, fps, 0.7 + i * 0.35, { damping: 12 });
+        const { icon, label } = splitPoint(pt);
+        const t = ap(frame, fps, 0.85 + i * 0.35, 0.45);
+        return (
+          <div key={i}>
+            <div style={{ position: "absolute", left: nodes[i].x - 75, top: nodes[i].y - 75, scale: `${Math.min(1, p)}` }}>
+              <ShapeBadge i={i} size={150} color={cols[i % cols.length]} icon={icon} rot={Math.sin(frame / 28 + i) * 5} />
+            </div>
+            <div style={{ position: "absolute", left: nodes[i].x + 105, top: nodes[i].y - 50, width: 1000 - nodes[i].x - 105, fontFamily: brand.typography.family, fontWeight: 800, fontSize: 46, lineHeight: 1.12, color: k.ink, clipPath: `inset(0 ${(1 - t) * 100}% 0 0)` }}>
+              {label}
+            </div>
           </div>
-        </div>
-      }
-      front={
-        <div style={{ position: "absolute", right: -90, bottom: 330, opacity: useIn(0.4, 0.5) }}>
-          <Adri spec={brand.character} pose="jelaskan" size={620} talking facing="left" seed={Math.round(s.start) + 3} />
-        </div>
-      }
-    />
+        );
+      })}
+    </Stage>
   );
 };
 
-// 4. Diagram: langkah-langkah zig-zag dengan panah yang tergambar; langkah aktif disorot
+// ================================================================ 4. Diagram proses (horizontal)
+// Langkah-langkah berderet di panggung lebar; kamera bergeser ke tiap langkah; ADRI berjalan mengikutinya.
 export const SceneDiagram: React.FC<SP> = ({ s, brand, caption }) => {
-  const { frame, fps, dur } = useLocal();
-  const tone = TONES(brand)[s.tone];
-  const steps = (s.steps ?? []).slice(0, 4);
-  const gap = steps.length > 3 ? 280 : 360;
-  const pos = steps.map((_, i) => ({ x: i % 2 ? 540 : 120, y: 560 + i * gap }));
-  const active = Math.min(steps.length - 1, Math.floor((frame / Math.max(dur - 0.6 * fps, 1)) * steps.length));
+  const { frame, fps, sec } = useScene();
+  const k = inkOf(s, brand);
+  const steps = (s.steps ?? []).slice(0, 5);
+  const gap = 560;
+  const X = (i: number) => 600 + i * gap;
+  const Y = 900;
+  const t0 = 0.9;
+  const per = Math.max(1.0, (sec - t0 - 0.8) / Math.max(steps.length, 1));
+  const keys = steps.map((_, i) => ({ t: i === 0 ? 0 : t0 + i * per, x: X(i), y: 900, zoom: 1 }));
+  const cam = pathAt(keys, frame / fps);
+  const camPrev = pathAt(keys, (frame - 2) / fps);
+  const active = Math.max(0, keys.filter((kk) => frame / fps >= kk.t).length - 1);
+  const moving = Math.abs(cam.x - camPrev.x) > 1;
+  const span = Math.max(1, steps.length - 1) * gap;
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <>
-          <div style={{ position: "absolute", left: 80, right: 80, top: 150, fontFamily: brand.typography.family }}>
-            <Kicker text={s.kicker} at={0.1} color={brand.palette.accent} />
-            <Heading s={s} brand={brand} at={0.25} size={68} color={tone.ink} />
+    <Stage s={s} brand={brand} shot={{ kind: "path", keys }} focus={[X(0), Y]} caption={caption}
+      hud={
+        <div style={{ position: "absolute", left: 80, right: 80, top: 150 }}>
+          <Kicker text={s.kicker} at={0.1} color={k.accent} />
+          <div style={{ height: 16 }} />
+          <KineticTitle text={s.title} highlight={s.highlight} at={0.2} brand={brand} size={66} color={k.ink} />
+          <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
+            {steps.map((_, i) => (
+              <div key={i} style={{ height: 10, width: i === active ? 90 : 36, borderRadius: 5, background: i <= active ? k.accent : `${k.ink}33` }} />
+            ))}
           </div>
-          <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
-            <defs>
-              <marker id="panah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-                <path d="M0 0 L10 5 L0 10 Z" fill={brand.palette.accent} />
-              </marker>
-            </defs>
-            {pos.slice(1).map((b, i) => {
-              const a = pos[i];
-              const p = useIn(0.7 + i * 0.45, 0.45);
-              const d = `M${a.x + 210} ${a.y + 175} C${a.x + 210} ${a.y + 260}, ${b.x + 210} ${b.y - 90}, ${b.x + 210} ${b.y}`;
-              return <path key={i} d={d} stroke={brand.palette.accent} strokeWidth={6} fill="none" strokeDasharray="500" strokeDashoffset={500 * (1 - p)} markerEnd={p > 0.95 ? "url(#panah)" : undefined} />;
-            })}
-          </svg>
-          {steps.map((st, i) => {
-            const p = useIn(0.45 + i * 0.45, 0.45);
-            const on = i === active;
-            return (
-              <div key={i} style={{ position: "absolute", left: pos[i].x, top: pos[i].y, width: 420, minHeight: 170, padding: "26px 30px", borderRadius: 30, background: on ? brand.palette.accent : s.tone === "light" ? "#FFFFFF" : "rgba(255,255,255,0.1)", color: on ? brand.palette.bg : tone.ink, border: `2px solid ${on ? brand.palette.accent : tone.ink + "33"}`, fontFamily: brand.typography.family, opacity: p, scale: `${(0.8 + 0.2 * p) * (on ? 1.04 : 1)}`, boxShadow: on ? `0 20px 40px ${brand.palette.accent}55` : "none" }}>
-                <div style={{ fontWeight: 800, fontSize: 30, letterSpacing: 3, opacity: 0.8 }}>LANGKAH {i + 1}</div>
-                <div style={{ fontWeight: 700, fontSize: 48, lineHeight: 1.15, marginTop: 6 }}>{st}</div>
-              </div>
-            );
-          })}
-        </>
-      }
-      front={
-        // ADRI menunjuk ke langkah yang sedang dibahas
-        <div style={{ position: "absolute", right: -50, bottom: 330, opacity: useIn(0.6, 0.5) }}>
-          <Adri spec={brand.character} pose="tunjuk" size={480} talking facing="left" seed={Math.round(s.start) + 5} />
         </div>
       }
-    />
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+        <line x1={X(0) - 300} x2={X(steps.length - 1) + 300} y1={Y} y2={Y} stroke={k.ink} strokeOpacity={0.18} strokeWidth={26} strokeLinecap="round" />
+        <line x1={X(0)} x2={cam.x} y1={Y} y2={Y} stroke={k.accent} strokeWidth={12} strokeLinecap="round" />
+        {Array.from({ length: 30 }, (_, i) => {
+          const x = X(0) - 280 + ((i * 90 + frame * 6) % (span + 560));
+          return x < cam.x ? <circle key={i} cx={x} cy={Y} r={5} fill={k.bg} /> : null;
+        })}
+      </svg>
+      {steps.map((st, i) => {
+        const p = sp(frame, fps, i === 0 ? 0.4 : keys[i].t - 0.5, { damping: 13 });
+        const on = i === active;
+        return (
+          <div key={i} style={{ position: "absolute", left: X(i) - 220, top: Y - 360, width: 440, height: 320, fontFamily: brand.typography.family, textAlign: "center", scale: `${0.8 + 0.2 * Math.min(p, 1)}`, opacity: Math.min(1, p * 1.4) * (on ? 1 : 0.55) }}>
+            <div style={{ fontWeight: 800, fontSize: 150, lineHeight: 1, letterSpacing: -6, color: on ? k.accent : "transparent", WebkitTextStroke: on ? undefined : `4px ${k.ink}` }}>{i + 1}</div>
+            <div style={{ fontWeight: 800, fontSize: 50, lineHeight: 1.1, color: k.ink, marginTop: 14 }}>{st}</div>
+            <div style={{ position: "absolute", left: 210, top: 320, width: 20, height: 40, borderRadius: 10, background: on ? k.accent : `${k.ink}55` }} />
+          </div>
+        );
+      })}
+      {/* ADRI berjalan di lantai, selalu sedikit di kiri tengah layar */}
+      <Presenter brand={brand} x={cam.x - 250} size={480} pose={moving ? "jalan" : active % 2 ? "sentuh" : "tunjuk"} facing="right" look="atas" seed={seedOf(s, 5)} at={0.3} />
+    </Stage>
   );
 };
 
-// 5. Perbandingan: dua kolom, lencana VS, yang unggul disorot
+// ================================================================ 5. Perbandingan
+// Layar terbelah diagonal; dua sisi berbeda warna dan tinggi; ADRI di tengah berpikir lalu menunjuk pemenang.
 export const ScenePerbandingan: React.FC<SP> = ({ s, brand, caption }) => {
-  const { frame } = useLocal();
-  const tone = TONES(brand)[s.tone];
-  const vs = useIn(0.9, 0.3);
-  const col = (d: SceneData["left"], i: number) => {
-    const p = useIn(0.3 + i * 0.25, 0.55);
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const winRight = !!s.right?.win;
+  const split = ap(frame, fps, 0.1, 0.7, EASE.inOut);
+  const vs = sp(frame, fps, 0.9, { damping: 9, stiffness: 160 });
+  const side = (d: SceneData["left"], i: number) => {
     if (!d) return null;
-    const c = d.win ? brand.palette.secondary : brand.palette.negative;
+    const p = ap(frame, fps, 0.4 + i * 0.3, 0.6);
+    const c = d.win ? k.secondary : k.negative;
+    const left = i === 0;
     return (
-      <div style={{ flex: 1, minHeight: 620, display: "flex", flexDirection: "column", justifyContent: "center", padding: "40px 26px", borderRadius: 36, background: s.tone === "light" ? "#FFFFFF" : "rgba(255,255,255,0.08)", border: `4px solid ${d.win ? c : tone.ink + "22"}`, textAlign: "center", opacity: p, translate: `${(1 - p) * (i ? 120 : -120)}px 0px`, boxShadow: d.win ? `0 24px 50px ${c}44` : "none" }}>
-        <div style={{ fontWeight: 700, fontSize: 40, color: tone.ink, opacity: 0.85 }}>{d.label}</div>
-        <div style={{ fontWeight: 800, fontSize: d.value.length > 5 ? 92 : 120, letterSpacing: -3, color: c, margin: "28px 0", whiteSpace: "nowrap" }}>{d.value}</div>
-        {d.note && <div style={{ fontWeight: 600, fontSize: 36, lineHeight: 1.2, color: tone.ink, opacity: 0.8 }}>{d.note}</div>}
-        {d.win && <div style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 10, padding: "8px 20px", borderRadius: 30, background: c, color: "#fff", fontWeight: 800, fontSize: 30, scale: `${useIn(1.3, 0.35)}` }}><Glyph name="cek" size={34} color="#fff" /> LEBIH BAIK</div>}
+      <div style={{ position: "absolute", left: left ? 80 : 620, top: left ? 430 : 600, width: 380, textAlign: left ? "left" : "right", fontFamily: brand.typography.family, opacity: p, translate: `${(1 - p) * (left ? -80 : 80)}px 0px` }}>
+        <div style={{ fontWeight: 800, fontSize: 40, color: k.ink, opacity: 0.85 }}>{d.label}</div>
+        <div style={{ fontWeight: 800, fontSize: d.value.length > 5 ? 100 : 132, letterSpacing: -4, color: c, margin: "14px 0", whiteSpace: "nowrap" }}>{d.value}</div>
+        {d.note && <div style={{ fontWeight: 700, fontSize: 36, lineHeight: 1.2, color: k.ink, opacity: 0.85 }}>{d.note}</div>}
+        {d.win && (
+          <div style={{ marginTop: 22, display: "inline-flex", alignItems: "center", gap: 10, padding: "8px 20px", borderRadius: 30, background: c, color: "#fff", fontWeight: 800, fontSize: 30, scale: `${Math.min(1, sp(frame, fps, 1.8, { damping: 10 }))}` }}>
+            <Glyph name="cek" size={34} color="#fff" /> LEBIH BAIK
+          </div>
+        )}
       </div>
     );
   };
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <div style={{ position: "absolute", left: 70, right: 70, top: 160, fontFamily: brand.typography.family }}>
-          <Kicker text={s.kicker} at={0.1} color={brand.palette.accent} />
-          <Heading s={s} brand={brand} at={0.2} size={68} color={tone.ink} />
-          <div style={{ position: "relative", display: "flex", gap: 40, marginTop: 170 }}>
-            {col(s.left, 0)}
-            {col(s.right, 1)}
-            <div style={{ position: "absolute", left: "50%", top: "50%", translate: "-50% -50%", width: 140, height: 140, borderRadius: "50%", background: brand.palette.accent, color: brand.palette.bg, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 56, scale: `${interpolate(vs, [0, 1], [2.2, 1])}`, opacity: vs, rotate: `${Math.sin(frame / 20) * 4}deg`, boxShadow: "0 16px 40px rgba(0,0,0,0.35)" }}>VS</div>
-          </div>
-        </div>
-      }
-    />
+    <Stage s={s} brand={brand} shot={{ kind: "perspective", from: winRight ? "right" : "left" }} focus={[540, 900]} caption={caption} hud={<Head s={s} brand={brand} k={k} maxWidth={760} />}
+      front={<Presenter brand={brand} x={540} size={540} pose={[{ at: 0, pose: "pikir" }, { at: 1.8, pose: "tunjuk" }]} facing={winRight ? "right" : "left"} look="maju" at={0.5} seed={seedOf(s, 6)} />}
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
+        <polygon points={`0,0 ${620 * split},0 ${460 * split},${FLOOR} 0,${FLOOR}`} fill={s.left?.win ? k.secondary : k.negative} opacity={0.14} />
+        <polygon points={`${W},0 ${W - (W - 620) * split},0 ${W - (W - 460) * split},${FLOOR} ${W},${FLOOR}`} fill={winRight ? k.secondary : k.primary} opacity={0.16} />
+        <line x1={620} y1={0} x2={460} y2={FLOOR} stroke={k.accent} strokeWidth={6} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - split} />
+      </svg>
+      {side(s.left, 0)}
+      {side(s.right, 1)}
+      {/* lencana VS berbentuk belah ketupat di garis belah */}
+      <div style={{ position: "absolute", left: 540 - 72, top: 770, width: 144, height: 144, rotate: `${45 + Math.sin(frame / 20) * 3}deg`, background: k.accent, borderRadius: 26, scale: `${interpolate(Math.min(vs, 1.1), [0, 1], [2, 1])}`, opacity: Math.min(1, vs * 2), boxShadow: "0 16px 40px rgba(0,0,0,0.35)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ rotate: "-45deg", fontFamily: brand.typography.family, fontWeight: 800, fontSize: 52, color: k.bg }}>VS</div>
+      </div>
+    </Stage>
   );
 };
 
-// 6. Tipografi kinetik: kata-kata besar muncul satu per satu, kata kunci disorot
+// ================================================================ 6. Tipografi kinetik
 export const SceneTipografi: React.FC<SP> = ({ s, brand, caption }) => {
-  const tone = TONES(brand)[s.tone];
-  const words = (s.text ?? s.title ?? "").split(" ").filter(Boolean);
-  const hl = (s.highlight ?? "").toLowerCase();
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const text = s.text ?? s.title ?? "";
+  const n = text.split(" ").length;
+  const bar = ap(frame, fps, 0.1, 0.6);
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <div style={{ position: "absolute", left: 90, right: 90, top: 0, bottom: 260, fontFamily: brand.typography.family, display: "flex", flexWrap: "wrap", gap: "14px 26px", alignContent: "center" }}>
-          {words.map((w, i) => {
-            const p = useIn(0.15 + i * 0.12, 0.45);
-            const key = hl && hl.split(" ").includes(w.toLowerCase().replace(/[^\p{L}\p{N}-]/gu, ""));
-            // kata kunci paling besar, tapi tetap muat di lebar layar (900 px)
-            const fit = Math.floor(1500 / Math.max(w.length, 1));
-            const size = Math.min(key ? 150 : i % 3 === 0 ? 112 : 96, fit);
-            return (
-              <span key={i} style={{ fontWeight: 800, fontSize: size, lineHeight: 1.0, letterSpacing: -3, color: tone.ink, opacity: p, translate: `0px ${(1 - p) * 60}px`, rotate: `${(1 - p) * (i % 2 ? 6 : -6)}deg`, display: "inline-block" }}>
-                {key ? <Marker at={0.4 + i * 0.12} brand={brand}>{w}</Marker> : w}
-              </span>
-            );
-          })}
-        </div>
-      }
-    />
+    <Stage s={s} brand={brand} shot={{ kind: "drift" }} focus={[540, 800]} caption={caption} floor={false}>
+      <div style={{ position: "absolute", left: 60, top: 200, fontFamily: "Georgia, serif", fontSize: 420, lineHeight: 1, color: k.accent, opacity: 0.22 * bar, translate: `${(1 - bar) * -60}px 0px` }}>“</div>
+      <div style={{ position: "absolute", left: -40, top: 1250, width: 700 * bar, height: 26, background: k.accent, rotate: "-4deg", borderRadius: 13 }} />
+      <div style={{ position: "absolute", left: 90, right: 90, top: 300, bottom: 560, display: "flex", alignItems: "center", fontFamily: brand.typography.family }}>
+        <KineticTitle text={text} highlight={s.highlight} at={0.15} brand={brand} size={n > 7 ? 100 : 120} color={k.ink} />
+      </div>
+    </Stage>
   );
 };
 
-// 7. Sinematik: gambar penuh layar dengan bilah film, dorongan kamera, vignette
+// ================================================================ 7. Sinematik
+// Lanskap berlapis dengan parallax kuat; ADRI kecil berjalan melintas, kamera mengikutinya.
 export const SceneSinematik: React.FC<SP> = ({ s, brand, caption }) => {
-  const { frame, dur } = useLocal();
-  const bars = useIn(0, 0.6);
-  const k = frame / Math.max(dur, 1);
-  const kick = useIn(0.6, 0.6);
+  const { frame, fps, sec } = useScene();
+  const k = inkOf(s, brand);
+  const bars = ap(frame, fps, 0, 0.6);
+  const ax = interpolate(frame / fps, [0, sec], [260, 760]);
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <>
-          <AbsoluteFill style={{ scale: `${1.08 + 0.08 * k}`, translate: `${-30 + 60 * k}px 0px` }}>
-            {s.visual ? (
-              <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              // tanpa gambar: lanskap berlapis (gunung jauh, gunung dekat, kabut)
-              <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
+    <SceneFrame enter={s.transition} focus={[ax, 1300]} accent={k.accent} seed={seedOf(s)}>
+      <Camera shot={s.shot ?? { kind: "track", from: [260, 1200], to: [760, 1200], zoom: 1.12 }}>
+        {s.visual ? (
+          <Layer depth={0.4}>
+            <Img src={staticFile(s.visual)} style={{ width: "100%", height: "100%", objectFit: "cover", scale: "1.15" }} />
+          </Layer>
+        ) : (
+          <>
+            <AbsoluteFill>
+              <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
                 <defs>
                   <linearGradient id="langit" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stopColor="#FFB547" />
-                    <stop offset="0.45" stopColor="#FF7E6B" />
-                    <stop offset="1" stopColor="#2A1E5C" />
+                    <stop offset="0" stopColor="#2F6BFF" />
+                    <stop offset="0.5" stopColor="#FFB547" />
+                    <stop offset="1" stopColor="#FF7E6B" />
                   </linearGradient>
                 </defs>
-                <rect width="1080" height="1920" fill="url(#langit)" />
-                <circle cx="540" cy="820" r="170" fill="#FFE3A3" opacity="0.9" />
-                <path d="M0 1150 L220 900 L420 1080 L640 820 L860 1040 L1080 880 V1920 H0 Z" fill="#5B3A7A" opacity="0.9" />
-                <path d="M0 1350 L260 1120 L520 1300 L760 1100 L1080 1320 V1920 H0 Z" fill="#2E2152" />
+                <rect width={W} height={H} fill="url(#langit)" />
+                <circle cx={680} cy={900} r={160} fill="#FFE3A3" opacity={0.95} />
               </svg>
-            )}
-          </AbsoluteFill>
-          <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(0,0,0,0.65) 100%)" }} />
-          <div style={{ position: "absolute", left: 80, right: 80, top: 1180, fontFamily: brand.typography.family, opacity: kick, translate: `0px ${(1 - kick) * 30}px` }}>
-            <Kicker text={s.kicker} at={0.6} color={brand.palette.accent} />
-            <Heading s={s} brand={brand} at={0.75} size={84} color="#FFFFFF" />
-          </div>
-        </>
-      }
-      front={
-        <>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 150 * bars, background: "#000" }} />
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150 * bars, background: "#000" }} />
-        </>
-      }
-    />
+            </AbsoluteFill>
+            <Layer depth={0.3}>
+              <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+                <path d="M-200 1150 L120 900 L380 1060 L640 820 L900 1020 L1280 860 V1920 H-200 Z" fill="#5B3A7A" opacity={0.85} />
+              </svg>
+            </Layer>
+            <Layer depth={0.65}>
+              <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+                <path d="M-300 1330 C0 1200 300 1260 540 1320 C780 1380 1000 1250 1380 1300 V1920 H-300 Z" fill="#2E2152" />
+                {Array.from({ length: 9 }, (_, i) => (
+                  <path key={i} d={`M${-200 + i * 180} ${1300 - rand(i) * 40} l30 -120 l30 120 Z`} fill="#1E1640" />
+                ))}
+              </svg>
+            </Layer>
+          </>
+        )}
+        <Layer depth={1}>
+          <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+            <path d="M-400 1440 C0 1380 600 1400 1500 1440 V1920 H-400 Z" fill={s.visual ? "rgba(0,0,0,0.5)" : "#150F2E"} />
+          </svg>
+          <Presenter brand={brand} x={ax} size={420} pose="jalan" facing="right" look="maju" seed={seedOf(s, 7)} talking={false} />
+        </Layer>
+      </Camera>
+      <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,0.6) 100%)" }} />
+      {/* judul di langit, jauh dari pita subtitle */}
+      <div style={{ position: "absolute", left: 80, right: 80, top: 300, fontFamily: brand.typography.family }}>
+        <Kicker text={s.kicker} at={0.6} color={brand.palette.accent} />
+        <div style={{ height: 16 }} />
+        <KineticTitle text={s.title} highlight={s.highlight} at={0.75} brand={brand} size={88} color="#FFFFFF" />
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 150 * bars, background: "#000" }} />
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 150 * bars, background: "#000" }} />
+      {caption}
+    </SceneFrame>
   );
 };
 
-// 8. Angka: angka besar yang menghitung naik, cincin progres, ADRI bereaksi
+// ================================================================ 8. Angka
+// Angka raksasa menghitung naik dengan sinar di belakangnya; pengukur horizontal; ADRI terkejut.
 export const SceneAngka: React.FC<SP> = ({ s, brand, caption }) => {
-  const tone = TONES(brand)[s.tone];
-  const count = useIn(0.3, 1.4);
-  const value = (s.value ?? 0) * count;
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const v = s.value ?? 0;
   const max = s.max ?? 100;
-  const ring = Math.min(1, (s.value ?? 0) / max) * count;
-  const decimals = Number.isInteger(s.value ?? 0) ? 0 : 1;
-  const R = 300;
-  const C = 2 * Math.PI * R;
+  const g = ap(frame, fps, 0.4, 1.3) * Math.min(1, v / max);
+  const burst = ap(frame, fps, 1.5, 0.6);
   return (
-    <Shell
-      s={s}
-      brand={brand}
-      caption={caption}
-      mid={
-        <>
-          <div style={{ position: "absolute", left: 80, right: 80, top: 150, fontFamily: brand.typography.family, textAlign: "center" }}>
-            <Kicker text={s.kicker} at={0.1} color={brand.palette.accent} />
-          </div>
-          <svg width="1080" height="1080" style={{ position: "absolute", left: 0, top: 300 }}>
-            <circle cx="540" cy="540" r={R} fill="none" stroke={`${tone.ink}1F`} strokeWidth="44" />
-            <circle cx="540" cy="540" r={R} fill="none" stroke={brand.palette.accent} strokeWidth="44" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - ring)} transform="rotate(-90 540 540)" />
-          </svg>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 730, textAlign: "center", fontFamily: brand.typography.family, color: tone.ink }}>
-            <div style={{ fontWeight: 800, fontSize: 210, letterSpacing: -8, lineHeight: 1 }}>
-              {value.toLocaleString("id-ID", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
-              <span style={{ fontSize: 110, color: brand.palette.accent }}>{s.unit ?? ""}</span>
-            </div>
-            <div style={{ fontWeight: 700, fontSize: 48, lineHeight: 1.2, marginTop: 230, padding: "0 120px", opacity: useIn(1.2, 0.5) }}>{s.label}</div>
-          </div>
-        </>
-      }
-      front={
-        <div style={{ position: "absolute", left: -70, bottom: 330, opacity: useIn(1.4, 0.5), scale: `${0.9 + 0.1 * useIn(1.4, 0.5)}` }}>
-          <Adri spec={brand.character} pose={s.pose ?? "kaget"} size={560} facing="right" seed={Math.round(s.start) + 7} />
+    <Stage s={s} brand={brand} shot={{ kind: "focus", x: 330, y: 420, at: 0.3, zoom: 1.05 }} focus={[330, 400]} caption={caption}
+      hud={<div style={{ position: "absolute", left: 80, top: 150 }}><Kicker text={s.kicker} at={0.1} color={k.accent} /></div>}
+      front={<Presenter brand={brand} x={840} size={880} pose={[{ at: 0, pose: "lihat" }, { at: 1.6, pose: s.pose ?? "kaget" }]} facing="left" look="maju" at={0.2} seed={seedOf(s, 8)} talking={false} />}
+    >
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
+        {Array.from({ length: 14 }, (_, i) => {
+          const a = (i / 14) * Math.PI * 2 + frame / 200;
+          return <line key={i} x1={330 + Math.cos(a) * 170} y1={390 + Math.sin(a) * 170} x2={330 + Math.cos(a) * (170 + 220 * burst)} y2={390 + Math.sin(a) * (170 + 220 * burst)} stroke={k.accent} strokeWidth={10} strokeLinecap="round" opacity={0.35 * (1 - burst * 0.4)} />;
+        })}
+      </svg>
+      <div style={{ position: "absolute", left: 70, top: 250 }}>
+        <CountUp value={v} at={0.4} unit={s.unit} size={v >= 1000 ? 200 : 280} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
+      </div>
+      <div style={{ position: "absolute", left: 80, top: 620, width: 500, fontFamily: brand.typography.family }}>
+        <KineticTitle text={s.label} highlight={s.highlight} at={1.1} brand={brand} size={50} color={k.ink} marker={false} />
+      </div>
+      <div style={{ position: "absolute", left: 80, top: 920, width: 500 }}>
+        <div style={{ height: 34, borderRadius: 17, background: `${k.ink}1F`, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${g * 100}%`, borderRadius: 17, background: `linear-gradient(90deg, ${k.primary}, ${k.accent})` }} />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontFamily: brand.typography.family, fontWeight: 700, fontSize: 28, color: k.ink, opacity: 0.7 }}>
+          <span>0</span>
+          <span>{max.toLocaleString("id-ID", { maximumFractionDigits: 1 })}{s.unit}</span>
+        </div>
+      </div>
+    </Stage>
+  );
+};
+
+// ================================================================ 9. Grafik batang
+// Batang tumbuh dengan spring; batang tertinggi disorot; ADRI menyentuhnya; kamera mendekat ke sana.
+export const SceneGrafik: React.FC<SP> = ({ s, brand, caption }) => {
+  const k = inkOf(s, brand);
+  const data = (s.data ?? []).slice(0, 5);
+  const box = { x: 90, y: 560, w: 620, h: 640 };
+  const g = barGeometry(data.length ? data : [{ label: "", value: 1 }], box.x, box.y, box.w, box.h);
+  const hi = data.reduce((m, d, i) => (d.value > (data[m]?.value ?? -Infinity) ? i : m), 0);
+  const top = g[hi] ?? g[0];
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "focus", x: top.cx, y: top.top + 100, at: 2.0, zoom: 1.08 }} focus={[box.x + box.w / 2, box.y + box.h]} caption={caption} hud={<Head s={s} brand={brand} k={k} />}
+      front={<Presenter brand={brand} x={890} size={800} pose={[{ at: 0, pose: "lihat" }, { at: 1.6, pose: "sentuh" }]} facing="left" look="maju" at={0.3} seed={seedOf(s, 9)} />}
+    >
+      <BarChart data={data} x={box.x} y={box.y} w={box.w} h={box.h} at={0.4} k={k} unit={s.unit} focus={hi} />
+    </Stage>
+  );
+};
+
+// ================================================================ 10. Lingkaran (donat)
+// Kamera menjauh perlahan memperlihatkan keseluruhan; segmen tergambar satu per satu dengan label penunjuk.
+export const SceneLingkaran: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const data = (s.data ?? []).slice(0, 5);
+  const C = { x: 560, y: 720, r: 180 };
+  const top = data[0];
+  const total = data.reduce((a, d) => a + d.value, 0) || 1;
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "establish" }} focus={[C.x, C.y]} caption={caption} hud={<Head s={s} brand={brand} k={k} />}
+      front={<Presenter brand={brand} x={190} size={520} pose={[{ at: 0, pose: "jelaskan" }, { at: 2.2, pose: "tunjuk" }]} facing="right" look="penonton" at={0.5} seed={seedOf(s, 10)} />}
+    >
+      <Donut data={data} cx={C.x} cy={C.y} r={C.r} at={0.4} k={k} skipFirst />
+      {top && (
+        <div style={{ position: "absolute", left: C.x - 140, top: C.y - 66, width: 280, textAlign: "center", fontFamily: brand.typography.family, opacity: ap(frame, fps, 1.0, 0.5) }}>
+          <div style={{ fontWeight: 800, fontSize: 76, color: k.ink, lineHeight: 1 }}>{Math.round((top.value / total) * 100)}%</div>
+          <div style={{ fontWeight: 700, fontSize: 28, color: k.ink, opacity: 0.8, marginTop: 6 }}>{top.label}</div>
+        </div>
+      )}
+    </Stage>
+  );
+};
+
+// ================================================================ 11. Linimasa sejarah
+// Linimasa panjang; kamera menyusuri tiap peristiwa; ADRI berjalan di bawahnya.
+export const SceneTimeline: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps, sec } = useScene();
+  const sx: SceneData = { ...s, env: s.env ?? "sejarah" };
+  const k = inkOf(sx, brand);
+  const ev = (s.events ?? []).slice(0, 5);
+  const gap = 460;
+  const x0 = 540;
+  const Y = 1000;
+  const t0 = 0.8;
+  const per = Math.max(1.0, (sec - t0 - 0.8) / Math.max(ev.length, 1));
+  const keys = ev.map((_, i) => ({ t: i === 0 ? 0 : t0 + i * per, x: timelineX(i, x0, gap), y: Y, zoom: 1 }));
+  const cam = pathAt(keys.length ? keys : [{ t: 0, x: x0, y: Y }], frame / fps);
+  const prev = pathAt(keys.length ? keys : [{ t: 0, x: x0, y: Y }], (frame - 2) / fps);
+  const active = Math.max(0, keys.filter((kk) => frame / fps >= kk.t).length - 1);
+  const moving = Math.abs(cam.x - prev.x) > 1;
+  return (
+    <Stage s={sx} brand={brand} shot={{ kind: "path", keys }} focus={[x0, Y]} caption={caption}
+      hud={
+        <div style={{ position: "absolute", left: 80, right: 80, top: 150 }}>
+          <Kicker text={s.kicker} at={0.1} color={k.accent} />
+          <div style={{ height: 16 }} />
+          <KineticTitle text={s.title} highlight={s.highlight} at={0.2} brand={brand} size={64} color={k.ink} />
         </div>
       }
-    />
+    >
+      <Timeline events={ev} x0={x0} y={Y} gap={gap} at={0.3} k={k} active={active} />
+      <Presenter brand={brand} x={cam.x - 300} size={520} pose={moving ? "jalan" : "tunjuk"} facing="right" look="atas" seed={seedOf(s, 11)} at={0.2} />
+    </Stage>
   );
 };
 
-export const SCENES: Record<SceneData["type"], React.FC<SP>> = {
+// ================================================================ 12. Peta
+// Peta digambar dari kiri; pin jatuh; rute tergambar; kamera mendekat ke pin terakhir.
+export const ScenePeta: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps } = useScene();
+  const k = inkOf(s, brand);
+  const pins = (s.pins ?? []).slice(0, 5);
+  const box = { x: 40, y: 560, w: 1000 };
+  const lastPin = pins[pins.length - 1];
+  const last = lastPin ? [box.x + lastPin.u * box.w, box.y + lastPin.v * box.w * 0.42] : [540, 760];
+  const zoomAt = 1.2 + pins.length * 0.3;
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "path", keys: [{ t: 0, x: 540, y: 760, zoom: 1 }, { t: zoomAt + 0.8, x: 540 + (last[0] - 540) * 0.3, y: last[1], zoom: 1.1 }] }} focus={[540, 760]} caption={caption}
+      hud={
+        <>
+          <div style={{ position: "absolute", left: 80, right: 80, top: 150 }}>
+            <Kicker text={s.kicker} at={0.1} color={k.accent} />
+            <div style={{ height: 16 }} />
+            <KineticTitle text={s.title} highlight={s.highlight} at={0.2} brand={brand} size={64} color={k.ink} />
+          </div>
+          <div style={{ position: "absolute", left: 90, top: 1100, width: 90, height: 90, opacity: ap(frame, fps, 0.8, 0.5), rotate: `${Math.sin(frame / 30) * 8}deg` }}>
+            <svg width={90} height={90} viewBox="0 0 100 100" style={{ overflow: "visible" }}>
+              <path d="M50 4 L62 50 L50 96 L38 50 Z" fill={k.ink} opacity={0.4} />
+              <path d="M50 4 L62 50 L38 50 Z" fill={k.accent} />
+              <text x={50} y={-6} textAnchor="middle" fontSize={22} fontWeight={800} fill={k.ink}>U</text>
+            </svg>
+          </div>
+          <Presenter brand={brand} x={880} size={440} pose={[{ at: 0, pose: "lihat" }, { at: 1.4, pose: "tunjuk" }]} facing="left" look="maju" at={0.6} seed={seedOf(s, 12)} />
+        </>
+      }
+    >
+      <MapView pins={pins} x={box.x} y={box.y} w={box.w} at={0.4} k={k} />
+    </Stage>
+  );
+};
+
+// ================================================================ 13. Diagram alir
+export const SceneAlur: React.FC<SP> = ({ s, brand, caption }) => {
+  const { frame, fps, sec } = useScene();
+  const k = inkOf(s, brand);
+  const nodes = (s.steps ?? []).slice(0, 4);
+  const count = s.decision ? Math.max(1, nodes.length - 1) + 1 : nodes.length;
+  const active = Math.min(count - 1, Math.floor((frame / fps / Math.max(sec - 0.6, 1)) * count));
+  const flow = { x: 400, y: 500, w: 480, gap: 220 };
+  const ay = flow.y + active * flow.gap;
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "track", from: [640, flow.y + 200], to: [640, flow.y + (count - 1) * flow.gap], zoom: 1.03 }} focus={[640, flow.y]} caption={caption} hud={<Head s={s} brand={brand} k={k} size={62} />}
+      front={<Presenter brand={brand} x={160} size={460} pose={[{ at: 0, pose: "jelaskan" }, { at: 1.4, pose: "tunjuk" }]} facing="right" look="maju" at={0.4} seed={seedOf(s, 13)} />}
+    >
+      <FlowChart nodes={nodes} decision={s.decision} x={flow.x} y={flow.y} w={flow.w} gap={flow.gap} at={0.4} k={k} active={active} />
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
+        <path d={`M${flow.x - 30} ${ay} l-34 -22 v44 Z`} fill={k.accent} opacity={ap(frame, fps, 0.6, 0.3)} />
+      </svg>
+    </Stage>
+  );
+};
+
+// ================================================================ 14. Potongan (bagian dalam objek)
+export const ScenePotongan: React.FC<SP> = ({ s, brand, caption }) => {
+  const sx: SceneData = { ...s, env: s.env ?? "sains" };
+  const k = inkOf(sx, brand);
+  const layers = (s.layers ?? s.points?.map((p) => splitPoint(p).label) ?? []).slice(0, 4);
+  const O = { x: 620, y: 740, w: 560, h: 460 };
+  const g = cutawayLayers(layers.length, O.x, O.y, O.w, O.h);
+  return (
+    <Stage s={sx} brand={brand} shot={{ kind: "focus", x: O.x, y: O.y, at: 1.0, zoom: 1.06 }} focus={[O.x, O.y]} caption={caption} hud={<Head s={sx} brand={brand} k={k} size={62} />}
+      front={<Presenter brand={brand} x={170} size={580} pose={[{ at: 0, pose: "lihat" }, { at: 1.3, pose: "sentuh" }]} facing="right" look="maju" at={0.4} seed={seedOf(s, 14)} />}
+    >
+      <Cutaway layers={layers} cx={O.x} cy={O.y} w={O.w} h={O.h} at={0.3} k={k} />
+      {layers.map((l, i) => (
+        <Callout key={i} from={[g[i].cx + (g[i].w / 2) * 0.5, g[i].cy - (g[i].h / 2) * 0.45]} to={[430, 1080 + i * 88]} label={`${i + 1}. ${l}`} at={1.1 + i * 0.3} k={k} width={570} align="right" />
+      ))}
+    </Stage>
+  );
+};
+
+// ================================================================ 15. Persentase
+export const ScenePersentase: React.FC<SP> = ({ s, brand, caption }) => {
+  const k = inkOf(s, brand);
+  const v = Math.max(0, Math.min(100, s.value ?? 0));
+  return (
+    <Stage s={s} brand={brand} shot={{ kind: "focus", x: 380, y: 760, at: 1.6, zoom: 1.05 }} focus={[380, 780]} caption={caption}
+      front={<Presenter brand={brand} x={870} size={880} pose={[{ at: 0, pose: "jelaskan" }, { at: 1.8, pose: s.pose ?? "angkat" }]} facing="left" look="penonton" at={0.3} seed={seedOf(s, 15)} />}
+    >
+      <div style={{ position: "absolute", left: 80, top: 150 }}>
+        <Kicker text={s.kicker} at={0.1} color={k.accent} />
+      </div>
+      <div style={{ position: "absolute", left: 70, top: 210 }}>
+        <CountUp value={v} at={0.4} len={1.4} unit="%" size={220} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
+      </div>
+      <Waffle value={v} x={80} y={480} size={560} at={0.5} k={k} />
+      <div style={{ position: "absolute", left: 80, top: 1080, width: 560, fontFamily: brand.typography.family }}>
+        <KineticTitle text={s.label ?? s.title} highlight={s.highlight} at={1.2} brand={brand} size={46} color={k.ink} marker={false} />
+      </div>
+    </Stage>
+  );
+};
+
+export const SCENES: Record<SceneType, React.FC<SP>> = {
   karakter: SceneKarakter,
   objek: SceneObjek,
   infografis: SceneInfografis,
@@ -612,4 +680,11 @@ export const SCENES: Record<SceneData["type"], React.FC<SP>> = {
   tipografi: SceneTipografi,
   sinematik: SceneSinematik,
   angka: SceneAngka,
+  grafik: SceneGrafik,
+  lingkaran: SceneLingkaran,
+  timeline: SceneTimeline,
+  peta: ScenePeta,
+  alur: SceneAlur,
+  potongan: ScenePotongan,
+  persentase: ScenePersentase,
 };

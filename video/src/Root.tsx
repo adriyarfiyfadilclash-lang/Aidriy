@@ -4,6 +4,7 @@ import { PromoVideo } from "./promo/PromoVideo";
 import { calculatePromoVoiceMetadata, PromoVoice } from "./promo/PromoVoice";
 import { AdriyVideo, calculateAdriyMetadata } from "./adriy/AdriyVideo";
 import { calculateScenePreviewMetadata, ScenePreview } from "./adriy/ScenePreview";
+import { calculatePoseSheetMetadata, PoseSheet } from "./adriy/PoseSheet";
 import { calculateStylePreviewMetadata, calculateSubtitleMetadata, StylePreview, SubtitleVideo } from "./pipeline/SubtitleVideo";
 import { IntroScene } from "./promo/IntroScene";
 import { HookScene } from "./promo/HookScene";
@@ -51,13 +52,27 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{ media: "kaca-mobil", scenes: [], pages: [], meta: null, brand: null }}
         calculateMetadata={calculateAdriyMetadata}
       />
-      <Still
+      <Composition
         id="ScenePreview"
+        // Composition 30 fps (bukan Still, yang 1 fps) supaya waktu animasi dalam detik tetap benar
+        durationInFrames={1}
+        fps={30}
         component={ScenePreview}
         width={1080}
         height={1920}
-        defaultProps={{ type: "karakter", styleId: "adriy", brand: null, at: 2.6, caption: "Uap air berubah jadi titik-titik kecil di kaca" }}
+        defaultProps={{ type: "karakter", styleId: "adriy", brand: null, at: 2.6, caption: "Uap air berubah jadi titik-titik kecil di kaca", prev: null }}
         calculateMetadata={calculateScenePreviewMetadata}
+      />
+      <Composition
+        id="PoseSheet"
+        // Composition 30 fps (bukan Still, yang 1 fps) supaya waktu animasi dalam detik tetap benar
+        durationInFrames={1}
+        fps={30}
+        component={PoseSheet}
+        width={1080}
+        height={1920}
+        defaultProps={{ styleId: "adriy", brand: null, at: 1.5 }}
+        calculateMetadata={calculatePoseSheetMetadata}
       />
       <Still
         id="StylePreview"

@@ -1,6 +1,7 @@
 import { Audio } from "@remotion/media";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
-import { type Brand, SCENES, SceneCaption, type SceneData, SceneLength, type Token } from "./scenes";
+import { NextTransition } from "./motion";
+import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, type Token } from "./scenes";
 
 // Video Adriy.project dari data pipeline di public/media/<media>/:
 //   scenes.json (rencana adegan dari pipeline.py), pages.json (subtitle), meta.json, style.json (brand)
@@ -24,7 +25,10 @@ const SceneSlot: React.FC<{ s: SceneData; brand: Brand; pages: Page[] }> = ({ s,
   const page = pages.find((p) => nowMs >= p.startMs && nowMs < p.startMs + p.durationMs);
   const Comp = SCENES[s.type];
   // adegan tipografi sudah menampilkan kalimatnya sendiri: subtitle tidak dobel
-  const caption = s.type === "tipografi" || !page ? null : <SceneCaption tokens={page.tokens} nowMs={nowMs} brand={brand} tone={s.tone} />;
+  // subtitle selalu di pita bawah; disembunyikan bila sama dengan judul yang sedang tampil
+  const caption = s.type === "tipografi" || !page ? null : (
+    <SceneCaption tokens={page.tokens} nowMs={nowMs} brand={brand} tone={isLight(s, brand) ? "light" : "dark"} highlight={s.highlight} onScreen={s.title} />
+  );
   return <Comp s={s} brand={brand} caption={caption} />;
 };
 
@@ -37,9 +41,11 @@ export const AdriyVideo: React.FC<AdriyVideoProps> = ({ media, scenes, pages, br
         const len = Math.max(1, Math.round((s.end - s.start) * fps));
         return (
           <Sequence key={i} name={`${i + 1}. ${s.type}`} from={Math.round(s.start * fps)} durationInFrames={len}>
-            <SceneLength.Provider value={len}>
-              <SceneSlot s={s} brand={brand} pages={pages} />
-            </SceneLength.Provider>
+            <NextTransition.Provider value={scenes[i + 1]?.transition ?? null}>
+              <SceneLength.Provider value={len}>
+                <SceneSlot s={s} brand={brand} pages={pages} />
+              </SceneLength.Provider>
+            </NextTransition.Provider>
           </Sequence>
         );
       })}

@@ -1,7 +1,7 @@
 {
   "id": "adriy",
   "label": "Adriy.project (standar animasi edukasi)",
-  "description": "Gaya rumah Adriy.project: animasi edukasi 2D modern dengan presenter ADRI, adegan yang selalu berganti komposisi (karakter, objek, infografis, diagram, perbandingan, tipografi kinetik, sinematik, angka), kamera dan parallax tiga lapis, teks bertahap, dan sorotan pada informasi penting.",
+  "description": "Gaya rumah Adriy.project: animasi edukasi 2D modern dengan presenter ADRI, adegan yang selalu berganti komposisi (15 jenis, dari karakter dan objek sampai grafik, linimasa, peta, dan potongan objek), kamera bertujuan, latar sesuai topik, transisi yang menyambung, teks bertahap, dan sorotan pada informasi penting.",
   "engine": "adriy",
   "useFor": ["adriy", "adri.project", "edukasi", "penjelasan", "explainer", "explore more", "know more"],
   "font": { "family": "Plus Jakarta Sans", "file": "fonts/PlusJakartaSans-latin.woff2", "weight": 800 },
@@ -51,14 +51,16 @@
     "idle": { "breathe": 0.012, "float": 8 }
   },
   "transitions": {
-    "topik": "slide",
-    "lanjutan": "fade",
-    "penekanan": "zoom",
-    "data": "wipe",
-    "note": "topik = pindah pembahasan, lanjutan = kalimat masih satu bahasan, penekanan = informasi penting, data = adegan angka/diagram/perbandingan."
+    "topik": ["slide", "whip"],
+    "lanjutan": ["morph", "push", "shape", "wipe"],
+    "penekanan": ["zoom", "iris"],
+    "objek": ["iris", "shape"],
+    "data": ["wipe", "shape", "push"],
+    "note": "Adegan bertumpuk 0,7 dtk: adegan baru masuk di atas adegan lama, adegan lama keluar dengan gerak yang melengkapinya. Transisi tidak pernah sama dengan sebelumnya; fade hanya bila diminta di naskah."
   },
   "scenes": {
-    "types": ["karakter", "objek", "infografis", "diagram", "perbandingan", "tipografi", "sinematik", "angka"],
+    "types": ["karakter", "objek", "infografis", "diagram", "perbandingan", "tipografi", "sinematik", "angka", "grafik", "lingkaran", "timeline", "peta", "alur", "potongan", "persentase"],
+    "environments": ["umum", "sains", "sejarah", "teknologi", "alam", "kota", "data", "terang"],
     "rules": {
       "noRepeatType": true,
       "noRepeatLayout": true,

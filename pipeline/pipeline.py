@@ -711,12 +711,18 @@ def art_direct(plan, title, style=None):
         ("travel", r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b"),
     ]
     outfit = (tema or {}).get("outfit") or next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
-    # objek dari katalog (hewan yang disebut di kalimat): adegan ditampilkan sebagai objek dengan gambarnya
+    # objek dari katalog (hewan yang disebut di kalimat): adegan ditampilkan sebagai objek dengan gambarnya.
+    # Subjek video (hewan di judul) mengisi adegan objek pertama yang tidak menyebut hewan apa pun,
+    # supaya tidak tampil ikon umum padahal topiknya hewan (judul hanya muncul di pembuka).
+    subject = find_object(title)
     for i, p in enumerate(plan):
         g = p.get("_given", {})
         if p.get("visual") or "visual" in g or p.get("outro") or p["type"] in ("grafik", "lingkaran", "timeline", "peta", "perbandingan", "diagram", "alur", "angka", "persentase"):
             continue
         obj = find_object(p["text"])
+        if not obj and subject and p["type"] == "objek" and p.get("phase") not in ("pembuka", "kesimpulan", "penutup") \
+                and not any(q.get("visual") == subject["file"] for q in plan):
+            obj = subject
         if not obj:
             continue
         # tidak monoton: bukan di pembuka/kesimpulan, gambar yang sama tidak berurutan, maks. 2 kali per video
@@ -729,7 +735,7 @@ def art_direct(plan, title, style=None):
             p["type"] = "objek"
             p["layout"] = "presenter" if prev_full else ("full" if p.get("phase") == "menarik" or i == 0 else "presenter")
             p["family"] = family("objek", p["layout"])
-        if p.get("layout") == "closeup" or not any(":" in x and x.split(":", 1)[1].strip() for x in p.get("points", [])):
+        if obj is subject or p.get("layout") == "closeup" or not any(":" in x and x.split(":", 1)[1].strip() for x in p.get("points", [])):
             p["points"] = [f"bintang:{' '.join(obj['base'].split('_')[:2]).capitalize()}"]
     # objek tanpa gambar tepat setelah adegan objek: jadi wide shot lingkungan (tanpa ADRIY) supaya tidak berulang
     for i, p in enumerate(plan[1:], 1):
@@ -1663,6 +1669,14 @@ def main():
            "renderers": ["remotion", "hyperframes"] if args.renderer == "both" else [args.renderer]}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)
+    # judul dari naskah/meta yang sudah ada, supaya --from/--only (tanpa langkah fetch) memakai judul yang sama
+    if not args.title:
+        for f in ("script.json", "meta.json"):
+            try:
+                ctx["title"] = json.loads((ctx["dir"] / f).read_text(encoding="utf-8"))["title"] or ctx["title"]
+                break
+            except (OSError, ValueError, KeyError):
+                pass
     steps = [args.only] if args.only else STEPS[: STEPS.index(args.until) + 1] if args.until else STEPS
     t0 = time.time()
     for s in steps:

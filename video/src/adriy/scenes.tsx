@@ -856,12 +856,12 @@ const SceneKarakterDekat: React.FC<SP> = ({ s, brand, caption }) => {
     <Stage s={s} brand={brand} shot={{ kind: "emphasis", x: 380, y: 700 }} alt={{ kind: "reveal", x: 380, y: 700, from: 1.25 }} focus={[380, 700]} caption={caption}
       hud={
         <div style={{ position: "absolute", left: 520, right: 60, top: 470, scale: `${Math.min(1, bub)}`, transformOrigin: "0% 100%" }}>
-          {/* gelembung bicara dengan ekor ke arah kepala ADRI */}
-          <div style={{ position: "relative", background: k.bg, borderRadius: 44, padding: "36px 38px", boxShadow: "0 24px 60px rgba(11,21,48,0.18)" }}>
+          {/* gelembung bicara (selalu putih, teks gelap: terbaca di latar terang maupun gelap) dengan ekor ke arah kepala ADRI */}
+          <div style={{ position: "relative", background: "#FFFFFF", borderRadius: 44, padding: "36px 38px", boxShadow: "0 24px 60px rgba(11,21,48,0.18)" }}>
             <Kicker text={s.kicker} at={0.6} color={k.accent} />
             <div style={{ height: 12 }} />
             <KineticTitle text={s.title} highlight={s.highlight} at={0.7} brand={brand} size={Math.min(s.title && s.title.length > 36 ? 58 : 68, Math.floor(420 / (0.6 * Math.max(...(s.title ?? "").split(" ").map((x) => x.length), 1))))} color={brand.palette.bg} />
-            <svg width={80} height={60} style={{ position: "absolute", left: -46, bottom: 60 }}><path d="M80 0 L0 40 L80 60 Z" fill={k.bg} /></svg>
+            <svg width={80} height={60} style={{ position: "absolute", left: -46, bottom: 60 }}><path d="M80 0 L0 40 L80 60 Z" fill="#FFFFFF" /></svg>
           </div>
         </div>
       }

@@ -220,7 +220,7 @@ const Presenter: React.FC<{
   }
   return (
     <div data-qa="adri" {...(closeup ? { "data-qa-wide": "1" } : {})} style={{ position: "absolute", left, top, width: size * ADRI_W, height: size, opacity, translate: `0px ${rise}px` }}>
-      <Adri spec={brand.character} pose={allCues} size={size} talking={talk} facing={face} look={look} holding={holding} aim={aim} seed={seed} />
+      <Adri spec={brand.character} pose={allCues} size={size} talking={talk} facing={face} look={look} holding={holding} aim={aim} seed={seed} closeup={closeup} />
     </div>
   );
 };
@@ -848,7 +848,7 @@ const SceneKarakterDekat: React.FC<SP> = ({ s, brand, caption }) => {
           <div style={{ position: "relative", background: k.bg, borderRadius: 44, padding: "36px 38px", boxShadow: "0 24px 60px rgba(11,21,48,0.18)" }}>
             <Kicker text={s.kicker} at={0.6} color={k.accent} />
             <div style={{ height: 12 }} />
-            <KineticTitle text={s.title} highlight={s.highlight} at={0.7} brand={brand} size={s.title && s.title.length > 36 ? 58 : 68} color={brand.palette.bg} />
+            <KineticTitle text={s.title} highlight={s.highlight} at={0.7} brand={brand} size={Math.min(s.title && s.title.length > 36 ? 58 : 68, Math.floor(420 / (0.6 * Math.max(...(s.title ?? "").split(" ").map((x) => x.length), 1))))} color={brand.palette.bg} />
             <svg width={80} height={60} style={{ position: "absolute", left: -46, bottom: 60 }}><path d="M80 0 L0 40 L80 60 Z" fill={k.bg} /></svg>
           </div>
         </div>

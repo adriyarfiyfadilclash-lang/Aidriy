@@ -37,6 +37,7 @@
     "colors": { "skin": "#C68A62", "skinShade": "#A9714D", "hair": "#1B1716", "hoodie": "#1E2A55", "hoodieAccent": "#2F6BFF", "shirt": "#F5F7FB", "glasses": "#1B1716" },
     "poses": ["sapa", "jelaskan", "tunjuk", "pikir", "kaget", "senang"],
     "assets": {},
+    "imageSetPath": "adri/santai/peta.json",
     "assetsNote": "Isi dengan gambar PNG transparan per pose dari ilustrator untuk versi semi-realistis, misalnya {\"sapa\": \"adri/sapa.png\"} (relatif ke video/public/). Kalau kosong, dipakai ADRI versi vector."
   },
   "motion": {

@@ -30,6 +30,8 @@ export type PoseCue = { at: number; pose: Pose; look?: Look };
 export type CharacterSpec = {
   colors: { skin: string; skinShade: string; hair: string; hoodie: string; hoodieAccent: string; shirt: string; glasses: string; pants?: string; shoes?: string };
   assets?: Partial<Record<Pose, string>>;
+  // Set gambar semi-realistis (dibuat scripts/adri_aset.py, dimuat dari public/adri/<set>/peta.json bila ada)
+  imageSet?: ImageSet | null;
 };
 
 type Props = {
@@ -44,7 +46,69 @@ type Props = {
   seed?: number;
   outfit?: Outfit; // kostum tambahan sesuai style video; identitas (wajah, rambut, kacamata, hoodie) tetap
   rods?: boolean; // tongkat wayang (tuding) dari tiap tangan, untuk style wayang
+  closeup?: boolean; // bingkai dekat: pakai gambar close-up (bila ada set gambar)
 };
+
+// ADRI dari set gambar semi-realistis. Pose berganti dengan pudar silang; diam = napas + goyang halus;
+// berjalan = 4 bingkai langkah bergantian; close-up saat bicara = mulut bergerak (5 bentuk mulut) dan berkedip.
+// Gambar tidak dicerminkan (tulisan ADRIY di sweater akan terbalik).
+const AdriImage: React.FC<{ set: ImageSet; cues: PoseCue[]; size: number; talking: boolean; closeup: boolean; seed: number }> = ({ set, cues, size, talking, closeup, seed }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const lib = closeup ? set.dekat : set.penuh;
+  const idx = Math.max(0, cues.filter((c) => c.at * fps <= frame).length - 1);
+  const cur = cues[idx];
+  const prev = cues[Math.max(0, idx - 1)];
+  const fade = idx === 0 ? 1 : interpolate(frame, [cur.at * fps, cur.at * fps + 6], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const pickImg = (p: Pose): PoseImage | null => {
+    const list = lib[p] ?? lib.netral;
+    if (!list?.length) return null;
+    if (p === "jalan") return list[Math.floor((frame + seed) / 7) % list.length];
+    if (closeup && talking && p === "jelaskan" && set.bicara.length) {
+      // sinkron bibir sederhana: bentuk mulut berganti tiap 3-4 frame, pola tetap (deterministik)
+      const k = Math.floor((frame + seed) / 3.5);
+      return set.bicara[Math.floor(Math.abs(Math.sin(k * 12.9898 + 3.1)) * 43758.5) % set.bicara.length];
+    }
+    if (closeup && set.kedip && p === "jelaskan" && (frame + seed * 31) % 110 < 4) return set.kedip;
+    return list[0];
+  };
+  const walking = cur.pose === "jalan";
+  const breathe = 1 + Math.sin((frame + seed * 17) / 24) * 0.008;
+  const sway = walking ? -Math.abs(Math.sin((frame + seed) * 0.45)) * 8 : Math.sin((frame + seed * 7) / 40) * 1.2;
+  const layer = (img: PoseImage | null, op: number) => {
+    if (!img || op <= 0) return null;
+    // tinggi sebanding dengan tinggi baris lembar asal: orang berdiri ~ size, duduk/jongkok lebih pendek
+    // badan penuh: tinggi sebanding dengan tinggi baris lembar asal (berdiri ~ size, duduk/jongkok lebih pendek).
+    // close-up: lebar bahu sama untuk semua gambar (potongan lembar ekspresi dan bentuk mulut berbeda-beda)
+    const ww0 = closeup ? size * 0.5 : size * (img.h / (img.rowH * 0.97)) * (img.w / img.h);
+    const hh = ww0 * (img.h / img.w);
+    const ww = ww0;
+    const bottom = closeup ? size * 0.15 : 0; // close-up: dada di tepi bawah layar
+    return (
+      <Img src={staticFile(img.file)} style={{ position: "absolute", left: 250 * (size / 1180) - ww / 2, top: size - bottom - hh, width: ww, height: hh, opacity: op }} />
+    );
+  };
+  const a = pickImg(prev.pose);
+  const b = pickImg(cur.pose);
+  return (
+    <div style={{ position: "relative", width: 500 * (size / 1180), height: size, transformOrigin: "50% 100%", scale: `${breathe}`, rotate: `${sway * 0.15}deg`, translate: `0px ${walking ? sway : 0}px` }}>
+      {!closeup && <div style={{ position: "absolute", left: "50%", bottom: -size * 0.01, width: size * 0.28, height: size * 0.03, translate: "-50% 0", borderRadius: "50%", background: "rgba(0,0,0,0.18)" }} />}
+      {fade < 1 && layer(a, 1 - fade)}
+      {layer(b, fade)}
+    </div>
+  );
+};
+
+// Muat set gambar ADRIY bila ada (file tidak masuk git; tanpa file, ADRI vector yang dipakai).
+export const withImageSet = async <T extends { character: CharacterSpec & { imageSetPath?: string } }>(brand: T | null): Promise<T | null> => {
+  const path = brand?.character.imageSetPath;
+  if (!brand || !path) return brand;
+  const set = await fetch(staticFile(path)).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
+  return { ...brand, character: { ...brand.character, imageSet: set } };
+};
+
+export type PoseImage = { file: string; w: number; h: number; rowH: number };
+export type ImageSet = { penuh: Partial<Record<Pose | "netral", PoseImage[]>>; dekat: Partial<Record<Pose | "netral", PoseImage[]>>; bicara: PoseImage[]; kedip: PoseImage | null };
 
 // Kostum per style. Hanya menambah aksesori di atas ADRI, tidak mengganti wajah, rambut, atau hoodie.
 export type Outfit = "koki" | "pelancong" | "atlet" | "peci" | "bisnis";
@@ -161,7 +225,14 @@ const Leg: React.FC<{ x: number; a: number; c: CharacterSpec["colors"] }> = ({ x
   </g>
 );
 
-export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, aim, seed = 0, outfit, rods }) => {
+export const Adri: React.FC<Props> = (props) =>
+  props.spec.imageSet && !props.outfit && !props.rods ? (
+    <AdriImage set={props.spec.imageSet} cues={typeof props.pose === "string" ? [{ at: 0, pose: props.pose }] : [...props.pose].sort((x, y) => x.at - y.at)} size={props.size} talking={!!props.talking} closeup={!!props.closeup} seed={props.seed ?? 0} />
+  ) : (
+    <AdriVector {...props} />
+  );
+
+const AdriVector: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, aim, seed = 0, outfit, rods }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const cues: PoseCue[] = typeof pose === "string" ? [{ at: 0, pose }] : [...pose].sort((a, b) => a.at - b.at);

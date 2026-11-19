@@ -1,3 +1,4 @@
+import { withImageSet } from "./Adri";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile } from "remotion";
 import { NextTransition, OVERLAP, SceneIndex } from "./motion";
 import { QAProbe } from "./qa";
@@ -27,11 +28,11 @@ export const SAMPLES: Record<SceneType, Omit<SceneData, "start" | "end">> = {
 };
 
 // extra: menimpa isi contoh, misalnya {"layout": "full"} atau {"subtitle": "kinetik"} atau {"altShot": true}
-export type ScenePreviewProps = { type: SceneType; styleId: string; brand: Brand | null; at: number; caption: string; prev?: SceneType | null; extra?: Partial<SceneData> | null; qa?: boolean };
+export type ScenePreviewProps = { type: SceneType; styleId: string; brand: Brand | null; at: number; caption: string; prev?: SceneType | null; extra?: Partial<SceneData> | null; qa?: boolean; vector?: boolean };
 
 export const calculateScenePreviewMetadata: CalculateMetadataFunction<ScenePreviewProps> = async ({ props }) => {
   const brand = await fetch(staticFile(`styles/${props.styleId}.json`)).then((r) => (r.ok ? (r.json() as Promise<Brand>) : null)).catch(() => null);
-  return { props: { ...props, brand } };
+  return { props: { ...props, brand: props.vector ? brand : await withImageSet(brand) } };
 };
 
 const LEN = 180; // adegan contoh 6 detik

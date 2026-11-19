@@ -2,6 +2,7 @@ import { Audio } from "@remotion/media";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { NextTransition, SceneIndex, TransitionTiming } from "./motion";
 import { QAProbe } from "./qa";
+import { withImageSet } from "./Adri";
 import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, subtitleOf, subtitleZoneOf, type Token } from "./scenes";
 
 // Video Adriy.project dari data pipeline di public/media/<media>/:
@@ -16,7 +17,7 @@ export const calculateAdriyMetadata: CalculateMetadataFunction<AdriyVideoProps> 
   const base = `media/${props.media}`;
   const get = <T,>(f: string) => fetch(staticFile(`${base}/${f}`)).then((r) => r.json() as Promise<T>);
   const [scenes, pages, meta, brand] = await Promise.all([get<SceneData[]>("scenes.json"), get<Page[]>("pages.json"), get<Meta>("meta.json"), get<Brand>("style.json")]);
-  return { durationInFrames: Math.ceil(meta.duration * 30), props: { ...props, scenes, pages, meta, brand } };
+  return { durationInFrames: Math.ceil(meta.duration * 30), props: { ...props, scenes, pages, meta, brand: await withImageSet(brand) } };
 };
 
 const SceneSlot: React.FC<{ s: SceneData; brand: Brand; pages: Page[] }> = ({ s, brand, pages }) => {

@@ -1,3 +1,4 @@
+import { withImageSet } from "./Adri";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile } from "remotion";
 import { Adri, type Pose } from "./Adri";
 import type { Brand } from "./scenes";
@@ -6,11 +7,11 @@ import type { Brand } from "./scenes";
 const ALL: Pose[] = ["sapa", "jelaskan", "tunjuk", "angkat", "jalan", "kaget", "pikir", "pegang", "sentuh", "lihat", "ajak", "senang", "tanya", "banding", "rayakan", "simpulkan", "tunjukkan"];
 
 // detail: tampilkan beberapa pose sangat besar (tangan, wajah, rambut) untuk memeriksa bentuk
-export type PoseSheetProps = { styleId: string; brand: Brand | null; at: number; detail?: boolean };
+export type PoseSheetProps = { styleId: string; brand: Brand | null; at: number; detail?: boolean; vector?: boolean };
 
 export const calculatePoseSheetMetadata: CalculateMetadataFunction<PoseSheetProps> = async ({ props }) => {
   const brand = await fetch(staticFile(`styles/${props.styleId}.json`)).then((r) => (r.ok ? (r.json() as Promise<Brand>) : null)).catch(() => null);
-  return { props: { ...props, brand } };
+  return { props: { ...props, brand: props.vector ? brand : await withImageSet(brand) } };
 };
 
 const Box: React.FC = () => (

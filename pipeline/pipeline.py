@@ -1202,9 +1202,9 @@ def step_remotion(ctx):
     for f in ["meta.json", "pages.json", "audio.wav", "video.mp4", "style.json", "scenes.json"]:
         if (d / f).exists():
             shutil.copy2(d / f, pub / f)
-    log("remotion", "render komposisi Subtitle...")
     t = time.time()
     comp = "AdriyVideo" if style.get("engine") == "adriy" else "Subtitle"
+    log("remotion", f"render komposisi {comp}...")
     run(["npx", "remotion", "render", comp, str(out), f"--props={json.dumps({'media': name})}"], cwd=REMOTION)
     log("remotion", f"-> {out.name} ({time.time() - t:.0f} dtk)")
 

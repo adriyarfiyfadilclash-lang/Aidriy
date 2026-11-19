@@ -281,7 +281,7 @@ const SceneKarakterPresenter: React.FC<SP> = ({ s, brand, caption }) => {
       <div style={{ position: "absolute", left: textX, top: 260, width: 440, fontFamily: brand.typography.family }}>
         <Kicker text={s.kicker} at={0.35} color={k.accent} />
         <div style={{ height: 22 }} />
-        <KineticTitle text={s.title} highlight={s.highlight} at={0.5} brand={brand} size={s.title && s.title.length > 40 ? 70 : 84} color={k.ink} />
+        <KineticTitle text={s.title} highlight={s.highlight} at={0.5} brand={brand} size={Math.min(s.title && s.title.length > 40 ? 70 : 84, Math.floor(440 / (0.62 * Math.max(...(s.title ?? "").split(" ").map((x) => x.length), 1))))} color={k.ink} />
         {s.outro && (
           <div style={{ marginTop: 40, fontWeight: 800, fontSize: 40, letterSpacing: 6, color: k.ink, clipPath: `inset(0 ${(1 - ap(frame, fps, 1.4, 0.6)) * 100}% 0 0)` }}>
             ADRIY<span style={{ color: k.accent }}>.</span>PROJECT

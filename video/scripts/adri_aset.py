@@ -167,7 +167,7 @@ def main():
 
 
 # ---------------------------------------------------------------- peta pose -> gambar (dibaca video)
-PENUH = {"sapa": "lembar-01-4", "jelaskan": "lembar-09-2", "tunjuk": "lembar-09-4", "angkat": "lembar-07-4",
+PENUH = {"sapa": "lembar-01-4", "jelaskan": "lembar-09-2", "tunjuk": "lembar-09-4", "angkat": "lembar-08-3",
          "jalan": ["lembar-02-1", "lembar-02-2", "lembar-02-3", "lembar-02-4"], "kaget": "lembar-08-2", "pikir": "lembar-09-3",
          "pegang": "lembar-06-3", "sentuh": "lembar-09-2", "lihat": "lembar-04-1", "ajak": "lembar-09-4", "senang": "lembar-05-2",
          "tanya": "lembar-04-2", "banding": "lembar-09-2", "rayakan": "lembar-07-3", "simpulkan": "lembar-08-3",

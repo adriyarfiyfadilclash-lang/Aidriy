@@ -387,7 +387,8 @@ WHISPER_SCRIPT = r'''
 import json, sys
 from transformers import pipeline
 asr = pipeline("automatic-speech-recognition", model=sys.argv[3], device="cpu")
-kw = {"return_timestamps": "word"}
+# potongan 30 dtk satu per satu: audio panjang (2-3 menit) sekaligus menghabiskan memori
+kw = {"return_timestamps": "word", "chunk_length_s": 30, "batch_size": 1}
 if sys.argv[4]:
     kw["generate_kwargs"] = {"language": sys.argv[4], "task": "transcribe"}
 out = asr(sys.argv[1], **kw)
@@ -594,8 +595,9 @@ def step_montage(ctx):
 
 
 # accent dinaikkan (dulu -24/-12: rata-rata 9 dB di bawah suara, tidak terdengar jelas). Suara Adriy ±-16 LUFS.
-TARGET_DB = {"accent": -17, "underVoice": -30}
+TARGET_DB = {"accent": -17, "underVoice": -30}  # (lama, tidak dipakai lagi oleh step_sfx)
 PEAK_LIMIT_DB = {"accent": -5, "underVoice": -22}
+SFX_REL_DB = {"accent": -6, "underVoice": -16}  # bagian yang berbunyi, relatif terhadap suara Adriy saat bicara
 
 
 def step_sfx(ctx):
@@ -643,31 +645,51 @@ def step_sfx(ctx):
     mix[: len(voice)] += voice
     sfx_only = np.zeros_like(mix)  # untuk diperiksa dengan video/scripts/sfx_check.py
     cues = []
+
+    def rms_db(x, floor=0.003):
+        a = x[np.abs(x) > floor]
+        return 20 * np.log10(np.sqrt(np.mean(a ** 2)) + 1e-9) if len(a) else -99.0
+
+    voice_db = rms_db(voice, 0.01)  # kekerasan suara Adriy saat bicara
     for ln, c in cue_files:
         m = analyze(str(c["path"]))
         role = c.get("role", "accent")
-        gain = min(1, 10 ** ((TARGET_DB[role] - m["loudness"]) / 20), 10 ** ((PEAK_LIMIT_DB[role] - m["peakDb"]) / 20))
         x = decode(c["path"])[int(m["onset"] * SR):][: int(min(m["duration"], c.get("max", 99)) * SR)]
+        # target: bagian yang berbunyi SFX_REL_DB di bawah suara (accent) / lebih pelan untuk latar (underVoice);
+        # puncak maks. -3 dBFS; penguatan maks. +18 dB (banyak file pustaka direkam pelan)
+        target = voice_db + SFX_REL_DB[role]
+        gain = 10 ** ((target - rms_db(x)) / 20)
+        gain = min(gain, 8.0, 10 ** (-3 / 20) / (np.abs(x).max() + 1e-9))
         fade = min(len(x), int(0.15 * SR))
         x = x * gain
         x[-fade:] *= np.linspace(1, 0, fade)
-        if c.get("at", "start") == "start":  # di jeda sebelum kalimat: puncak 0,1 detik sebelum orang mulai bicara
-            t = ln["start"] - 0.25 - m["peak"]  # puncak di jeda, sebelum suara mulai (tidak tertutup kata pertama)
+        if c.get("at", "start") == "start":  # di jeda sebelum kalimat: puncak sebelum orang mulai bicara
+            t = ln["start"] - 0.25 - m["peak"]
         else:                                 # setelah kalimat selesai
             t = ln["end"] + 0.05
         i = int(t * SR)
         if i < 0:  # puncak terlalu jauh di dalam file untuk muat sebelum kalimat: potong bagian awalnya
             x, i = x[-i:], 0
-        mix[i:i + len(x)] += x[: len(mix) - i]
-        sfx_only[i:i + len(x)] += x[: len(mix) - i]
+        n = min(len(x), len(mix) - i)
+        x = x[:n]
+        mix[i:i + n] += x
+        sfx_only[i:i + n] += x
         cues.append({"line": ln["index"], "file": str(c["file"]), "role": role, "start": round(i / SR, 3), "alasan": c.get("alasan", "naskah"),
-                     "peak": round(t + m["peak"], 3), "gainDb": round(20 * np.log10(gain), 1)})
-    peak = float(np.abs(mix).max())
-    if peak > 0.98:
-        mix *= 0.98 / peak
+                     "peak": round(float(t + m["peak"]), 3), "gainDb": round(float(20 * np.log10(gain + 1e-9)), 1)})
+    # limiter singkat: hanya puncak yang melewati 0,95 diredam sesaat (jendela ±10 ms), bukan seluruh campuran
+    # (dulu seluruh campuran dikecilkan bila satu bunyi menabrak puncak suara -> sound effect tidak terdengar)
+    env = np.maximum(1.0, np.abs(mix) / 0.95)
+    w = int(0.01 * SR)
+    from numpy.lib.stride_tricks import sliding_window_view
+    pad = np.pad(env, (w, w), mode="edge")
+    env = sliding_window_view(pad, 2 * w + 1).max(axis=1)
+    kernel = np.hanning(2 * w + 1)
+    env = np.convolve(np.pad(env, (w, w), mode="edge"), kernel / kernel.sum(), mode="valid")
+    mix = mix / np.maximum(env, 1.0)
+    sfx_only = sfx_only / np.maximum(env, 1.0)
     end = max(len(voice), max(int((cu["start"] + 3) * SR) for cu in cues))
     encode(mix[:end], out)
-    encode(sfx_only[:end] * (0.98 / peak if peak > 0.98 else 1), d / "sfx-only.wav")
+    encode(sfx_only[:end], d / "sfx-only.wav")
     (d / "sfx-cues.json").write_text(json.dumps(cues, ensure_ascii=False, indent=1))
     log("sfx", f"{len(cues)} sound effect dicampur -> audio.wav (lihat sfx-cues.json)")
 

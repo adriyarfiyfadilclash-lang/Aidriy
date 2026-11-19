@@ -27,9 +27,9 @@
   },
   {
    "kata": "dapur|memasak|masak",
-   "cari": "kitchen|cooking|utensil",
+   "cari": "pot\\b|pan\\b|utensil|cutlery|cooking|stir|kitchen utensil",
    "maks": 2,
-   "utamakan": "kitchen"
+   "utamakan": "kitchen|cooking"
   },
   {
    "kata": "tetes|setetes|menetes|minum|segelas air|menuang",
@@ -119,7 +119,7 @@
    "maks": 1.5
   },
   {
-   "kata": "faktanya|benar|tepat|terbukti",
+   "kata": "faktanya|(?<!-)benar(?!-)|tepat sekali|terbukti",
    "cari": "correct|positive|success|confirm",
    "maks": 1.5
   },
@@ -135,8 +135,9 @@
   },
   {
    "kata": "tertawa|lucu|ngakak",
-   "cari": "laugh",
-   "maks": 2
+   "cari": "laugh|giggle",
+   "maks": 2,
+   "utamakan": "cartoon|giggle|short"
   },
   {
    "kata": "ngantuk|mengantuk|terkantuk|menguap karena",
@@ -151,7 +152,8 @@
   {
    "kata": "makan|menggigit|gigit|mengunyah|renyah",
    "cari": "crunch|bite|eat|chew",
-   "maks": 1.5
+   "maks": 1.5,
+   "utamakan": "crunch|bite|chew|eating"
   },
   {
    "kata": "tepuk tangan|penonton|sorak",

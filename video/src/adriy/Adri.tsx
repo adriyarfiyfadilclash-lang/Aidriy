@@ -73,38 +73,79 @@ const POSES: Record<Pose, PoseDef> = {
 
 const lerp = (a: number, b: number, w: number) => a + (b - a) * w;
 
-const RIM = "rgba(255,255,255,0.22)"; // garis cahaya tipis supaya siluet terbaca di latar biru tua
+const RIM = "rgba(255,255,255,0.22)"; // garis cahaya tipis supaya siluet terbaca di latar gelap
+const LINE = "#0B1230"; // garis tepi gelap: bentuk tetap jelas di latar terang
 
-const Arm: React.FC<{ x: number; y: number; a1: number; a2: number; c: CharacterSpec["colors"]; hand: Hand }> = ({ x, y, a1, a2, c, hand }) => (
-  <g transform={`translate(${x} ${y}) rotate(${a1})`}>
-    <rect x={-21} y={0} width={42} height={112} rx={21} fill={c.hoodie} stroke={RIM} strokeWidth={4} />
-    <g transform={`translate(0 102) rotate(${a2})`}>
-      <rect x={-19} y={0} width={38} height={98} rx={19} fill={c.hoodie} stroke={RIM} strokeWidth={4} />
-      <rect x={-19} y={80} width={38} height={14} rx={6} fill={c.hoodieAccent} />
-      <g transform="translate(0 110)">
-        {hand === "point" ? (
-          <>
-            <circle r={20} fill={c.skin} />
-            <rect x={-7} y={8} width={14} height={40} rx={7} fill={c.skin} />
-          </>
-        ) : hand === "fist" ? (
-          <circle r={20} fill={c.skin} />
-        ) : (
-          <>
-            <ellipse rx={22} ry={26} fill={c.skin} />
-            <rect x={16} y={-16} width={12} height={26} rx={6} fill={c.skin} transform="rotate(-30)" />
-          </>
-        )}
+// Arah lengan: 0 derajat = lurus ke bawah.
+const dir = (deg: number): [number, number] => [-Math.sin((deg * Math.PI) / 180), Math.cos((deg * Math.PI) / 180)];
+
+// Tangan digambar menyambung dari pergelangan (titik 0,0), menjulur ke +y. Telapak menutupi pangkal jari,
+// jadi jari dan ibu jari selalu menempel. `thumb` = sisi ibu jari (+1 kanan, -1 kiri).
+const HandShape: React.FC<{ hand: Hand; c: CharacterSpec["colors"]; thumb: 1 | -1 }> = ({ hand, c, thumb }) => {
+  const sk = { fill: c.skin, stroke: c.skinShade, strokeWidth: 3, strokeLinejoin: "round" as const };
+  const fingerX = (i: number) => (-15 + i * 9.6) * thumb;
+  if (hand === "fist")
+    return (
+      <g>
+        <rect x={-19} y={-4} width={38} height={38} rx={14} {...sk} />
+        {[0, 1, 2].map((i) => (
+          <path key={i} d={`M${(-10 + i * 9) * thumb} 22 v10`} stroke={c.skinShade} strokeWidth={3} strokeLinecap="round" />
+        ))}
+        {/* ibu jari melintang di depan kepalan */}
+        <rect x={-6} y={-6} width={12} height={24} rx={6} transform={`translate(${12 * thumb} 10) rotate(${55 * thumb})`} {...sk} />
+      </g>
+    );
+  const lens = hand === "point" ? [12, 12, 12, 46] : [22, 27, 26, 21];
+  return (
+    <g>
+      {/* jari (pangkalnya tertutup telapak) */}
+      {lens.map((L, i) => {
+        const x = fingerX(3 - i); // jari telunjuk paling dekat ibu jari
+        const curled = hand === "point" && i < 3;
+        return <rect key={i} x={x - 4.6} y={curled ? 20 : 22} width={9.2} height={curled ? 14 : L + 8} rx={4.6} {...sk} />;
+      })}
+      {/* ibu jari */}
+      <rect x={-5} y={-4} width={11} height={27} rx={5.5} transform={`translate(${15 * thumb} 6) rotate(${-38 * thumb})`} {...sk} />
+      {/* telapak */}
+      <rect x={-18} y={-4} width={36} height={33} rx={13} {...sk} />
+      {/* garis telapak tipis supaya terbaca sebagai tangan, bukan bulatan */}
+      <path d={`M${-9 * thumb} 14 q${9 * thumb} 6 ${16 * thumb} 0`} stroke={c.skinShade} strokeWidth={2.5} fill="none" strokeLinecap="round" opacity={0.7} />
+    </g>
+  );
+};
+
+// Lengan satu kesatuan: bahu -> siku -> pergelangan digambar sebagai satu garis tebal dengan sambungan bulat,
+// jadi tidak ada celah di siku; tangan ditempel tepat di ujung lengan dan sedikit masuk ke manset.
+const Arm: React.FC<{ x: number; y: number; a1: number; a2: number; c: CharacterSpec["colors"]; hand: Hand; thumb: 1 | -1 }> = ({ x, y, a1, a2, c, hand, thumb }) => {
+  const U = 104;
+  const F = 100;
+  const [d1x, d1y] = dir(a1);
+  const [d2x, d2y] = dir(a1 + a2);
+  const ex = x + U * d1x, ey = y + U * d1y;
+  const wx = ex + F * d2x, wy = ey + F * d2y;
+  const pts = `${x},${y} ${ex},${ey} ${wx},${wy}`;
+  const cuff = `${wx - 18 * d2x},${wy - 18 * d2y} ${wx},${wy}`;
+  return (
+    <g>
+      <polyline points={pts} fill="none" stroke={RIM} strokeWidth={50} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={pts} fill="none" stroke={LINE} strokeWidth={46} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={pts} fill="none" stroke={c.hoodie} strokeWidth={38} strokeLinecap="round" strokeLinejoin="round" />
+      {/* lipatan siku */}
+      <path d={`M${ex - 8 * d1y} ${ey + 8 * d1x} l${16 * d1y} ${-16 * d1x}`} stroke={LINE} strokeWidth={3} opacity={0.35} strokeLinecap="round" />
+      <polyline points={cuff} fill="none" stroke={c.hoodieAccent} strokeWidth={38} strokeLinecap="butt" />
+      <g transform={`translate(${wx} ${wy}) rotate(${a1 + a2}) scale(1.28)`}>
+        <HandShape hand={hand} c={c} thumb={thumb} />
       </g>
     </g>
-  </g>
-);
+  );
+};
 
+// Kaki: celana dari pinggul sampai pergelangan, sepatu menempel di ujungnya
 const Leg: React.FC<{ x: number; a: number; c: CharacterSpec["colors"] }> = ({ x, a, c }) => (
   <g transform={`translate(${x} 830) rotate(${a})`}>
-    <rect x={-27} y={0} width={54} height={300} rx={24} fill={c.pants ?? "#16203F"} />
-    <ellipse cx={a >= 0 ? 10 : -10} cy={316} rx={46} ry={22} fill={c.shoes ?? "#F5F7FB"} />
-    <rect x={-40} y={318} width={80} height={10} rx={5} fill={c.hoodieAccent} />
+    <rect x={-27} y={-10} width={54} height={318} rx={24} fill={c.pants ?? "#16203F"} stroke={LINE} strokeWidth={4} />
+    <path d={`M${a >= 0 ? -38 : -50} 330 Q${a >= 0 ? -36 : -48} 296 ${a >= 0 ? 4 : -8} 296 Q${a >= 0 ? 52 : 40} 296 ${a >= 0 ? 58 : 46} 330 Z`} fill={c.shoes ?? "#F5F7FB"} stroke={LINE} strokeWidth={4} strokeLinejoin="round" />
+    <rect x={a >= 0 ? -40 : -52} y={326} width={100} height={12} rx={6} fill={c.hoodieAccent} stroke={LINE} strokeWidth={3} />
   </g>
 );
 
@@ -202,22 +243,31 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
         <Leg x={288} a={legs[1]} c={c} />
         <g transform={`rotate(${lean + startle} 250 840) translate(250 840) scale(${breathe}) translate(-250 -840)`}>
           {/* badan */}
-          <path d="M120 840 C116 600 150 470 250 470 C350 470 384 600 380 840 Z" fill={c.hoodie} stroke={RIM} strokeWidth={4} />
+          <path d="M120 840 C116 600 150 470 250 470 C350 470 384 600 380 840 Z" fill={c.hoodie} stroke={LINE} strokeWidth={4} />
           <rect x={118} y={812} width={264} height={30} rx={14} fill={c.hoodieAccent} opacity={0.9} />
-          <path d="M205 470 L250 560 L295 470 Z" fill={c.shirt} />
           <path d="M158 820 C152 620 172 530 202 495" stroke={c.hoodieAccent} strokeWidth={10} fill="none" strokeLinecap="round" />
           <path d="M342 820 C348 620 328 530 298 495" stroke={c.hoodieAccent} strokeWidth={10} fill="none" strokeLinecap="round" />
           <circle cx={250} cy={650} r={30} fill={c.hoodieAccent} />
           <text x={250} y={662} textAnchor="middle" fontFamily="Plus Jakarta Sans" fontWeight={800} fontSize={34} fill="#fff">A</text>
-          <Arm x={146} y={505} a1={lA[0]} a2={lA[1]} c={c} hand={face.lh} />
-          {/* leher + kepala */}
-          <rect x={222} y={400} width={56} height={80} rx={24} fill={c.skinShade} />
+          <Arm x={146} y={505} a1={lA[0]} a2={lA[1]} c={c} hand={face.lh} thumb={-1} />
+          {/* leher: masuk ke kerah di bawah dan tertutup rahang di atas */}
+          <rect x={220} y={392} width={60} height={96} rx={24} fill={c.skin} stroke={c.skinShade} strokeWidth={3} />
+          <path d="M222 420 Q250 436 278 420" stroke={c.skinShade} strokeWidth={8} fill="none" opacity={0.5} />
+          <path d="M205 470 L250 556 L295 470" fill={c.shirt} stroke={LINE} strokeWidth={3} strokeLinejoin="round" />
           <g transform={`translate(0 ${headY}) rotate(${tilt} 250 330)`}>
-            <ellipse cx={250} cy={300} rx={112} ry={128} fill={c.skin} />
-            <ellipse cx={140 + turn * 0.6} cy={310} rx={18 - turn * 0.6} ry={26} fill={c.skinShade} />
-            <ellipse cx={360 + turn * 0.4} cy={310} rx={18 + turn * 0.3} ry={26} fill={c.skinShade} />
-            <path d="M132 270 C120 170 190 120 262 128 C330 132 380 170 372 262 C360 220 330 200 300 196 C320 176 300 160 270 168 C230 176 190 190 168 230 C156 246 146 262 132 270 Z" fill={c.hair} />
-            <path d="M258 128 C300 92 360 110 372 160 C340 140 300 140 270 160 Z" fill={c.hair} />
+            {/* telinga digambar dulu, lalu kepala menutupi sisi dalamnya: telinga menempel */}
+            {[[146 + turn * 0.6, -1], [354 + turn * 0.4, 1]].map(([ex, sd], i) => (
+              <g key={i}>
+                <ellipse cx={ex} cy={312} rx={22} ry={30} fill={c.skin} stroke={c.skinShade} strokeWidth={3} />
+                <path d={`M${ex + sd * 6} 296 q${sd * 8} 14 0 30`} stroke={c.skinShade} strokeWidth={4} fill="none" strokeLinecap="round" />
+              </g>
+            ))}
+            <ellipse cx={250} cy={300} rx={112} ry={128} fill={c.skin} stroke={c.skinShade} strokeWidth={4} />
+            {/* rambut: satu bentuk yang mengikuti kepala (pelipis sampai atas telinga), jambul menyatu di kanan atas */}
+            <path d="M140 300 C126 222 150 150 212 126 C254 110 304 110 338 130 C372 150 384 204 366 296 L354 300 C352 258 340 228 316 212 C282 198 232 200 204 214 C178 228 162 256 156 302 Z" fill={c.hair} />
+            {/* jambul menyamping ke kanan, menyatu dengan rambut (bukan sanggul di atas kepala) */}
+            <path d="M196 140 C228 108 296 96 350 116 C380 128 392 152 380 182 C360 162 322 152 280 156 C246 158 218 154 196 140 Z" fill={c.hair} />
+            <path d="M236 132 C270 114 318 114 350 128" stroke="#FFFFFF" strokeOpacity={0.16} strokeWidth={6} fill="none" strokeLinecap="round" />
             {/* fitur wajah bergeser ke arah pandang */}
             <g transform={`translate(${turn} 0)`}>
               <path d={`M190 ${252 - brow} Q212 ${242 - brow} 232 ${252 - brow}`} stroke={c.hair} strokeWidth={10} fill="none" strokeLinecap="round" />
@@ -229,14 +279,18 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
               <circle cx={211} cy={292} r={30} fill="none" stroke={c.glasses} strokeWidth={5} />
               <circle cx={289} cy={292} r={30} fill="none" stroke={c.glasses} strokeWidth={5} />
               <path d="M241 290 Q250 284 259 290" stroke={c.glasses} strokeWidth={5} fill="none" />
-              <path d="M250 312 Q258 334 246 340" stroke={c.skinShade} strokeWidth={6} fill="none" strokeLinecap="round" />
+              {/* gagang kacamata menyambung ke telinga */}
+              <path d={`M181 288 L${150 - turn * 0.4} 300`} stroke={c.glasses} strokeWidth={5} strokeLinecap="round" />
+              <path d={`M319 288 L${352 - turn * 0.6} 300`} stroke={c.glasses} strokeWidth={5} strokeLinecap="round" />
+              <path d="M250 300 Q262 330 254 342 Q246 348 238 342" fill={c.skinShade} opacity={0.35} />
+              <path d="M250 304 Q262 332 252 342 Q245 346 239 341" stroke={c.skinShade} strokeWidth={5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <g transform="translate(250 372)">{mouth}</g>
               <ellipse cx={184} cy={346} rx={16} ry={9} fill="#E0796B" opacity={0.35} />
               <ellipse cx={316} cy={346} rx={16} ry={9} fill="#E0796B" opacity={0.35} />
             </g>
           </g>
           {holding && <g transform={`translate(250 ${interpolate(w, [0, 1], [700, 640])})`}>{holding}</g>}
-          <Arm x={354} y={505} a1={rA[0] + wave} a2={rA[1]} c={c} hand={face.rh} />
+          <Arm x={354} y={505} a1={rA[0] + wave} a2={rA[1]} c={c} hand={face.rh} thumb={1} />
         </g>
       </g>
     </svg>

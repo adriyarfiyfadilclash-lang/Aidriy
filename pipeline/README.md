@@ -95,8 +95,8 @@ berlogo A); yang menyesuaikan adalah penyelesaian gambar dan kostumnya (`video/s
 | koran | hitam-putih seperti cetakan koran, digunting dengan pinggiran kertas |
 | horor | pucat, disinari bulan, terkejut |
 | anak | stiker berpinggiran putih, bergoyang |
-| sains | gambar garis putih cetak biru dengan garis ukur |
-| teknologi | hologram cyan berkedip |
+| sains | warna asli dengan garis tepi putih tipis ala cetak biru dan garis ukur |
+| teknologi | warna asli dengan garis tepi neon cyan |
 | bisnis | dasi dan kartu identitas |
 | kuliner | topi koki dan celemek, memegang piring |
 | travel | topi dan ransel |

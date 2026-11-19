@@ -7,8 +7,9 @@ import { Adri, ADRI_SPEC, type Outfit, type Pose } from "./Adri";
 //   cetak    koran: hitam-putih seperti cetakan koran, digunting dengan pinggiran kertas
 //   suram    horor: pucat, disinari bulan, ekspresi terkejut
 //   stiker   anak: pinggiran putih tebal seperti stiker, bergoyang
-//   garis    sains: gambar garis putih cetak biru, dengan garis ukur
-//   hologram teknologi: garis cyan menyala, berkedip halus
+//   garis    sains: warna asli dengan garis tepi putih tipis ala cetak biru, dan garis ukur
+//   hologram teknologi: warna asli dengan garis tepi neon cyan
+//   (karakter selalu padat dan berwarna asli: versi garis/tembus pandang terlihat seperti hantu)
 //   komik    olahraga: garis tepi hitam tebal dan bayangan kuning
 //   cahaya   religi: pendar keemasan lembut
 //   biasa    bersih, bisnis, kuliner, travel: warna asli dengan bayangan lembut
@@ -40,8 +41,8 @@ const FILTER: Record<Finish, string> = {
   cetak: "url(#adri-cetak) drop-shadow(0 16px 16px rgba(0,0,0,0.35))",
   suram: "saturate(0.2) brightness(0.62) contrast(1.15) drop-shadow(0 0 30px rgba(170,190,255,0.35))",
   stiker: `saturate(1.15) ${white(7)} drop-shadow(0 18px 16px rgba(43,35,80,0.28))`,
-  garis: "url(#adri-garis)",
-  hologram: "url(#adri-holo) drop-shadow(0 0 14px rgba(34,230,255,0.8))",
+  garis: `${[`3px 0 0 #EAF4FF`, `-3px 0 0 #EAF4FF`, `0 3px 0 #EAF4FF`, `0 -3px 0 #EAF4FF`].map((d) => `drop-shadow(${d})`).join(" ")} drop-shadow(0 18px 20px rgba(0,0,0,0.35))`,
+  hologram: `${[`3px 0 0 #22E6FF`, `-3px 0 0 #22E6FF`, `0 3px 0 #22E6FF`, `0 -3px 0 #22E6FF`].map((d) => `drop-shadow(${d})`).join(" ")} drop-shadow(0 0 16px rgba(34,230,255,0.55))`,
   komik: `${black(5)} drop-shadow(12px 12px 0 #FFE600)`,
   cahaya: "drop-shadow(0 0 30px rgba(243,201,122,0.6)) drop-shadow(0 20px 24px rgba(0,0,0,0.25))",
   biasa: "drop-shadow(0 22px 26px rgba(0,0,0,0.3))",
@@ -115,7 +116,7 @@ export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; 
   const bob = look.finish === "stiker" ? Math.sin(frame / 12) * 10 : look.finish === "siluet" ? Math.sin(frame / 30) * 6 : 0;
   const rot = (look.tilt ?? 0) + (look.finish === "stiker" ? Math.sin(frame / 18) * 2 : look.finish === "siluet" ? Math.sin(frame / 40) * 1.5 : 0);
   const jx = look.finish === "suram" ? Math.sin(frame * 1.7) * 1.5 : 0;
-  const op = look.finish === "hologram" ? 0.82 + 0.12 * Math.abs(Math.sin(frame / 5)) : 1;
+  const op = 1;
   return (
     <>
       <Filters />
@@ -125,10 +126,6 @@ export const StyleCharacter: React.FC<{ styleId: string; captionBottom: number; 
       >
         <Adri spec={ADRI_SPEC} pose={look.pose} size={size} talking facing={look.facing ?? "right"} seed={seed} outfit={look.outfit} rods={look.finish === "siluet"} holding={look.holding === "piring" ? <Piring /> : undefined} />
       </div>
-      {look.finish === "hologram" && (
-        // garis pindai hologram di atas karakter
-        <div style={{ position: "absolute", left: 540 - w / 2 - 40, width: w + 80, top: floor - size, height: size, backgroundImage: "repeating-linear-gradient(0deg, rgba(34,230,255,0.10) 0 2px, transparent 2px 7px)", pointerEvents: "none" }} />
-      )}
       {look.finish === "garis" && (
         // garis ukur tinggi seperti gambar teknik
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>

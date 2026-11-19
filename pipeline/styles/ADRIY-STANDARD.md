@@ -329,6 +329,9 @@ Kolom alur, adegan, dan sound effect adalah panduan menulis naskah. Sound effect
 | 15 | Fakta mengejutkan | adriy | malam | Fakta mengejutkan | pancing dengan fakta paling mengejutkan → konteks → bukti/angka → fakta penutup yang lebih mengejutkan | karakter kaget, angka besar, lingkungan, objek | transition-boom, transition-impact, human-gasp, instrument-suspense-music |
 | 16 | Fakta unik: kok bisa? | adriy | dari topik | Kok bisa? | fakta unik dalam satu kalimat → kok bisa? (pertanyaan) → penjelasan → kesimpulan singkat | karakter tanya, objek, diagram/potongan, minimalis | human-cartoon, pop, game-magic, transition-swoosh |
 
+Musik latar per tema (kolom `musik`): ceria, penasaran, epik, tenang, tegang, lucu, futuristik, inspiratif; masing-masing
+6 lagu Mixkit di `video/public/mixkit/musik/<mood>/` (daftar dan durasi di `musik.json`). Belum dipasang otomatis.
+
 Catatan:
 - Adegan perbandingan (VS) baru terbentuk bila kalimatnya memakai "sedangkan"/"dibanding"/"vs" **dan** ada angka.
   Untuk mitos versus fakta dan A versus B, tulis kalimat seperti "Mitosnya 8 jam, sedangkan faktanya 7 jam".

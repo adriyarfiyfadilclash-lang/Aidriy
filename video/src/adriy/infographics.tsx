@@ -13,14 +13,15 @@ const dec = (v: number) => (Number.isInteger(v) ? 0 : 1);
 const series = (k: Ink) => [k.primary, k.secondary, k.accent, k.negative, "#A98BFF", "#5CE1FF"];
 
 // ================================================================ Angka menghitung naik
-export const CountUp: React.FC<{ value: number; at: number; len?: number; unit?: string; size: number; color: string; unitColor?: string; font: string }> = ({ value, at, len = 1.3, unit, size, color, unitColor, font }) => {
+// tahun: tanpa pemisah ribuan (2002, bukan 2.002)
+export const CountUp: React.FC<{ value: number; at: number; len?: number; unit?: string; size: number; color: string; unitColor?: string; font: string; tahun?: boolean }> = ({ value, at, len = 1.3, unit, size, color, unitColor, font, tahun }) => {
   const { frame, fps } = useScene();
   const p = ap(frame, fps, at, len, EASE.out);
   // sedikit membesar saat selesai menghitung (penekanan)
   const pop = sp(frame, fps, at + len - 0.1, { damping: 9, stiffness: 160 });
   return (
     <div data-qa="text" style={{ fontFamily: font, fontWeight: 800, fontSize: size, letterSpacing: -size * 0.04, lineHeight: 1, color, scale: `${1 + 0.06 * Math.sin(Math.min(1, pop) * Math.PI)}`, whiteSpace: "nowrap" }}>
-      {fmt(value * p, dec(value))}
+      {tahun ? String(Math.round(value * p)) : fmt(value * p, dec(value))}
       {unit && <span style={{ fontSize: size * 0.5, color: unitColor ?? color, marginLeft: size * 0.04 }}>{unit}</span>}
     </div>
   );

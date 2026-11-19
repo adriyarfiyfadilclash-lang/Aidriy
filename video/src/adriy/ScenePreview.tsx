@@ -2,7 +2,7 @@ import { withImageSet } from "./Adri";
 import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile } from "remotion";
 import { NextTransition, OVERLAP, SceneIndex } from "./motion";
 import { QAProbe } from "./qa";
-import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, type SceneType, subtitleOf, subtitleZoneOf } from "./scenes";
+import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, type SceneType, subtitleOf, subtitleZoneOf, OutfitCtx } from "./scenes";
 
 // Gambar pratinjau satu jenis adegan (bukan video). Contoh isi memakai topik "Kenapa kaca mobil
 // berkabut?" supaya semua jenis adegan bisa dibandingkan. Dengan `prev`, yang digambar adalah titik
@@ -47,7 +47,9 @@ const One: React.FC<{ type: SceneType; brand: Brand; caption: string; next?: str
     <NextTransition.Provider value={next ?? null}>
       <SceneIndex.Provider value={index}>
         <SceneLength.Provider value={LEN}>
-          <Comp s={s} brand={brand} caption={cap} />
+          <OutfitCtx.Provider value={s.outfit}>
+            <Comp s={s} brand={brand} caption={cap} />
+          </OutfitCtx.Provider>
         </SceneLength.Provider>
       </SceneIndex.Provider>
     </NextTransition.Provider>

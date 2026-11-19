@@ -3,7 +3,7 @@ import { AbsoluteFill, type CalculateMetadataFunction, Sequence, staticFile, use
 import { NextTransition, SceneIndex, TransitionTiming } from "./motion";
 import { QAProbe } from "./qa";
 import { withImageSet } from "./Adri";
-import { type Brand, isLight, SCENES, SceneCaption, type SceneData, SceneLength, subtitleOf, subtitleZoneOf, type Token } from "./scenes";
+import { type Brand, isLight, OutfitCtx, SCENES, SceneCaption, type SceneData, SceneLength, subtitleOf, subtitleZoneOf, type Token } from "./scenes";
 
 // Video Adriy.project dari data pipeline di public/media/<media>/:
 //   scenes.json (rencana adegan dari pipeline.py), pages.json (subtitle), meta.json, style.json (brand)
@@ -31,7 +31,11 @@ const SceneSlot: React.FC<{ s: SceneData; brand: Brand; pages: Page[] }> = ({ s,
   const caption = s.type === "tipografi" || !page ? null : (
     <SceneCaption tokens={page.tokens} nowMs={nowMs} brand={brand} tone={isLight(s, brand) ? "light" : "dark"} highlight={s.highlight} onScreen={s.title ?? s.text} mode={subtitleOf(s)} zone={subtitleZoneOf(s)} />
   );
-  return <Comp s={s} brand={brand} caption={caption} />;
+  return (
+    <OutfitCtx.Provider value={s.outfit}>
+      <Comp s={s} brand={brand} caption={caption} />
+    </OutfitCtx.Provider>
+  );
 };
 
 export const AdriyVideo: React.FC<AdriyVideoProps> = ({ media, scenes, pages, brand, qa }) => {

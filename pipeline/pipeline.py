@@ -1062,9 +1062,30 @@ def _clauses(text):
     return [p for p in parts if len(p.split()) >= 2][:4]
 
 
+def _potong_kata(t, n):
+    """Potong di batas kata (bukan di tengah kata) dan beri elipsis bila terpotong."""
+    if len(t) <= n:
+        return t
+    cut = t[:n + 1].rsplit(" ", 1)[0].rstrip(",")
+    return (cut if len(cut) >= n * 0.5 else t[:n]) + "..."
+
+
+def _sebanding(nums):
+    """Angka hanya digrafikkan bila sebanding: satuan sama dan tidak mencampur tahun dengan jumlah lain
+    ("ditemukan tahun 2002 ... butuh 20 tahun" bukan grafik)."""
+    tahun = [1000 <= n["value"] <= 2100 and n["value"] == int(n["value"]) and not n["unit"] for n in nums]
+    return len({n["unit"] for n in nums}) == 1 and not any(tahun)
+
+
 def _short_title(text, n=7):
     first = re.split(r"[.!?]", text)[0].strip() or text.strip()
     words = first.split()
+    if len(words) > n:
+        # potong di batas anak kalimat (koma) bila ada, bukan di tengah frasa ("Baru dua kali iris, mata...")
+        cut = [i + 1 for i, w in enumerate(words[:n]) if w.endswith(",") and i >= 2]
+        if cut:
+            t = " ".join(words[:cut[-1]]).rstrip(",")
+            return t[:1].upper() + t[1:]
     t = " ".join(words[:n]) + ("..." if len(words) > n else "")
     return t[:1].upper() + t[1:]
 
@@ -1101,7 +1122,7 @@ def plan_scenes(lines, duration, title, style):
             kind = "timeline"  # sejarah: dua tahun atau lebih
         elif len(find_places(text)) >= 2:
             kind = "peta"
-        elif len(find_numbers(text)) >= 2:
+        elif len(find_numbers(text)) >= 2 and _sebanding(find_numbers(text)):
             nums = find_numbers(text)
             kind = "lingkaran" if all(n["unit"] in ("%", "persen") for n in nums) and 80 <= sum(n["value"] for n in nums) <= 120 else "grafik"
         elif re.search(FAKTA, text, re.I) and not num:
@@ -1166,6 +1187,9 @@ def plan_scenes(lines, duration, title, style):
             v = float(num.group(1).replace(",", "."))
             unit = {"persen": "%", "derajat": "°", "kilometer per jam": " km/jam", "km/jam": " km/jam", "kilometer": " km", "km": " km"}.get((num.group(2) or "").lower(), num.group(2) or "")
             sc.update({"value": v, "unit": unit, "label": _short_title(text, 9), "pose": "kaget"})
+            # tahun ("tahun 2002", "pada 1945") ditulis tanpa pemisah ribuan: 2002, bukan 2.002
+            if not unit and v == int(v) and 1000 <= v <= 2100 and re.search(rf"\b(tahun|pada|sejak|abad)\s+{int(v)}\b", text, re.I):
+                sc["tahun"] = True
             if unit == "%":
                 sc["max"] = 100  # pengukur hanya untuk persen; skala lain tidak punya batas yang bermakna
         elif kind == "perbandingan" and find_comparison(text):
@@ -1203,7 +1227,7 @@ def plan_scenes(lines, duration, title, style):
             sc["decision"] = c[:1].upper() + c[1:] + "?"
         elif kind == "diagram":
             body = text.split(":", 1)[1] if ":" in text[:40] else text  # "Cara mengatasinya: ..." -> langkahnya saja
-            sc["steps"] = [c[:1].upper() + c[1:28] for c in _clauses(body) if not re.match(CARA + r"\s*\w*$", c, re.I)]
+            sc["steps"] = [_potong_kata(c[:1].upper() + c[1:], 28) for c in _clauses(body) if not re.match(CARA + r"\s*\w*$", c, re.I)]
         elif kind == "infografis":
             sc["points"] = [f"{guess_icon(c)}:{c[:40]}" for c in _clauses(text)]
         elif kind in ("objek", "sinematik"):

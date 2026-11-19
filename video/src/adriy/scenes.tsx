@@ -50,6 +50,7 @@ export type SceneData = {
   left?: { label: string; value: string; note?: string; win?: boolean };
   right?: { label: string; value: string; note?: string; win?: boolean };
   value?: number;
+  tahun?: boolean; // value adalah tahun: tampil tanpa pemisah ribuan
   unit?: string;
   label?: string;
   max?: number;
@@ -113,7 +114,8 @@ type SP = { s: SceneData; brand: Brand; caption: React.ReactNode };
 // latar bawaan per jenis (dipakai juga oleh subtitle, supaya warna teks mengikuti latar sebenarnya)
 const TYPE_ENV: Partial<Record<SceneType, Env>> = { timeline: "arsip", potongan: "sains", minimalis: "minimal", perbandingan: "banding" };
 export const envOf = (s: SceneData): Env => s.env ?? TYPE_ENV[s.type] ?? ({ dark: "malam", blue: "brand", light: "cerah" } as const)[s.tone];
-export const isLight = (s: SceneData, b: Brand) => envLook(envOf(s), b).light;
+// adegan sinematik selalu berlangit gelap sendiri (tidak memakai latar lingkungan): subtitle terang
+export const isLight = (s: SceneData, b: Brand) => (s.type === "sinematik" ? false : envLook(envOf(s), b).light);
 const inkOf = (s: SceneData, b: Brand): Ink => {
   const lk = envLook(envOf(s), b);
   return { ink: lk.ink, accent: lk.accent, primary: b.palette.primary, secondary: b.palette.secondary, negative: b.palette.negative, bg: lk.light ? "#FFFFFF" : b.palette.bg, font: b.typography.family };
@@ -151,7 +153,8 @@ export const ADRI_SIZE = { jauh: 320, kecil: 500, sedang: 800, besar: 1150 } as 
 // Adegan bisa tanpa ADRI (objek, lingkungan, atau grafik jadi fokus): Stage mengisi context ini dari s.adri.
 const AdriVisible = createContext(true);
 // Outfit ADRIY adegan ini (santai bawaan, travel, arkeolog, ...), dari s.outfit
-const OutfitCtx = createContext<string | undefined>(undefined);
+// outfit video; disediakan AdriyVideo/ScenePreview untuk SEMUA jenis adegan (juga yang tidak memakai Stage)
+export const OutfitCtx = createContext<string | undefined>(undefined);
 export type AdriRole = keyof typeof ADRI_SIZE;
 const ADRI_W = 500 / 1180;
 const Presenter: React.FC<{
@@ -505,7 +508,8 @@ export const SceneTipografi: React.FC<SP> = ({ s, brand, caption }) => {
       <div style={{ position: "absolute", left: 60, top: 200, fontFamily: "Georgia, serif", fontSize: 420, lineHeight: 1, color: k.accent, opacity: 0.22 * bar, translate: `${(1 - bar) * -60}px 0px` }}>“</div>
       <div style={{ position: "absolute", left: -40, top: 1250, width: 700 * bar, height: 26, background: k.accent, rotate: "-4deg", borderRadius: 13 }} />
       <div style={{ position: "absolute", left: 90, right: 90, top: 300, bottom: 560, display: "flex", alignItems: "center", fontFamily: brand.typography.family }}>
-        <KineticTitle text={text} highlight={s.highlight} at={0.15} brand={brand} size={n > 7 ? 100 : 120} color={k.ink} />
+        {/* ukuran mengikuti kata terpanjang supaya tidak keluar layar (lebar ±900 px, huruf tebal + sorotan ±0,7 em) */}
+        <KineticTitle text={text} highlight={s.highlight} at={0.15} brand={brand} size={Math.min(n > 7 ? 100 : 120, Math.floor(880 / (0.7 * Math.max(...text.split(" ").map((w) => w.length), 1))))} color={k.ink} />
       </div>
     </Stage>
   );
@@ -597,7 +601,7 @@ export const SceneAngka: React.FC<SP> = ({ s, brand, caption }) => {
         })}
       </svg>
       <div style={{ position: "absolute", left: 70, top: 320 }}>
-        <CountUp value={v} at={0.4} unit={s.unit} size={v >= 1000 || (s.unit ?? "").length > 3 ? 190 : 280} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
+        <CountUp value={v} at={0.4} unit={s.unit} tahun={s.tahun} size={v >= 1000 || (s.unit ?? "").length > 3 ? 190 : 280} color={k.ink} unitColor={k.accent} font={brand.typography.family} />
       </div>
       <div style={{ position: "absolute", left: 80, top: 620, width: 500, fontFamily: brand.typography.family }}>
         <KineticTitle text={s.label} highlight={s.highlight} at={1.1} brand={brand} size={50} color={k.ink} marker={false} />

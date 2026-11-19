@@ -166,8 +166,24 @@ def process(rel):
     return items
 
 
+def main_siap():
+    """Outfit yang gambarnya sudah satu pose per file (tata.json "siap": true): buat index dari pose/*.png.
+    Gambar ini dipangkas ke isi masing-masing, jadi tinggi asal pose jongkok/duduk ditentukan dari "tinggi"
+    (bagian dari tinggi berdiri) supaya skala orang tetap sama di video."""
+    t = json.loads(_TATA.read_text())
+    items = []
+    for f in sorted(OUT.glob("*.png")):
+        w, h = Image.open(f).size
+        frac = next((v for k, v in t.get("tinggi", {}).items() if f.stem.startswith(k)), 1.0)
+        items.append({"file": f"pose/{f.name}", "w": w, "h": h, "rowH": int(round(h / frac)), "bottomGap": 0, "dariTransparan": True})
+    (OUT / "index.json").write_text(json.dumps({"pose": items}, indent=1))
+    print(f"{len(items)} pose siap pakai")
+
+
 def main():
     OUT.mkdir(exist_ok=True)
+    if _TATA.exists() and json.loads(_TATA.read_text()).get("siap"):
+        return main_siap()
     index = {}
     for rel in LAYOUT:
         if not (SRC / rel).exists():

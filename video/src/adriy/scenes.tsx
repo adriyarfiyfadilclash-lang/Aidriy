@@ -65,6 +65,7 @@ export type SceneData = {
   altShot?: boolean; // pakai kamera pengganti (adegan sebelumnya berkamera sama)
   subtitle?: SubtitleMode; // gaya subtitle untuk adegan ini
   adriExit?: "left" | "right"; // ADRI berjalan keluar di akhir adegan
+  outfit?: string; // outfit ADRIY (kunci character.imageSets), dipilih perencana per video dari topik
   adri?: boolean; // false = adegan tanpa ADRI (objek/lingkungan/grafik jadi fokus)
   subtitleZone?: SubtitleZone; // posisi subtitle: bawah (pita) atau atas
   phase?: "pembuka" | "eksplorasi" | "penjelasan" | "menarik" | "kesimpulan" | "penutup"; // babak cerita
@@ -126,12 +127,14 @@ const inkOf = (s: SceneData, b: Brand): Ink => {
 const Stage: React.FC<{ s: SceneData; brand: Brand; shot: Shot; alt?: Shot; focus?: [number, number]; caption: React.ReactNode; children: React.ReactNode; front?: React.ReactNode; hud?: React.ReactNode; floor?: boolean }> = ({ s, brand, shot, alt, focus, caption, children, front, hud, floor }) => (
   <SceneFrame enter={s.transition} focus={focus} accent={envLook(envOf(s), brand).accent} tint={envLook(envOf(s), brand).sky[1]} seed={Math.round(s.start * 7)}>
     <AdriVisible.Provider value={s.adri !== false}>
+    <OutfitCtx.Provider value={s.outfit}>
     <Camera shot={s.shot ?? (s.altShot && alt ? alt : shot)}>
       <Environment env={envOf(s)} brand={brand} floor={floor} />
       <Layer depth={1}>{children}</Layer>
       {front && <Layer depth={1.06}>{front}</Layer>}
     </Camera>
     {hud && <AbsoluteFill style={{ fontFamily: brand.typography.family }}>{hud}</AbsoluteFill>}
+    </OutfitCtx.Provider>
     </AdriVisible.Provider>
     {caption}
   </SceneFrame>
@@ -146,6 +149,8 @@ const Stage: React.FC<{ s: SceneData; brand: Brand; shot: Shot; alt?: Shot; focu
 export const ADRI_SIZE = { jauh: 320, kecil: 500, sedang: 800, besar: 1150 } as const;
 // Adegan bisa tanpa ADRI (objek, lingkungan, atau grafik jadi fokus): Stage mengisi context ini dari s.adri.
 const AdriVisible = createContext(true);
+// Outfit ADRIY adegan ini (santai bawaan, travel, arkeolog, ...), dari s.outfit
+const OutfitCtx = createContext<string | undefined>(undefined);
 export type AdriRole = keyof typeof ADRI_SIZE;
 const ADRI_W = 500 / 1180;
 const Presenter: React.FC<{
@@ -158,6 +163,9 @@ const Presenter: React.FC<{
 }> = ({ brand, x, role, pose, facing, look, holding, walkFrom, walkLen = 0.9, at = 0, seed, talking = true, floor: floor0 = FLOOR, pointAt, exitTo, moveTo, closeup }) => {
   const { frame, fps, len } = useScene();
   const visible = useContext(AdriVisible);
+  const outfit = useContext(OutfitCtx);
+  const outfitSet = outfit ? brand.character.outfitSets?.[outfit] : undefined;
+  const spec = outfitSet ? { ...brand.character, imageSet: outfitSet } : brand.character;
   const size = closeup ? 1900 : ADRI_SIZE[role];
   const floor = closeup ? floor0 + 760 : floor0;
   if (!visible) return null;
@@ -220,7 +228,7 @@ const Presenter: React.FC<{
   }
   return (
     <div data-qa="adri" {...(closeup ? { "data-qa-wide": "1" } : {})} style={{ position: "absolute", left, top, width: size * ADRI_W, height: size, opacity, translate: `0px ${rise}px` }}>
-      <Adri spec={brand.character} pose={allCues} size={size} talking={talk} facing={face} look={look} holding={holding} aim={aim} seed={seed} closeup={closeup} />
+      <Adri spec={spec} pose={allCues} size={size} talking={talk} facing={face} look={look} holding={holding} aim={aim} seed={seed} closeup={closeup} />
     </div>
   );
 };

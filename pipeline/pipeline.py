@@ -670,7 +670,13 @@ def art_direct(plan, title):
                     next((t for t in ["cut", "smooth", "push", "morph", "wipe", "iris"] if t != prev["transition"] and used.get(t, 0) < cap), "cut"))
         p["transition"] = pick
         used[pick] = used.get(pick, 0) + 1
+    # outfit ADRIY satu untuk seluruh video (tidak berganti kostum di tengah cerita), dari topik
+    outfit = ("arkeolog" if theme == "arsip" or re.search(r"\b(arkeolog\w*|fosil|situs|candi|prasasti|artefak|purbakala|ekspedisi)\b", text_all, re.I)
+              else "travel" if re.search(r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b", text_all, re.I)
+              else None)
     for p in plan:
+        if outfit and "outfit" not in p.get("_given", {}):
+            p["outfit"] = outfit
         p.pop("_given", None)
         p.pop("_given_type", None)
     return plan

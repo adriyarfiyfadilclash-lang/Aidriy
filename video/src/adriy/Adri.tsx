@@ -32,6 +32,7 @@ export type CharacterSpec = {
   assets?: Partial<Record<Pose, string>>;
   // Set gambar semi-realistis (dibuat scripts/adri_aset.py, dimuat dari public/adri/<set>/peta.json bila ada)
   imageSet?: ImageSet | null;
+  outfitSets?: Record<string, ImageSet>; // dimuat dari imageSets
 };
 
 type Props = {
@@ -100,11 +101,16 @@ const AdriImage: React.FC<{ set: ImageSet; cues: PoseCue[]; size: number; talkin
 };
 
 // Muat set gambar ADRIY bila ada (file tidak masuk git; tanpa file, ADRI vector yang dipakai).
-export const withImageSet = async <T extends { character: CharacterSpec & { imageSetPath?: string } }>(brand: T | null): Promise<T | null> => {
+// imageSets: outfit lain (travel, arkeolog, ...) yang dipilih per video lewat SceneData.outfit
+export const withImageSet = async <T extends { character: CharacterSpec & { imageSetPath?: string; imageSets?: Record<string, string> } }>(brand: T | null): Promise<T | null> => {
   const path = brand?.character.imageSetPath;
   if (!brand || !path) return brand;
-  const set = await fetch(staticFile(path)).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
-  return { ...brand, character: { ...brand.character, imageSet: set } };
+  const load = (p: string) => fetch(staticFile(p)).then((r) => (r.ok ? (r.json() as Promise<ImageSet>) : null)).catch(() => null);
+  const set = await load(path);
+  const names = Object.keys(brand.character.imageSets ?? {});
+  const loaded = await Promise.all(names.map((n) => load(brand.character.imageSets![n])));
+  const outfits = Object.fromEntries(names.map((n, i) => [n, loaded[i]]).filter(([, v]) => v));
+  return { ...brand, character: { ...brand.character, imageSet: set, outfitSets: outfits } };
 };
 
 export type PoseImage = { file: string; w: number; h: number; rowH: number };

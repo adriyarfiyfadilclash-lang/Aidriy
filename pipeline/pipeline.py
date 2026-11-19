@@ -147,8 +147,16 @@ def catat_judul(title, name):
     log("finish", f"judul dicatat di {JUDUL_TERPAKAI.relative_to(ROOT)}")
 
 
+def _tanpa_benda_mirip(t):
+    """Frasa yang memuat kata tema tapi bukan temanya: "bunga matahari" bukan luar angkasa."""
+    if re.search(r"bunga matahari", t, re.I):
+        t = re.sub(r"matahari", "", t, flags=re.I)
+    return t
+
+
 def tema_konten(title):
     """Tema konten (pipeline/tema-konten.json) dari judul: tema pertama yang polanya cocok, atau None."""
+    title = _tanpa_benda_mirip(title or "")
     global _TEMA
     if _TEMA is None:
         f = ROOT / "pipeline" / "tema-konten.json"
@@ -647,6 +655,59 @@ def find_object(text):
     return best[1] if best else None
 
 
+# ---------------------------------------------------------------- outfit sesuai tema
+# Aturan: outfit ADRIY harus sesuai tema video, satu untuk seluruh video. Tidak pernah diganti outfit lain karena
+# pose/ekspresi kurang: pose yang tidak ada memakai pose netral outfit yang SAMA (Adri.tsx, pickImg).
+# Tanpa tema yang jelas -> santai (bawaan), bukan kostum acak.
+OUTFIT_TEMA = {
+    "angkasa": {"tema": ["luar-angkasa"], "env": ["antariksa"],
+                "kata": r"luar angkasa|antariksa|astronot|planet|galaksi|roket|satelit|tata surya|mars|jupiter|saturnus|venus|merkurius|neptunus|uranus"
+                        r"|asteroid|meteor|komet|orbit|nasa|lubang hitam|(ke|di|permukaan) bulan|bulan purnama|(?<!bunga )matahari|gravitasi nol|stasiun luar angkasa"},
+    "penyelam": {"tema": [], "env": ["bawahlaut"],
+                 "kata": r"bawah laut|dasar laut|laut dalam|lautan|samudra|terumbu|karang laut|menyelam|penyelam|hiu|paus|gurita|ubur-ubur|cumi"
+                         r"|lumba-lumba|penyu|ikan badut|palung|kuda laut|bintang laut|anemon|laut"},
+    "arkeolog": {"tema": [], "env": ["jurnal", "arsip"],
+                 "kata": r"arkeolog\w*|fosil|candi|prasasti|artefak|purbakala|ekspedisi|kerajaan|peradaban|kuno|zaman (batu|purba|dulu)|piramida|mumi|dinosaurus|reruntuhan"},
+    "lab": {"tema": ["fisika", "sains-sehari-hari", "cara-kerja"], "env": ["lab", "sains"],
+            "kata": r"sains|ilmuwan|kimia|biologi|fisika|virus|bakteri|dna|vaksin|eksperimen|percobaan|laboratorium|molekul|atom|reaksi kimia|mikroskop|sel tubuh"},
+    "formal": {"tema": [], "env": [],
+               "kata": r"investasi|saham|ekonomi|bisnis|keuangan|inflasi|bank|pajak|perusahaan|startup|karier|gaji|kantor|wawancara kerja|reksa ?dana"},
+    "travel": {"tema": [], "env": ["sabana"],
+               "kata": r"travel|wisata|liburan|jalan-jalan|pendakian|mendaki|backpacker|destinasi|perjalanan ke|safari|sabana|hutan|gunung"},
+}
+
+
+def pilih_outfit(title, texts, style=None):
+    """(outfit, alasan). Style tematik menentukan outfit. Selain itu skor: judul 3 per kata, tema konten 4, isi naskah 1
+    per kata berbeda; dipakai bila skor >= 3 dan jelas unggul (>= 1,5x outfit kedua). Kalau ragu: None (santai)."""
+    tema = (style or {}).get("tema")
+    if tema and tema.get("outfit"):
+        return tema["outfit"], f"style {style.get('id')}"
+    tk = tema_konten(title)
+    title = _tanpa_benda_mirip(title)
+    body = _tanpa_benda_mirip(" ".join(texts))
+    skor, bukti = {}, {}
+    for o, r in OUTFIT_TEMA.items():
+        pat = re.compile(rf"(?<!\w)(?:{r['kata']})(?!\w)", re.I)
+        dj = {m.group(0).lower() for m in pat.finditer(title)}
+        di = {m.group(0).lower() for m in pat.finditer(body)} - dj
+        sc = 3 * len(dj) + len(di) + (4 if tk and tk["id"] in r["tema"] else 0)
+        if sc:
+            skor[o] = sc
+            parts = ([", ".join(sorted(dj)) + " (judul)"] if dj else []) + ([", ".join(sorted(di)) + " (naskah)"] if di else [])
+            parts += [f"tema {tk['nama']}"] if tk and tk["id"] in r["tema"] else []
+            bukti[o] = "; ".join(parts)
+    if not skor:
+        return None, "tidak ada tema kostum -> santai"
+    urut = sorted(skor, key=lambda o: -skor[o])
+    best, second = urut[0], (skor[urut[1]] if len(urut) > 1 else 0)
+    if skor[best] < 3:
+        return None, f"bukti {best} lemah ({bukti[best]}) -> santai"
+    if second and skor[best] < 1.5 * second:
+        return None, f"tema bersaing ({best} {skor[best]} vs {urut[1]} {second}) -> santai"
+    return best, bukti[best]
+
+
 def art_direct(plan, title, style=None):
     """Atur babak cerita, suasana, latar, pose, kehadiran ADRI, dan transisi berdasarkan alur cerita,
     bukan rotasi acak. Dipanggil di akhir plan_scenes."""
@@ -795,17 +856,8 @@ def art_direct(plan, title, style=None):
                     next((t for t in ["cut", "smooth", "push", "morph", "wipe", "iris"] if t != prev["transition"] and used.get(t, 0) < cap), "cut"))
         p["transition"] = pick
         used[pick] = used.get(pick, 0) + 1
-    # outfit ADRIY satu untuk seluruh video (tidak berganti kostum di tengah cerita), dari topik
-    # urutan = prioritas; judul diperiksa dulu, baru seluruh naskah
-    OUTFITS = [
-        ("angkasa", r"\b(luar angkasa|antariksa|astronot|planet|galaksi|roket|satelit|tata surya|mars|bulan|asteroid|orbit|nasa)\b"),
-        ("penyelam", r"\b(laut|lautan|samudra|terumbu|karang|menyelam|penyelam|ikan|hiu|paus|gurita|ubur-ubur|bawah air)\b"),
-        ("arkeolog", r"\b(arkeolog\w*|fosil|situs|candi|prasasti|artefak|purbakala|ekspedisi|sejarah|kerajaan|kuno|zaman)\b"),
-        ("lab", r"\b(sains|ilmuwan|kimia|biologi|fisika|sel|virus|bakteri|dna|vaksin|obat|kedokteran|eksperimen|laboratorium|molekul|atom|penemuan)\b"),
-        ("formal", r"\b(investasi|saham|ekonomi|bisnis|keuangan|uang|inflasi|bank|pajak|berita|politik|perusahaan|startup|karier)\b"),
-        ("travel", r"\b(travel|wisata|liburan|jalan-jalan|pendakian|backpacker|destinasi|perjalanan ke)\b"),
-    ]
-    outfit = (tema or {}).get("outfit") or next((o for o, pat in OUTFITS if re.search(pat, title, re.I)), None) or next((o for o, pat in OUTFITS if re.search(pat, text_all, re.I)), None)
+    # outfit ADRIY: satu untuk seluruh video, dipilih dari tema (lihat pilih_outfit dan ADRIY-STANDARD.md bagian 14)
+    outfit, _ = pilih_outfit(title, [p["text"] for p in plan], style)
     # objek dari katalog (hewan yang disebut di kalimat): adegan ditampilkan sebagai objek dengan gambarnya.
     # Subjek video (hewan di judul) mengisi adegan objek pertama yang tidak menyebut hewan apa pun,
     # supaya tidak tampil ikon umum padahal topiknya hewan (judul hanya muncul di pembuka).
@@ -1249,6 +1301,9 @@ def check_standard(plan, style):
     """Periksa rencana adegan terhadap aturan standar. Kembalikan daftar pelanggaran."""
     rules = style.get("scenes", {}).get("rules", {})
     issues = []
+    dipakai = {p.get("outfit") or "santai" for p in plan if p.get("adri") is not False}
+    if len(dipakai) > 1:
+        issues.append(f"outfit berganti di tengah video ({', '.join(sorted(dipakai))}): satu video = satu outfit sesuai tema")
     for a, b in zip(plan, plan[1:]):
         if rules.get("noRepeatType", True) and a["type"] == b["type"] and a.get("family") == b.get("family"):
             issues.append(f"adegan {plan.index(b) + 1}: jenis '{b['type']}' sama dengan adegan sebelumnya")
@@ -1344,6 +1399,14 @@ def step_scenes(ctx):
     plan = plan_scenes(lines, meta["duration"], ctx["title"], style)
     tk = tema_konten(ctx["title"])
     log("scenes", f"tema konten: {tk['nama']}" if tk else "tema konten: tidak dikenali dari judul (lihat pipeline/tema-konten.json)")
+    outfit, alasan = pilih_outfit(ctx["title"], [p["text"] for p in plan], style)
+    log("scenes", f"outfit ADRIY: {outfit or 'santai'} ({alasan})")
+    sets = style.get("character", {}).get("imageSets", {})
+    for o in sorted({p.get("outfit") for p in plan if p.get("outfit")}):
+        path = sets.get(o)
+        if not path or not (REMOTION / "public" / path).exists():
+            raise SystemExit(f"Outfit '{o}' dibutuhkan tema video tapi asetnya tidak ada ({path or 'tidak terdaftar di style'}). "
+                             "Outfit TIDAK diganti otomatis ke outfit lain: jalankan video/scripts/ambil_aset.sh atau tambahkan asetnya.")
     issues = check_standard(plan, style)
     plan_json = json.dumps(plan, ensure_ascii=False, indent=1)
     if not out.exists() or out.read_text(encoding="utf-8") != plan_json:

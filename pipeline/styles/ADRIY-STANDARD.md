@@ -359,6 +359,32 @@ Membuat ulang video yang sama (`--name` yang sama, misalnya `--from scenes`) tid
 Saat mengusulkan topik atau menulis naskah baru, cek daftar ini dulu. Judul baru yang dibuat di luar pipeline
 bisa ditambahkan manual ke `judul-terpakai.json` (kolom `judul`, `kategori`, `sumber`, dan `inti` bila perlu).
 
+## 14. Outfit ADRIY sesuai tema
+
+Outfit tidak boleh asal pakai. Aturannya:
+
+1. **Satu video, satu outfit, sesuai tema.** Luar angkasa = astronot, bawah laut = penyelam, sejarah/arkeologi =
+   arkeolog, sains/eksperimen = jas lab, bisnis/keuangan = jas formal, perjalanan/alam liar = travel.
+   Tidak ada tema kostum yang jelas = **santai** (bawaan), bukan kostum acak.
+2. **Tidak pernah ditukar karena pose/ekspresi kurang.** Bila outfit tidak punya pose yang diminta (mis. astronot
+   tidak punya close-up "kaget"), yang dipakai pose netral outfit yang **sama**. Baju penyelam tidak boleh muncul
+   di video luar angkasa hanya karena ekspresinya lebih lengkap. Butuh ekspresi lain: tambahkan gambarnya ke
+   outfit itu di repo aset.
+3. **Aset outfit tidak ada = berhenti**, bukan diganti outfit lain. Pipeline menolak render dengan pesan yang
+   menyebut outfit dan asetnya (jalankan `video/scripts/ambil_aset.sh`).
+4. **Berganti outfit di tengah video** dilaporkan cek standar (`outfit berganti di tengah video`).
+
+Cara memilih (`pilih_outfit` di `pipeline.py`, kata kunci di `OUTFIT_TEMA`):
+- Style tematik (Bawah Laut, Antariksa, Laboratorium, Dokumenter Alam, Ekspedisi Sejarah) menentukan outfit.
+- Selain itu skor bukti: kata tema di judul = 3, tema konten yang cocok = 4 (luar angkasa -> astronot; fisika,
+  sains sehari-hari, cara kerja -> jas lab), kata tema di isi naskah = 1 per kata berbeda.
+- Outfit dipakai bila skornya minimal 3 **dan** jelas unggul (minimal 1,5 kali outfit kedua). Satu kata lepas di
+  naskah ("ikan" di video masak, "bulan depan", "bakteri" sekali) tidak cukup. Dua tema bersaing = santai.
+- Frasa yang hanya mirip tidak dihitung: "bunga matahari" bukan luar angkasa, "bulan" hanya "ke/di bulan" atau
+  "bulan purnama", "laut" dihitung tapi "ikan" saja tidak.
+- Log `[scenes] outfit ADRIY: ... (alasan)` menunjukkan pilihan dan buktinya. Naskah bisa menentukan sendiri
+  dengan `"outfit"` di `scene`, tetap satu untuk seluruh video.
+
 ## Cara memakai
 
 ```bash

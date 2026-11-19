@@ -62,6 +62,7 @@ const AdriImage: React.FC<{ set: ImageSet; cues: PoseCue[]; size: number; talkin
   const prev = cues[Math.max(0, idx - 1)];
   const fade = idx === 0 ? 1 : interpolate(frame, [cur.at * fps, cur.at * fps + 3], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const pickImg = (p: Pose): PoseImage | null => {
+    // pose/ekspresi yang tidak ada di outfit ini -> pose netral outfit yang SAMA (outfit tidak pernah ditukar)
     const list = lib[p] ?? lib.netral;
     if (!list?.length) return null;
     if (p === "jalan") return list[Math.floor((frame + seed) / 7) % list.length];

@@ -165,6 +165,8 @@ const Presenter: React.FC<{
   const { frame, fps, len } = useScene();
   const visible = useContext(AdriVisible);
   const outfit = useContext(OutfitCtx);
+  // outfit video (sesuai tema, satu untuk seluruh video). Pose yang tidak ada di outfit ini memakai pose netral
+  // outfit yang sama (Adri.tsx); tidak pernah diganti ke outfit lain. Ketersediaan aset dicek pipeline.py.
   const outfitSet = outfit ? brand.character.outfitSets?.[outfit] : undefined;
   const spec = outfitSet ? { ...brand.character, imageSet: outfitSet } : brand.character;
   const size = closeup ? 1900 : ADRI_SIZE[role];

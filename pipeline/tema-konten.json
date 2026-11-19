@@ -1,5 +1,5 @@
 {
- "note": "Tema konten Adriy.project. Dikenali dari judul (pola 'kata', regex, tanpa beda huruf besar/kecil), dicek berurutan: yang pertama cocok menang, jadi tema yang lebih spesifik ditaruh di atas. Dipakai pipeline untuk: style bila --style auto dan tidak ada kata kunci style yang cocok ('style'), latar bila judul tidak menyebut topik latar ('env'), kicker adegan pembuka ('kicker'). 'adegan', 'alur' dan 'sfx' adalah panduan menulis naskah (sfx belum dipilih otomatis). 'musik' = mood musik latar (folder video/public/mixkit/musik/<mood>/, daftar di musik.json; belum dipasang otomatis).",
+ "note": "Tema konten Adriy.project. Dikenali dari judul (pola 'kata', regex, tanpa beda huruf besar/kecil), dicek berurutan: yang pertama cocok menang, jadi tema yang lebih spesifik ditaruh di atas. Dipakai pipeline untuk: style bila --style auto dan tidak ada kata kunci style yang cocok ('style'), latar bila judul tidak menyebut topik latar ('env'), kicker adegan pembuka ('kicker'). 'adegan' dan 'alur' adalah panduan menulis naskah; 'sfx' (kategori Mixkit) dipakai sound effect otomatis untuk kalimat pembuka. 'musik' = mood musik latar (folder video/public/mixkit/musik/<mood>/, daftar di musik.json; belum dipasang otomatis).",
  "tema": [
   {
    "id": "mitos-fakta",

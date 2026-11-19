@@ -566,6 +566,22 @@ def step_sfx(ctx):
     out, lines_f = d / "audio.wav", d / "lines.json"
     cue_files = []
     lines = json.loads(lines_f.read_text()) if lines_f.exists() else []
+    # sound effect otomatis untuk kalimat yang tidak mengisi "sfx" (pipeline/sfx_otomatis.py, aturan di sfx-aturan.json)
+    script = json.loads((d / "script.json").read_text(encoding="utf-8")) if (d / "script.json").exists() else {}
+    otomatis = lines and script.get("sfxOtomatis", True) and not ctx.get("tanpa_sfx_otomatis")
+    if otomatis:
+        sys.path.insert(0, str(ROOT / "pipeline"))
+        import sfx_otomatis
+        scenes = json.loads((d / "scenes.json").read_text()) if (d / "scenes.json").exists() else []
+        auto = sfx_otomatis.rencana(lines, scenes, ctx["title"])
+        for ln in lines:
+            if ln["index"] in auto:
+                ln["sfx"] = auto[ln["index"]]
+        log("sfx", f"otomatis: {len(auto)} sound effect untuk {len(lines)} kalimat")
+        for ln in lines:
+            if ln["index"] in auto:
+                log("sfx", f"  {ln['start']:6.2f}  {auto[ln['index']]['file'].split('/')[-1][:46]:46s} ({auto[ln['index']]['alasan']})")
+    lines = [ln for ln in lines if ln.get("sfx") is not False]
     style = choose_style(ctx)[0] if any(ln.get("sfx") for ln in lines) else None
     for ln in lines:
         if ln.get("sfx"):
@@ -576,7 +592,7 @@ def step_sfx(ctx):
             if not c["path"].exists():
                 raise SystemExit(f"Sound effect tidak ditemukan: {c['path']}")
             cue_files.append((ln, c))
-    if not ctx["force"] and fresh(out, d / "voice.wav", lines_f, *[c["path"] for _, c in cue_files]):
+    if not ctx["force"] and fresh(out, d / "voice.wav", lines_f, *([ROOT / "pipeline" / "sfx-aturan.json", d / "scenes.json"] if otomatis and (d / "scenes.json").exists() else []), *[c["path"] for _, c in cue_files]):
         return log("sfx", "sudah ada")
     if not cue_files:
         shutil.copy2(d / "voice.wav", out)
@@ -603,7 +619,7 @@ def step_sfx(ctx):
             x, i = x[-i:], 0
         mix[i:i + len(x)] += x[: len(mix) - i]
         sfx_only[i:i + len(x)] += x[: len(mix) - i]
-        cues.append({"line": ln["index"], "file": str(c["file"]), "role": role, "start": round(i / SR, 3),
+        cues.append({"line": ln["index"], "file": str(c["file"]), "role": role, "start": round(i / SR, 3), "alasan": c.get("alasan", "naskah"),
                      "peak": round(t + m["peak"], 3), "gainDb": round(20 * np.log10(gain), 1)})
     peak = float(np.abs(mix).max())
     if peak > 0.98:
@@ -1801,6 +1817,7 @@ def main():
     ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
     ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
     ap.add_argument("--preview-scenes", action="store_true", help="gambar diam dari tengah tiap adegan (style adriy), bukan video")
+    ap.add_argument("--tanpa-sfx-otomatis", action="store_true", help="jangan tambahkan sound effect otomatis (hanya yang ditulis di naskah)")
     ap.add_argument("--judul-boleh-sama", action="store_true", help="tetap buat walau judulnya mirip judul yang sudah pernah dibuat (pipeline/judul-terpakai.json)")
     ap.add_argument("--qa", action="store_true", help="periksa tabrakan, teks terpotong, subtitle, blur, sisa adegan, latar (gambar diam). Dengan --name: video itu; tanpa: contoh semua adegan")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
@@ -1829,7 +1846,7 @@ def main():
         ap.error("butuh input dan --name (atau pakai --check)")
 
     ctx = {"input": args.input, "name": args.name, "title": args.title or args.name, "language": args.language, "force": False,
-           "visuals": args.visuals, "style": args.style,
+           "visuals": args.visuals, "style": args.style, "tanpa_sfx_otomatis": args.tanpa_sfx_otomatis,
            "renderers": ["remotion", "hyperframes"] if args.renderer == "both" else [args.renderer]}
     ctx["dir"] = ROOT / "media" / args.name
     ctx["dir"].mkdir(parents=True, exist_ok=True)

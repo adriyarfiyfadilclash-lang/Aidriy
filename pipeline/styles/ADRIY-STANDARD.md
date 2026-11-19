@@ -307,8 +307,8 @@ judul "kenapa ...". Hasilnya:
 - **Kicker pembuka**: label di adegan pertama ("Mitos atau fakta?", "Rekor dunia", ...).
 - Log `[scenes] tema konten: ...` menunjukkan tema yang terdeteksi.
 
-Kolom alur, adegan, dan sound effect adalah panduan menulis naskah. Sound effect belum dipilih otomatis: isi
-`"sfx"` per kalimat di naskah dengan file dari kategori yang disarankan (`video/public/mixkit/sfx-kategori/<kategori>/`).
+Kolom alur dan adegan adalah panduan menulis naskah. Kategori sound effect tema dipakai sound effect otomatis
+untuk kalimat pembuka (bagian 15).
 
 | # | Tema | Style | Latar | Kicker | Alur cerita | Adegan yang cocok | Kategori sound effect |
 |---|---|---|---|---|---|---|---|
@@ -384,6 +384,34 @@ Cara memilih (`pilih_outfit` di `pipeline.py`, kata kunci di `OUTFIT_TEMA`):
   "bulan purnama", "laut" dihitung tapi "ikan" saja tidak.
 - Log `[scenes] outfit ADRIY: ... (alasan)` menunjukkan pilihan dan buktinya. Naskah bisa menentukan sendiri
   dengan `"outfit"` di `scene`, tetap satu untuk seluruh video.
+
+## 15. Sound effect otomatis
+
+Kalimat yang tidak mengisi `"sfx"` di naskah mendapat sound effect otomatis (`pipeline/sfx_otomatis.py`, aturan di
+`pipeline/sfx-aturan.json`) dari pustaka Mixkit (`video/public/mixkit/`) dan sound effect bebas pakai di repo aset
+(`video/public/adri/sfx/`: OpenGameArt CC0, SoundBible PD/CC BY). Pustakanya diindeks sekali (±1 menit,
+`video/public/.sfx-indeks.json`); setelah itu pemilihan selesai dalam hitungan detik.
+
+Prioritas per kalimat:
+1. **Kata di kalimat**: potong/iris -> suara mencincang (diutamakan kategori dapur), uang -> koin, kucing -> meong,
+   ternyata/padahal -> efek kejutan, gas/uap -> desis, dapur -> peralatan dapur, dan seterusnya.
+2. **Jenis adegan**: angka/persentase -> pop/ding, perbandingan -> hit, timeline -> whoosh.
+3. **Babak**: pembuka -> kategori sound effect tema konten atau swell; kesimpulan -> ding/chime.
+4. **Pergantian adegan** -> whoosh pendek.
+
+Batasan supaya tidak ramai dan tidak salah:
+- Paling banyak satu bunyi per kalimat, jarak minimal 4 detik, sekitar 7 bunyi per menit (minimal 2 per video).
+- File yang sama tidak dipakai dua kali; satu jenis suara paling banyak 2 kali per video.
+- Pola dicocokkan di **awal kata** ("cat" tidak cocok dengan "notification"/"catapult"); nama hewan sebagai kata utuh.
+- Suara senjata, perkelahian, horor, kentut, dan sejenisnya tidak pernah dipilih, kecuali aturannya memang meminta
+  (ledakan untuk "meletus").
+- Bila kategori yang diutamakan (mis. dapur untuk "potong") habis, kalimat itu **tanpa bunyi**, bukan bunyi yang salah.
+- Kata bermakna ganda diperhatikan: "menguap" (uap) bukan "menguap" (ngantuk).
+
+Kendali dari naskah: `"sfx": "path/file.mp3"` atau objek (`file`, `role`, `at`, `max`) per kalimat menang atas
+pilihan otomatis; `"sfx": false` membuat kalimat itu tanpa bunyi; `"sfxOtomatis": false` di naskah atau
+`--tanpa-sfx-otomatis` mematikan semuanya. Pilihan dan alasannya tercatat di log `[sfx]` dan `media/<nama>/sfx-cues.json`.
+Menambah atau memperbaiki aturan: edit `sfx-aturan.json` (lalu `--from sfx`).
 
 ## Cara memakai
 

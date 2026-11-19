@@ -1,0 +1,371 @@
+{
+ "note": "Aturan sound effect otomatis (pipeline/sfx_otomatis.py). 'kata' = regex kata di kalimat narasi (bahasa Indonesia); 'cari' = regex di nama file/kategori sound effect (umumnya bahasa Inggris). Urutan = prioritas. 'boleh_terlarang': true mengizinkan file yang biasanya dihindari (ledakan, senjata, horor). Naskah tetap bisa mengisi 'sfx' sendiri per kalimat; 'sfx': false mematikan sound effect kalimat itu; '\"sfxOtomatis\": false' di naskah mematikan semuanya. 'maks_per_aturan' = berapa kali satu aturan (jenis suara) boleh dipakai dalam satu video. Pola 'cari' dicocokkan di AWAL kata (\"cat\" cocok dengan \"cat\"/\"cats\", tidak dengan \"notification\"). 'utamakan' = regex kategori/nama yang didahulukan bila ada.",
+ "jarak_min": 4,
+ "kerapatan": 0.12,
+ "terlarang": "gun|shot|rifle|pistol|weapon|war\\b|warfare|machine gun|bullet|scream|horror|zombie|monster|ghost|fart|blood|dead|death|kill|vomit|burp|sex|moan|creepy|demon|evil|human-fight|sword|flesh|stab|slash|punch|squish|slurp|gore|throw|catapult",
+ "kata": [
+  {
+   "kata": "potong|memotong|iris|mengiris|cincang|pisau",
+   "cari": "chop|knife (cut|slic|chop)|slic|cutting (vegetable|food|board)",
+   "maks": 1.5,
+   "utamakan": "kitchen|cooking|food|vegetable"
+  },
+  {
+   "kata": "menggoreng|goreng|wajan|minyak panas",
+   "cari": "sizzl|frying|fry",
+   "maks": 2.5
+  },
+  {
+   "kata": "mendidih|merebus|rebus|panci",
+   "cari": "boil|bubbling pot|kettle",
+   "maks": 2.5
+  },
+  {
+   "kata": "uap|menguap|gas|asap|berasap",
+   "cari": "steam|hiss|air release|smoke|gas",
+   "maks": 1.5
+  },
+  {
+   "kata": "dapur|memasak|masak",
+   "cari": "kitchen|cooking|utensil",
+   "maks": 2,
+   "utamakan": "kitchen"
+  },
+  {
+   "kata": "tetes|setetes|menetes|minum|segelas air|menuang",
+   "cari": "water drop|drip|droplet|pour|drink|gulp",
+   "maks": 1.5
+  },
+  {
+   "kata": "gelembung|bawah laut|menyelam|bawah air",
+   "cari": "bubble|underwater|diving",
+   "maks": 2
+  },
+  {
+   "kata": "laut|ombak|pantai|samudra",
+   "cari": "wave|sea|ocean|beach",
+   "maks": 3
+  },
+  {
+   "kata": "hujan",
+   "cari": "rain",
+   "maks": 3
+  },
+  {
+   "kata": "petir|kilat|guntur|badai",
+   "cari": "thunder|lightning|storm",
+   "maks": 3
+  },
+  {
+   "kata": "angin|tiupan|bertiup",
+   "cari": "wind|gust|breeze",
+   "maks": 3
+  },
+  {
+   "kata": "api|terbakar|membakar|kebakaran|api unggun",
+   "cari": "fire|flame|burn|campfire",
+   "maks": 2.5
+  },
+  {
+   "kata": "meledak|ledakan|meletus|letusan",
+   "cari": "explosion|boom|blast|eruption",
+   "maks": 2.5,
+   "boleh_terlarang": true
+  },
+  {
+   "kata": "kembang api",
+   "cari": "firework",
+   "maks": 3
+  },
+  {
+   "kata": "alarm|jam weker|bangun pagi|berdering",
+   "cari": "alarm|ringing|alarm clock",
+   "maks": 2
+  },
+  {
+   "kata": "jam dinding|detik demi detik|waktu terus berjalan|waktu habis|berdetak",
+   "cari": "clock|tick",
+   "maks": 2
+  },
+  {
+   "kata": "ponsel|\\bhp\\b|notifikasi|pesan masuk|chat|smartphone",
+   "cari": "notification|message|phone|ping",
+   "maks": 1.5
+  },
+  {
+   "kata": "mengetik|ketik|keyboard|laptop|komputer",
+   "cari": "keyboard|typing|type|typewriter",
+   "maks": 2
+  },
+  {
+   "kata": "kamera|memotret|foto|jepret",
+   "cari": "camera|shutter|jepret",
+   "maks": 1
+  },
+  {
+   "kata": "uang|koin|rupiah|bayar|membayar|harga|belanja|menabung|tabungan|gaji|untung",
+   "cari": "coin|cash|money|register|cha.?ching",
+   "maks": 1.5,
+   "utamakan": "coin|cash"
+  },
+  {
+   "kata": "menang|juara|rekor|berhasil|sukses|pemenang",
+   "cari": "win|success|achievement|triumph|fanfare|victory|level up",
+   "maks": 2
+  },
+  {
+   "kata": "mitos|salah|keliru|gagal|bukan begitu|hoaks",
+   "cari": "wrong|fail|error|buzzer|incorrect|lose",
+   "maks": 1.5
+  },
+  {
+   "kata": "faktanya|benar|tepat|terbukti",
+   "cari": "correct|positive|success|confirm",
+   "maks": 1.5
+  },
+  {
+   "kata": "ternyata|padahal|mengejutkan|siapa sangka|kaget|terkejut",
+   "cari": "^transition-(hit|impact|swell)",
+   "maks": 1.8
+  },
+  {
+   "kata": "jantung|deg-degan|berdebar|detak jantung",
+   "cari": "heartbeat|heart beat",
+   "maks": 2.5
+  },
+  {
+   "kata": "tertawa|lucu|ngakak",
+   "cari": "laugh",
+   "maks": 2
+  },
+  {
+   "kata": "ngantuk|mengantuk|terkantuk|menguap karena",
+   "cari": "yawn",
+   "maks": 2
+  },
+  {
+   "kata": "mendengkur|tidur nyenyak",
+   "cari": "snore|sleep",
+   "maks": 2
+  },
+  {
+   "kata": "makan|menggigit|gigit|mengunyah|renyah",
+   "cari": "crunch|bite|eat|chew",
+   "maks": 1.5
+  },
+  {
+   "kata": "tepuk tangan|penonton|sorak",
+   "cari": "applause|clap|cheer|crowd",
+   "maks": 2.5
+  },
+  {
+   "kata": "pintu|membuka pintu|mengetuk",
+   "cari": "door|knock",
+   "maks": 1.5
+  },
+  {
+   "kata": "lonceng|\\bbel\\b",
+   "cari": "bell",
+   "maks": 2
+  },
+  {
+   "kata": "mobil|kendaraan|klakson",
+   "cari": "car|engine|horn",
+   "maks": 2
+  },
+  {
+   "kata": "sepeda motor|\\bmotor\\b",
+   "cari": "motorcycle|motorbike|scooter",
+   "maks": 2
+  },
+  {
+   "kata": "kereta",
+   "cari": "train",
+   "maks": 2.5
+  },
+  {
+   "kata": "pesawat|terbang",
+   "cari": "airplane|plane|jet|flying|airport",
+   "maks": 2.5
+  },
+  {
+   "kata": "roket|meluncur|peluncuran",
+   "cari": "rocket|launch",
+   "maks": 3
+  },
+  {
+   "kata": "kapal",
+   "cari": "ship|boat",
+   "maks": 2.5
+  },
+  {
+   "kata": "luar angkasa|antariksa|galaksi|planet|astronot|alien|ufo",
+   "cari": "space|sci-fi|cosmic|spaceship|alien",
+   "maks": 2.5
+  },
+  {
+   "kata": "robot|kecerdasan buatan|\\bai\\b|teknologi|digital",
+   "cari": "robot|computer|sci-fi|high-tech|interface|digital",
+   "maks": 2
+  },
+  {
+   "kata": "\\bide\\b|terpikir|ilham|ajaib|sihir|keajaiban",
+   "cari": "magic|sparkle|idea|ding|twinkle",
+   "maks": 1.5
+  },
+  {
+   "kata": "eksperimen|percobaan|laboratorium|reaksi kimia|ilmuwan",
+   "cari": "bubble|potion|lab|science|liquid",
+   "maks": 2
+  },
+  {
+   "kata": "kucing",
+   "cari": "cat\\b|cats\\b|meow|kitten",
+   "maks": 2
+  },
+  {
+   "kata": "anjing",
+   "cari": "dog\\b|dogs\\b|bark|puppy",
+   "maks": 2
+  },
+  {
+   "kata": "singa|harimau|mengaum|auman",
+   "cari": "lion|roar|tiger|growl",
+   "maks": 2.5
+  },
+  {
+   "kata": "burung hantu",
+   "cari": "owl\\b|owls\\b",
+   "maks": 2
+  },
+  {
+   "kata": "burung|berkicau|kicau",
+   "cari": "bird|chirp|tweet",
+   "maks": 2.5
+  },
+  {
+   "kata": "ayam|berkokok",
+   "cari": "rooster|chicken|hen",
+   "maks": 2
+  },
+  {
+   "kata": "bebek",
+   "cari": "duck\\b|quack",
+   "maks": 2
+  },
+  {
+   "kata": "sapi",
+   "cari": "cow\\b|cows\\b|moo\\b",
+   "maks": 2
+  },
+  {
+   "kata": "kuda",
+   "cari": "horse|neigh|gallop",
+   "maks": 2
+  },
+  {
+   "kata": "kambing|domba",
+   "cari": "goat|sheep|bleat",
+   "maks": 2
+  },
+  {
+   "kata": "babi",
+   "cari": "pig\\b|pigs\\b|oink",
+   "maks": 2
+  },
+  {
+   "kata": "monyet|kera|orangutan|gorila",
+   "cari": "monkey|ape|chimp|jungle",
+   "maks": 2
+  },
+  {
+   "kata": "serigala|melolong",
+   "cari": "wolf|howl",
+   "maks": 2.5
+  },
+  {
+   "kata": "gajah",
+   "cari": "elephant",
+   "maks": 2.5
+  },
+  {
+   "kata": "katak|kodok",
+   "cari": "frog|toad|croak",
+   "maks": 2
+  },
+  {
+   "kata": "lebah|tawon",
+   "cari": "bee\\b|bees\\b|buzz",
+   "maks": 2
+  },
+  {
+   "kata": "ular",
+   "cari": "snake|hiss|rattlesnake",
+   "maks": 2
+  },
+  {
+   "kata": "paus",
+   "cari": "whale",
+   "maks": 3
+  },
+  {
+   "kata": "jangkrik|malam hari",
+   "cari": "cricket",
+   "maks": 2.5
+  },
+  {
+   "kata": "hutan|rimba",
+   "cari": "jungle|forest",
+   "maks": 3
+  }
+ ],
+ "adegan": {
+  "angka": {
+   "cari": "pop|ding|notification|counter|tick",
+   "maks": 1
+  },
+  "persentase": {
+   "cari": "pop|ding|notification",
+   "maks": 1
+  },
+  "grafik": {
+   "cari": "pop|ding|rise|swoosh",
+   "maks": 1.2
+  },
+  "lingkaran": {
+   "cari": "pop|ding",
+   "maks": 1
+  },
+  "perbandingan": {
+   "cari": "^transition-(hit|impact|thud)",
+   "maks": 1.2
+  },
+  "timeline": {
+   "cari": "swoosh|whoosh|slide",
+   "maks": 1
+  },
+  "diagram": {
+   "cari": "click|pop|slide",
+   "maks": 1
+  },
+  "alur": {
+   "cari": "click|pop|slide",
+   "maks": 1
+  }
+ },
+ "babak": {
+  "pembuka": {
+   "cari": "^transition-(swell|cinematic|intro)|^pilihan .*whoosh",
+   "maks": 2
+  },
+  "kesimpulan": {
+   "cari": "chime|bell|positive|success|ding|sparkle",
+   "maks": 1.5
+  }
+ },
+ "transisi": {
+  "cari": "swoosh|whoosh|woosh|swish|sweep",
+  "maks": 1
+ },
+ "maks_per_aturan": 2
+}

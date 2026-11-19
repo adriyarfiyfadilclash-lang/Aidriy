@@ -519,8 +519,63 @@ SCENE_KICKER = {"karakter": "Adri.project", "objek": "Lihat lebih dekat", "infog
                 "grafik": "Datanya", "lingkaran": "Porsinya", "timeline": "Lini masa", "peta": "Di mana?", "alur": "Alurnya",
                 "potongan": "Di dalamnya", "persentase": "Faktanya"}
 DATA_TYPES = {"angka", "diagram", "perbandingan", "infografis", "grafik", "lingkaran", "persentase", "alur"}
+SCENE_KICKER["minimalis"] = "Jadi intinya"
 # ADRI tampil di semua jenis adegan kecuali tipografi (sinematik: ADRI kecil berjalan melintas)
 WITH_ADRI = set(SCENE_KICKER) - {"tipografi"}
+
+# Keluarga komposisi: dua adegan berurutan sebaiknya tidak sekeluarga (kecuali data yang bersambung).
+def family(kind, layout=None):
+    return {"objek": "objek-penuh" if layout == "full" else "presenter-objek", "potongan": "presenter-objek", "karakter": "presenter",
+            "tipografi": "tipografi", "angka": "tipografi", "infografis": "infografis", "grafik": "infografis", "lingkaran": "infografis",
+            "persentase": "infografis", "timeline": "linimasa", "peta": "linimasa", "diagram": "proses", "alur": "proses",
+            "perbandingan": "perbandingan", "sinematik": "sinematik", "minimalis": "minimalis"}.get(kind, kind)
+
+# Jenis kamera bawaan tiap adegan (cermin dari scenes.tsx). Bila sama dengan adegan sebelumnya, adegan
+# memakai kamera penggantinya (altShot) supaya gerak kamera tidak berulang.
+DEFAULT_SHOT = {"karakter": "emphasis", "objek": "focus", "objek-full": "reveal", "infografis": "track", "diagram": "path",
+                "perbandingan": "perspective", "tipografi": "drift", "sinematik": "track", "angka": "focus", "grafik": "focus",
+                "lingkaran": "establish", "timeline": "path", "peta": "path", "alur": "track", "potongan": "focus",
+                "persentase": "focus", "minimalis": "drift"}
+ALT_SHOT = {"karakter": "reveal", "objek": "reveal", "objek-full": "focus", "infografis": "panV", "perbandingan": "rack",
+            "tipografi": "panV", "angka": "reveal", "grafik": "establish", "lingkaran": "focus", "alur": "panV",
+            "potongan": "reveal", "persentase": "emphasis", "minimalis": "establish"}
+
+# Gaya subtitle bawaan (cermin dari SUBTITLE_DEFAULT di scenes.tsx)
+SUBTITLE = {"karakter": "kinetik", "sinematik": "tanpa", "angka": "kata", "persentase": "kata", "diagram": "minimalis",
+            "grafik": "minimalis", "lingkaran": "minimalis", "timeline": "minimalis", "peta": "minimalis", "alur": "minimalis",
+            "minimalis": "minimalis", "tipografi": "minimalis"}
+
+KESIMPULAN = r"^\s*(jadi|intinya|kesimpulannya|singkatnya|pada akhirnya|ringkasnya)\b"
+FAKTA = r"\b(tahukah|ternyata|faktanya|uniknya|fakta unik|mengejutkan|percaya atau tidak)\b"
+CARA = r"\b(cara|tips|bagaimana caranya)\b"
+PROSES = r"\b(proses|terjadi ketika|berubah menjadi|mengalir|tahap)\b"
+
+def find_comparison(text):
+    """'A butuh 10 detik, sedangkan B 60 detik' -> (kiri, kanan). None kalau bukan perbandingan."""
+    m = re.split(r"\s*(?:,\s*)?\b(?:sedangkan|dibanding(?:kan)?|daripada|vs\.?|versus|berbanding)\b\s*", text, maxsplit=1, flags=re.I)
+    if len(m) != 2:
+        return None
+    sides = []
+    for part in m:
+        n = re.search(r"(±\s*)?(\d+(?:[.,]\d+)?)\s*(%|persen|detik|dtk|menit|jam|kali|kg|km|ribu|juta)?", part)
+        label = re.sub(r"\b(butuh|perlu|hanya|sekitar|selama|cuma|dengan|adalah)\b.*$", "", part.split(",")[0], flags=re.I).strip(" .,")
+        label = _short_title(label, 3) if label else "?"
+        if n:
+            unit = {"persen": "%", "detik": "dtk"}.get((n.group(3) or "").lower(), n.group(3) or "")
+            sides.append({"label": label, "value": f"{n.group(1) or ''}{n.group(2)} {unit}".strip(), "num": float(n.group(2).replace(",", "."))})
+        else:
+            sides.append({"label": label, "value": label, "num": None})
+    if sum(1 for x in sides if x["num"] is not None) < 1:
+        return None
+    better = re.search(r"\blebih (cepat|baik|hemat|aman|murah|kuat|efektif|bersih|jernih)\b", text, re.I)
+    left, right = sides
+    if better and left["num"] is not None and right["num"] is not None:
+        good_low = better.group(1).lower() in ("cepat", "hemat", "murah")
+        win_right = (right["num"] < left["num"]) if good_low else (right["num"] > left["num"])
+        (right if win_right else left)["win"] = True
+    for x in sides:
+        x.pop("num")
+    return left, right
 
 # ---------------------------------------------------------------- topik -> latar (env)
 # Latar tetap berbasis navy brand, tapi aksennya mengikuti topik: tidak selalu biru yang sama.
@@ -530,6 +585,7 @@ TOPIC_ENV = [
     ("sains", r"\b(sel|atom|molekul|suhu|uap|reaksi|energi|kimia|fisika|biologi|ilmuwan|embun|tekanan|oksigen|virus|bakteri)\b"),
     ("alam", r"\b(hutan|laut|gunung|hewan|cuaca|sungai|pohon|pantai|iklim|bumi|tanaman)\b"),
     ("kota", r"\b(kota|jalan|mobil|gedung|macet|transportasi|kendaraan|motor|kereta)\b"),
+    ("psikologi", r"\b(psikologi|otak|emosi|perasaan|stres|cemas|kebiasaan|motivasi|pikiran|mental|bahagia|takut)\b"),
 ]
 
 def topic_env(text):
@@ -612,6 +668,7 @@ def plan_scenes(lines, duration, title, style):
     rules = style.get("scenes", {}).get("rules", {})
     overlap = style.get("motion", {}).get("overlap", 0.35)
     tones, cams = ["dark", "blue", "light"], ["push", "pan-right", "rise", "pan-left", "pull"]
+    outro_at = next((j for j, l in enumerate(lines) if re.search(r"adri\.?\s*project|inilah adri|explore more|know more", l["text"], re.I)), len(lines))
     style = dict(style, _topic_env=topic_env(title + " " + " ".join(ln["text"] for ln in lines)))
     plan = []
     for i, ln in enumerate(lines):
@@ -629,7 +686,11 @@ def plan_scenes(lines, duration, title, style):
         elif is_outro:
             kind = "karakter"
         elif i == 0:
-            kind = "karakter"
+            kind = "karakter"  # pembuka/pertanyaan
+        elif re.search(KESIMPULAN, text, re.I) or (i == outro_at - 1 and i >= 3 and not re.search(r"\d", text)):
+            kind = "minimalis"  # kesimpulan
+        elif find_comparison(text):
+            kind = "perbandingan"
         elif len(find_years(text)) >= 2:
             kind = "timeline"  # sejarah: dua tahun atau lebih
         elif len(find_places(text)) >= 2:
@@ -637,6 +698,9 @@ def plan_scenes(lines, duration, title, style):
         elif len(find_numbers(text)) >= 2:
             nums = find_numbers(text)
             kind = "lingkaran" if all(n["unit"] in ("%", "persen") for n in nums) and 80 <= sum(n["value"] for n in nums) <= 120 else "grafik"
+        elif re.search(FAKTA, text, re.I) and not num:
+            kind = "objek"  # fakta: objek penuh layar dibuka dengan zoom
+            given.setdefault("layout", "full")
         elif re.search(r"\b(lapisan|terdiri dari|bagian dalam|di dalamnya|isi dari)\b", text, re.I) and len(_clauses(text)) >= 2:
             kind = "potongan"
         elif re.search(r"\b(jika|kalau|apabila)\b.*\b(maka|lakukan|ulangi)\b", text, re.I):
@@ -645,6 +709,8 @@ def plan_scenes(lines, duration, title, style):
             kind = "persentase" if sum(1 for p in plan if p["type"] == "angka") >= sum(1 for p in plan if p["type"] == "persentase") else "angka"
         elif num and not re.search(r"\b(langkah|pertama|kedua)\b", text, re.I):
             kind = "angka"
+        elif (re.search(CARA, text, re.I) or re.search(PROSES, text, re.I)) and len(_clauses(text)) >= 2:
+            kind = "diagram"  # cara melakukan / proses -> langkah demi langkah
         elif (re.search(r"\b(langkah|pertama|kedua|ketiga)\b", text, re.I) and len(_clauses(text)) >= 2) or (
                 re.search(r"\b(lalu|kemudian|setelah itu)\b", text, re.I) and len(_clauses(text)) >= 3):
             kind = "diagram"
@@ -679,12 +745,27 @@ def plan_scenes(lines, duration, title, style):
         with_adri = WITH_ADRI
         if not given.get("type") and len(plan) >= every - 1 and all(p["type"] not in with_adri for p in plan[-(every - 1):]) and kind not in with_adri:
             kind = "karakter"
+        # komposisi: jangan sekeluarga dengan adegan sebelumnya, kecuali isinya memang menuntut (data, proses, ...)
+        lay = given.get("layout")
+        if not given.get("type") and plan and family(kind, lay) == plan[-1].get("family") and kind in ("objek", "karakter", "infografis", "tipografi", "sinematik"):
+            if kind == "objek":
+                lay = "presenter" if lay == "full" else "full"
+                given["layout"] = lay
+            else:
+                alt = [k for k in ["karakter", "infografis", "tipografi", "objek", "sinematik"] if family(k) != plan[-1]["family"] and (fits.get(k) and ok(k))]
+                kind = alt[0] if alt else kind
         sc = {"type": kind, "line": ln["index"], "text": text}
         # isi adegan
         if kind == "angka" and num:
             v = float(num.group(1).replace(",", "."))
             unit = {"persen": "%", "derajat": "°"}.get((num.group(2) or "").lower(), num.group(2) or "")
             sc.update({"value": v, "unit": unit, "max": 100 if unit == "%" else max(v * 1.25, 1), "label": _short_title(text, 9), "pose": "kaget"})
+        elif kind == "perbandingan" and find_comparison(text):
+            sc["left"], sc["right"] = find_comparison(text)
+        elif kind == "minimalis":
+            core = re.sub(KESIMPULAN + r"[,\s]*", "", text, flags=re.I).strip()
+            sc["title"] = _short_title(core or text, 8)
+            sc["highlight"] = max(re.findall(r"[\w-]+", core or text), key=len)
         elif kind == "persentase" and num:
             sc.update({"value": float(num.group(1).replace(",", ".")), "label": _short_title(text, 9), "pose": "angkat"})
         elif kind == "timeline":
@@ -712,14 +793,24 @@ def plan_scenes(lines, duration, title, style):
             c = _short_title(cond, 3).rstrip(".?")
             sc["decision"] = c[:1].upper() + c[1:] + "?"
         elif kind == "diagram":
-            sc["steps"] = [c[:28] for c in _clauses(text)]
+            body = text.split(":", 1)[1] if ":" in text[:40] else text  # "Cara mengatasinya: ..." -> langkahnya saja
+            sc["steps"] = [c[:1].upper() + c[1:28] for c in _clauses(body) if not re.match(CARA + r"\s*\w*$", c, re.I)]
         elif kind == "infografis":
             sc["points"] = [f"{guess_icon(c)}:{c[:40]}" for c in _clauses(text)]
         elif kind in ("objek", "sinematik"):
             if has_visual:
                 sc["visual"] = ln["visual"]
             cl = _clauses(text) or [text]
-            sc["points"] = [f"{guess_icon(text)}:"] + [f"{guess_icon(c)}:{c[:24]}" for c in cl[:3]] if kind == "objek" else []
+            # label pendek utuh per kata (bukan dipotong di tengah kata); kata pembuka fakta dibuang
+            def lab(c):
+                ws = (re.sub(FAKTA + r"[,\s]*", "", c, flags=re.I).strip() or c).split()[:6]
+                while len(" ".join(ws)) > 32 and len(ws) > 2:
+                    ws = ws[:-1]
+                while len(ws) > 2 and ws[-1].lower() in ("yang", "di", "itu", "adalah", "dan", "ke", "dari", "untuk"):
+                    ws = ws[:-1]
+                t = " ".join(ws).rstrip(".,")
+                return t[:1].upper() + t[1:]
+            sc["points"] = [f"{guess_icon(text)}:"] + [f"{guess_icon(c)}:{lab(c)}" for c in cl[:3]] if kind == "objek" else []
             if kind == "objek":
                 sc["points"] = sc["points"][1:] or [f"{guess_icon(text)}:"]
                 sc["icon"] = guess_icon(text)
@@ -736,39 +827,66 @@ def plan_scenes(lines, duration, title, style):
             # penutup brand: ADRI senang, tagline + slogan
             sc.update({"outro": True, "pose": "senang", "kicker": outro.get("tagline", "Inilah Adri.project"),
                        "title": outro.get("slogan", "Explore more. Know more."), "highlight": "Know more", "points": ["bintang:", "ide:"]})
+        if kind == "minimalis":
+            core = text
+            while re.match(KESIMPULAN, core, re.I):  # "Jadi intinya, ..." -> "..."
+                core = re.sub(KESIMPULAN + r"[,:\s]*", "", core, count=1, flags=re.I).strip()
+            sc["title"] = _short_title(core or text, 8)
+            sc["kicker"] = SCENE_KICKER["minimalis"]
         hl = ln.get("highlight") or (num.group(0).strip() if num else None)
         if hl:
             sc["highlight"] = hl
+        is_full = kind == "objek" and given.get("layout") == "full"
         # transisi menurut konteks
         # pindah topik = sapuan kamera, data = sapuan diagonal, penekanan = zoom, objek = iris dari objeknya,
         # lanjutan = bentuk/gumpalan/dorong. Tidak pernah sama dengan transisi sebelumnya.
         prev_tr = plan[-1]["transition"] if plan else None
         wants = (["slide"] if i == 0 else ["whip", "slide"] if ln.get("topic") else
+                 ["cover", "iris"] if is_full else ["smooth", "cover"] if kind == "minimalis" else
                  ["iris", "shape"] if kind in ("objek", "potongan", "peta") else
                  ["wipe", "shape", "push"] if kind in DATA_TYPES else
-                 ["zoom", "iris"] if (hl or text.strip().endswith("!")) else ["morph", "push", "shape", "wipe"])
+                 ["zoom", "iris"] if (hl or text.strip().endswith("!")) else ["morph", "smooth", "push", "shape", "wipe"])
         rot = wants[i % len(wants):] + wants[:i % len(wants)]
         sc["transition"] = next((t for t in rot if t != prev_tr), "push" if prev_tr != "push" else "morph")
         sc["tone"] = tones[i % 3]
         sc["camera"] = cams[i % len(cams)]
         # latar: topik kalimat, atau topik video; data memakai latar data; diselingi umum/terang supaya bervariasi
-        env = topic_env(text) or style.get("_topic_env")
-        if kind in ("grafik", "angka", "persentase", "lingkaran") and not env:
+        # topik video hanya dipakai berselang; topik kalimat sendiri selalu didahulukan
+        own = topic_env(text)
+        env = own or (style.get("_topic_env") if i % 2 == 0 else None)
+        if kind in ("grafik", "angka", "persentase", "lingkaran") and not own:
             env = "data"
         if kind == "timeline":
             env = "sejarah"
+        # latar khusus komposisi: perbandingan terbagi, kesimpulan minimal, fakta kontras
+        env = {"perbandingan": "banding", "minimalis": "minimal"}.get(kind, "fakta" if is_full else env)
         last_env = plan[-1].get("env") if plan else None
         if not env or (env == last_env and kind != "timeline"):
-            pool = ["umum", "terang", "kota", "data"]
-            env = next(e for e in pool[i % 4:] + pool[:i % 4] if e != last_env)
+            pool = ["umum", "terang", "data"]  # gedung (kota) hanya untuk topik kota
+            env = next(e for e in pool[i % 3:] + pool[:i % 3] if e != last_env)
         sc["env"] = env
         sc["tone"] = "light" if env == "terang" else ("blue" if env == "kota" else "dark")
         sc.update({k: v for k, v in given.items() if k != "type"})
+        sc["family"] = family(sc["type"], sc.get("layout"))
+        sc.setdefault("subtitle", "tanpa" if sc["type"] == "objek" and sc.get("layout") == "full" else SUBTITLE.get(sc["type"], "standar"))
+        # kamera: bila jenis kamera bawaannya sama dengan kamera adegan sebelumnya, pakai kamera pengganti
+        key = "objek-full" if sc["type"] == "objek" and sc.get("layout") == "full" else sc["type"]
+        shot = DEFAULT_SHOT.get(key, "drift")
+        if plan and plan[-1].get("_shot") == shot and key in ALT_SHOT and "shot" not in given:
+            sc["altShot"] = True
+            shot = ALT_SHOT[key]
+        sc["_shot"] = shot
         # waktu: dari awal kalimat (dikurangi tumpang tindih transisi) sampai awal kalimat berikutnya
         start = 0.0 if i == 0 else max(0.0, ln["start"] - overlap)
         end = lines[i + 1]["start"] + overlap if i + 1 < len(lines) else duration
         sc.update({"start": round(start, 3), "end": round(end, 3)})
         plan.append(sc)
+    # ADRI berjalan keluar di akhir adegan karakter bila adegan berikutnya bukan adegan karakter
+    for a, b in zip(plan, plan[1:]):
+        if a["type"] == "karakter" and b["type"] != "karakter" and not a.get("outro"):
+            a.setdefault("adriExit", "left" if a.get("side", "right") == "right" else "right")
+    for sc in plan:
+        sc["shotKind"] = sc.pop("_shot")
     return plan
 
 
@@ -781,6 +899,12 @@ def check_standard(plan, style):
             issues.append(f"adegan {plan.index(b) + 1}: jenis '{b['type']}' sama dengan adegan sebelumnya")
         if a.get("env", a["tone"]) == b.get("env", b["tone"]) and a["type"] == b["type"]:
             issues.append(f"adegan {plan.index(b) + 1}: komposisi (latar + jenis) sama dengan sebelumnya")
+        if a.get("family") and a.get("family") == b.get("family") and b["type"] in ("objek", "karakter", "infografis", "tipografi", "sinematik"):
+            issues.append(f"adegan {plan.index(b) + 1}: komposisi '{b['family']}' sama dengan sebelumnya")
+        if a.get("shotKind") and a.get("shotKind") == b.get("shotKind") and b["type"] not in ("diagram", "timeline", "peta", "sinematik"):
+            issues.append(f"adegan {plan.index(b) + 1}: gerak kamera '{b['shotKind']}' sama dengan sebelumnya")
+        if a["end"] - b["start"] > 0.9:
+            issues.append(f"adegan {plan.index(b) + 1}: transisi {a['end'] - b['start']:.2f} dtk terlalu panjang")
         if a["transition"] == b["transition"]:
             issues.append(f"adegan {plan.index(b) + 1}: transisi '{b['transition']}' sama dengan sebelumnya")
     every = rules.get("characterEvery", 3)
@@ -1024,6 +1148,62 @@ def preview_styles(only=None):
         print(f"{sid:10s} -> {out.relative_to(ROOT)}")
 
 
+def pixel_checks(folder):
+    """Pemeriksaan piksel pada gambar QA: latar yang terputus (mis. lantai habis saat kamera bergeser)
+    dan gambar yang terlalu buram di tengah adegan. Mengembalikan daftar (gambar, pesan)."""
+    from PIL import Image, ImageFilter, ImageStat
+    found = []
+    for f in sorted(Path(folder).glob("*.png")):
+        rgb = Image.open(f).convert("RGB")
+        im = rgb.convert("L")
+        w, h = im.size
+        # di bawah pita subtitle latar harus menyambung. Lantai dan langit sama-sama gelap, jadi yang dicari
+        # tepi tegak yang kecil tapi tajam (gradasi biasa berubah sangat halus).
+        def edges(y, t):
+            row = [rgb.getpixel((x, y)) for x in range(w)]
+            return {x for x in range(3, w) if sum(abs(a - b) for a, b in zip(row[x], row[x - 3])) > t}
+        # tepi harus memanjang tegak (3 baris berjarak 30 px), jadi partikel kecil tidak terhitung
+        r1, r2, r3 = edges(h - 120, 9), edges(h - 90, 6), edges(h - 60, 6)
+        hit = sorted(x for x in r1 if any(abs(x - x2) <= 4 for x2 in r2) and any(abs(x - x3) <= 4 for x3 in r3))
+        if hit and "transisi" not in f.name:
+            found.append((f.name, f"latar terputus di bawah layar (x={hit[0]})"))
+        # ketajaman: variasi tepi sangat rendah di tengah adegan = buram
+        if "tengah" in f.name:
+            edges = ImageStat.Stat(im.crop((0, 140, w, 1440)).filter(ImageFilter.FIND_EDGES)).var[0]
+            if edges < 25:
+                found.append((f.name, f"gambar tampak buram (variasi tepi {edges:.0f})"))
+    return found
+
+
+def qa_scenes(name=None):
+    """Pemeriksaan visual dan teknis (gambar diam, bukan video). Dengan name: video media/<name>.
+    Tanpa name: contoh semua jenis adegan."""
+    out = ROOT / "media" / (name or "_contoh") / "qa"
+    if name:
+        d = ROOT / "media" / name
+        if not (d / "scenes.json").exists():
+            raise SystemExit("Belum ada scenes.json: jalankan dulu dengan --style adriy --until scenes")
+        pub = REMOTION / "public" / "media" / name
+        pub.mkdir(parents=True, exist_ok=True)
+        (d / "style.json").write_text(json.dumps(load_styles()["adriy"], ensure_ascii=False, indent=1), encoding="utf-8")
+        for f in ["meta.json", "pages.json", "audio.wav", "style.json", "scenes.json"]:
+            if (d / f).exists():
+                shutil.copy2(d / f, pub / f)
+        cmd = ["node", "scripts/qa.mjs", "--media", name, "--out", str(out)]
+    else:
+        cmd = ["node", "scripts/qa.mjs", "--samples", "--out", str(out)]
+    run(cmd, cwd=REMOTION)
+    px = pixel_checks(out)
+    rep = json.loads((out / "laporan.json").read_text())
+    rep["issues"] += [{"frame": f, "level": "masalah", "msg": m} for f, m in px]
+    (out / "laporan.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1))
+    for f, m in px:
+        print(f"  [masalah] {f}: {m}")
+    bad = [x for x in rep["issues"] if x["level"] != "catatan"]
+    print(f"QA selesai: {len(bad)} masalah. Gambar dan laporan: {out.relative_to(ROOT)}")
+    return rep
+
+
 def preview_scenes(name, only=None):
     """Gambar diam dari tengah tiap adegan di media/<name>/scenes.json (bukan video)."""
     d = ROOT / "media" / name
@@ -1169,6 +1349,7 @@ def main():
     ap.add_argument("--list-styles", action="store_true", help="tampilkan daftar style")
     ap.add_argument("--preview-styles", nargs="?", const="", metavar="STYLE", help="buat gambar pratinjau style (semua, atau satu)")
     ap.add_argument("--preview-scenes", action="store_true", help="gambar diam dari tengah tiap adegan (style adriy), bukan video")
+    ap.add_argument("--qa", action="store_true", help="periksa tabrakan, teks terpotong, subtitle, blur, sisa adegan, latar (gambar diam). Dengan --name: video itu; tanpa: contoh semua adegan")
     ap.add_argument("--title", default="", help="judul di layar kalau sumbernya audio saja")
     ap.add_argument("--renderer", choices=["remotion", "hyperframes", "both"], default="remotion",
                     help="mesin render (bawaan: remotion; both = dua versi)")
@@ -1189,6 +1370,8 @@ def main():
         if not args.name:
             ap.error("--preview-scenes butuh --name")
         return preview_scenes(args.name)
+    if args.qa:
+        return qa_scenes(args.name)
     if not args.input or not args.name:
         ap.error("butuh input dan --name (atau pakai --check)")
 

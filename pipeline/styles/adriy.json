@@ -42,7 +42,7 @@
   "motion": {
     "enter": 0.5,
     "exit": 0.35,
-    "overlap": 0.35,
+    "overlap": 0.3,
     "easeIn": [0.16, 1, 0.3, 1],
     "easeOut": [0.7, 0, 0.84, 0],
     "stagger": 0.08,
@@ -52,15 +52,20 @@
   },
   "transitions": {
     "topik": ["slide", "whip"],
-    "lanjutan": ["morph", "push", "shape", "wipe"],
+    "lanjutan": ["morph", "smooth", "push", "shape", "wipe"],
+    "fakta": ["cover", "iris"],
+    "kesimpulan": ["smooth", "cover"],
     "penekanan": ["zoom", "iris"],
     "objek": ["iris", "shape"],
     "data": ["wipe", "shape", "push"],
     "note": "Adegan bertumpuk 0,7 dtk: adegan baru masuk di atas adegan lama, adegan lama keluar dengan gerak yang melengkapinya. Transisi tidak pernah sama dengan sebelumnya; fade hanya bila diminta di naskah."
   },
   "scenes": {
-    "types": ["karakter", "objek", "infografis", "diagram", "perbandingan", "tipografi", "sinematik", "angka", "grafik", "lingkaran", "timeline", "peta", "alur", "potongan", "persentase"],
-    "environments": ["umum", "sains", "sejarah", "teknologi", "alam", "kota", "data", "terang"],
+    "types": ["karakter", "objek", "infografis", "diagram", "perbandingan", "tipografi", "sinematik", "angka", "grafik", "lingkaran", "timeline", "peta", "alur", "potongan", "persentase", "minimalis"],
+    "environments": ["umum", "sains", "sejarah", "teknologi", "alam", "kota", "data", "terang", "psikologi", "fakta", "banding", "minimal"],
+    "families": ["objek-penuh", "presenter-objek", "presenter", "tipografi", "infografis", "linimasa", "proses", "perbandingan", "sinematik", "minimalis"],
+    "adriSize": {"kecil": 500, "sedang": 800, "besar": 1150},
+    "subtitleModes": ["standar", "kata", "kinetik", "minimalis", "latar", "tanpa"],
     "rules": {
       "noRepeatType": true,
       "noRepeatLayout": true,

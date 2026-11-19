@@ -85,15 +85,16 @@ python3 pipeline/pipeline.py naskah.json --name x --style wayang
 
 ## Standar Adriy.project (style `adriy`)
 
-Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **15 jenis adegan** (karakter, objek,
+Style `adriy` bukan sekadar tampilan subtitle: videonya disusun dari **16 jenis adegan** (karakter, objek,
 infografis, diagram proses, perbandingan, tipografi kinetik, sinematik, angka, grafik batang, diagram
-lingkaran, linimasa, peta, diagram alir, potongan bagian dalam, persentase) dengan presenter ADRI berbadan
-penuh (12 pose, berjalan, memegang objek), kamera bertujuan, latar sesuai topik, dan transisi yang
+lingkaran, linimasa, peta, diagram alir, potongan bagian dalam, persentase, minimalis) dengan presenter ADRI
+berbadan penuh (12 pose, tiga ukuran menurut peran, menunjuk tepat ke objek, berjalan masuk dan keluar), kamera bertujuan, latar sesuai topik, dan transisi yang
 menyambung antaradegan. Aturan lengkapnya ada di `styles/ADRIY-STANDARD.md`.
 
 ```bash
 python3 pipeline/pipeline.py naskah.json --name video --style adriy --until scenes   # rencana + cek standar
 python3 pipeline/pipeline.py --preview-scenes --name video                           # gambar diam tiap adegan
+python3 pipeline/pipeline.py --qa --name video                                       # periksa tabrakan, teks terpotong, sisa adegan, blur
 ```
 
 - Langkah `scenes` membuat `scenes.json` dan memeriksa standar: jenis adegan dan transisi tidak berulang

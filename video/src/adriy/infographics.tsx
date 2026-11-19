@@ -19,7 +19,7 @@ export const CountUp: React.FC<{ value: number; at: number; len?: number; unit?:
   // sedikit membesar saat selesai menghitung (penekanan)
   const pop = sp(frame, fps, at + len - 0.1, { damping: 9, stiffness: 160 });
   return (
-    <div style={{ fontFamily: font, fontWeight: 800, fontSize: size, letterSpacing: -size * 0.04, lineHeight: 1, color, scale: `${1 + 0.06 * Math.sin(Math.min(1, pop) * Math.PI)}`, whiteSpace: "nowrap" }}>
+    <div data-qa="text" style={{ fontFamily: font, fontWeight: 800, fontSize: size, letterSpacing: -size * 0.04, lineHeight: 1, color, scale: `${1 + 0.06 * Math.sin(Math.min(1, pop) * Math.PI)}`, whiteSpace: "nowrap" }}>
       {fmt(value * p, dec(value))}
       {unit && <span style={{ fontSize: size * 0.5, color: unitColor ?? color, marginLeft: size * 0.04 }}>{unit}</span>}
     </div>
@@ -45,6 +45,7 @@ export const BarChart: React.FC<{ data: Datum[]; x: number; y: number; w: number
   const hi = focus ?? data.reduce((m, d, i) => (d.value > data[m].value ? i : m), 0);
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object">
       {/* garis bantu */}
       {[0.25, 0.5, 0.75].map((f) => (
         <line key={f} x1={x} x2={x + w * base} y1={y + h - h * f} y2={y + h - h * f} stroke={k.ink} strokeOpacity={0.12} strokeWidth={2} strokeDasharray="8 10" />
@@ -70,6 +71,7 @@ export const BarChart: React.FC<{ data: Datum[]; x: number; y: number; w: number
         );
       })}
       <line x1={x - 10} x2={x + (w + 20) * base} y1={y + h} y2={y + h} stroke={k.ink} strokeWidth={5} strokeLinecap="round" />
+      </g>
     </svg>
   );
 };
@@ -85,6 +87,7 @@ export const Donut: React.FC<{ data: Datum[]; cx: number; cy: number; r: number;
   const cols = series(k);
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object">
       <circle cx={cx} cy={cy} r={r} fill="none" stroke={k.ink} strokeOpacity={0.1} strokeWidth={sw} />
       {data.map((d, i) => {
         const f = d.value / total;
@@ -115,6 +118,7 @@ export const Donut: React.FC<{ data: Datum[]; cx: number; cy: number; r: number;
           </g>
         );
       })}
+      </g>
     </svg>
   );
 };
@@ -129,6 +133,7 @@ export const Timeline: React.FC<{ events: Event[]; x0: number; y: number; gap: n
   const draw = ap(frame, fps, at, 0.6 + events.length * 0.45, EASE.inOut);
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object" data-qa-wide="1">
       <line x1={x0 - 120} x2={x0 - 120 + (span + 240) * draw} y1={y} y2={y} stroke={k.ink} strokeOpacity={0.35} strokeWidth={8} strokeLinecap="round" />
       <line x1={x0} x2={x0 + span * draw} y1={y} y2={y} stroke={k.accent} strokeWidth={8} strokeLinecap="round" />
       {events.map((e, i) => {
@@ -149,6 +154,7 @@ export const Timeline: React.FC<{ events: Event[]; x0: number; y: number; gap: n
           </g>
         );
       })}
+      </g>
     </svg>
   );
 };
@@ -176,6 +182,7 @@ export const MapView: React.FC<{ pins: Pin[]; x: number; y: number; w: number; a
   const rp = ap(frame, fps, at + 0.6 + pins.length * 0.3, 0.9, EASE.inOut);
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object" data-qa-wide="1">
       {/* laut: garis lintang/bujur samar */}
       {Array.from({ length: 6 }, (_, i) => (
         <line key={i} x1={x} x2={x + w} y1={y + i * 84 * s} y2={y + i * 84 * s} stroke={k.ink} strokeOpacity={0.08} strokeWidth={2} />
@@ -203,6 +210,7 @@ export const MapView: React.FC<{ pins: Pin[]; x: number; y: number; w: number; a
           </g>
         );
       })}
+      </g>
     </svg>
   );
 };
@@ -215,6 +223,7 @@ export const FlowChart: React.FC<{ nodes: string[]; decision?: string; yes?: str
   const cx = x + w / 2;
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object">
       <defs>
         <marker id="flow-arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
           <path d="M0 0 L10 5 L0 10 Z" fill={k.accent} />
@@ -262,6 +271,7 @@ export const FlowChart: React.FC<{ nodes: string[]; decision?: string; yes?: str
           </g>
         );
       })()}
+      </g>
     </svg>
   );
 };
@@ -273,6 +283,7 @@ export const Waffle: React.FC<{ value: number; x: number; y: number; size: numbe
   const filled = Math.round(value * ap(frame, fps, at, 1.4, EASE.out));
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object">
       {Array.from({ length: 100 }, (_, i) => {
         // isi dari bawah ke atas, kiri ke kanan
         const col = i % 10;
@@ -281,6 +292,7 @@ export const Waffle: React.FC<{ value: number; x: number; y: number; size: numbe
         const appear = ap(frame, fps, at - 0.4 + (col + (9 - row)) * 0.02, 0.3);
         return <rect key={i} x={x + col * cell + 4} y={y + row * cell + 4} width={cell - 8} height={cell - 8} rx={cell * 0.22} fill={on ? k.accent : k.ink} opacity={(on ? 1 : 0.12) * appear} transform={on && i === filled - 1 ? `rotate(8 ${x + col * cell + cell / 2} ${y + row * cell + cell / 2})` : undefined} />;
       })}
+      </g>
     </svg>
   );
 };
@@ -291,7 +303,8 @@ export const Callout: React.FC<{ from: [number, number]; to: [number, number]; l
   const p = ap(frame, fps, at, 0.45);
   const t = ap(frame, fps, at + 0.3, 0.4);
   const right = align ? align === "right" : to[0] >= from[0];
-  const elbow: [number, number] = [to[0], from[1] + (to[1] - from[1]) * 0.0];
+  // ke samping dulu, lalu turun tepat di tepi label: garis tidak pernah melewati teks label
+  const elbow: [number, number] = [to[0], from[1]];
   const pulse = 1 + 0.25 * Math.sin(frame / 7);
   return (
     <>
@@ -300,7 +313,7 @@ export const Callout: React.FC<{ from: [number, number]; to: [number, number]; l
         <circle cx={from[0]} cy={from[1]} r={9 * p} fill={k.accent} />
         <polyline points={`${from[0]},${from[1]} ${elbow[0]},${elbow[1]} ${to[0]},${to[1]}`} fill="none" stroke={k.accent} strokeWidth={4} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - p} />
       </svg>
-      <div style={{ position: "absolute", left: right ? to[0] : to[0] - width, top: to[1] - 34, width, textAlign: right ? "left" : "right", fontFamily: k.font, fontWeight: 800, fontSize: 38, lineHeight: 1.15, color: k.ink, opacity: t, translate: `${(1 - t) * (right ? 20 : -20)}px 0px` }}>
+      <div data-qa="text" style={{ position: "absolute", left: right ? to[0] : to[0] - width, top: to[1] - 34, width, textAlign: right ? "left" : "right", fontFamily: k.font, fontWeight: 800, fontSize: 38, lineHeight: 1.15, color: k.ink, opacity: t, translate: `${(1 - t) * (right ? 20 : -20)}px 0px` }}>
         <span style={{ borderBottom: `5px solid ${k.accent}`, paddingBottom: 4 }}>{label}</span>
       </div>
     </>
@@ -320,9 +333,10 @@ export const Cutaway: React.FC<{ layers: string[]; cx: number; cy: number; w: nu
   const open = ap(frame, fps, at + 0.4, 0.8, EASE.inOut);
   const g = cutawayLayers(layers.length, cx, cy, w, h);
   const cols = [k.primary, k.secondary, k.accent, k.negative];
-  const halfShift = open * w * 0.32;
+  const halfShift = open * w * 0.2;
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+      <g data-qa="object">
       <defs>
         <clipPath id="cut-left"><rect x={cx - w} y={cy - h} width={w} height={h * 2} /></clipPath>
         <clipPath id="cut-right"><rect x={cx} y={cy - h} width={w} height={h * 2} /></clipPath>
@@ -339,6 +353,7 @@ export const Cutaway: React.FC<{ layers: string[]; cx: number; cy: number; w: nu
           <ellipse cx={cx} cy={cy} rx={w / 2 - 26} ry={h / 2 - 26} fill="none" stroke={k.bg} strokeOpacity={0.3} strokeWidth={6} strokeDasharray="20 14" />
         </g>
       ))}
+      </g>
     </svg>
   );
 };

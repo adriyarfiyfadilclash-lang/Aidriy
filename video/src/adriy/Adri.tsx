@@ -35,8 +35,12 @@ type Props = {
   facing?: "left" | "right";
   look?: Look;
   holding?: React.ReactNode; // elemen SVG yang dipegang (koordinat lokal, titik 0,0 = di antara tangan)
+  aim?: [number, number] | null; // titik yang ditunjuk, dalam koordinat lokal ADRI (viewBox 500x1180, sebelum dicerminkan)
   seed?: number;
 };
+
+// Sudut lengan supaya lurus mengarah ke titik (dx, dy) dari bahu: lengan turun = 0 derajat.
+const aimAngle = (dx: number, dy: number) => (Math.atan2(-dx, dy) * 180) / Math.PI;
 
 type Hand = "open" | "point" | "fist";
 type PoseDef = { l: [number, number]; r: [number, number]; lh: Hand; rh: Hand; brow: number; mouth: "smile" | "o" | "grin" | "flat"; eyes: "normal" | "wide" | "happy"; tilt: number; look: Look; legs: [number, number] };
@@ -94,7 +98,7 @@ const Leg: React.FC<{ x: number; a: number; c: CharacterSpec["colors"] }> = ({ x
   </g>
 );
 
-export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, seed = 0 }) => {
+export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facing = "right", look, holding, aim, seed = 0 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const cues: PoseCue[] = typeof pose === "string" ? [{ at: 0, pose }] : [...pose].sort((a, b) => a.at - b.at);
@@ -120,7 +124,20 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
   const sway = walking ? 0 : Math.sin((frame + seed * 7) / 30) * 3; // lengan bergoyang halus saat diam
   const explain = cur.pose === "jelaskan" ? Math.sin((frame + seed) / 9) * 8 : 0; // tangan bergerak saat menjelaskan
   const lA: [number, number] = walking ? [-step * 22, -12] : [lerp(A.l[0], B.l[0], w) + sway, lerp(A.l[1], B.l[1], w) + explain];
-  const rA: [number, number] = walking ? [step * 22, 12] : [lerp(A.r[0], B.r[0], w) - sway, lerp(A.r[1], B.r[1], w) - explain];
+  let rA: [number, number] = walking ? [step * 22, 12] : [lerp(A.r[0], B.r[0], w) - sway, lerp(A.r[1], B.r[1], w) - explain];
+  // menunjuk/menyentuh: tangan kanan diarahkan tepat ke target, tubuh condong ke sana
+  const pointing = !!aim && (cur.pose === "tunjuk" || cur.pose === "sentuh");
+  const aimW = pointing ? w : 0;
+  if (pointing && aim) {
+    const a = aimAngle(aim[0] - 354, aim[1] - 505);
+    rA = [lerp(rA[0], a, aimW), lerp(rA[1], -4, aimW)];
+  }
+  const lean = pointing && aim ? Math.max(-4, Math.min(4, (aim[0] - 250) / 120)) * aimW : 0;
+  // terkejut: tubuh tersentak ke belakang sebentar lalu kembali
+  const startle = cur.pose === "kaget" ? Math.sin(Math.min(1, w) * Math.PI) * -5 : 0;
+  // kepala: mengangguk kecil saat bicara, bergoyang sangat halus saat diam
+  const nod = (talking ? Math.sin((frame + seed) * 0.21) * 1.8 : 0) + Math.sin((frame + seed * 5) / 45) * 1.2;
+  const headY = talking ? Math.abs(Math.sin((frame + seed) * 0.21)) * -3 : 0;
   const wave = cur.pose === "sapa" ? Math.sin(frame / 5) * 14 * w : 0;
   const legs: [number, number] = walking ? [step * 20, -step * 20] : [lerp(A.legs[0], B.legs[0], w), lerp(A.legs[1], B.legs[1], w)];
   const bob = walking ? -Math.abs(step) * 10 : 0;
@@ -129,8 +146,12 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
   const mouthOpen = talking ? Math.abs(Math.sin((frame + seed) * 0.55)) * (0.6 + 0.4 * Math.abs(Math.sin(frame * 0.17))) : 0;
   // arah pandang: pupil dan wajah bergeser sedikit (kesan menoleh)
   const lk = look ?? cur.look ?? face.look;
-  const [px, py, turn] = { maju: [5, 1, 10], penonton: [0, 1, 0], atas: [2, -6, 3], bawah: [2, 5, 2] }[lk] as [number, number, number];
-  const tilt = lerp(A.tilt, B.tilt, w);
+  const [px0, py0, turn0] = { maju: [5, 1, 10], penonton: [0, 1, 0], atas: [2, -6, 3], bawah: [2, 5, 2] }[lk] as [number, number, number];
+  // saat menunjuk, mata mengikuti target
+  const px = pointing && aim ? lerp(px0, Math.max(-6, Math.min(6, (aim[0] - 250) / 40)), aimW) : px0;
+  const py = pointing && aim ? lerp(py0, Math.max(-6, Math.min(6, (aim[1] - 290) / 60)), aimW) : py0;
+  const turn = pointing ? lerp(turn0, 10, aimW) : turn0;
+  const tilt = lerp(A.tilt, B.tilt, w) + nod;
 
   const eye = (cx: number) =>
     blink ? (
@@ -165,7 +186,7 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
       <g transform={`translate(0 ${bob})`}>
         <Leg x={212} a={legs[0]} c={c} />
         <Leg x={288} a={legs[1]} c={c} />
-        <g transform={`translate(250 840) scale(${breathe}) translate(-250 -840)`}>
+        <g transform={`rotate(${lean + startle} 250 840) translate(250 840) scale(${breathe}) translate(-250 -840)`}>
           {/* badan */}
           <path d="M120 840 C116 600 150 470 250 470 C350 470 384 600 380 840 Z" fill={c.hoodie} stroke={RIM} strokeWidth={4} />
           <rect x={118} y={812} width={264} height={30} rx={14} fill={c.hoodieAccent} opacity={0.9} />
@@ -177,7 +198,7 @@ export const Adri: React.FC<Props> = ({ spec, pose, size, talking = false, facin
           <Arm x={146} y={505} a1={lA[0]} a2={lA[1]} c={c} hand={face.lh} />
           {/* leher + kepala */}
           <rect x={222} y={400} width={56} height={80} rx={24} fill={c.skinShade} />
-          <g transform={`rotate(${tilt} 250 330)`}>
+          <g transform={`translate(0 ${headY}) rotate(${tilt} 250 330)`}>
             <ellipse cx={250} cy={300} rx={112} ry={128} fill={c.skin} />
             <ellipse cx={140 + turn * 0.6} cy={310} rx={18 - turn * 0.6} ry={26} fill={c.skinShade} />
             <ellipse cx={360 + turn * 0.4} cy={310} rx={18 + turn * 0.3} ry={26} fill={c.skinShade} />

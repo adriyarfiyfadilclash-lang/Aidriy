@@ -5,9 +5,10 @@ import type { Brand } from "./scenes";
 
 // Latar sesuai topik. Semuanya berangkat dari navy/biru brand, lalu diberi aksen dan lingkungan
 // sesuai isi (sains, sejarah, teknologi, ...), supaya tidak selalu biru yang sama.
-// Tiga kedalaman: langit (diam), dekorasi jauh (0.25), partikel dekat (1.3).
+// Lapisan 1 = langit/gradasi + tekstur (diam), lapisan 2 = dekorasi dan lingkungan (kedalaman 0.3).
+// Lapisan 3-5 (objek, karakter, teks) ada di scenes.tsx. Partikel hanya untuk lingkungan yang cocok.
 
-export type Env = "umum" | "sains" | "sejarah" | "teknologi" | "alam" | "kota" | "data" | "terang";
+export type Env = "umum" | "sains" | "sejarah" | "teknologi" | "alam" | "kota" | "data" | "terang" | "psikologi" | "fakta" | "banding" | "minimal";
 
 type Look = { sky: [string, string, string]; ink: string; accent: string; glow: string; floor: string; light: boolean };
 
@@ -22,6 +23,10 @@ export const envLook = (env: Env, b: Brand): Look => {
     kota: { sky: ["#2F6BFF", "#1F3FB8", "#14286E"], ink: "#FFFFFF", accent: p.accent, glow: "#FFFFFF", floor: "#132457", light: false },
     data: { sky: ["#152A66", "#0B1530", "#081024"], ink: p.ink, accent: p.accent, glow: p.primary, floor: "#0E1B42", light: false },
     terang: { sky: ["#FFFFFF", "#EEF3FC", "#DCE6F8"], ink: p.bg, accent: p.primary, glow: p.accent, floor: "#D2DDF3", light: true },
+    psikologi: { sky: ["#1D2B5E", "#141E45", "#0D1433"], ink: p.ink, accent: "#B7A6FF", glow: "#B7A6FF", floor: "#141E45", light: false },
+    fakta: { sky: ["#FFD27A", "#FFB547", "#F29A2E"], ink: p.bg, accent: p.bg, glow: "#FFFFFF", floor: "#E8962A", light: true },
+    banding: { sky: [p.bg2, p.bg, "#070E22"], ink: p.ink, accent: p.accent, glow: p.primary, floor: "#0E1B42", light: false },
+    minimal: { sky: ["#0E1A3D", "#0B1530", "#0B1530"], ink: p.ink, accent: p.accent, glow: p.primary, floor: "#0B1530", light: false },
   };
   return L[env];
 };
@@ -30,15 +35,51 @@ export const envLook = (env: Env, b: Brand): Look => {
 const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame }) => {
   const c = lk.light ? lk.accent : lk.ink;
   switch (env) {
+    case "psikologi":
+      // simbolik: profil kepala dengan satu lingkaran pikiran, garis tipis
+      return (
+        <g opacity={0.2}>
+          <path d="M760 1300 C700 1240 690 1150 720 1080 C680 1050 690 1000 730 990 C720 900 780 800 890 790 C1000 780 1080 860 1080 960 V1300 Z" fill="none" stroke={lk.accent} strokeWidth={5} />
+          <circle cx={900} cy={930} r={60 + Math.sin(frame / 40) * 6} fill="none" stroke={lk.accent} strokeWidth={4} strokeDasharray="6 12" />
+          <path d="M80 420 C300 380 420 520 620 470" stroke={c} strokeWidth={3} fill="none" />
+        </g>
+      );
+    case "fakta":
+      // kontras: pita diagonal navy + titik halftone
+      return (
+        <g>
+          <path d="M-100 1180 L1180 760 L1180 980 L-100 1400 Z" fill={lk.ink} opacity={0.1} />
+          {Array.from({ length: 70 }, (_, i) => {
+            const col = i % 10;
+            const row = Math.floor(i / 10);
+            return <circle key={i} cx={760 + col * 34} cy={160 + row * 34} r={3 + (col + row) * 0.5} fill={lk.ink} opacity={0.12} />;
+          })}
+        </g>
+      );
+    case "banding":
+      // struktur terbagi: dua bidang dengan sudut berbeda
+      return (
+        <g>
+          <path d="M0 0 H560 L480 1920 H0 Z" fill="#FFFFFF" opacity={0.03} />
+          <path d="M560 0 H1080 V1920 H480 Z" fill={lk.glow} opacity={0.07} />
+        </g>
+      );
+    case "minimal":
+      // satu busur lembut, sisanya ruang kosong
+      return <path d="M-200 1500 A900 900 0 0 1 1280 1300" fill="none" stroke={lk.accent} strokeWidth={3} opacity={0.18} />;
     case "sains":
-      // molekul dan orbit atom
+      // ruang eksperimen: labu, tabung reaksi, molekul, orbit atom
       return (
         <g opacity={0.22}>
+          <g transform="translate(560 220)">
+            <path d="M120 980 V860 H100 V840 H200 V860 H180 V980 L250 1130 Q260 1160 230 1160 H70 Q40 1160 50 1130 Z" fill="none" stroke={lk.glow} strokeWidth={6} strokeLinejoin="round" />
+            <path d="M70 1100 H230 L250 1130 Q260 1160 230 1160 H70 Q40 1160 50 1130 Z" fill={lk.glow} opacity={0.6} />
+          </g>
           {[0, 60, 120].map((a) => (
-            <ellipse key={a} cx={860} cy={360} rx={210} ry={70} fill="none" stroke={lk.glow} strokeWidth={4} transform={`rotate(${a + frame * 0.3} 860 360)`} />
+            <ellipse key={a} cx={900} cy={1210} rx={150} ry={50} fill="none" stroke={lk.glow} strokeWidth={4} transform={`rotate(${a + frame * 0.3} 900 1210)`} />
           ))}
-          <circle cx={860} cy={360} r={26} fill={lk.glow} />
-          {[[140, 700], [260, 800], [180, 920], [320, 640]].map(([x, y], i, a) => (
+          <circle cx={900} cy={1210} r={20} fill={lk.glow} />
+          {[[860, 600], [960, 680], [900, 760], [1000, 560]].map(([x, y], i, a) => (
             <g key={i}>
               {i > 0 && <line x1={a[i - 1][0]} y1={a[i - 1][1]} x2={x} y2={y} stroke={c} strokeWidth={6} />}
               <circle cx={x} cy={y} r={22 + (i % 2) * 10} fill={i % 2 ? lk.accent : c} />
@@ -60,7 +101,7 @@ const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame 
           ))}
           {[110, 970].map((x) => (
             <g key={x}>
-              <rect x={x - 40} y={700} width={80} height={740} fill={c} opacity={0.4} />
+              <rect x={x - 40} y={700} width={80} height={740} fill={c} opacity={0.22} />
               <rect x={x - 64} y={670} width={128} height={40} fill={c} />
               <rect x={x - 64} y={1400} width={128} height={40} fill={c} />
             </g>
@@ -146,23 +187,55 @@ const Deco: React.FC<{ env: Env; lk: Look; frame: number }> = ({ env, lk, frame 
   }
 };
 
+// Tekstur per lingkungan (bukan grid yang sama di semua adegan)
+const Texture: React.FC<{ env: Env; lk: Look }> = ({ env, lk }) => {
+  if (env === "sejarah")
+    // tekstur dokumenter: butiran kertas + vinyet hangat
+    return (
+      <>
+        <svg width={W} height={H} style={{ position: "absolute", inset: 0, opacity: 0.16, mixBlendMode: "overlay" }}>
+          <filter id="kertas"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves={2} seed={4} /><feColorMatrix type="saturate" values="0" /></filter>
+          <rect width={W} height={H} filter="url(#kertas)" />
+        </svg>
+        <AbsoluteFill style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(40,20,0,0.35) 100%)" }} />
+      </>
+    );
+  if (env === "teknologi")
+    return <AbsoluteFill style={{ backgroundImage: `linear-gradient(${lk.accent}14 2px, transparent 2px), linear-gradient(90deg, ${lk.accent}14 2px, transparent 2px)`, backgroundSize: "90px 90px", opacity: 0.6 }} />;
+  if (env === "data")
+    return <AbsoluteFill style={{ backgroundImage: `radial-gradient(${lk.ink}12 1.5px, transparent 2px)`, backgroundSize: "34px 34px", opacity: 0.6 }} />;
+  if (env === "sains")
+    // pola heksagon samar
+    return (
+      <svg width={W} height={H} style={{ position: "absolute", inset: 0, opacity: 0.08 }}>
+        <defs>
+          <pattern id="heks" width={84} height={146} patternUnits="userSpaceOnUse">
+            <path d="M42 0 L84 24 L84 73 L42 97 L0 73 L0 24 Z M42 97 V146" fill="none" stroke={lk.ink} strokeWidth={2} />
+          </pattern>
+        </defs>
+        <rect width={W} height={H} fill="url(#heks)" />
+      </svg>
+    );
+  return null;
+};
+
 export const Environment: React.FC<{ env: Env; brand: Brand; floor?: boolean }> = ({ env, brand, floor = true }) => {
   const { frame } = useScene();
   const lk = envLook(env, brand);
   const [a, b, c] = lk.sky;
   // partikel dekat: bentuk berbeda per lingkungan (debu cahaya, gelembung, piksel)
-  const motes = Array.from({ length: 12 }, (_, i) => {
+  const moteCount = env === "sains" || env === "alam" || env === "teknologi" ? 9 : 0;
+  const motes = Array.from({ length: moteCount }, (_, i) => {
     const r = rand(i + 1);
     return { x: ((i * 97 + r * 300) % 1040) + 20, y: (((i * 173 + frame * (0.4 + r * 0.9)) % (H + 80)) + H) % (H + 80) - 40, s: 5 + r * 12, o: 0.12 + r * 0.25 };
   }).map((m) => ({ ...m, y: H - m.y }));
   return (
     <>
       <AbsoluteFill style={{ background: `radial-gradient(ellipse 120% 80% at 30% 18%, ${a} 0%, ${b} 52%, ${c} 100%)` }} />
-      {/* cahaya lembut yang bergeser */}
-      <AbsoluteFill style={{ background: `radial-gradient(circle at ${70 + Math.sin(frame / 80) * 8}% ${30 + Math.cos(frame / 90) * 6}%, ${lk.glow}33 0%, transparent 45%)` }} />
-      {/* tekstur butiran halus */}
-      <AbsoluteFill style={{ backgroundImage: `radial-gradient(${lk.ink}10 1.5px, transparent 2px)`, backgroundSize: "34px 34px", opacity: 0.6 }} />
-      <Layer depth={0.25}>
+      {/* cahaya lembut yang bergeser sangat pelan (gerak paling halus = latar) */}
+      {env !== "minimal" && <AbsoluteFill style={{ background: `radial-gradient(circle at ${70 + Math.sin(frame / 120) * 5}% ${30 + Math.cos(frame / 140) * 4}%, ${lk.glow}2A 0%, transparent 45%)` }} />}
+      <Texture env={env} lk={lk} />
+      <Layer depth={0.3}>
         <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
           <Deco env={env} lk={lk} frame={frame} />
         </svg>
@@ -170,7 +243,8 @@ export const Environment: React.FC<{ env: Env; brand: Brand; floor?: boolean }> 
       {floor && (
         <Layer depth={0.6}>
           {/* lantai tempat ADRI berpijak: bidang dengan cahaya di tepi */}
-          <div style={{ position: "absolute", left: -200, right: -200, top: FLOOR - 6, height: H - FLOOR + 200, background: `linear-gradient(180deg, ${lk.floor} 0%, ${c} 70%)` }} />
+          {/* sangat lebar supaya tidak habis saat kamera bergeser jauh (proses, linimasa) */}
+          <div style={{ position: "absolute", left: -4000, right: -4000, top: FLOOR - 6, height: H - FLOOR + 200, background: `linear-gradient(180deg, ${lk.floor} 0%, ${c} 70%)` }} />
           <div style={{ position: "absolute", left: -200, right: -200, top: FLOOR - 6, height: 4, background: `linear-gradient(90deg, transparent, ${lk.accent}99, transparent)` }} />
         </Layer>
       )}

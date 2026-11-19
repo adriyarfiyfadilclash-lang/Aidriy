@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AbsoluteFill, interpolate } from "remotion";
-import { clamp, EASE, H, NextTransition, OVERLAP, speedBlur, useScene, W } from "./motion";
+import { clamp, EASE, H, NextTransition, OVERLAP, SceneIndex, speedBlur, TransitionTiming, useScene, W } from "./motion";
 
 // Transisi antar adegan. Adegan baru masuk DI ATAS adegan lama selama OVERLAP detik (kontinuitas,
 // bukan layar kosong), dan adegan lama keluar dengan gerak yang melengkapi transisi adegan berikutnya.
@@ -12,10 +12,13 @@ import { clamp, EASE, H, NextTransition, OVERLAP, speedBlur, useScene, W } from 
 //   whip   = kamera menyapu cepat dengan motion blur
 //   push   = adegan baru mendorong adegan lama ke atas
 //   slide  = geser horizontal (lama)
-//   fade   = larut (hanya untuk lanjutan yang sangat halus)
+//   smooth = larut cepat dengan sedikit gerak naik (lanjutan yang halus)
+//   cover  = bentuk aksen brand menutup layar dari objek fokus lalu membuka adegan baru (transisi objek)
+//   fade   = larut biasa (hanya bila diminta naskah)
+// Blur hanya dipakai saat whip pan bergerak cepat; transisi lain tajam supaya teks tetap terbaca.
 
-export type Transition = "iris" | "shape" | "morph" | "wipe" | "zoom" | "whip" | "push" | "slide" | "fade";
-export const TRANSITIONS: Transition[] = ["iris", "shape", "morph", "wipe", "zoom", "whip", "push", "slide", "fade"];
+export type Transition = "iris" | "shape" | "morph" | "wipe" | "zoom" | "whip" | "push" | "slide" | "smooth" | "cover" | "fade";
+export const TRANSITIONS: Transition[] = ["iris", "shape", "morph", "wipe", "zoom", "whip", "push", "slide", "smooth", "cover", "fade"];
 
 const blob = (p: number, cx: number, cy: number, seed: number) => {
   // poligon 24 titik; jari-jari bergelombang, makin besar sampai menutup layar
@@ -31,12 +34,17 @@ const blob = (p: number, cx: number, cy: number, seed: number) => {
 export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; accent: string; children: React.ReactNode; seed?: number }> = ({ enter, focus = [W / 2, H / 2], accent, children, seed = 0 }) => {
   const { frame, fps, len } = useScene();
   const next = useContext(NextTransition);
-  const d = OVERLAP * fps;
-  const e = interpolate(frame, [0, d], [0, 1], { ...clamp, easing: EASE.inOut });
-  const ePrev = interpolate(frame - 1, [0, d], [0, 1], { ...clamp, easing: EASE.inOut });
-  const entering = frame < d;
-  const x = next ? interpolate(frame, [len - d, len], [0, 1], { ...clamp, easing: EASE.inOut }) : 0;
-  const xPrev = next ? interpolate(frame - 1, [len - d, len], [0, 1], { ...clamp, easing: EASE.inOut }) : 0;
+  const timing = useContext(TransitionTiming);
+  const sceneIndex = useContext(SceneIndex);
+  // lama transisi = tumpang tindih nyata dengan adegan sebelum/sesudahnya (adegan pertama: tanpa transisi masuk)
+  const d = Math.max(1, (timing ? timing.enter : OVERLAP) * fps);
+  const dx = Math.max(1, (timing ? timing.exit : OVERLAP) * fps);
+  const hasEnter = !timing || timing.enter > 0;
+  const e = hasEnter ? interpolate(frame, [0, d], [0, 1], { ...clamp, easing: EASE.inOut }) : 1;
+  const ePrev = hasEnter ? interpolate(frame - 1, [0, d], [0, 1], { ...clamp, easing: EASE.inOut }) : 1;
+  const entering = hasEnter && frame < d;
+  const x = next ? interpolate(frame, [len - dx, len], [0, 1], { ...clamp, easing: EASE.inOut }) : 0;
+  const xPrev = next ? interpolate(frame - 1, [len - dx, len], [0, 1], { ...clamp, easing: EASE.inOut }) : 0;
 
   const st: React.CSSProperties = {};
   const tf: string[] = [];
@@ -72,16 +80,33 @@ export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; acc
         break;
       }
       case "zoom":
-        // datang dari depan kamera (besar ke normal) sementara adegan lama terdorong masuk
+        // datang dari depan kamera (besar ke normal) sementara adegan lama terdorong masuk; tanpa blur
         tf.push(`scale(${1.6 - 0.6 * e})`);
-        st.opacity = Math.min(1, e * 1.8);
-        filters.push(`blur(${(1 - e) * 8}px)`);
+        st.opacity = Math.min(1, e * 2.6); // tumpang tindih dua adegan sesingkat mungkin
         break;
+      case "smooth":
+        st.opacity = Math.min(1, e * 1.4);
+        tf.push(`translateY(${(1 - e) * 40}px)`);
+        break;
+      case "cover": {
+        // paruh pertama: bentuk aksen membesar dari fokus menutup layar; paruh kedua: bentuk mengecil ke arah
+        // berlawanan dan adegan baru terlihat
+        const R = Math.hypot(W, H) * 1.1;
+        if (e < 0.5) {
+          st.clipPath = "inset(0 0 0 100%)"; // adegan baru belum terlihat
+          const r = (e / 0.5) * R;
+          stripe = <div style={{ position: "absolute", left: fx - r, top: fy - r, width: 2 * r, height: 2 * r, borderRadius: "46% 54% 50% 50%", background: accent }} />;
+        } else {
+          const r = (1 - (e - 0.5) / 0.5) * R;
+          stripe = <div style={{ position: "absolute", left: W - fx - r, top: H - fy - r, width: 2 * r, height: 2 * r, borderRadius: "50% 46% 54% 50%", background: accent }} />;
+        }
+        break;
+      }
       case "whip": {
         const tx = (1 - e) * W;
         const v = ((1 - e) - (1 - ePrev)) * W;
         tf.push(`translateX(${tx}px)`);
-        filters.push(`blur(${speedBlur(v, 10, 16)}px)`);
+        filters.push(`blur(${speedBlur(v, 10, 10)}px)`);
         break;
       }
       case "push":
@@ -99,12 +124,15 @@ export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; acc
     switch (next as Transition) {
       case "zoom":
         tf.push(`scale(${1 + 0.45 * x})`);
-        filters.push(`blur(${x * 6}px)`);
+        dim = x * 0.4;
+        break;
+      case "cover":
+      case "smooth":
         break;
       case "whip": {
         const v = (x - xPrev) * W;
         tf.push(`translateX(${-x * W}px)`);
-        filters.push(`blur(${speedBlur(v, 10, 16)}px)`);
+        filters.push(`blur(${speedBlur(v, 10, 10)}px)`);
         break;
       }
       case "push":
@@ -123,9 +151,12 @@ export const SceneFrame: React.FC<{ enter: string; focus?: [number, number]; acc
     }
   }
   return (
-    <AbsoluteFill style={{ ...st, transform: tf.join(" ") || undefined, filter: filters.filter((f) => !f.includes("(0px)")).join(" ") || undefined, overflow: "hidden" }}>
-      {children}
-      {dim > 0 && <AbsoluteFill style={{ background: "#000", opacity: dim }} />}
+    <AbsoluteFill data-scene={sceneIndex}>
+      <AbsoluteFill style={{ ...st, transform: tf.join(" ") || undefined, filter: filters.filter((f) => !f.includes("(0px)")).join(" ") || undefined, overflow: "hidden" }}>
+        {children}
+        {dim > 0 && <AbsoluteFill style={{ background: "#000", opacity: dim }} />}
+      </AbsoluteFill>
+      {/* garis/cincin/bentuk aksen transisi berada di luar mask supaya selalu terlihat */}
       {entering && stripe}
     </AbsoluteFill>
   );

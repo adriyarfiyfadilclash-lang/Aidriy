@@ -85,3 +85,7 @@ export const sp = (frame: number, fps: number, at: number, config: { damping?: n
 export const NextTransition = createContext<string | null>(null);
 // Lama tumpang tindih dua adegan (detik): adegan baru masuk di atas adegan lama.
 export const OVERLAP = 0.7;
+// Lama transisi masuk/keluar yang sebenarnya (detik), dihitung AdriyVideo dari tumpang tindih adegan.
+export const TransitionTiming = createContext<{ enter: number; exit: number } | null>(null);
+// Nomor adegan (untuk pemeriksa QA: elemen adegan lama yang tertinggal).
+export const SceneIndex = createContext<number>(0);

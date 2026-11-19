@@ -13,6 +13,9 @@ export type Shot =
   | { kind: "emphasis"; x: number; y: number } // mendekat ke karakter dengan sedikit miring
   | { kind: "perspective"; from: "left" | "right" } // berputar sedikit, pindah sudut pandang
   | { kind: "drift" } // gerak sangat halus untuk adegan teks
+  | { kind: "panV"; distance: number; zoom?: number } // menurun/menaik: memperlihatkan isi dari atas ke bawah
+  | { kind: "reveal"; x: number; y: number; from?: number } // mulai dekat pada detail, lalu mundur memperlihatkan semuanya
+  | { kind: "rack"; from: "left" | "right" } // bergeser antarlapisan: lapisan depan bergerak lebih jauh dari belakang
   | { kind: "path"; keys: { t: number; x: number; y: number; zoom?: number }[] }; // kamera berpindah antartitik (proses, linimasa, peta)
 
 // Titik pandang kamera "path" pada detik t: diam di tiap titik, lalu berpindah dengan easing.
@@ -54,7 +57,8 @@ export const useCamera = (shot: Shot): Cam => {
       const ty = interpolate(k, [0, 1], [shot.from[1], shot.to[1]]);
       // geser sebagian (60% horizontal, 30% vertikal) supaya titik itu mendekati tengah layar
       const z = shot.zoom ?? 1.1;
-      return { x: (W / 2 - tx) * 0.6, y: (H / 2 - ty) * 0.3, zoom: z, rot: 0, tiltY: 0, ox: tx, oy: ty };
+      // geser ke bawah tidak boleh: lantai (dan kaki ADRI) akan turun ke pita subtitle
+      return { x: (W / 2 - tx) * 0.6, y: Math.min(0, (H / 2 - ty) * 0.3), zoom: z, rot: 0, tiltY: 0, ox: tx, oy: ty };
     }
     case "pan":
       return { x: -shot.distance * k, y: 0, zoom: shot.zoom ?? 1.0, rot: 0, tiltY: 0, ox: W / 2, oy: H / 2 };
@@ -65,6 +69,17 @@ export const useCamera = (shot: Shot): Cam => {
     case "perspective": {
       const s = shot.from === "left" ? 1 : -1;
       return { x: s * 40 * (1 - k), y: 0, zoom: 1.04, rot: 0, tiltY: s * 9 * (1 - k), ox: W / 2, oy: H / 2 };
+    }
+    case "panV":
+      // kamera turun menyusuri isi: semua bergeser naik (tidak pernah turun ke pita subtitle)
+      return { x: 0, y: -shot.distance * k, zoom: shot.zoom ?? 1.04, rot: 0, tiltY: 0, ox: W / 2, oy: H / 2 };
+    case "reveal": {
+      const f = interpolate(frame, [0.15 * fps, 1.6 * fps], [0, 1], { ...clamp, easing: EASE.inOut });
+      return { x: (W / 2 - shot.x) * 0.5 * (1 - f), y: 0, zoom: interpolate(f, [0, 1], [shot.from ?? 1.3, 1.0]), rot: 0, tiltY: 0, ox: shot.x, oy: shot.y };
+    }
+    case "rack": {
+      const s = shot.from === "left" ? 1 : -1;
+      return { x: s * 90 * (1 - k), y: 0, zoom: 1.03, rot: 0, tiltY: 0, ox: W / 2, oy: H / 2 };
     }
     case "path": {
       const c = pathAt(shot.keys, frame / fps);

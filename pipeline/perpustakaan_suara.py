@@ -52,6 +52,59 @@ def _durasi(p):
         return None
 
 
+# Fungsi kalimat dalam alur cerita (berbeda dari nada/emosi). Urutan = prioritas; kalimat bisa punya 1-2 fungsi.
+FUNGSI = [
+    ("pengenalan akun", r"^di adriy project\b"),
+    ("cta", r"\bfollow\b|sampai (jumpa|ketemu)|terima kasih sudah (menonton|ikut)"),
+    ("ajakan", r"komentar|\bbagikan\b|\bsimpan\b|\btag\b|\bshare\b|\blike\b|kirim video|tonton sekali lagi"),
+    ("jeda dramatis", r"^(sebentar|tunggu( sebentar| dulu)?|titik|hening|eits, tunggu dulu)\.?$|\.\.\.$|^dan (saat itulah|tiba-tiba)|semuanya menjadi sunyi|tidak ada suara"),
+    ("pertanyaan retoris", r"(, kan|, ya|, bukan|, sih)\?$|^bukankah|^(benar|seru|lucu|aneh|simpel|mudah|keren banget|luar biasa|nggak nyangka|masuk akal), (kan|ya)\?|^siapa (yang )?(setuju|sangka)|^masa, sih\?|sampai di sini masih masuk akal"),
+    ("memberikan analogi", r"\bbayangkan\b|\bseperti\b|\bmirip\b|analogi|\bibarat|\bmisalnya\b|\bcontoh(nya)?\b|kira-kira seperti"),
+    ("membantah asumsi", r"\bpadahal\b|\bmitos\b|\bkeliru\b|salah (kira|paham|memahami)|tidak sepenuhnya|faktanya justru|sebaliknya|kita (selama ini )?mengira|anggapan|bukan (opini|kebetulan|sekadar|karena|berarti|soal)|sains berkata lain|jangan (langsung )?percaya|korelasi|belum tentu|terbantahkan|luruskan"),
+    ("mengungkap kejutan", r"\bternyata\b|siapa sangka|mengejutkan|\bkaget|nggak nyangka|di luar (dugaan|nalar)|tidak (ada yang )?(me)?nyangka|lebih gila|\bwah\b|\bwow\b|astaga|ya ampun|kejutan|mustahil|serius\?|sumpah\?|beneran\?|yang benar\?"),
+    ("menjelaskan sebab-akibat", r"\bkarena\b|akibat(nya)?|sebab(nya)?|semakin .* semakin|menyebabkan|dipengaruhi|\bfaktor\b|\balasan\b|memicu|efek berantai|reaksi|sehingga|berdampak|dampak"),
+    ("menghubungkan dua topik", r"hubungan|berhubungan|terhubung|berkaitan|\bkembali ke\b|dibandingkan|bandingkan|sisi lain|selain itu|bagian berikutnya|poin berikutnya|\blanjut\b|membawa kita|dari sisi|pertanyaan berikutnya|bagaimana dengan sebaliknya"),
+    ("menyampaikan kesimpulan", r"^jadi\b|kesimpulan|singkatnya|\bintinya\b|pada akhirnya|^itulah|dengan kata lain|sekarang kamu (sudah )?tahu|kalau dirangkum|penjelasan singkatnya|^dan itulah|begitulah"),
+    ("mengawali cerita", r"bermula|berawal|dimulai|^suatu|^dulu\b|pada awalnya|kita mulai|^semuanya dimulai|hari itu|sejak (saat|hari) itu|^ada (satu|sesuatu)|^hampir setiap hari|^rasanya baru kemarin"),
+    ("memperkenalkan fakta", r"penelitian|\bdata\b|ilmuwan|para ahli|\bmenurut\b|\bistilah\b|disebut|dikenal|\bangka|persen|\bfakta\b|ditemukan|\bproses|\btahap\b|terjadi (karena|pada)|bahasa (latin|yunani)"),
+    ("memancing rasa penasaran", r"\?$|^pernah|penasaran|rahasia|jarang (dibahas|disadari|diketahui|orang tahu)|belum (pernah )?(benar-benar )?dibicarakan|tersembunyi|misteri|janggal|ada yang aneh|tunggu dulu"),
+    ("mengubah suasana", r"\bsantai\b|\btenang\b|ngopi|plot twist|ngaku|\bhumor|nggak usah|tarik napas|bercanda|drama\b|lumayan|asyik|nggak sendirian|bukan (ujian|kutukan)"),
+]
+NADA_FUNGSI = {"humor": "mengubah suasana", "santai": "mengubah suasana", "lucu": "mengubah suasana", "hangat": "mengubah suasana",
+               "hening": "jeda dramatis", "pelan": "jeda dramatis", "dramatis": "jeda dramatis", "menegangkan": "memancing rasa penasaran",
+               "reflektif": "menyampaikan kesimpulan", "emosional": "menyampaikan kesimpulan", "motivasi": "menyampaikan kesimpulan",
+               "inspiratif": "menyampaikan kesimpulan", "penutup": "menyampaikan kesimpulan", "informatif": "memperkenalkan fakta",
+               "tegas": "membantah asumsi", "serius": "memperkenalkan fakta", "spontan": "mengungkap kejutan", "terkejut": "mengungkap kejutan",
+               "kagum": "mengungkap kejutan", "penasaran": "memancing rasa penasaran", "bingung": "memancing rasa penasaran"}
+
+
+def fungsi_kalimat(teks, nada=""):
+    """1-2 fungsi kalimat dalam alur cerita (lihat FUNGSI). Tanpa pola cocok: dari nada, lalu 'memperkenalkan fakta'."""
+    import re
+    t = teks.strip().lower()
+    hasil = []
+    for nama, pola in FUNGSI:
+        if re.search(pola, t) and nama not in hasil:
+            hasil.append(nama)
+            if nama in ("pengenalan akun", "cta", "ajakan"):  # fungsi wajib berdiri sendiri
+                return hasil
+        if len(hasil) == 2:
+            break
+    if not hasil:
+        n = re.sub(r"^nada\s+", "", (nada or "").lower()).split()[0] if nada else ""
+        hasil = [NADA_FUNGSI.get(n, "memperkenalkan fakta")]
+    return hasil
+
+
+def tandai_semua():
+    """Isi ulang kolom 'fungsi' semua kalimat di katalog."""
+    k = _baca()
+    for e in k["kalimat"]:
+        e["fungsi"] = fungsi_kalimat(e["teks"], e.get("catatan", ""))
+    _tulis(k)
+    return k
+
+
 def ambil(suara, teks, tujuan):
     """Salin kalimat dari perpustakaan ke `tujuan` (file .wav). True bila ada."""
     src = LIB / suara / f"{kid(suara, teks)}.wav"
@@ -74,7 +127,7 @@ def simpan(suara, teks, wav, kategori="", catatan="", sumber=""):
     k = _baca()
     if not any(e["id"] == i and e["suara"] == suara for e in k["kalimat"]):
         from pelafalan import lafal
-        k["kalimat"].append({"id": i, "suara": suara, "teks": teks, "dibaca": lafal(teks), "file": f"suara/{suara}/{i}.wav", "durasi": _durasi(dst),
+        k["kalimat"].append({"id": i, "suara": suara, "teks": teks, "dibaca": lafal(teks), "fungsi": fungsi_kalimat(teks, catatan), "file": f"suara/{suara}/{i}.wav", "durasi": _durasi(dst),
                              "kategori": kategori, "catatan": catatan, "sumber": sumber, "dibuat": time.strftime("%Y-%m-%d")})
         _tulis(k)
     return True
@@ -110,13 +163,23 @@ def main():
     a.add_argument("--catatan", default="")
     b = sub.add_parser("daftar")
     b.add_argument("--suara")
+    b.add_argument("--fungsi", help="mis. 'membantah asumsi'")
+    sub.add_parser("tandai", help="isi ulang kolom fungsi semua kalimat")
+    sub.add_parser("ringkas", help="jumlah kalimat per fungsi")
     args = ap.parse_args()
     if args.cmd == "tambah":
         buat(args.kalimat, args.suara, args.kategori, args.catatan)
+    elif args.cmd == "tandai":
+        print(len(tandai_semua()["kalimat"]), "kalimat ditandai")
+    elif args.cmd == "ringkas":
+        from collections import Counter
+        c = Counter(f for e in _baca()["kalimat"] if e["suara"] == "adriy" for f in e.get("fungsi", []))
+        for nama, _ in FUNGSI:
+            print(f"{c.get(nama, 0):4d}  {nama}")
     else:
         for e in _baca()["kalimat"]:
-            if not args.suara or e["suara"] == args.suara:
-                print(f"{e['suara']:7s} {e.get('durasi') or 0:5.1f}s {e.get('kategori', ''):10s} {e['teks'][:70]}")
+            if (not args.suara or e["suara"] == args.suara) and (not args.fungsi or args.fungsi in e.get("fungsi", [])):
+                print(f"{e['suara']:7s} {e.get('durasi') or 0:5.1f}s {', '.join(e.get('fungsi', [])):40s} {e['teks'][:70]}")
 
 
 if __name__ == "__main__":

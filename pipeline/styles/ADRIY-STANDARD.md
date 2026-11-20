@@ -449,6 +449,11 @@ yang pernah dibuat disimpan per model suara dan dipakai ulang bila kalimat yang 
 `python3 pipeline/perpustakaan_suara.py tambah "Kalimat..." --suara adriy ongky --kategori hook --catatan "nada ..."`.
 Saat menulis skrip, kalimat umum (hook, peralihan, penekanan, penutup, pengenalan akun, ajakan, CTA) sebaiknya
 diambil persis dari `suara/katalog.json` supaya tidak perlu dibuat ulang.
+Setiap kalimat di katalog punya `fungsi` dalam alur cerita (mengawali cerita, memancing rasa penasaran,
+memperkenalkan fakta, membantah asumsi, mengungkap kejutan, menjelaskan sebab-akibat, menghubungkan dua topik,
+mengubah suasana, memberikan analogi, pertanyaan retoris, menyampaikan kesimpulan, jeda dramatis, serta
+pengenalan akun, ajakan, CTA) yang terpisah dari nada (`catatan`). Ditandai otomatis (`fungsi_kalimat`), bisa
+dikoreksi di katalog. `perpustakaan_suara.py ringkas` = jumlah per fungsi; `daftar --fungsi "..."` = cari.
 
 ## Cara memakai
 

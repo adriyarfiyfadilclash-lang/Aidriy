@@ -1,0 +1,902 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 5,
+    "identityHash": "7232eaab68e10bf653d83b66e51c9441",
+    "entities": [
+      {
+        "tableName": "notes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_archived` INTEGER NOT NULL, `reminder_at` INTEGER, `folder_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`folder_id`) REFERENCES `folders`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "is_favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isArchived",
+            "columnName": "is_archived",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reminderAt",
+            "columnName": "reminder_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "folderId",
+            "columnName": "folder_id",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_notes_updated_at",
+            "unique": false,
+            "columnNames": [
+              "updated_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_updated_at` ON `${TABLE_NAME}` (`updated_at`)"
+          },
+          {
+            "name": "index_notes_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          },
+          {
+            "name": "index_notes_is_archived_is_favorite",
+            "unique": false,
+            "columnNames": [
+              "is_archived",
+              "is_favorite"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_is_archived_is_favorite` ON `${TABLE_NAME}` (`is_archived`, `is_favorite`)"
+          },
+          {
+            "name": "index_notes_folder_id",
+            "unique": false,
+            "columnNames": [
+              "folder_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notes_folder_id` ON `${TABLE_NAME}` (`folder_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "folders",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "folder_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ideas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `status` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ideas_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ideas_status` ON `${TABLE_NAME}` (`status`)"
+          },
+          {
+            "name": "index_ideas_updated_at",
+            "unique": false,
+            "columnNames": [
+              "updated_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ideas_updated_at` ON `${TABLE_NAME}` (`updated_at`)"
+          },
+          {
+            "name": "index_ideas_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ideas_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "journal_entries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `date` TEXT NOT NULL, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_journal_entries_date",
+            "unique": true,
+            "columnNames": [
+              "date"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_journal_entries_date` ON `${TABLE_NAME}` (`date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `normalized_name` TEXT NOT NULL, `color` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "normalizedName",
+            "columnName": "normalized_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_tags_normalized_name",
+            "unique": true,
+            "columnNames": [
+              "normalized_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tags_normalized_name` ON `${TABLE_NAME}` (`normalized_name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "note_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`note_id` TEXT NOT NULL, `tag_id` TEXT NOT NULL, PRIMARY KEY(`note_id`, `tag_id`), FOREIGN KEY(`note_id`) REFERENCES `notes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tag_id`) REFERENCES `tags`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "noteId",
+            "columnName": "note_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "note_id",
+            "tag_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_note_tags_tag_id",
+            "unique": false,
+            "columnNames": [
+              "tag_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_note_tags_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "notes",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "note_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "tags",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tag_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "idea_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idea_id` TEXT NOT NULL, `tag_id` TEXT NOT NULL, PRIMARY KEY(`idea_id`, `tag_id`), FOREIGN KEY(`idea_id`) REFERENCES `ideas`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tag_id`) REFERENCES `tags`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "ideaId",
+            "columnName": "idea_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idea_id",
+            "tag_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_idea_tags_tag_id",
+            "unique": false,
+            "columnNames": [
+              "tag_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_idea_tags_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ideas",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idea_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "tags",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tag_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "journal_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`journal_id` TEXT NOT NULL, `tag_id` TEXT NOT NULL, PRIMARY KEY(`journal_id`, `tag_id`), FOREIGN KEY(`journal_id`) REFERENCES `journal_entries`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tag_id`) REFERENCES `tags`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "journalId",
+            "columnName": "journal_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "journal_id",
+            "tag_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_journal_tags_tag_id",
+            "unique": false,
+            "columnNames": [
+              "tag_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_journal_tags_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "journal_entries",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "journal_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "tags",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tag_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "folders",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `created_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_folders_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_folders_name` ON `${TABLE_NAME}` (`name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "files",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `mime_type` TEXT NOT NULL, `size_bytes` INTEGER NOT NULL, `local_path` TEXT NOT NULL, `folder_id` TEXT, `note_id` TEXT, `created_at` INTEGER NOT NULL, `extracted_text` TEXT, `extraction_status` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`folder_id`) REFERENCES `folders`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`note_id`) REFERENCES `notes`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mimeType",
+            "columnName": "mime_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "size_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localPath",
+            "columnName": "local_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folderId",
+            "columnName": "folder_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "noteId",
+            "columnName": "note_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extractedText",
+            "columnName": "extracted_text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "extractionStatus",
+            "columnName": "extraction_status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_files_folder_id",
+            "unique": false,
+            "columnNames": [
+              "folder_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_files_folder_id` ON `${TABLE_NAME}` (`folder_id`)"
+          },
+          {
+            "name": "index_files_note_id",
+            "unique": false,
+            "columnNames": [
+              "note_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_files_note_id` ON `${TABLE_NAME}` (`note_id`)"
+          },
+          {
+            "name": "index_files_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_files_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "folders",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "folder_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "notes",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "note_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ai_conversations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ai_conversations_updated_at",
+            "unique": false,
+            "columnNames": [
+              "updated_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ai_conversations_updated_at` ON `${TABLE_NAME}` (`updated_at`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ai_messages",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation_id` TEXT NOT NULL, `role` TEXT NOT NULL, `content` TEXT NOT NULL, `provider` TEXT, `model` TEXT, `sources` TEXT NOT NULL, `no_local_match` INTEGER NOT NULL, `is_error` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `rating` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`), FOREIGN KEY(`conversation_id`) REFERENCES `ai_conversations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "conversationId",
+            "columnName": "conversation_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "provider",
+            "columnName": "provider",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sources",
+            "columnName": "sources",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "noLocalMatch",
+            "columnName": "no_local_match",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isError",
+            "columnName": "is_error",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ai_messages_conversation_id_created_at",
+            "unique": false,
+            "columnNames": [
+              "conversation_id",
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ai_messages_conversation_id_created_at` ON `${TABLE_NAME}` (`conversation_id`, `created_at`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ai_conversations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "conversation_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sync_dirty",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`kind` TEXT NOT NULL, `id` TEXT NOT NULL, `seq` INTEGER NOT NULL, PRIMARY KEY(`kind`, `id`))",
+        "fields": [
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seq",
+            "columnName": "seq",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "kind",
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "sync_meta",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `paused` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paused",
+            "columnName": "paused",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "sync_uploaded",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `uploaded_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uploadedAt",
+            "columnName": "uploaded_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7232eaab68e10bf653d83b66e51c9441')"
+    ]
+  }
+}

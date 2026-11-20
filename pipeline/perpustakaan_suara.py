@@ -19,6 +19,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # pelafalan.py
 LIB = ROOT / "video" / "public" / "adri" / "suara"
 KATALOG = LIB / "katalog.json"
 TTS = ROOT / "video" / "scripts" / "tts_batch.py"
@@ -26,7 +27,9 @@ PY = os.environ.get("PIPELINE_PYTHON", "/root/voxcpm-venv/bin/python" if Path("/
 
 
 def kid(suara, teks):
-    return hashlib.sha1(f"{suara}|{teks}".encode()).hexdigest()[:12]
+    """id rekaman = dari teks yang DIBACA (setelah kamus pelafalan): kamus berubah -> kalimat itu dibuat ulang."""
+    from pelafalan import lafal
+    return hashlib.sha1(f"{suara}|{lafal(teks)}".encode()).hexdigest()[:12]
 
 
 def _baca():
@@ -70,7 +73,8 @@ def simpan(suara, teks, wav, kategori="", catatan="", sumber=""):
         shutil.copy2(wav, dst)
     k = _baca()
     if not any(e["id"] == i and e["suara"] == suara for e in k["kalimat"]):
-        k["kalimat"].append({"id": i, "suara": suara, "teks": teks, "file": f"suara/{suara}/{i}.wav", "durasi": _durasi(dst),
+        from pelafalan import lafal
+        k["kalimat"].append({"id": i, "suara": suara, "teks": teks, "dibaca": lafal(teks), "file": f"suara/{suara}/{i}.wav", "durasi": _durasi(dst),
                              "kategori": kategori, "catatan": catatan, "sumber": sumber, "dibuat": time.strftime("%Y-%m-%d")})
         _tulis(k)
     return True
@@ -78,7 +82,8 @@ def simpan(suara, teks, wav, kategori="", catatan="", sumber=""):
 
 def buat(kalimat, suara_list, kategori="", catatan=""):
     """Buat suara untuk kalimat x suara yang belum ada di perpustakaan, lalu simpan."""
-    todo = [{"id": kid(s, t), "voice": s, "text": t} for t in kalimat for s in suara_list if not (LIB / s / f"{kid(s, t)}.wav").exists()]
+    from pelafalan import lafal
+    todo = [{"id": kid(s, t), "voice": s, "text": lafal(t), "asli": t} for t in kalimat for s in suara_list if not (LIB / s / f"{kid(s, t)}.wav").exists()]
     if todo:
         tmp = LIB / ".buat"
         tmp.mkdir(parents=True, exist_ok=True)
@@ -87,7 +92,7 @@ def buat(kalimat, suara_list, kategori="", catatan=""):
         t0 = time.time()
         subprocess.run([PY, str(TTS), str(job), str(tmp)], check=True)
         for j in todo:
-            simpan(j["voice"], j["text"], tmp / f"{j['id']}.wav", kategori, catatan, "perpustakaan_suara.py")
+            simpan(j["voice"], j["asli"], tmp / f"{j['id']}.wav", kategori, catatan, "perpustakaan_suara.py")
         shutil.rmtree(tmp)
         print(f"{len(todo)} suara dibuat dalam {time.time() - t0:.0f} dtk")
     for t in kalimat:

@@ -434,6 +434,22 @@ Pipeline memeriksa semuanya **sebelum suara dibuat** (`cek_naskah`) dan berhenti
 setelah suara jadi, durasi sebenarnya diperiksa lagi. Video uji (`_...`, `contoh...`) dikecualikan;
 `--bebas-aturan-naskah` untuk melewati dengan sengaja.
 
+## 17. Suara: kamus pelafalan dan perpustakaan suara
+
+**Kamus pelafalan** (`pipeline/pelafalan.py`, `pipeline/kamus-pelafalan.json`): sebelum suara dibuat, teks diubah
+ke ejaan bunyi. Subtitle dan judul tetap tulisan asli naskah.
+- Otomatis: angka (2002 -> dua ribu dua; 1,39 -> satu koma tiga sembilan), uang (Rp10.000 -> sepuluh ribu
+  rupiah), persen, derajat, satuan (km/jam, kg, ...), rentang (2-3 -> dua sampai tiga), urutan (ke-3 -> ketiga).
+- Kamus: istilah asing, nama tokoh, singkatan (hypnic jerk -> hipnik jerk, WHO -> we ha o, DNA -> de en a).
+  Singkatan HURUF BESAR dicocokkan persis. Ada kata yang salah ucap? Tambah satu baris di `istilah`.
+- Coba: `python3 pipeline/pelafalan.py "kalimat ..."`. Log `[fetch]   dibaca: ...` menunjukkan kalimat yang diubah.
+
+**Perpustakaan suara** (`pipeline/perpustakaan_suara.py`, rekaman di repo aset privat `suara/`): setiap kalimat
+yang pernah dibuat disimpan per model suara dan dipakai ulang bila kalimat yang dibaca persis sama. Tambah manual:
+`python3 pipeline/perpustakaan_suara.py tambah "Kalimat..." --suara adriy ongky --kategori hook --catatan "nada ..."`.
+Saat menulis skrip, kalimat umum (hook, peralihan, penekanan, penutup, pengenalan akun, ajakan, CTA) sebaiknya
+diambil persis dari `suara/katalog.json` supaya tidak perlu dibuat ulang.
+
 ## Cara memakai
 
 ```bash

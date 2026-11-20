@@ -305,15 +305,21 @@ def step_tts(ctx):
     vo_dir = d / "vo"
     vo_dir.mkdir(exist_ok=True)
     lines = script["lines"]
-    for ln in lines:  # nama file dari isi kalimat: kalimat yang tidak berubah tidak dibuat ulang
-        ln["id"] = hashlib.sha1(f'{ln["voice"]}|{ln["text"]}'.encode()).hexdigest()[:12]
-    # perpustakaan suara (pipeline/perpustakaan_suara.py): kalimat yang pernah dibuat dipakai ulang lintas video
+    # perpustakaan suara (pipeline/perpustakaan_suara.py): kalimat yang pernah dibuat dipakai ulang lintas video.
+    # Kamus pelafalan (pipeline/pelafalan.py): suara dibuat dari ejaan bunyi ("2002" -> "dua ribu dua",
+    # "hypnic jerk" -> "hipnik jerk"); subtitle tetap tulisan asli naskah.
     sys.path.insert(0, str(ROOT / "pipeline"))
     import perpustakaan_suara as pustaka
+    from pelafalan import lafal
+    for ln in lines:  # nama file dari kalimat yang dibaca: kalimat yang tidak berubah tidak dibuat ulang
+        ln["id"] = pustaka.kid(ln["voice"], ln["text"])
     dari_pustaka = sum(1 for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists() and pustaka.ambil(ln["voice"], ln["text"], vo_dir / f'{ln["id"]}.wav'))
     if dari_pustaka:
         log("fetch", f"{dari_pustaka} kalimat diambil dari perpustakaan suara")
-    todo = [{"id": ln["id"], "voice": ln["voice"], "text": ln["text"]} for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists()]
+    todo = [{"id": ln["id"], "voice": ln["voice"], "text": lafal(ln["text"]), "asli": ln["text"]} for ln in lines if not (vo_dir / f'{ln["id"]}.wav').exists()]
+    for j in todo:
+        if j["text"] != j["asli"]:
+            log("fetch", f'  dibaca: {j["text"][:90]}')
     if todo:
         log("fetch", f"VoxCPM membuat {len(todo)} dari {len(lines)} kalimat...")
         job = d / ".tts.json"
@@ -323,7 +329,7 @@ def step_tts(ctx):
         job.unlink()
         log("fetch", f"selesai dalam {time.time() - t:.0f} dtk")
         for j in todo:  # kalimat baru masuk perpustakaan, supaya video lain bisa memakainya
-            pustaka.simpan(j["voice"], j["text"], vo_dir / f'{j["id"]}.wav', sumber=f"media/{ctx['name']}")
+            pustaka.simpan(j["voice"], j["asli"], vo_dir / f'{j["id"]}.wav', sumber=f"media/{ctx['name']}")
     else:
         log("fetch", "semua kalimat sudah ada suaranya")
     parts, t, out_lines = [np.zeros(int(VOICE_LEAD * SR), np.float32)], VOICE_LEAD, []
